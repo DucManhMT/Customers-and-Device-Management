@@ -93,7 +93,7 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
     public Iterable<E> findAll() {
         Connection connection = DBcontext.getConnection();
         SelectBuilder builder = SelectBuilder.builder(tableName)
-                .columns(fields.stream().map(f -> f.getName()).toList());
+                .columns(fields.stream().map(Field::getName).toList());
         List<E> result = null;
         try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
                 ResultSet rs = preparedSt.executeQuery()) {
@@ -124,7 +124,7 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
         Connection connection = DBcontext.getConnection();
         // Build the base select query
         SelectBuilder builder = SelectBuilder.builder("user")
-                .columns(fields.stream().map(f -> f.getName()).toList());
+                .columns(fields.stream().map(Field::getName).toList());
         String query = builder.build(false);
 
         // Count total records
@@ -132,7 +132,7 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
 
         int offset = (request.getPageNumber() - 1) * request.getPageSize();
         // Apply pagination and sorting to the original query
-        builder.limit(request.getPageSize() > total ? total : request.getPageSize()).offset(offset);
+        builder.limit(Math.min(request.getPageSize(), total)).offset(offset);
         if (request.getSort() != null && request.getSort().getOrders() != null) {
             builder.orderBy(request.getSort().getOrders());
         }
