@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.clause.ClauseBuilder;
 import crm.core.repository.persistence.config.DBcontext;
 import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.exception.DuplicateKeyException;
@@ -41,10 +42,10 @@ import crm.core.repository.persistence.query.crud.UpdateBuilder;
  */
 public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K> {
 
-    private Class<E> cls;
-    private List<Field> fields;
-    private Field keyField;
-    private String tableName;
+    private final Class<E> cls;
+    private final List<Field> fields;
+    private final Field keyField;
+    private final String tableName;
 
     public AbstractReposistory(Class<E> cls) {
         this.cls = cls;
@@ -104,6 +105,65 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
         return result;
     }
 
+    public Iterable<E> findWithCondition(ClauseBuilder clause) {
+        Connection connection = DBcontext.getConnection();
+        SelectBuilder builder = SelectBuilder.builder(tableName)
+                .columns(fields.stream().map(Field::getName).toList())
+                .where(clause.build());
+        builder.setParameters(clause.getParameters());
+        System.out.println(builder.getParameters());
+        List<E> result = null;
+        try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());) {
+            setPreparedStatementValue(preparedSt, builder.getParameters());
+            try (ResultSet rs = preparedSt.executeQuery()) {
+                result = mapListResultSet(rs, cls);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+
+    public Page<E> findWithCondition(ClauseBuilder clause, PageRequest request) {
+        Connection connection = DBcontext.getConnection();
+        // Build the base select query
+        SelectBuilder builder = SelectBuilder.builder(tableName)
+                .columns(fields.stream().map(Field::getName).toList())
+                .where(clause.build());
+        builder.setParameters(clause.getParameters());
+        String query = builder.build(false);
+
+        // Count total records
+        int total = countRecord(query, connection, builder.getParameters());
+
+        // Calculate offset for pagination
+        int offset = (request.getPageNumber() - 1) * request.getPageSize();
+        // Apply pagination and sorting to the original query
+        builder.limit(Math.min(request.getPageSize(), total)).offset(offset);
+        if (request.getSort() != null && request.getSort().getOrders() != null) {
+            builder.orderBy(request.getSort().getOrders());
+        }
+
+        List<E> result = null;
+        try (PreparedStatement ps = connection.prepareStatement(builder.build());) {
+            setPreparedStatementValue(ps, builder.getParameters());
+            try (ResultSet rs = ps.executeQuery()) {
+                result = mapListResultSet(rs, cls);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Page<>(total, request, result);
+    }
+
+
     /**
      * Retrieves a paginated list of entities from the database based on the
      * provided {@link PageRequest}.
@@ -128,7 +188,7 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
         String query = builder.build(false);
 
         // Count total records
-        int total = countRecord(query, connection);
+        int total = countRecord(query, connection,null);
 
         int offset = (request.getPageNumber() - 1) * request.getPageSize();
         // Apply pagination and sorting to the original query
@@ -248,17 +308,22 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
      *
      * @param query      the base SQL query to count records for
      * @param connection the database connection to use for executing the query
+     * @param parameters the list of parameters to set in the prepared statement
      * @return the total number of records for the given query
      */
-    protected int countRecord(String query, Connection connection) {
+    public int countRecord(String query, Connection connection, List<Object> parameters) {
         // Wrap the base query in a count query to get total number of records
         String countQuery = "SELECT COUNT(1) AS total FROM (" + query + ") AS count_table";
         int total = 0;
         // Count total records
-        try (PreparedStatement countPs = connection.prepareStatement(countQuery);
-                ResultSet countRs = countPs.executeQuery()) {
-            if (countRs.next()) {
-                total = countRs.getInt("total");
+        try (PreparedStatement countPs = connection.prepareStatement(countQuery);) {
+            setPreparedStatementValue(countPs, parameters);
+            try (ResultSet countRs = countPs.executeQuery()) {
+                if (countRs.next()) {
+                    total = countRs.getInt("total");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -339,6 +404,9 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
      * @throws SQLException if an error occurs while setting the parameter values
      */
     private void setPreparedStatementValue(PreparedStatement ps, List<Object> objects) throws SQLException {
+        if (objects == null || objects.isEmpty()) {
+            return;
+        }
         int idx = 1;
         for (Object p : objects) {
             ps.setObject(idx++, p);
