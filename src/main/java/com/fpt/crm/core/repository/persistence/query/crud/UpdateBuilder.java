@@ -1,9 +1,9 @@
-package com.example.persistence_repository.persistence.query.crud;
+package com.fpt.crm.core.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.example.persistence_repository.persistence.config.RepositoryConfig;
-import com.example.persistence_repository.persistence.query.AbstractQueryBuilder;
+import com.fpt.crm.core.repository.persistence.config.RepositoryConfig;
+import com.fpt.crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 /**
  * A builder class for constructing SQL UPDATE queries with SET and optional

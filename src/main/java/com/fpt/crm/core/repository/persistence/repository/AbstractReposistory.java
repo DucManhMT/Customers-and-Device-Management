@@ -16,12 +16,10 @@ import com.fpt.crm.core.repository.persistence.config.TransactionManager;
 import com.fpt.crm.core.repository.persistence.exception.DuplicateKeyException;
 import com.fpt.crm.core.repository.persistence.query.common.Page;
 import com.fpt.crm.core.repository.persistence.query.common.PageRequest;
-import com.fpt.crm.core.repository.persistence.query.common.Sort;
-import com.fpt.crm.core.repository.persistence.query.common.Order;
-import com.fpt.crm.core.repository.persistence.crud.DeleteBuilder;
-import com.fpt.crm.core.repository.persistence.crud.InsertBuilder;
-import com.fpt.crm.core.repository.persistence.crud.SelectBuilder;
-import com.fpt.crm.core.repository.persistence.crud.UpdateBuilder;
+import com.fpt.crm.core.repository.persistence.query.crud.DeleteBuilder;
+import com.fpt.crm.core.repository.persistence.query.crud.InsertBuilder;
+import com.fpt.crm.core.repository.persistence.query.crud.SelectBuilder;
+import com.fpt.crm.core.repository.persistence.query.crud.UpdateBuilder;
 
 /**
  * An abstract base class for implementing CRUD (Create, Read, Update, Delete)
@@ -126,7 +124,7 @@ public abstract class AbstractReposistory<E, K> implements CrudReposistory<E, K>
         Connection connection = DBcontext.getConnection();
         // Build the base select query
         SelectBuilder builder = SelectBuilder.builder("user")
-                .columns(List.of(User.class.getDeclaredFields()).stream().map(f -> f.getName()).toList());
+                .columns(fields.stream().map(f -> f.getName()).toList());
         String query = builder.build(false);
 
         // Count total records
