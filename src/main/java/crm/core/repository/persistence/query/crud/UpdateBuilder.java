@@ -2,7 +2,9 @@ package crm.core.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import crm.core.repository.persistence.config.RepositoryConfig;
+import crm.core.repository.persistence.entity.EntityMeta;
 import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 /**
@@ -26,33 +28,42 @@ import crm.core.repository.persistence.query.AbstractQueryBuilder;
  * @author Nguyen Anh Tu
  * @since 1.0
  */
-public class UpdateBuilder extends AbstractQueryBuilder {
+public class UpdateBuilder<E> extends AbstractQueryBuilder<E> {
     private List<String> setClauses;
     private String whereClause;
 
-    public UpdateBuilder(String tableName) {
-        super(tableName);
+    public UpdateBuilder(EntityMeta<E> entityMeta) {
+        super(entityMeta);
         setClauses = new ArrayList<>();
     }
 
-    public static UpdateBuilder builder(String tableName) {
-        return new UpdateBuilder(tableName);
+    public static <E> UpdateBuilder<E> builder(EntityMeta<E> entityMeta) {
+        return new UpdateBuilder<E>(entityMeta);
     }
 
-    public UpdateBuilder set(String column, Object value) {
+    public UpdateBuilder<E> set(String column, Object value) {
         this.getParameters().add(value);
         this.setClauses.add(column);
         return this;
     }
 
-    public UpdateBuilder where(String whereClause, Object... params) {
-        this.getParameters().addAll(List.of(params));
+    public UpdateBuilder<E> where(String whereClause, Object... params) {
+        if (params == null || params.length == 0) {
+            throw new IllegalArgumentException("where params empty or null");
+        }
+        for (Object p : params) {
+            if (p == null) {
+                throw new IllegalArgumentException("Where param cannot be null");
+            }
+            this.getParameters().add(p);
+        }
         this.whereClause = whereClause;
         return this;
     }
 
     @Override
     public String createQuery() {
+        String tableName = entityMeta.getTableName();
         if (tableName == null || tableName.isEmpty()) {
             throw new IllegalStateException("Table name is required for UPDATE statement.");
         }
@@ -83,7 +94,7 @@ public class UpdateBuilder extends AbstractQueryBuilder {
     @Override
     public String build() {
         String query = createQuery();
-        if (RepositoryConfig.PRINT_SQL) {
+        if (RepositoryConfig.isPrintSql) {
             System.out.println("Generated Query: " + query);
         }
         return query;

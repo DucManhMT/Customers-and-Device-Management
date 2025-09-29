@@ -1,5 +1,7 @@
 package crm.core.repository.persistence.repository;
 
+import crm.core.repository.persistence.query.clause.ClauseBuilder;
+
 /**
  * Generic CRUD repository interface for managing entities in a database.
  * <p>
@@ -16,7 +18,8 @@ package crm.core.repository.persistence.repository;
  * @since 1.0
  * 
  */
-public interface CrudReposistory<E, K> {
+public interface CrudRepository<E, K> {
+
     E save(E entity);
 
     E findById(K key);
@@ -30,4 +33,6 @@ public interface CrudReposistory<E, K> {
     int count();
 
     Iterable<E> findAll();
+
+    Iterable<E> findWithCondition(ClauseBuilder clause);
 }

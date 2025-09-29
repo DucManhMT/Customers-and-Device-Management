@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.clause;
+package crm.core.repository.persistence.query.clause;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -138,7 +138,7 @@ public class ClauseBuilder {
         if (pendingOperator != null) {
             throw new IllegalStateException("Missing condition after AND/OR");
         }
-        if (whereClause.isEmpty()) {
+        if (whereClause.length() == 0) {
             return "";
         }
         return whereClause.toString();
