@@ -14,6 +14,7 @@ import crm.core.repository.persistence.annotation.Key;
 import crm.core.repository.persistence.annotation.ManyToOne;
 import crm.core.repository.persistence.annotation.OneToMany;
 import crm.core.repository.persistence.annotation.OneToOne;
+import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.RelationshipMeta;
 import crm.core.repository.persistence.entity.relation.RelationshipType;
 import crm.core.repository.persistence.exception.DuplicateKeyException;

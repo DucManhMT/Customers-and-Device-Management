@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.entity;
+package crm.core.repository.persistence.entity.load;
 
 import java.util.AbstractList;
 import java.util.Iterator;

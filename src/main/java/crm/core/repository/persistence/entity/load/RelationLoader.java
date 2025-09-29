@@ -1,10 +1,7 @@
-package crm.core.repository.persistence.entity.relation;
+package crm.core.repository.persistence.entity.load;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import crm.core.repository.persistence.entity.LazyList;
-import crm.core.repository.persistence.entity.LazyReference;
 
 /**
  * Factory / helper entry point for constructing lazy wrappers around
