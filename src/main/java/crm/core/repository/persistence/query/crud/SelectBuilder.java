@@ -211,7 +211,7 @@ public class SelectBuilder<E> extends AbstractQueryBuilder<E> {
     @Override
     public String build() {
         String query = createQuery();
-        if (RepositoryConfig.isPrintSql) {
+        if (RepositoryConfig.PRINT_SQL) {
             System.out.println("Generated Query: " + query);
         }
         return query;

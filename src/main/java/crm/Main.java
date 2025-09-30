@@ -1,12 +1,61 @@
 package crm;
 
-import crm.core.service.MailService;
+import crm.common.model.*;
+import crm.core.repository.persistence.config.DBcontext;
+import crm.core.repository.persistence.entity.EntityRegistry;
+import crm.core.repository.persistence.entity.SchemaGenerator;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        MailService mailService = new MailService();
-        mailService.sendEmail("brosskt123@gmail.com", "Test Subject", "This is a test email body.",
-                "tuna26hn@gmail.com");
+        testSchemaGeneration();
     }
+
+    public static void testSchemaGeneration() {
+        try {
+            // Initialize DB connection (side-effect: ensure driver loaded)
+            DBcontext.getConnection();
+
+            // 1. Register all entity classes (add new ones here when created)
+            Class<?>[] entities = new Class<?>[] {
+                    Account.class,
+                    Role.class,
+                    Feature.class,
+                    RoleFeature.class,
+                    Category.class,
+                    Type.class,
+                    SpecificationType.class,
+                    Specification.class,
+                    Product.class,
+                    ProductSpecification.class,
+                    ProductWarehouse.class,
+                    Warehouse.class,
+                    WarehouseLog.class,
+                    InventoryItem.class,
+                    ProductTransaction.class,
+                    ProductRequest.class,
+                    ProductExported.class,
+                    Staff.class,
+                    Customer.class,
+                    Contract.class,
+                    Request.class,
+                    RequestLog.class,
+                    Feedback.class,
+                    ProductContract.class
+            };
+            for (Class<?> c : entities) {
+                @SuppressWarnings("unchecked")
+                Class<Object> cls = (Class<Object>) c;
+                EntityRegistry.register(cls);
+            }
+
+            // 2. Generate schema (DDL) for all registered entities
+            SchemaGenerator.withDefault().generateAll();
+
+            System.out.println("Schema generation completed successfully.");
+        } catch (Exception e) {
+            System.err.println("Schema generation failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }
