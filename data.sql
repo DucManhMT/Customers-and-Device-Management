@@ -1,219 +1,246 @@
-CREATE TABLE Account (
-                         username VARCHAR(50) NOT NULL,
-                         password VARCHAR(255) NOT NULL,
-                         activeStatus BOOLEAN NOT NULL,
-                         role INT NOT NULL,
-                         PRIMARY KEY (username)
+USE crm;
+
+-- ======================
+-- CATEGORY & TYPE
+-- ======================
+CREATE TABLE Category (
+    CategoryID INT PRIMARY KEY,
+    CategoryName NVARCHAR(100) NOT NULL,
+    CategoryImage NVARCHAR(255)
 );
 
-CREATE TABLE Customer (
-                          customerId INT NOT NULL,
-                          customerName VARCHAR(100) NOT NULL,
-                          customerAddress VARCHAR(100) NOT NULL,
-                          customerPhone VARCHAR(36) NOT NULL,
-                          customerMail VARCHAR(100) NOT NULL,
-                          username VARCHAR(50) NOT NULL,
-                          PRIMARY KEY (customerId),
-                          FOREIGN KEY (username) REFERENCES Account(username)
+CREATE TABLE Type (
+    TypeID INT PRIMARY KEY,
+    TypeName NVARCHAR(100) NOT NULL,
+    TypeImage NVARCHAR(255),
+    CategoryID INT NOT NULL,
+    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
+);
+
+-- ======================
+-- ACCOUNT
+-- ======================
+
+CREATE TABLE Role (
+    RoleID INT PRIMARY KEY,
+    RoleName NVARCHAR(50) UNIQUE
+);
+
+CREATE TABLE Account (
+    Username NVARCHAR(100) PRIMARY KEY,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    AccountStatus ENUM('Active', 'Deactive'),
+    RoleID INT,
+    FOREIGN KEY (RoleID) REFERENCES Role(RoleID)
+);
+
+CREATE TABLE Feature (
+    FeatureID INT PRIMARY KEY,
+    FeatureURL NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(255)
+);
+
+CREATE TABLE RoleFeature (
+    RoleID INT NOT NULL,
+    FeatureID INT NOT NULL,
+    PRIMARY KEY (RoleID, FeatureID),
+    FOREIGN KEY (RoleID) REFERENCES Role(RoleID),
+    FOREIGN KEY (FeatureID) REFERENCES Feature(FeatureID)
 );
 
 CREATE TABLE Staff (
-                       staffId INT NOT NULL,
-                       staffLastName VARCHAR(100) NOT NULL,
-                       staffFirstName VARCHAR(100) NOT NULL,
-                       staffPhone VARCHAR(36) NOT NULL,
-                       staffAddress VARCHAR(100) NOT NULL,
-                       staffEmail VARCHAR(100) NOT NULL,
-                       image BLOB NOT NULL,
-                       dateOfBirth DATE NOT NULL,
-                       username VARCHAR(50) NOT NULL,
-                       PRIMARY KEY (staffId),
-                       FOREIGN KEY (username) REFERENCES Account(username)
+    StaffID INT PRIMARY KEY,
+    StaffName NVARCHAR(150) NOT NULL,
+    Phone NVARCHAR(50) UNIQUE NOT NULL,
+    Address NVARCHAR(100),
+    Email NVARCHAR(150) UNIQUE NOT NULL,
+    Image NVARCHAR(255),
+    DateOfBirth DATE,
+    Username NVARCHAR(100),
+    FOREIGN KEY (Username) REFERENCES Account(Username)
 );
 
-CREATE TABLE Request (
-                         requestId INT NOT NULL,
-                         requestDescription TEXT NOT NULL,
-                         requestStatus INT NOT NULL,
-                         createdDate DATE NOT NULL,
-                         finishedDate DATE,
-                         note TEXT,
-                         PRIMARY KEY (requestId)
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    CustomerName NVARCHAR(150) NOT NULL,
+    Address NVARCHAR(255) NOT NULL,
+    Phone NVARCHAR(50) UNIQUE NOT NULL,
+    Email NVARCHAR(150) UNIQUE NOT NULL,
+    Username NVARCHAR(100),
+    FOREIGN KEY (Username) REFERENCES Account(Username)
 );
 
-CREATE TABLE Contract (
-                          contractId INT NOT NULL,
-                          contractImage BLOB NOT NULL,
-                          startDate DATE NOT NULL,
-                          expiredDate DATE NOT NULL,
-                          requestId INT NOT NULL,
-                          customerId INT NOT NULL,
-                          PRIMARY KEY (contractId),
-                          FOREIGN KEY (requestId) REFERENCES Request(requestId),
-                          FOREIGN KEY (customerId) REFERENCES Customer(customerId)
+-- ======================
+-- PRODUCT & SPECIFICATIONS
+-- ======================
+CREATE TABLE Product (
+    ProductID INT PRIMARY KEY,
+    ProductName NVARCHAR(150) NOT NULL,
+    ProductImage NVARCHAR(255),
+    ProductDescription NVARCHAR(255),
+    TypeID INT NOT NULL,
+    FOREIGN KEY (TypeID) REFERENCES Type(TypeID)
 );
 
-CREATE TABLE Feedback (
-                          feedbackId INT NOT NULL,
-                          content TEXT NOT NULL,
-                          rating INT NOT NULL,
-                          response TEXT,
-                          username VARCHAR(50) NOT NULL,
-                          PRIMARY KEY (feedbackId),
-                          FOREIGN KEY (username) REFERENCES Account(username)
-);
-
-CREATE TABLE Warehouse (
-                           warehouseId INT NOT NULL,
-                           warehouseName VARCHAR(100) NOT NULL,
-                           warehouseStatus INT NOT NULL,
-                           location VARCHAR(100) NOT NULL,
-                           PRIMARY KEY (warehouseId)
-);
-
-CREATE TABLE WarehouseLog (
-                              warehouseLogId INT NOT NULL,
-                              date DATE NOT NULL,
-                              status INT NOT NULL,
-                              warehouseLogDescription TEXT NOT NULL,
-                              warehouseId INT NOT NULL,
-                              requestId INT NOT NULL,
-                              PRIMARY KEY (warehouseLogId),
-                              FOREIGN KEY (warehouseId) REFERENCES Warehouse(warehouseId),
-                              FOREIGN KEY (requestId) REFERENCES Request(requestId)
-);
-
-CREATE TABLE UpdatedLog (
-                            updatedLogId INT NOT NULL,
-                            dateUpdated DATE NOT NULL,
-                            warehouseId INT NOT NULL,
-                            PRIMARY KEY (updatedLogId),
-                            FOREIGN KEY (warehouseId) REFERENCES Warehouse(warehouseId)
-);
-
-CREATE TABLE Category (
-                          categoryId INT NOT NULL,
-                          categoryName VARCHAR(100) NOT NULL,
-                          categoryImage BLOB,
-                          PRIMARY KEY (categoryId)
-);
-
-CREATE TABLE Device (
-                        deviceId INT NOT NULL,
-                        deviceName VARCHAR(100) NOT NULL,
-                        deviceImage BLOB,
-                        deviceDescription TEXT,
-                        categoryId INT NOT NULL,
-                        PRIMARY KEY (deviceId),
-                        FOREIGN KEY (categoryId) REFERENCES Category(categoryId)
-);
-
-CREATE TABLE Component (
-                           componentId INT NOT NULL,
-                           componentName VARCHAR(100) NOT NULL,
-                           componentImage BLOB,
-                           componentDescription TEXT,
-                           updatedLogId INT,
-                           categoryId INT,
-                           PRIMARY KEY (componentId),
-                           FOREIGN KEY (updatedLogId) REFERENCES UpdatedLog(updatedLogId),
-                           FOREIGN KEY (categoryId) REFERENCES Category(categoryId)
-);
-
-CREATE TABLE ComponentImportExport (
-                                       componentImportExportId INT NOT NULL,
-                                       componentImportExportQuantity INT NOT NULL,
-                                       warehouseLogId INT NOT NULL,
-                                       componentId INT NOT NULL,
-                                       PRIMARY KEY (componentImportExportId),
-                                       FOREIGN KEY (warehouseLogId) REFERENCES WarehouseLog(warehouseLogId),
-                                       FOREIGN KEY (componentId) REFERENCES Component(componentId)
+CREATE TABLE SpecificationType (
+    SpecificationTypeID INT PRIMARY KEY,
+    SpecificationTypeName NVARCHAR(100) NOT NULL,
+    TypeID INT NOT NULL,
+    FOREIGN KEY (TypeID) REFERENCES Type(TypeID)
 );
 
 CREATE TABLE Specification (
-                               specId INT NOT NULL,
-                               specName VARCHAR(50) NOT NULL,
-                               specValue TEXT NOT NULL,
-                               PRIMARY KEY (specId)
+    SpecificationID INT PRIMARY KEY,
+    SpecificationName NVARCHAR(100) NOT NULL,
+    SpecificationValue NVARCHAR(255) NOT NULL,
+    SpecificationTypeID INT NOT NULL,
+    FOREIGN KEY (SpecificationTypeID) REFERENCES SpecificationType(SpecificationTypeID)
 );
 
-CREATE TABLE SerialNumber (
-                              serialNumberId INT NOT NULL,
-                              serialNumberValue VARCHAR(100) NOT NULL,
-                              deviceId INT NOT NULL,
-                              PRIMARY KEY (serialNumberId),
-                              FOREIGN KEY (deviceId) REFERENCES Device(deviceId)
+CREATE TABLE ProductSpecification (
+    ProductSpecificationID INT PRIMARY KEY,
+    ProductID INT NOT NULL,
+    SpecificationID INT NOT NULL,
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+    FOREIGN KEY (SpecificationID) REFERENCES Specification(SpecificationID)
 );
 
-CREATE TABLE DeviceInContract (
-                                  contractId INT NOT NULL,
-                                  serialNumberId INT NOT NULL,
-                                  PRIMARY KEY (contractId, serialNumberId),
-                                  FOREIGN KEY (contractId) REFERENCES Contract(contractId),
-                                  FOREIGN KEY (serialNumberId) REFERENCES SerialNumber(serialNumberId)
+-- ======================
+-- WAREHOUSE & INVENTORY
+-- ======================
+CREATE TABLE InventoryItem (
+    Item_ID INT PRIMARY KEY,
+    SerialNumber NVARCHAR(255) UNIQUE NOT NULL,
+    ProductID INT NOT NULL,
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 
-CREATE TABLE AccountRequest (
-                                username VARCHAR(50) NOT NULL,
-                                requestId INT NOT NULL,
-                                PRIMARY KEY (username, requestId),
-                                FOREIGN KEY (username) REFERENCES Account(username),
-                                FOREIGN KEY (requestId) REFERENCES Request(requestId)
+CREATE TABLE Warehouse (
+    WarehouseID INT PRIMARY KEY,
+    WarehouseName NVARCHAR(100) NOT NULL,
+    Location NVARCHAR(255),
+    WarehouseManager NVARCHAR(255) NOT NULL,
+    FOREIGN KEY (WarehouseManager) REFERENCES Account(Username)
 );
 
-CREATE TABLE InStock (
-                         quantity INT NOT NULL,
-                         componentId INT NOT NULL,
-                         warehouseId INT NOT NULL,
-                         PRIMARY KEY (componentId, warehouseId),
-                         FOREIGN KEY (componentId) REFERENCES Component(componentId),
-                         FOREIGN KEY (warehouseId) REFERENCES Warehouse(warehouseId)
+CREATE TABLE ProductWarehouse (
+    ProductWarehouseID INT PRIMARY KEY,
+    ProductStatus ENUM('In stock', 'Exported'),
+    WarehouseID INT NOT NULL,
+    ItemID INT NOT NULL,
+    FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
+    FOREIGN KEY (ItemID) REFERENCES InventoryItem(Item_ID)
 );
 
-CREATE TABLE ComponentSpecification (
-                                        specId INT NOT NULL,
-                                        componentId INT NOT NULL,
-                                        PRIMARY KEY (specId, componentId),
-                                        FOREIGN KEY (specId) REFERENCES Specification(specId),
-                                        FOREIGN KEY (componentId) REFERENCES Component(componentId)
+CREATE TABLE ProductTransaction (
+    TransactionID INT PRIMARY KEY,
+    TransactionDate DATETIME NOT NULL,
+    SourseWarehouse INT,
+    DestinationWarehouse INT,
+    TransactionStatus ENUM('Export', 'Import'),
+    ItemID INT NOT NULL,
+    Note NVARCHAR(255),
+    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ProductID),
+    FOREIGN KEY (SourseWarehouse) REFERENCES Warehouse(WarehouseID),
+	FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
 );
 
-CREATE TABLE DeviceComponent (
-                                 componentQuantity INT NOT NULL,
-                                 componentId INT NOT NULL,
-                                 deviceId INT NOT NULL,
-                                 PRIMARY KEY (componentId, deviceId),
-                                 FOREIGN KEY (componentId) REFERENCES Component(componentId),
-                                 FOREIGN KEY (deviceId) REFERENCES Device(deviceId)
+-- ======================
+-- CUSTOMER FEEDBACK
+-- ======================
+CREATE TABLE Feedback (
+    FeedbackID INT PRIMARY KEY,
+    Content NVARCHAR(255),
+    Rating INT,
+    Response NVARCHAR(255),
+    FeedbackDate DATETIME NOT NULL,
+    CustomerID NVARCHAR(100),
+    FOREIGN KEY (CustomerID) REFERENCES Account(Username)
 );
 
-CREATE TABLE DeviceInWarehouse (
-                                   deviceQuantity INT NOT NULL,
-                                   deviceId INT NOT NULL,
-                                   warehouseId INT NOT NULL,
-                                   PRIMARY KEY (deviceId, warehouseId),
-                                   FOREIGN KEY (deviceId) REFERENCES Device(deviceId),
-                                   FOREIGN KEY (warehouseId) REFERENCES Warehouse(warehouseId)
+-- ======================
+-- CONTRACT & REQUEST
+-- ======================
+CREATE TABLE Contract (
+    ContractID INT PRIMARY KEY,
+    ContractImage NVARCHAR(255) NOT NULL,
+    StartDate Date NOT NULL,
+    ExpiredDate DATE NOT NULL,
+    CustomerID INT NOT NULL,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
-CREATE TABLE ComponentUpdate (
-                                 componentUpdateId INT NOT NULL,
-                                 oldQuantity INT NOT NULL,
-                                 newQuantity INT NOT NULL,
-                                 updatedLogId INT NOT NULL,
-                                 componentId INT NOT NULL,
-                                 PRIMARY KEY (componentUpdateId),
-                                 FOREIGN KEY (updatedLogId) REFERENCES UpdatedLog(updatedLogId),
-                                 FOREIGN KEY (componentId) REFERENCES Component(componentId)
+CREATE TABLE Request (
+    RequestID INT PRIMARY KEY,
+    RequestDescription NVARCHAR(255),
+    RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+    StartDate DATETIME NOT NULL,
+    FinishedDate DATETIME,
+    Note NVARCHAR(255),
+    ContractID INT NOT NULL,
+    FOREIGN KEY (ContractID) REFERENCES Contract(CustomerID)
 );
 
-CREATE TABLE DeviceUpdate (
-                              deviceUpdateId INT NOT NULL,
-                              oldQuantity INT NOT NULL,
-                              newQuantity INT NOT NULL,
-                              deviceId INT NOT NULL,
-                              updatedLogId INT NOT NULL,
-                              PRIMARY KEY (deviceUpdateId),
-                              FOREIGN KEY (deviceId) REFERENCES Device(deviceId),
-                              FOREIGN KEY (updatedLogId) REFERENCES UpdatedLog(updatedLogId)
+CREATE TABLE AccountRequest(
+	AccountRequestID int PRIMARY KEY,
+    Username NVARCHAR(100) NOT NULL,
+    RequestID INT NOT NULL,
+    FOREIGN KEY (Username) REFERENCES Account(Username),
+    FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
+);
+
+CREATE TABLE RequestLog (
+    RequestLogID INT PRIMARY KEY,
+    ActionDate DATE,
+    OldStatus ENUM('Pending', 'Approved', 'Rejected'),
+    NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+    RequestID INT NOT NULL,
+    Username NVARCHAR(100),
+    FOREIGN KEY (RequestID) REFERENCES Request(RequestID),
+    FOREIGN KEY (Username) REFERENCES Account(Username)
+);
+
+-- ======================
+-- PRODUCT REQUEST
+-- ======================
+CREATE TABLE ProductRequest (
+    ProductRequestID INT PRIMARY KEY,
+    Quantity INT NOT NULL,
+    RequestDate DATE NOT NULL,
+    Status ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+    Description NVARCHAR(255),
+    RequestID INT NOT NULL,
+    ProductID INT NOT NULL,
+    WarehouseID INT NOT NULL,
+    FOREIGN KEY (RequestID) REFERENCES Request(RequestID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+    FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
+);
+
+CREATE TABLE WarehouseLog (
+    WarehouseLogID INT PRIMARY KEY,
+    LogDate DATE NOT NULL,
+    Description NVARCHAR(255),
+    WarehouseID INT NOT NULL,
+    ProductRequestID INT NOT NULL,
+    FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
+    FOREIGN KEY (ProductRequestID) REFERENCES ProductRequest(ProductRequestID)
+);
+
+
+CREATE TABLE ProductExported (
+   ProductWarehouseID INT PRIMARY KEY,
+   WarehouseLogID INT NOT NULL,
+   FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
+   FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
+);
+
+-- ======================
+-- DEVICE
+-- ======================
+CREATE TABLE ProductContract (
+    ContractID INT NOT NULL,
+    ItemID INT NOT NULL,
+    FOREIGN KEY (ContractID) REFERENCES Contract(ContractID),
+    FOREIGN KEY (ItemID) REFERENCES InventoryItem(Item_ID)
 );

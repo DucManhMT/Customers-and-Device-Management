@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello World!");
         MailService mailService = new MailService();
-        mailService.sendEmail("brosskt123@gmail.com", "Test Subject", "This is a test email body.",
-                "tuna26hn@gmail.com");
+        mailService.sendEmail("hunterskg1@gmail.com", "Test Subject", "This is a test email body.",
+                "hunterskg1@gmail.com");
     }
 }
