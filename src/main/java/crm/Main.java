@@ -1,13 +1,46 @@
 package crm;
 
+import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.util.List;
+
 import crm.common.model.*;
+import crm.common.model.enums.AccountStatus;
 import crm.core.repository.persistence.config.DBcontext;
 import crm.core.repository.persistence.entity.EntityRegistry;
 import crm.core.repository.persistence.entity.SchemaGenerator;
+import crm.core.repository.persistence.repository.SimpleRepository;
 
 public class Main {
     public static void main(String[] args) {
-        testSchemaGeneration();
+        // testInsert();
+        testSelect();
+    }
+
+    public static void testSelect() {
+        SimpleRepository<Account, Integer> accountRepo = new SimpleRepository<>(Account.class);
+        accountRepo.findAll().forEach(acc -> {
+            System.out.println("Username: " + acc.getUsername());
+            System.out.println("Status: " + acc.getAccountStatus());
+            System.out.println("Role ID: " + acc.getRoleID());
+            System.out.println("-----------------------");
+        });
+    }
+
+    public static void testInsert() {
+        SimpleRepository<Account, Integer> accountRepo = new SimpleRepository<>(Account.class);
+        Account acc = new Account();
+        acc.setUsername("john_doe");
+        acc.setPasswordHash("hashed_password");
+        acc.setAccountStatus(AccountStatus.Active);
+        acc.setRoleID(1); // Assuming role with ID 1 exists
+        try {
+            accountRepo.save(acc);
+            System.out.println("Inserted account with username: " + acc.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
     }
 
     public static void testSchemaGeneration() {

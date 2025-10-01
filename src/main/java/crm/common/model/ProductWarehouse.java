@@ -1,7 +1,9 @@
 package crm.common.model;
 
 import crm.common.model.enums.ProductStatus;
+import crm.common.model.enums.converter.ProductStatusConverter;
 import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
@@ -12,6 +14,7 @@ public class ProductWarehouse {
     private Integer productWarehouseID;
 
     @Column(name = "ProductStatus", length = 20)
+    @Convert(converter = ProductStatusConverter.class)
     private ProductStatus productStatus;
 
     @Column(name = "WarehouseID", type = "INT", nullable = false)

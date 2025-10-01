@@ -140,7 +140,6 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                     .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
                     .where(clause.build());
             builder.setParameters(clause.getParameters());
-            System.out.println(builder.getParameters());
 
             try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());) {
                 setPreparedStatementValue(preparedSt, builder.getParameters());
@@ -356,7 +355,10 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             for (Field field : persistentFields) {
                 field.setAccessible(true);
                 columnNames.add(entityMeta.getColnumName(field.getName()));
-                values.add(field.get(entity));
+
+                // do convert here
+                Object value = entityMeta.getColnumValue(field.get(entity), field);
+                values.add(value);
             }
             InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
                     .columns(columnNames)
@@ -401,7 +403,9 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                 List<Object> values = new ArrayList<>();
                 for (Field field : persistentFields) {
                     field.setAccessible(true);
-                    values.add(field.get(entity));
+
+                    // do convert here
+                    values.add(entityMeta.getColnumValue(field.get(entity), field));
                 }
                 builder.values(values.toArray());
             }
@@ -429,7 +433,9 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             Object keyValue = null;
             for (Field field : persistentFields) {
                 field.setAccessible(true);
-                Object value = field.get(entity);
+
+                // do convert here
+                Object value = entityMeta.getColnumValue(field.get(entity), field);
                 if (field.getName().equals(keyField.getName())) {
                     keyValue = value;
                     continue;
@@ -492,22 +498,6 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         return total;
     }
 
-    /**
-     * Maps the current row of the given {@link ResultSet} to an instance of the
-     * specified class.
-     * <p>
-     * This method uses reflection to create a new instance of the specified class
-     * and populates its fields with values from the current row of the
-     * {@link ResultSet}.
-     * It matches column names in the result set with field names in the class.
-     * </p>
-     *
-     * @param rs  the {@link ResultSet} positioned at the row to map
-     * @param cls the class to map the result set row to
-     * @return an instance of the specified class populated with values from the
-     *         result set row
-     * @throws Exception if an error occurs during reflection or SQL operations
-     */
     protected E mapResultSet(ResultSet rs, Class<E> cls) throws Exception {
         ResultSetMetaData meta = rs.getMetaData();
         int colCount = meta.getColumnCount();
@@ -528,9 +518,11 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             if (idx == null) {
                 continue; // column not in result set
             }
-            Object value = rs.getObject(idx);
+
             try {
                 Field field = cls.getDeclaredField(fieldName);
+                // do convert here
+                Object value = entityMeta.getFieldValue(rs.getObject(idx), field);
                 field.setAccessible(true);
                 field.set(obj, value);
             } catch (NoSuchFieldException ignored) {
@@ -545,6 +537,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         // Relationship wiring (prototype implementation):
         for (RelationshipMeta rel : entityMeta.getRelationships()) {
             Field f = rel.getField();
+            f.setAccessible(true);
             // Only handle single-valued for now; collections later
             try {
                 if (rel.isCollection()) {
@@ -554,9 +547,10 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                     int keyIdx = labelIndex.get(keyField.getName().toLowerCase());
                     Object keyVal = rs.getObject(keyIdx);
                     if (TransactionManager.getCache().contains(EntityKey.of(cls, keyVal))) {
-                        f.set(obj, TransactionManager.getCache().get(EntityKey.of(cls, keyVal)));
+                        LazyReference wrapper = new LazyReference(
+                                () -> (Object) TransactionManager.getCache().get(EntityKey.of(cls, keyVal)));
+                        f.set(obj, wrapper);
                         continue;
-
                     }
                     @SuppressWarnings("unchecked")
                     LazyList<?> list = new LazyList<Object>(() -> (List) repo
@@ -572,15 +566,23 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                     // Assume FK column stored on this row as rel.getJoinColumn()
                     Object fkValue = null;
                     if (rel.getJoinColumn() != null && !rel.getJoinColumn().isBlank()) {
-                        // attempt to read column by name (case-insensitive fallback loop)
                         Integer fkIdx = labelIndex.get(rel.getJoinColumn().toLowerCase());
                         if (fkIdx != null) {
                             fkValue = rs.getObject(fkIdx);
                         }
                     }
                     Object related = fkValue == null ? null : repo.findById(fkValue);
-                    f.set(obj, related);
 
+                    // If the declared field type is LazyReference, wrap the loaded entity
+                    if (LazyReference.class.isAssignableFrom(f.getType())) {
+                        @SuppressWarnings({ "rawtypes", "unchecked" })
+                        LazyReference wrapper = new LazyReference(() -> (Object) related);
+                        // Mark as loaded directly to avoid re-query
+                        wrapper.setValue(related);
+                        f.set(obj, wrapper);
+                    } else {
+                        f.set(obj, related);
+                    }
                 } else { // LAZY
                     LazyReference<?> ref = new LazyReference<>(() -> {
                         var repo = resolveRepository(rel.getTargetType());

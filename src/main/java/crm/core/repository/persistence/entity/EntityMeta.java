@@ -14,6 +14,8 @@ import crm.core.repository.persistence.annotation.Key;
 import crm.core.repository.persistence.annotation.ManyToOne;
 import crm.core.repository.persistence.annotation.OneToMany;
 import crm.core.repository.persistence.annotation.OneToOne;
+import crm.core.repository.persistence.entity.convert.AttributeConverter;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.RelationshipMeta;
 import crm.core.repository.persistence.entity.relation.RelationshipType;
@@ -123,6 +125,16 @@ public class EntityMeta<E> {
             int length = 255;
             boolean nullable = true;
             boolean unique = false;
+            AttributeConverter<?, ?> converter = null;
+
+            if (field.isAnnotationPresent(Convert.class)) {
+                Convert convertAnn = field.getAnnotation(Convert.class);
+                try {
+                    converter = convertAnn.converter().getDeclaredConstructor().newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (field.isAnnotationPresent(Column.class)) {
                 Column column = field.getAnnotation(Column.class);
@@ -149,8 +161,8 @@ public class EntityMeta<E> {
                     throw new IllegalArgumentException(
                             "Duplicate column name " + columnName + " in class " + clazz.getName());
                 } else {
-                    fieldToColumnMap.put(field.getName(), new ColumnMeta(columnName, type, nullable, length, unique));
-
+                    fieldToColumnMap.put(field.getName(),
+                            new ColumnMeta(columnName, type, nullable, length, unique, converter));
                 }
 
             } else {
@@ -286,6 +298,34 @@ public class EntityMeta<E> {
             return colMeta.getName();
         }
         return null;
+    }
+
+    public Object getFieldValue(Object colnumValue, Field field) {
+        String fieldName = field.getName();
+        ColumnMeta colMeta = fieldToColumnMap.get(fieldName);
+
+        if (colMeta != null) {
+            @SuppressWarnings("unchecked")
+            AttributeConverter<Object, Object> converter = (AttributeConverter<Object, Object>) colMeta.getConverter();
+            if (converter != null) {
+                return converter.convertToEntityAttribute(colnumValue);
+            }
+        }
+        return colnumValue;
+    }
+
+    public Object getColnumValue(Object fieldValue, Field field) {
+        String fieldName = field.getName();
+        ColumnMeta colMeta = fieldToColumnMap.get(fieldName);
+        if (colMeta != null) {
+
+            @SuppressWarnings("unchecked")
+            AttributeConverter<Object, Object> converter = (AttributeConverter<Object, Object>) colMeta.getConverter();
+            if (converter != null) {
+                return converter.convertToDatabaseColumn(fieldValue);
+            }
+        }
+        return fieldValue;
     }
 
     public List<Field> getMappedFields() {

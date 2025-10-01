@@ -1,7 +1,9 @@
 package crm.common.model;
 
 import crm.common.model.enums.ProductRequestStatus;
+import crm.common.model.enums.converter.ProductRequestStatusConverter;
 import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
@@ -20,6 +22,7 @@ public class ProductRequest {
     private Date requestDate;
 
     @Column(name = "Status", length = 20)
+    @Convert(converter = ProductRequestStatusConverter.class)
     private ProductRequestStatus status;
 
     @Column(name = "Description", length = 255)

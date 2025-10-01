@@ -2,7 +2,9 @@ package crm.common.model;
 
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.converter.OldRequestStatusConverter;
 import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
@@ -18,6 +20,7 @@ public class RequestLog {
     private Date actionDate;
 
     @Column(name = "OldStatus", length = 20)
+    @Convert(converter = OldRequestStatusConverter.class)
     private OldRequestStatus oldStatus;
 
     @Column(name = "NewStatus", length = 20)

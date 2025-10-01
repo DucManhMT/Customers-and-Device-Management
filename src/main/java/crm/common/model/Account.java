@@ -1,10 +1,12 @@
 package crm.common.model;
 
 import crm.common.model.enums.AccountStatus;
+import crm.common.model.enums.converter.AccountStatusConverter;
 import crm.core.repository.persistence.annotation.Column;
 import crm.core.repository.persistence.annotation.Entity;
 import crm.core.repository.persistence.annotation.Key;
 import crm.core.repository.persistence.annotation.ManyToOne;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
@@ -19,6 +21,7 @@ public class Account {
 
     // Stored as VARCHAR in DB representing ENUM
     @Column(name = "AccountStatus", length = 20)
+    @Convert(converter = AccountStatusConverter.class)
     private AccountStatus accountStatus;
 
     @Column(name = "RoleID", type = "INT")

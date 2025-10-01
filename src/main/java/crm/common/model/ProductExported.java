@@ -13,12 +13,11 @@ public class ProductExported {
     @Column(name = "WarehouseLogID", type = "INT", nullable = false)
     private Integer warehouseLogID;
 
-    // Owning side of one-to-one with ProductWarehouse (FK ProductWarehouseID)
     @OneToOne(joinColumn = "ProductWarehouseID", fetch = FetchMode.EAGER, mappedBy = "productWarehouseID")
     private LazyReference<ProductWarehouse> productWarehouse;
 
     @ManyToOne(joinColumn = "WarehouseLogID", fetch = FetchMode.EAGER)
-    private WarehouseLog warehouseLog;
+    private LazyReference<WarehouseLog> warehouseLog;
 
     public Integer getProductWarehouseID() {
         return productWarehouseID;
@@ -45,10 +44,10 @@ public class ProductExported {
     }
 
     public WarehouseLog getWarehouseLog() {
-        return warehouseLog;
+        return warehouseLog.get();
     }
 
     public void setWarehouseLog(WarehouseLog warehouseLog) {
-        this.warehouseLog = warehouseLog;
+        this.warehouseLog.setValue(warehouseLog);
     }
 }

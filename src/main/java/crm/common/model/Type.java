@@ -5,6 +5,7 @@ import crm.core.repository.persistence.annotation.Entity;
 import crm.core.repository.persistence.annotation.Key;
 import crm.core.repository.persistence.annotation.ManyToOne;
 import crm.core.repository.persistence.annotation.OneToMany;
+import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Type {
     private Integer categoryID;
 
     @ManyToOne(joinColumn = "CategoryID", fetch = FetchMode.EAGER)
-    private Category category;
+    private LazyReference<Category> category;
 
     @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", fetch = FetchMode.LAZY)
     private List<Product> products;
@@ -65,11 +66,11 @@ public class Type {
     }
 
     public Category getCategory() {
-        return category;
+        return category.get();
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        this.category.setValue(category);
     }
 
     public List<Product> getProducts() {
