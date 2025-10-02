@@ -68,7 +68,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public boolean isExist(K key) {
         Connection connection = DBcontext.getConnection();
-        SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+        SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName())
                 .columns(List.of("1"))
                 .where(keyField.getName() + " = ?", key)
                 .limit(1);
@@ -87,7 +87,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public int count() {
         Connection connection = DBcontext.getConnection();
-        SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+        SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName())
                 .columns(List.of("COUNT(*) AS total"));
         int count = 0;
         try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
@@ -107,7 +107,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         try {
             TransactionManager.beginTransaction();
             Connection connection = TransactionManager.getConnection();
-            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+            SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName())
                     .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList());
 
             try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
@@ -136,7 +136,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         try {
             TransactionManager.beginTransaction();
             Connection connection = DBcontext.getConnection();
-            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+            SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName())
                     .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
                     .where(clause.build());
             builder.setParameters(clause.getParameters());
@@ -172,7 +172,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         try {
             TransactionManager.beginTransaction();
             Connection connection = TransactionManager.getConnection();
-            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+            SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName())
                     .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
                     .where(clause.build());
             builder.setParameters(clause.getParameters());
@@ -235,7 +235,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             TransactionManager.beginTransaction();
             Connection connection = TransactionManager.getConnection();
             // Build the base select query
-            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+            SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName())
                     .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList());
             String query = builder.build(false);
 
@@ -272,7 +272,8 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     public void deleteById(K key) throws SQLException {
         TransactionManager.beginTransaction();
         Connection connection = TransactionManager.getConnection();
-        DeleteBuilder<E> builder = DeleteBuilder.builder(entityMeta).where(keyField.getName() + " = ?", key);
+        DeleteBuilder builder = DeleteBuilder.builder(entityMeta.getTableName()).where(keyField.getName() + " = ?",
+                key);
         try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
             setPreparedStatementValue(ps, builder.getParameters());
             ps.execute();
@@ -288,7 +289,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     public void deleteWithCondition(ClauseBuilder clause) throws SQLException {
         TransactionManager.beginTransaction();
         Connection connection = TransactionManager.getConnection();
-        DeleteBuilder<E> builder = DeleteBuilder.builder(entityMeta).where(clause.build());
+        DeleteBuilder builder = DeleteBuilder.builder(entityMeta.getTableName()).where(clause.build());
         builder.setParameters(clause.getParameters());
         try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
             setPreparedStatementValue(ps, builder.getParameters());
@@ -311,7 +312,8 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                 return (E) TransactionManager.getCache().get(EntityKey.of(cls, key));
             }
             Connection connection = TransactionManager.getConnection();
-            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta).where(keyField.getName() + " = ?", key);
+            SelectBuilder builder = SelectBuilder.builder(entityMeta.getTableName()).where(keyField.getName() + " = ?",
+                    key);
             try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
                 setPreparedStatementValue(ps, builder.getParameters());
                 try (ResultSet rs = ps.executeQuery()) {
@@ -360,7 +362,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                 Object value = entityMeta.getColnumValue(field.get(entity), field);
                 values.add(value);
             }
-            InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
+            InsertBuilder builder = InsertBuilder.builder(entityMeta.getTableName())
                     .columns(columnNames)
                     .values(values);
             try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
@@ -396,7 +398,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                 keyValues.add(keyVal);
             }
 
-            InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
+            InsertBuilder builder = InsertBuilder.builder(entityMeta.getTableName())
                     .columns(persistentFields.stream().map(Field::getName).toList());
 
             for (E entity : entities) {
@@ -429,7 +431,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         TransactionManager.beginTransaction();
         Connection connection = TransactionManager.getConnection();
         try {
-            UpdateBuilder<E> builder = UpdateBuilder.builder(entityMeta);
+            UpdateBuilder builder = UpdateBuilder.builder(entityMeta.getTableName());
             Object keyValue = null;
             for (Field field : persistentFields) {
                 field.setAccessible(true);

@@ -1,8 +1,6 @@
 package crm;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.List;
 
 import crm.common.model.*;
 import crm.common.model.enums.AccountStatus;

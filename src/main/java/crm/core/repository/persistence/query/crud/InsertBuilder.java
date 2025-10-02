@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import crm.core.repository.persistence.config.RepositoryConfig;
-import crm.core.repository.persistence.entity.EntityMeta;
 import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 /**
@@ -27,16 +26,16 @@ import crm.core.repository.persistence.query.AbstractQueryBuilder;
  * @since 1.0
  * 
  */
-public class InsertBuilder<E> extends AbstractQueryBuilder<E> {
+public class InsertBuilder<E> extends AbstractQueryBuilder {
 
     private List<String> columns;
 
-    public InsertBuilder(EntityMeta<E> entityMeta) {
-        super(entityMeta);
+    public InsertBuilder(String tableName) {
+        super(tableName);
     }
 
-    public static <E> InsertBuilder<E> builder(EntityMeta<E> entityMeta) {
-        return new InsertBuilder<E>(entityMeta);
+    public static <E> InsertBuilder<E> builder(String tableName) {
+        return new InsertBuilder<E>(tableName);
     }
 
     public InsertBuilder<E> columns(List<String> columns) {
@@ -64,7 +63,6 @@ public class InsertBuilder<E> extends AbstractQueryBuilder<E> {
 
     @Override
     public String createQuery() {
-        String tableName = entityMeta.getTableName();
         if (tableName == null || tableName.isEmpty()) {
             throw new IllegalStateException("Table name is required for INSERT query");
         }
