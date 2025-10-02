@@ -10,11 +10,21 @@ import crm.core.repository.persistence.config.DBcontext;
 import crm.core.repository.persistence.entity.EntityRegistry;
 import crm.core.repository.persistence.entity.SchemaGenerator;
 import crm.core.repository.persistence.repository.SimpleRepository;
-
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 public class Main {
     public static void main(String[] args) {
         // testInsert();
-        testSelect();
+        EntityManager entityManager = new EntityManager(DBcontext.getConnection());
+        Account acc = new Account();
+        acc.setUsername("masterlong");
+        acc.setPasswordHash("hashed_password");
+        acc.setAccountStatus(AccountStatus.Active);
+        acc.setRoleID(1); // Assuming role with ID 1 exists
+
+        entityManager.beginTransaction();
+        System.out.println(entityManager.find(Account.class, 1));
+
+        entityManager.commit();
     }
 
     public static void testSelect() {
