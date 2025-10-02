@@ -1,0 +1,57 @@
+package crm.common.model;
+
+import crm.core.repository.persistence.annotation.Column;
+import crm.core.repository.persistence.annotation.Entity;
+import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.annotation.OneToMany;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+
+import java.util.List;
+
+@Entity(tableName = "Category")
+public class Category {
+    @Key
+    @Column(name = "CategoryID", type = "INT")
+    private Integer categoryID;
+
+    @Column(name = "CategoryName", length = 100, nullable = false)
+    private String categoryName;
+
+    @Column(name = "CategoryImage", length = 255)
+    private String categoryImage;
+
+    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID", fetch = FetchMode.LAZY)
+    private List<Type> types;
+
+    public Integer getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(Integer categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryImage() {
+        return categoryImage;
+    }
+
+    public void setCategoryImage(String categoryImage) {
+        this.categoryImage = categoryImage;
+    }
+
+    public List<Type> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<Type> types) {
+        this.types = types;
+    }
+}

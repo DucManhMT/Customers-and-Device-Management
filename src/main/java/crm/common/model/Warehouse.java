@@ -1,0 +1,64 @@
+package crm.common.model;
+
+import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+
+@Entity(tableName = "Warehouse")
+public class Warehouse {
+    @Key
+    @Column(name = "WarehouseID", type = "INT")
+    private Integer warehouseID;
+
+    @Column(name = "WarehouseName", length = 100, nullable = false)
+    private String warehouseName;
+
+    @Column(name = "Location", length = 255)
+    private String location;
+
+    @Column(name = "WarehouseManager", length = 255, nullable = false)
+    private String warehouseManager;
+
+    @ManyToOne(joinColumn = "WarehouseManager", fetch = FetchMode.EAGER)
+    private LazyReference<Account> managerAccount;
+
+    public Integer getWarehouseID() {
+        return warehouseID;
+    }
+
+    public void setWarehouseID(Integer warehouseID) {
+        this.warehouseID = warehouseID;
+    }
+
+    public String getWarehouseName() {
+        return warehouseName;
+    }
+
+    public void setWarehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getWarehouseManager() {
+        return warehouseManager;
+    }
+
+    public void setWarehouseManager(String warehouseManager) {
+        this.warehouseManager = warehouseManager;
+    }
+
+    public Account getManagerAccount() {
+        return managerAccount.get();
+    }
+
+    public void setManagerAccount(Account managerAccount) {
+        this.managerAccount.setValue(managerAccount);
+    }
+}

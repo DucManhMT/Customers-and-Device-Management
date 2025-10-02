@@ -1,3 +1,4 @@
+
 package crm.core.repository.persistence.query.common;
 
 /**
@@ -14,13 +15,13 @@ package crm.core.repository.persistence.query.common;
  */
 public class Page<T> {
     // The total number of elements across all pages.
-    private final long totalElements;
+    private long totalElements;
 
     // The pagination information for this page.
-    private final PageRequest pageRequest;
+    private PageRequest pageRequest;
 
     // The content of this page.
-    private final Iterable<T> content;
+    private Iterable<T> content;
 
     /**
      * Constructs a new Page with the given total elements, page request, and
