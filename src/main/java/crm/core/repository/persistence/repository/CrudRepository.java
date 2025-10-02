@@ -1,5 +1,9 @@
 package crm.core.repository.persistence.repository;
 
+import java.sql.SQLException;
+
+import crm.core.repository.persistence.query.clause.ClauseBuilder;
+
 /**
  * Generic CRUD repository interface for managing entities in a database.
  * <p>
@@ -16,18 +20,27 @@ package crm.core.repository.persistence.repository;
  * @since 1.0
  * 
  */
-public interface CrudReposistory<E, K> {
-    E save(E entity);
+public interface CrudRepository<E, K> {
+
+    // Cấm thằng nào yêu cầu làm UpdateWithCondition
+
+    E save(E entity) throws SQLException;
+
+    Iterable<E> saveAll(Iterable<E> entities) throws SQLException;
 
     E findById(K key);
 
-    E update(E entity);
+    E update(E entity) throws SQLException;
 
     boolean isExist(K key);
 
-    void deleteById(K key);
+    void deleteById(K key) throws SQLException;
+
+    void deleteWithCondition(ClauseBuilder clause) throws SQLException;
 
     int count();
 
     Iterable<E> findAll();
+
+    Iterable<E> findWithCondition(ClauseBuilder clause);
 }

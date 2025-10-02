@@ -1,4 +1,3 @@
-USE crm;
 
 -- ======================
 -- CATEGORY & TYPE
@@ -41,9 +40,9 @@ CREATE TABLE Feature (
 );
 
 CREATE TABLE RoleFeature (
+    RoleFeatureID INT PRIMARY KEY,
     RoleID INT NOT NULL,
     FeatureID INT NOT NULL,
-    PRIMARY KEY (RoleID, FeatureID),
     FOREIGN KEY (RoleID) REFERENCES Role(RoleID),
     FOREIGN KEY (FeatureID) REFERENCES Feature(FeatureID)
 );
@@ -135,7 +134,7 @@ CREATE TABLE ProductWarehouse (
 CREATE TABLE ProductTransaction (
     TransactionID INT PRIMARY KEY,
     TransactionDate DATETIME NOT NULL,
-    SourseWarehouse INT,
+    SourceWarehouse INT,
     DestinationWarehouse INT,
     TransactionStatus ENUM('Export', 'Import'),
     ItemID INT NOT NULL,
@@ -182,7 +181,7 @@ CREATE TABLE Request (
 );
 
 CREATE TABLE AccountRequest(
-	AccountRequestID int PRIMARY KEY,
+    AccountRequestID INT PRIMARY KEY,
     Username NVARCHAR(100) NOT NULL,
     RequestID INT NOT NULL,
     FOREIGN KEY (Username) REFERENCES Account(Username),
