@@ -9,8 +9,8 @@ import java.sql.Date;
 @Entity(tableName = "WarehouseLog")
 public class WarehouseLog {
     @Key
-    @Column(name = "WarehouseLogID", type = "INT")
-    private Integer warehouseLogID;
+    @Column(name = "WarehouseLogID", type = "BIGINT")
+    private Long warehouseLogID;
 
     @Column(name = "LogDate", type = "DATE", nullable = false)
     private Date logDate;
@@ -18,11 +18,11 @@ public class WarehouseLog {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @Column(name = "WarehouseID", type = "INT", nullable = false)
-    private Integer warehouseID;
+    @Column(name = "WarehouseID", type = "BIGINT", nullable = false)
+    private Long warehouseID;
 
-    @Column(name = "ProductRequestID", type = "INT", nullable = false)
-    private Integer productRequestID;
+    @Column(name = "ProductRequestID", type = "BIGINT", nullable = false)
+    private Long productRequestID;
 
     @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
     private LazyReference<Warehouse> warehouse;
@@ -30,11 +30,11 @@ public class WarehouseLog {
     @ManyToOne(joinColumn = "ProductRequestID", fetch = FetchMode.EAGER)
     private LazyReference<ProductRequest> productRequest;
 
-    public Integer getWarehouseLogID() {
+    public Long getWarehouseLogID() {
         return warehouseLogID;
     }
 
-    public void setWarehouseLogID(Integer warehouseLogID) {
+    public void setWarehouseLogID(Long warehouseLogID) {
         this.warehouseLogID = warehouseLogID;
     }
 
@@ -54,19 +54,19 @@ public class WarehouseLog {
         this.description = description;
     }
 
-    public Integer getWarehouseID() {
+    public Long getWarehouseID() {
         return warehouseID;
     }
 
-    public void setWarehouseID(Integer warehouseID) {
+    public void setWarehouseID(Long warehouseID) {
         this.warehouseID = warehouseID;
     }
 
-    public Integer getProductRequestID() {
+    public Long getProductRequestID() {
         return productRequestID;
     }
 
-    public void setProductRequestID(Integer productRequestID) {
+    public void setProductRequestID(Long productRequestID) {
         this.productRequestID = productRequestID;
     }
 

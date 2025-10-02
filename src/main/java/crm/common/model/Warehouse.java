@@ -7,8 +7,8 @@ import crm.core.repository.persistence.entity.relation.FetchMode;
 @Entity(tableName = "Warehouse")
 public class Warehouse {
     @Key
-    @Column(name = "WarehouseID", type = "INT")
-    private Integer warehouseID;
+    @Column(name = "WarehouseID", type = "BIGINT")
+    private Long warehouseID;
 
     @Column(name = "WarehouseName", length = 100, nullable = false)
     private String warehouseName;
@@ -22,11 +22,11 @@ public class Warehouse {
     @ManyToOne(joinColumn = "WarehouseManager", fetch = FetchMode.EAGER)
     private LazyReference<Account> managerAccount;
 
-    public Integer getWarehouseID() {
+    public Long getWarehouseID() {
         return warehouseID;
     }
 
-    public void setWarehouseID(Integer warehouseID) {
+    public void setWarehouseID(Long warehouseID) {
         this.warehouseID = warehouseID;
     }
 

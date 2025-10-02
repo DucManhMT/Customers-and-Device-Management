@@ -1,44 +1,43 @@
 package crm;
 
+import java.security.Key;
 import java.sql.SQLException;
 
 import crm.common.model.*;
-import crm.common.model.enums.AccountStatus;
 import crm.core.repository.persistence.config.DBcontext;
+import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.entity.EntityRegistry;
 import crm.core.repository.persistence.entity.SchemaGenerator;
-import crm.core.repository.persistence.repository.SimpleRepository;
+import crm.core.utils.KeyGenerator;
 
 public class Main {
     public static void main(String[] args) {
-        // testInsert();
-        testSelect();
-    }
-
-    public static void testSelect() {
-        SimpleRepository<Account, Integer> accountRepo = new SimpleRepository<>(Account.class);
-        accountRepo.findAll().forEach(acc -> {
-            System.out.println("Username: " + acc.getUsername());
-            System.out.println("Status: " + acc.getAccountStatus());
-            System.out.println("Role ID: " + acc.getRoleID());
-            System.out.println("-----------------------");
-        });
-    }
-
-    public static void testInsert() {
-        SimpleRepository<Account, Integer> accountRepo = new SimpleRepository<>(Account.class);
-        Account acc = new Account();
-        acc.setUsername("john_doe");
-        acc.setPasswordHash("hashed_password");
-        acc.setAccountStatus(AccountStatus.Active);
-        acc.setRoleID(1); // Assuming role with ID 1 exists
-        try {
-            accountRepo.save(acc);
-            System.out.println("Inserted account with username: " + acc.getUsername());
-        } catch (SQLException e) {
-            e.printStackTrace();
-
+        for (int i = 0; i < 10000; i++) {
+            System.out.println(KeyGenerator.nextId());
         }
+    }
+
+    public static void generateAll() {
+        try {
+            TransactionManager.beginTransaction();
+            // Ensure schema exists then load sample data
+            System.out.println("Generating all database schemas...");
+            testSchemaGeneration();
+            System.out.println("Loading sample data into the database...");
+            SampleDataLoader.loadAll();
+            TransactionManager.commit();
+            System.out.println("Sample data loaded successfully.");
+        } catch (SQLException e) {
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            System.err.println("Failed to load sample data: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     public static void testSchemaGeneration() {
@@ -52,6 +51,7 @@ public class Main {
                     Role.class,
                     Feature.class,
                     RoleFeature.class,
+                    AccountRequest.class,
                     Category.class,
                     Type.class,
                     SpecificationType.class,

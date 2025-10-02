@@ -1,7 +1,9 @@
 package crm.common.model;
 
 import crm.common.model.enums.TransactionStatus;
+import crm.common.model.enums.converter.TransactionStatusConverter;
 import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
@@ -10,23 +12,24 @@ import java.sql.Timestamp;
 @Entity(tableName = "ProductTransaction")
 public class ProductTransaction {
     @Key
-    @Column(name = "TransactionID", type = "INT")
-    private Integer transactionID;
+    @Column(name = "TransactionID", type = "BIGINT")
+    private Long transactionID;
 
     @Column(name = "TransactionDate", type = "DATETIME", nullable = false)
     private Timestamp transactionDate;
 
-    @Column(name = "SourceWarehouse", type = "INT")
-    private Integer sourceWarehouseID;
+    @Column(name = "SourceWarehouse", type = "BIGINT")
+    private Long sourceWarehouseID;
 
-    @Column(name = "DestinationWarehouse", type = "INT")
-    private Integer destinationWarehouseID;
+    @Column(name = "DestinationWarehouse", type = "BIGINT")
+    private Long destinationWarehouseID;
 
     @Column(name = "TransactionStatus", length = 20, nullable = false)
+    @Convert(converter = TransactionStatusConverter.class)
     private TransactionStatus transactionStatus;
 
-    @Column(name = "ItemID", type = "INT", nullable = false)
-    private Integer itemID;
+    @Column(name = "ItemID", type = "BIGINT", nullable = false)
+    private Long itemID;
 
     @Column(name = "Note", length = 255)
     private String note;
@@ -40,11 +43,11 @@ public class ProductTransaction {
     @ManyToOne(joinColumn = "DestinationWarehouse", fetch = FetchMode.EAGER)
     private LazyReference<Warehouse> destinationWarehouse;
 
-    public Integer getTransactionID() {
+    public Long getTransactionID() {
         return transactionID;
     }
 
-    public void setTransactionID(Integer transactionID) {
+    public void setTransactionID(Long transactionID) {
         this.transactionID = transactionID;
     }
 
@@ -56,11 +59,11 @@ public class ProductTransaction {
         this.transactionDate = transactionDate;
     }
 
-    public Integer getDestinationWarehouseID() {
+    public Long getDestinationWarehouseID() {
         return destinationWarehouseID;
     }
 
-    public void setDestinationWarehouseID(Integer destinationWarehouseID) {
+    public void setDestinationWarehouseID(Long destinationWarehouseID) {
         this.destinationWarehouseID = destinationWarehouseID;
     }
 
@@ -72,11 +75,11 @@ public class ProductTransaction {
         this.transactionStatus = transactionStatus;
     }
 
-    public Integer getItemID() {
+    public Long getItemID() {
         return itemID;
     }
 
-    public void setItemID(Integer itemID) {
+    public void setItemID(Long itemID) {
         this.itemID = itemID;
     }
 
@@ -104,11 +107,11 @@ public class ProductTransaction {
         this.sourceWarehouse.setValue(sourceWarehouse);
     }
 
-    public Integer getSourceWarehouseID() {
+    public Long getSourceWarehouseID() {
         return sourceWarehouseID;
     }
 
-    public void setSourceWarehouseID(Integer sourceWarehouseID) {
+    public void setSourceWarehouseID(Long sourceWarehouseID) {
         this.sourceWarehouseID = sourceWarehouseID;
     }
 

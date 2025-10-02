@@ -7,11 +7,11 @@ import crm.core.repository.persistence.entity.relation.FetchMode;
 @Entity(tableName = "ProductExported")
 public class ProductExported {
     @Key
-    @Column(name = "ProductWarehouseID", type = "INT", nullable = false)
-    private Integer productWarehouseID;
+    @Column(name = "ProductWarehouseID", type = "BIGINT", nullable = false)
+    private Long productWarehouseID;
 
-    @Column(name = "WarehouseLogID", type = "INT", nullable = false)
-    private Integer warehouseLogID;
+    @Column(name = "WarehouseLogID", type = "BIGINT", nullable = false)
+    private Long warehouseLogID;
 
     @OneToOne(joinColumn = "ProductWarehouseID", fetch = FetchMode.EAGER, mappedBy = "productWarehouseID")
     private LazyReference<ProductWarehouse> productWarehouse;
@@ -19,19 +19,19 @@ public class ProductExported {
     @ManyToOne(joinColumn = "WarehouseLogID", fetch = FetchMode.EAGER)
     private LazyReference<WarehouseLog> warehouseLog;
 
-    public Integer getProductWarehouseID() {
+    public Long getProductWarehouseID() {
         return productWarehouseID;
     }
 
-    public void setProductWarehouseID(Integer productWarehouseID) {
+    public void setProductWarehouseID(Long productWarehouseID) {
         this.productWarehouseID = productWarehouseID;
     }
 
-    public Integer getWarehouseLogID() {
+    public Long getWarehouseLogID() {
         return warehouseLogID;
     }
 
-    public void setWarehouseLogID(Integer warehouseLogID) {
+    public void setWarehouseLogID(Long warehouseLogID) {
         this.warehouseLogID = warehouseLogID;
     }
 

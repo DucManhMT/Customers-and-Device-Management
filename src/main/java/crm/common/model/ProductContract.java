@@ -7,11 +7,11 @@ import crm.core.repository.persistence.entity.relation.FetchMode;
 @Entity(tableName = "ProductContract")
 public class ProductContract {
     @Key
-    @Column(name = "ContractID", type = "INT", nullable = false)
-    private Integer contractID;
+    @Column(name = "ContractID", type = "BIGINT", nullable = false)
+    private Long contractID;
 
-    @Column(name = "ItemID", type = "INT", nullable = false)
-    private Integer itemID;
+    @Column(name = "ItemID", type = "BIGINT", nullable = false)
+    private Long itemID;
 
     @ManyToOne(joinColumn = "ContractID", fetch = FetchMode.EAGER)
     private LazyReference<Contract> contract;
@@ -19,19 +19,19 @@ public class ProductContract {
     @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
     private LazyReference<InventoryItem> inventoryItem;
 
-    public Integer getContractID() {
+    public Long getContractID() {
         return contractID;
     }
 
-    public void setContractID(Integer contractID) {
+    public void setContractID(Long contractID) {
         this.contractID = contractID;
     }
 
-    public Integer getItemID() {
+    public Long getItemID() {
         return itemID;
     }
 
-    public void setItemID(Integer itemID) {
+    public void setItemID(Long itemID) {
         this.itemID = itemID;
     }
 

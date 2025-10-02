@@ -12,8 +12,8 @@ import java.sql.Date;
 @Entity(tableName = "Staff")
 public class Staff {
     @Key
-    @Column(name = "StaffID", type = "INT")
-    private Integer staffID;
+    @Column(name = "StaffID", type = "BIGINT")
+    private Long staffID;
 
     @Column(name = "StaffName", length = 150, nullable = false)
     private String staffName;
@@ -39,11 +39,11 @@ public class Staff {
     @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
     private LazyReference<Account> account;
 
-    public Integer getStaffID() {
+    public Long getStaffID() {
         return staffID;
     }
 
-    public void setStaffID(Integer staffID) {
+    public void setStaffID(Long staffID) {
         this.staffID = staffID;
     }
 

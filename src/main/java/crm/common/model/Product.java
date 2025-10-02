@@ -9,8 +9,8 @@ import java.util.List;
 @Entity(tableName = "Product")
 public class Product {
     @Key
-    @Column(name = "ProductID", type = "INT")
-    private Integer productID;
+    @Column(name = "ProductID", type = "BIGINT")
+    private Long productID;
 
     @Column(name = "ProductName", length = 150, nullable = false)
     private String productName;
@@ -21,8 +21,8 @@ public class Product {
     @Column(name = "ProductDescription", length = 255)
     private String productDescription;
 
-    @Column(name = "TypeID", type = "INT", nullable = false)
-    private Integer typeID;
+    @Column(name = "TypeID", type = "BIGINT", nullable = false)
+    private Long typeID;
 
     @ManyToOne(joinColumn = "TypeID", fetch = FetchMode.EAGER)
     private LazyReference<Type> type;
@@ -30,11 +30,11 @@ public class Product {
     @OneToMany(mappedBy = "productID", joinColumn = "ProductID", fetch = FetchMode.LAZY)
     private List<ProductSpecification> productSpecifications;
 
-    public Integer getProductID() {
+    public Long getProductID() {
         return productID;
     }
 
-    public void setProductID(Integer productID) {
+    public void setProductID(Long productID) {
         this.productID = productID;
     }
 
@@ -62,11 +62,11 @@ public class Product {
         this.productDescription = productDescription;
     }
 
-    public Integer getTypeID() {
+    public Long getTypeID() {
         return typeID;
     }
 
-    public void setTypeID(Integer typeID) {
+    public void setTypeID(Long typeID) {
         this.typeID = typeID;
     }
 

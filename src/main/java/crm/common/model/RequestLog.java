@@ -3,6 +3,7 @@ package crm.common.model;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.converter.OldRequestStatusConverter;
+import crm.common.model.enums.converter.RequestStatusConverter;
 import crm.core.repository.persistence.annotation.*;
 import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
@@ -13,8 +14,8 @@ import java.sql.Date;
 @Entity(tableName = "RequestLog")
 public class RequestLog {
     @Key
-    @Column(name = "RequestLogID", type = "INT")
-    private Integer requestLogID;
+    @Column(name = "RequestLogID", type = "BIGINT")
+    private Long requestLogID;
 
     @Column(name = "ActionDate", type = "DATE")
     private Date actionDate;
@@ -24,10 +25,11 @@ public class RequestLog {
     private OldRequestStatus oldStatus;
 
     @Column(name = "NewStatus", length = 20)
+    @Convert(converter = RequestStatusConverter.class)
     private RequestStatus newStatus;
 
-    @Column(name = "RequestID", type = "INT", nullable = false)
-    private Integer requestID;
+    @Column(name = "RequestID", type = "BIGINT", nullable = false)
+    private Long requestID;
 
     @Column(name = "Username", length = 100)
     private String username;
@@ -38,11 +40,11 @@ public class RequestLog {
     @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
     private LazyReference<Account> account;
 
-    public Integer getRequestLogID() {
+    public Long getRequestLogID() {
         return requestLogID;
     }
 
-    public void setRequestLogID(Integer requestLogID) {
+    public void setRequestLogID(Long requestLogID) {
         this.requestLogID = requestLogID;
     }
 
@@ -70,11 +72,11 @@ public class RequestLog {
         this.newStatus = newStatus;
     }
 
-    public Integer getRequestID() {
+    public Long getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Integer requestID) {
+    public void setRequestID(Long requestID) {
         this.requestID = requestID;
     }
 

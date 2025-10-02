@@ -1,7 +1,9 @@
 package crm.common.model;
 
 import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.converter.RequestStatusConverter;
 import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
@@ -11,13 +13,14 @@ import java.util.List;
 @Entity(tableName = "Request")
 public class Request {
     @Key
-    @Column(name = "RequestID", type = "INT")
-    private Integer requestID;
+    @Column(name = "RequestID", type = "BIGINT")
+    private Long requestID;
 
     @Column(name = "RequestDescription", length = 255)
     private String requestDescription;
 
     @Column(name = "RequestStatus")
+    @Convert(converter = RequestStatusConverter.class)
     private RequestStatus requestStatus;
 
     @Column(name = "StartDate", type = "DATETIME", nullable = false)
@@ -29,8 +32,8 @@ public class Request {
     @Column(name = "Note", length = 255)
     private String note;
 
-    @Column(name = "ContractID", type = "INT", nullable = false)
-    private Integer contractID; // corrected relationship to ContractID
+    @Column(name = "ContractID", type = "BIGINT", nullable = false)
+    private Long contractID; // corrected relationship to ContractID
 
     @ManyToOne(joinColumn = "ContractID", fetch = FetchMode.EAGER)
     private LazyReference<Contract> contract;
@@ -38,11 +41,23 @@ public class Request {
     @OneToMany(mappedBy = "requestID", joinColumn = "RequestID", fetch = FetchMode.LAZY)
     private List<RequestLog> logs;
 
-    public Integer getRequestID() {
+    public Request() {
+    }
+
+    public Request(Long requestID, String requestDescription, RequestStatus requestStatus, Timestamp startDate,
+            Long contractID) {
+        this.requestID = requestID;
+        this.requestDescription = requestDescription;
+        this.requestStatus = requestStatus;
+        this.startDate = startDate;
+        this.contractID = contractID;
+    }
+
+    public Long getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Integer requestID) {
+    public void setRequestID(Long requestID) {
         this.requestID = requestID;
     }
 
@@ -86,11 +101,11 @@ public class Request {
         this.note = note;
     }
 
-    public Integer getContractID() {
+    public Long getContractID() {
         return contractID;
     }
 
-    public void setContractID(Integer contractID) {
+    public void setContractID(Long contractID) {
         this.contractID = contractID;
     }
 

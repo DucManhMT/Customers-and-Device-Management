@@ -11,14 +11,14 @@ import crm.core.repository.persistence.entity.relation.FetchMode;
 public class RoleFeature {
     // Surrogate key instead of composite
     @Key
-    @Column(name = "RoleFeatureID", type = "INT")
-    private Integer roleFeatureID;
+    @Column(name = "RoleFeatureID", type = "BIGINT")
+    private Long roleFeatureID;
 
-    @Column(name = "RoleID", type = "INT", nullable = false)
-    private Integer roleID;
+    @Column(name = "RoleID", type = "BIGINT", nullable = false)
+    private Long roleID;
 
-    @Column(name = "FeatureID", type = "INT", nullable = false)
-    private Integer featureID;
+    @Column(name = "FeatureID", type = "BIGINT", nullable = false)
+    private Long featureID;
 
     @ManyToOne(joinColumn = "RoleID", fetch = FetchMode.LAZY)
     private LazyReference<Role> role;
@@ -26,27 +26,27 @@ public class RoleFeature {
     @ManyToOne(joinColumn = "FeatureID", fetch = FetchMode.LAZY)
     private LazyReference<Feature> feature;
 
-    public Integer getRoleFeatureID() {
+    public Long getRoleFeatureID() {
         return roleFeatureID;
     }
 
-    public void setRoleFeatureID(Integer roleFeatureID) {
+    public void setRoleFeatureID(Long roleFeatureID) {
         this.roleFeatureID = roleFeatureID;
     }
 
-    public Integer getRoleID() {
+    public Long getRoleID() {
         return roleID;
     }
 
-    public void setRoleID(Integer roleID) {
+    public void setRoleID(Long roleID) {
         this.roleID = roleID;
     }
 
-    public Integer getFeatureID() {
+    public Long getFeatureID() {
         return featureID;
     }
 
-    public void setFeatureID(Integer featureID) {
+    public void setFeatureID(Long featureID) {
         this.featureID = featureID;
     }
 

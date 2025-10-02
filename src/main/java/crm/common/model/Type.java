@@ -12,8 +12,8 @@ import java.util.List;
 @Entity(tableName = "Type")
 public class Type {
     @Key
-    @Column(name = "TypeID", type = "INT")
-    private Integer typeID;
+    @Column(name = "TypeID", type = "BIGINT")
+    private Long typeID;
 
     @Column(name = "TypeName", length = 100, nullable = false)
     private String typeName;
@@ -21,8 +21,8 @@ public class Type {
     @Column(name = "TypeImage", length = 255)
     private String typeImage;
 
-    @Column(name = "CategoryID", type = "INT", nullable = false)
-    private Integer categoryID;
+    @Column(name = "CategoryID", type = "BIGINT", nullable = false)
+    private Long categoryID;
 
     @ManyToOne(joinColumn = "CategoryID", fetch = FetchMode.EAGER)
     private LazyReference<Category> category;
@@ -33,11 +33,11 @@ public class Type {
     @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", fetch = FetchMode.LAZY)
     private List<SpecificationType> specificationTypes;
 
-    public Integer getTypeID() {
+    public Long getTypeID() {
         return typeID;
     }
 
-    public void setTypeID(Integer typeID) {
+    public void setTypeID(Long typeID) {
         this.typeID = typeID;
     }
 
@@ -57,11 +57,11 @@ public class Type {
         this.typeImage = typeImage;
     }
 
-    public Integer getCategoryID() {
+    public Long getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(Integer categoryID) {
+    public void setCategoryID(Long categoryID) {
         this.categoryID = categoryID;
     }
 

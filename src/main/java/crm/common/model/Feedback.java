@@ -9,8 +9,8 @@ import java.sql.Timestamp;
 @Entity(tableName = "Feedback")
 public class Feedback {
     @Key
-    @Column(name = "FeedbackID", type = "INT")
-    private Integer feedbackID;
+    @Column(name = "FeedbackID", type = "BIGINT")
+    private Long feedbackID;
 
     @Column(name = "Content", length = 255)
     private String content;
@@ -30,11 +30,11 @@ public class Feedback {
     @ManyToOne(joinColumn = "CustomerID", fetch = FetchMode.EAGER)
     private LazyReference<Account> account;
 
-    public Integer getFeedbackID() {
+    public Long getFeedbackID() {
         return feedbackID;
     }
 
-    public void setFeedbackID(Integer feedbackID) {
+    public void setFeedbackID(Long feedbackID) {
         this.feedbackID = feedbackID;
     }
 

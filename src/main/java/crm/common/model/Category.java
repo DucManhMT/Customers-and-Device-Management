@@ -11,8 +11,8 @@ import java.util.List;
 @Entity(tableName = "Category")
 public class Category {
     @Key
-    @Column(name = "CategoryID", type = "INT")
-    private Integer categoryID;
+    @Column(name = "CategoryID", type = "BIGINT")
+    private Long categoryID;
 
     @Column(name = "CategoryName", length = 100, nullable = false)
     private String categoryName;
@@ -23,11 +23,11 @@ public class Category {
     @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID", fetch = FetchMode.LAZY)
     private List<Type> types;
 
-    public Integer getCategoryID() {
+    public Long getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(Integer categoryID) {
+    public void setCategoryID(Long categoryID) {
         this.categoryID = categoryID;
     }
 

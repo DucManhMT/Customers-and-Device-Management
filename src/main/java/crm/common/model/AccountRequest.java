@@ -7,14 +7,14 @@ import crm.core.repository.persistence.entity.relation.FetchMode;
 @Entity(tableName = "AccountRequest")
 public class AccountRequest {
     @Key
-    @Column(name = "AccountRequestID", type = "INT")
-    private Integer accountRequestID; // surrogate key
+    @Column(name = "AccountRequestID", type = "BIGINT")
+    private Long accountRequestID;
 
     @Column(name = "Username", length = 100, nullable = false)
     private String username;
 
-    @Column(name = "RequestID", type = "INT", nullable = false)
-    private Integer requestID;
+    @Column(name = "RequestID", type = "BIGINT", nullable = false)
+    private Long requestID;
 
     @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
     private LazyReference<Account> account;
@@ -22,11 +22,11 @@ public class AccountRequest {
     @ManyToOne(joinColumn = "RequestID", fetch = FetchMode.EAGER)
     private LazyReference<Request> request;
 
-    public Integer getAccountRequestID() {
+    public Long getAccountRequestID() {
         return accountRequestID;
     }
 
-    public void setAccountRequestID(Integer accountRequestID) {
+    public void setAccountRequestID(Long accountRequestID) {
         this.accountRequestID = accountRequestID;
     }
 
@@ -38,11 +38,11 @@ public class AccountRequest {
         this.username = username;
     }
 
-    public Integer getRequestID() {
+    public Long getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Integer requestID) {
+    public void setRequestID(Long requestID) {
         this.requestID = requestID;
     }
 
