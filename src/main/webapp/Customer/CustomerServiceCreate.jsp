@@ -25,7 +25,7 @@
       <div class="col-lg-10">
         <div class="card shadow-lg border-0 rounded-4" id="mainForm">
           <div class="card-body p-5">
-            <form>
+            <form action="${pageContext.request.contextPath}/CustomerServlet" method="post">
 
               <div class="mb-4">
                 <label>Request Type</label>
