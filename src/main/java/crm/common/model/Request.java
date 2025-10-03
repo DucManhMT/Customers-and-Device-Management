@@ -7,7 +7,7 @@ import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(tableName = "Request")
@@ -24,10 +24,10 @@ public class Request {
     private RequestStatus requestStatus;
 
     @Column(name = "StartDate", type = "DATETIME", nullable = false)
-    private Timestamp startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "FinishedDate", type = "DATETIME")
-    private Timestamp finishedDate;
+    private LocalDateTime finishedDate;
 
     @Column(name = "Note", length = 255)
     private String note;
@@ -44,7 +44,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(Long requestID, String requestDescription, RequestStatus requestStatus, Timestamp startDate,
+    public Request(Long requestID, String requestDescription, RequestStatus requestStatus, LocalDateTime startDate,
             Long contractID) {
         this.requestID = requestID;
         this.requestDescription = requestDescription;
@@ -77,19 +77,19 @@ public class Request {
         this.requestStatus = requestStatus;
     }
 
-    public Timestamp getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public Timestamp getFinishedDate() {
+    public LocalDateTime getFinishedDate() {
         return finishedDate;
     }
 
-    public void setFinishedDate(Timestamp finishedDate) {
+    public void setFinishedDate(LocalDateTime finishedDate) {
         this.finishedDate = finishedDate;
     }
 

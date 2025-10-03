@@ -26,8 +26,11 @@ public class RequestCreationController extends HttpServlet {
         try {
             String description = req.getParameter("description");
             Long contractId = Long.parseLong(req.getParameter("contractId"));
+            if (contractId == null || contractId <= 0) {
+                throw new IllegalArgumentException("Contract ID cannot be null !");
+            }
             if (description == null || description.trim().isEmpty()) {
-                throw new IllegalArgumentException("Description cannot be empty");
+                throw new IllegalArgumentException("Description cannot be empty !");
             }
             requestService.createServiceRequest(description, contractId);
             req.setAttribute("success", "Request created successfully ");
@@ -38,11 +41,11 @@ public class RequestCreationController extends HttpServlet {
         } catch (NumberFormatException e) {
             req.setAttribute("description", req.getParameter("description"));
             req.setAttribute("contractId", req.getParameter("contractId"));
-            req.setAttribute("error", "Invalid contract ID format !");
+            req.setAttribute("error", "Contract ID cannot be null !");
         } catch (IllegalArgumentException e) {
             req.setAttribute("description", req.getParameter("description"));
             req.setAttribute("contractId", req.getParameter("contractId"));
-            req.setAttribute("error", "Description cannot be empty !");
+            req.setAttribute("error", e.getMessage());
         }
         doGet(req, resp);
     }
@@ -67,7 +70,7 @@ public class RequestCreationController extends HttpServlet {
         }
         req.setAttribute("contracts", contracts);
 
-        req.getRequestDispatcher("/request-creation.jsp").forward(req, resp);
+        req.getRequestDispatcher("/service-request/request-creation.jsp").forward(req, resp);
     }
 
 }

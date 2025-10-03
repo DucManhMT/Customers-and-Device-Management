@@ -2,8 +2,7 @@ package crm;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 import crm.common.model.Account;
@@ -244,7 +243,7 @@ public final class SampleDataLoader {
                 r.setContractID(1L);
                 r.setRequestDescription("Initial setup");
                 r.setRequestStatus(RequestStatus.Pending);
-                r.setStartDate(Timestamp.from(Instant.now()));
+                r.setStartDate(LocalDateTime.now());
                 requestRepo.save(r);
             }
 
@@ -311,7 +310,7 @@ public final class SampleDataLoader {
                 ProductTransaction tx = new ProductTransaction();
                 tx.setTransactionID(1L);
                 tx.setItemID(1L);
-                tx.setTransactionDate(Timestamp.from(Instant.now()));
+                tx.setTransactionDate(LocalDateTime.now());
                 tx.setTransactionStatus(TransactionStatus.Export);
                 tx.setSourceWarehouseID(1L);
                 txnRepo.save(tx);
@@ -347,7 +346,7 @@ public final class SampleDataLoader {
                 fb.setCustomerID("user1");
                 fb.setContent("Great service so far");
                 fb.setRating(5);
-                fb.setFeedbackDate(Timestamp.from(Instant.now()));
+                fb.setFeedbackDate(LocalDateTime.now());
                 feedbackRepo.save(fb);
             }
 

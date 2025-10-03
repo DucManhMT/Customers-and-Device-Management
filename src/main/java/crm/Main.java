@@ -8,13 +8,28 @@ import crm.core.repository.persistence.config.DBcontext;
 import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.entity.EntityRegistry;
 import crm.core.repository.persistence.entity.SchemaGenerator;
+import crm.core.repository.persistence.query.common.Page;
 import crm.core.utils.KeyGenerator;
+import crm.service_request.service.RequestService;
 
 public class Main {
     public static void main(String[] args) {
-        for (int i = 0; i < 10000; i++) {
-            System.out.println(KeyGenerator.nextId());
+        test();
+    }
+
+    public static void test() {
+        RequestService requestService = new RequestService();
+        Page<Request> pageResult = null;
+        try {
+            pageResult = requestService.getRequests(1, 10, "StartDate", "desc", "Approved", null);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+        pageResult.getContent().forEach(r -> {
+            System.out.println(r.getRequestID() + " - " + r.getRequestDescription() + " - " + r.getRequestStatus()
+                    + " - " + r.getStartDate());
+        });
     }
 
     public static void generateAll() {

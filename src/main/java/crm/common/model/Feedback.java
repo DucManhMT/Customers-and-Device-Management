@@ -4,7 +4,7 @@ import crm.core.repository.persistence.annotation.*;
 import crm.core.repository.persistence.entity.load.LazyReference;
 import crm.core.repository.persistence.entity.relation.FetchMode;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "Feedback")
 public class Feedback {
@@ -22,7 +22,7 @@ public class Feedback {
     private String response;
 
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
-    private Timestamp feedbackDate;
+    private LocalDateTime feedbackDate;
 
     @Column(name = "CustomerID", length = 100)
     private String customerID; // references Account.Username per schema
@@ -62,11 +62,11 @@ public class Feedback {
         this.response = response;
     }
 
-    public Timestamp getFeedbackDate() {
+    public LocalDateTime getFeedbackDate() {
         return feedbackDate;
     }
 
-    public void setFeedbackDate(Timestamp feedbackDate) {
+    public void setFeedbackDate(LocalDateTime feedbackDate) {
         this.feedbackDate = feedbackDate;
     }
 
