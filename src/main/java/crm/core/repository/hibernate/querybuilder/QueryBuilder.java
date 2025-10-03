@@ -4,106 +4,123 @@ import crm.core.repository.hibernate.annotation.Table;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Generic QueryBuilder to create SQL statements based on entity annotations.
  * @param <T> Entity type
  */
 
-public class QueryBuilder<T> {
-    private final Class<T> clazz;
 
-    public QueryBuilder(Class<T> clazz) {
-        this.clazz = clazz;
-    }
+import crm.core.repository.persistence.annotation.Entity;
 
-    public SqlAndParamsDTO buildInsert(T entity) throws Exception {
-        Table table = clazz.getAnnotation(Table.class);
-        if (table == null) throw new RuntimeException("Missing @Table");
 
-        List<String> columns = new ArrayList<>();
+public class QueryBuilder {
+
+    // ---------- INSERT ----------
+    public <T> SqlAndParamsDTO buildInsert(T entity) {
+        Class<?> clazz = entity.getClass();
+        checkEntity(clazz);
+
+        String tableName = clazz.getAnnotation(Entity.class).tableName();
+
+        List<String> cols = new ArrayList<>();
         List<String> placeholders = new ArrayList<>();
         List<Object> params = new ArrayList<>();
 
         for (Field field : clazz.getDeclaredFields()) {
-            Column col = field.getAnnotation(Column.class);
-            if (col != null) {
-                columns.add(col.name());
+            if (EntityFieldMapper.isColumn(field) || EntityFieldMapper.isKey(field)) {
+                cols.add(EntityFieldMapper.getColumnName(field));
+                params.add(EntityFieldMapper.extractValue(entity, field));
                 placeholders.add("?");
-                field.setAccessible(true);
-                params.add(field.get(entity));
+            } else if (RelationshipHandler.isManyToOne(field)) {
+                cols.add(RelationshipHandler.getJoinColumn(field));
+                params.add(RelationshipHandler.extractManyToOneValue(entity, field));
+                placeholders.add("?");
             }
         }
 
-        String sql = "INSERT INTO " + table.name() +
-                " (" + String.join(", ", columns) + ")" +
+        String sql = "INSERT INTO " + tableName +
+                " (" + String.join(", ", cols) + ")" +
                 " VALUES (" + String.join(", ", placeholders) + ")";
         return new SqlAndParamsDTO(sql, params);
     }
 
-    // Build SELECT statement by ID
-    public SqlAndParamsDTO buildSelectById(Object idValue) {
-        Table table = clazz.getAnnotation(Table.class);
-        String idColumn = getIdColumn();
+    // ---------- UPDATE ----------
+    public <T> SqlAndParamsDTO buildUpdate(T entity) {
+        Class<?> clazz = entity.getClass();
+        checkEntity(clazz);
 
-        String sql = "SELECT * FROM " + table.name() + " WHERE " + idColumn + " = ?";
-        return new SqlAndParamsDTO(sql, idValue);
-    }
+        String tableName = clazz.getAnnotation(Entity.class).tableName();
 
-    // Build UPDATE statement
-    public SqlAndParamsDTO buildUpdate(T entity) throws Exception {
-        Table table = clazz.getAnnotation(Table.class);
-        List<String> assignments = new ArrayList<>();
+        List<String> sets = new ArrayList<>();
         List<Object> params = new ArrayList<>();
-
-        String idColumn = null;
-        Object idValue = null;
+        String where = null;
+        Object keyVal = null;
 
         for (Field field : clazz.getDeclaredFields()) {
-            Column col = field.getAnnotation(Column.class);
-            if (col != null) {
-                field.setAccessible(true);
-                Object value = field.get(entity);
-
-                if (col.id()) {
-                    idColumn = col.name();
-                    idValue = value;
-                } else {
-                    assignments.add(col.name() + " = ?");
-                    params.add(value);
-                }
+            if (EntityFieldMapper.isKey(field)) {
+                where = EntityFieldMapper.getColumnName(field) + " = ?";
+                keyVal = EntityFieldMapper.extractValue(entity, field);
+            } else if (EntityFieldMapper.isColumn(field)) {
+                sets.add(EntityFieldMapper.getColumnName(field) + " = ?");
+                params.add(EntityFieldMapper.extractValue(entity, field));
+            } else if (RelationshipHandler.isManyToOne(field)) {
+                sets.add(RelationshipHandler.getJoinColumn(field) + " = ?");
+                params.add(RelationshipHandler.extractManyToOneValue(entity, field));
             }
         }
 
-        if (idColumn == null) throw new RuntimeException("No primary key found");
+        if (where == null) throw new RuntimeException("No @Key found in entity " + clazz.getName());
+        params.add(keyVal);
 
-        String sql = "UPDATE " + table.name() +
-                " SET " + String.join(", ", assignments) +
-                " WHERE " + idColumn + " = ?";
-        params.add(idValue);
-
+        String sql = "UPDATE " + tableName + " SET " + String.join(", ", sets) + " WHERE " + where;
         return new SqlAndParamsDTO(sql, params);
     }
 
-    // Build DELETE statement
-    public SqlAndParamsDTO buildDelete(Object idValue) {
-        Table table = clazz.getAnnotation(Table.class);
-        String idColumn = getIdColumn();
+    // ---------- DELETE ----------
+    public <T> SqlAndParamsDTO buildDelete(T entity) {
+        Class<?> clazz = entity.getClass();
+        checkEntity(clazz);
 
-        String sql = "DELETE FROM " + table.name() + " WHERE " + idColumn + " = ?";
-        return new SqlAndParamsDTO(sql, idValue);
-    }
+        String tableName = clazz.getAnnotation(Entity.class).tableName();
 
-    // Helper method to find the primary key column
-    private String getIdColumn() {
+        String where = null;
+        Object keyVal = null;
+
         for (Field field : clazz.getDeclaredFields()) {
-            Column col = field.getAnnotation(Column.class);
-            if (col != null && col.id()) {
-                return col.name();
+            if (EntityFieldMapper.isKey(field)) {
+                where = EntityFieldMapper.getColumnName(field) + " = ?";
+                keyVal = EntityFieldMapper.extractValue(entity, field);
+                break;
             }
         }
-        throw new RuntimeException("No primary key defined");
+
+        if (where == null) throw new RuntimeException("No @Key found in entity " + clazz.getName());
+
+        return new SqlAndParamsDTO("DELETE FROM " + tableName + " WHERE " + where, keyVal);
     }
 
+    // ---------- SELECT BY KEY ----------
+    public <T> SqlAndParamsDTO buildSelectById(Class<T> clazz, Object id) {
+        checkEntity(clazz);
+
+        String tableName = clazz.getAnnotation(Entity.class).tableName();
+
+        String keyCol = null;
+        for (Field field : clazz.getDeclaredFields()) {
+            if (EntityFieldMapper.isKey(field)) {
+                keyCol = EntityFieldMapper.getColumnName(field);
+                break;
+            }
+        }
+        if (keyCol == null) throw new RuntimeException("No @Key found in entity " + clazz.getName());
+
+        return new SqlAndParamsDTO("SELECT * FROM " + tableName + " WHERE " + keyCol + " = ?", id);
+    }
+
+    private void checkEntity(Class<?> clazz) {
+        if (!clazz.isAnnotationPresent(Entity.class)) {
+            throw new IllegalArgumentException("Class " + clazz.getName() + " is not annotated with @Entity");
+        }
+    }
 }
-
-
