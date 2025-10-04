@@ -1,9 +1,11 @@
 package crm.common.model;
 
 import crm.common.model.enums.TransactionStatus;
-import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
 
 import java.sql.Timestamp;
 
@@ -31,13 +33,13 @@ public class ProductTransaction {
     @Column(name = "Note", length = 255)
     private String note;
 
-    @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    @ManyToOne(joinColumn = "SourceWarehouse", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "SourceWarehouse")
     private LazyReference<Warehouse> sourceWarehouse;
 
-    @ManyToOne(joinColumn = "DestinationWarehouse", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "DestinationWarehouse")
     private LazyReference<Warehouse> destinationWarehouse;
 
     public Integer getTransactionID() {

@@ -1,19 +1,15 @@
 package crm.core.repository.hibernate.querybuilder;
-import crm.core.repository.hibernate.annotation.Column;
-import crm.core.repository.hibernate.annotation.Table;
+
+import crm.core.repository.hibernate.annotation.ManyToOne;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import crm.core.repository.hibernate.annotation.Entity;
 
 /**
  * Generic QueryBuilder to create SQL statements based on entity annotations.
- * @param <T> Entity type
  */
-
-
-import crm.core.repository.persistence.annotation.Entity;
-
-
 public class QueryBuilder {
 
     // ---------- INSERT ----------
@@ -28,13 +24,16 @@ public class QueryBuilder {
         List<Object> params = new ArrayList<>();
 
         for (Field field : clazz.getDeclaredFields()) {
-            if (EntityFieldMapper.isColumn(field) || EntityFieldMapper.isKey(field)) {
+            if (EntityFieldMapper.isKey(field) || EntityFieldMapper.isColumn(field)) {
                 cols.add(EntityFieldMapper.getColumnName(field));
                 params.add(EntityFieldMapper.extractValue(entity, field));
                 placeholders.add("?");
-            } else if (RelationshipHandler.isManyToOne(field)) {
-                cols.add(RelationshipHandler.getJoinColumn(field));
-                params.add(RelationshipHandler.extractManyToOneValue(entity, field));
+            } else if (field.isAnnotationPresent(ManyToOne.class)) {
+                ManyToOne ann = field.getAnnotation(ManyToOne.class);
+                cols.add(ann.joinColumn());
+
+                Object value = EntityFieldMapper.extractValue(entity, field);
+                params.add(value);
                 placeholders.add("?");
             }
         }
@@ -64,16 +63,22 @@ public class QueryBuilder {
             } else if (EntityFieldMapper.isColumn(field)) {
                 sets.add(EntityFieldMapper.getColumnName(field) + " = ?");
                 params.add(EntityFieldMapper.extractValue(entity, field));
-            } else if (RelationshipHandler.isManyToOne(field)) {
-                sets.add(RelationshipHandler.getJoinColumn(field) + " = ?");
-                params.add(RelationshipHandler.extractManyToOneValue(entity, field));
+            } else if (field.isAnnotationPresent(ManyToOne.class)) {
+                ManyToOne ann = field.getAnnotation(ManyToOne.class);
+                sets.add(ann.joinColumn() + " = ?");
+
+                Object value = EntityFieldMapper.extractValue(entity, field);
+                params.add(value);
             }
         }
 
-        if (where == null) throw new RuntimeException("No @Key found in entity " + clazz.getName());
+        if (where == null)
+            throw new RuntimeException("No @Key found in entity " + clazz.getName());
         params.add(keyVal);
 
-        String sql = "UPDATE " + tableName + " SET " + String.join(", ", sets) + " WHERE " + where;
+        String sql = "UPDATE " + tableName +
+                " SET " + String.join(", ", sets) +
+                " WHERE " + where;
         return new SqlAndParamsDTO(sql, params);
     }
 
@@ -83,7 +88,6 @@ public class QueryBuilder {
         checkEntity(clazz);
 
         String tableName = clazz.getAnnotation(Entity.class).tableName();
-
         String where = null;
         Object keyVal = null;
 
@@ -95,32 +99,43 @@ public class QueryBuilder {
             }
         }
 
-        if (where == null) throw new RuntimeException("No @Key found in entity " + clazz.getName());
+        if (where == null)
+            throw new RuntimeException("No @Key found in entity " + clazz.getName());
 
-        return new SqlAndParamsDTO("DELETE FROM " + tableName + " WHERE " + where, keyVal);
+        return new SqlAndParamsDTO(
+                "DELETE FROM " + tableName + " WHERE " + where,
+                keyVal
+        );
     }
 
-    // ---------- SELECT BY KEY ----------
+    // ---------- SELECT BY ID ----------
     public <T> SqlAndParamsDTO buildSelectById(Class<T> clazz, Object id) {
         checkEntity(clazz);
 
         String tableName = clazz.getAnnotation(Entity.class).tableName();
-
         String keyCol = null;
+
         for (Field field : clazz.getDeclaredFields()) {
             if (EntityFieldMapper.isKey(field)) {
                 keyCol = EntityFieldMapper.getColumnName(field);
                 break;
             }
         }
-        if (keyCol == null) throw new RuntimeException("No @Key found in entity " + clazz.getName());
 
-        return new SqlAndParamsDTO("SELECT * FROM " + tableName + " WHERE " + keyCol + " = ?", id);
+        if (keyCol == null)
+            throw new RuntimeException("No @Key found in entity " + clazz.getName());
+
+        return new SqlAndParamsDTO(
+                "SELECT * FROM " + tableName + " WHERE " + keyCol + " = ?",
+                id
+        );
     }
 
     private void checkEntity(Class<?> clazz) {
         if (!clazz.isAnnotationPresent(Entity.class)) {
-            throw new IllegalArgumentException("Class " + clazz.getName() + " is not annotated with @Entity");
+            throw new IllegalArgumentException(
+                    "Class " + clazz.getName() + " is not annotated with @Entity"
+            );
         }
     }
 }
