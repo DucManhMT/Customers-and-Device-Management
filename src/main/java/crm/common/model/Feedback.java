@@ -6,13 +6,13 @@ import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.persistence.entity.load.LazyReference;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity(tableName = "Feedback")
 public class Feedback {
     @Key
-    @Column(name = "FeedbackID", type = "BIGINT")
-    private Long feedbackID;
+    @Column(name = "FeedbackID", type = "INT")
+    private Integer feedbackID;
 
     @Column(name = "Content", length = 255)
     private String content;
@@ -24,7 +24,7 @@ public class Feedback {
     private String response;
 
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
-    private LocalDateTime feedbackDate;
+    private Timestamp feedbackDate;
 
     @Column(name = "CustomerID", length = 100)
     private String customerID; // references Account.Username per schema
@@ -32,11 +32,11 @@ public class Feedback {
     @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Account> account;
 
-    public Long getFeedbackID() {
+    public Integer getFeedbackID() {
         return feedbackID;
     }
 
-    public void setFeedbackID(Long feedbackID) {
+    public void setFeedbackID(Integer feedbackID) {
         this.feedbackID = feedbackID;
     }
 
@@ -64,11 +64,11 @@ public class Feedback {
         this.response = response;
     }
 
-    public LocalDateTime getFeedbackDate() {
+    public Timestamp getFeedbackDate() {
         return feedbackDate;
     }
 
-    public void setFeedbackDate(LocalDateTime feedbackDate) {
+    public void setFeedbackDate(Timestamp feedbackDate) {
         this.feedbackDate = feedbackDate;
     }
 

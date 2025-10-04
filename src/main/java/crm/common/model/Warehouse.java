@@ -9,8 +9,8 @@ import crm.core.repository.persistence.entity.load.LazyReference;
 @Entity(tableName = "Warehouse")
 public class Warehouse {
     @Key
-    @Column(name = "WarehouseID", type = "BIGINT")
-    private Long warehouseID;
+    @Column(name = "WarehouseID", type = "INT")
+    private Integer warehouseID;
 
     @Column(name = "WarehouseName", length = 100, nullable = false)
     private String warehouseName;
@@ -24,11 +24,11 @@ public class Warehouse {
     @ManyToOne(joinColumn = "WarehouseManager")
     private LazyReference<Account> managerAccount;
 
-    public Long getWarehouseID() {
+    public Integer getWarehouseID() {
         return warehouseID;
     }
 
-    public void setWarehouseID(Long warehouseID) {
+    public void setWarehouseID(Integer warehouseID) {
         this.warehouseID = warehouseID;
     }
 
@@ -57,21 +57,10 @@ public class Warehouse {
     }
 
     public Account getManagerAccount() {
-        if (managerAccount == null) {
-            return null;
-        }
         return managerAccount.get();
     }
 
     public void setManagerAccount(Account managerAccount) {
-        if (this.managerAccount == null) {
-            this.managerAccount = new LazyReference<>(managerAccount);
-        } else {
-            this.managerAccount.setValue(managerAccount);
-        }
-        // synchronize WarehouseManager (Username)
-        if (this.warehouseManager == null && managerAccount != null) {
-            this.warehouseManager = managerAccount.getUsername();
-        }
+        this.managerAccount.setValue(managerAccount);
     }
 }

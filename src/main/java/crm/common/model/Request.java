@@ -4,33 +4,32 @@ import crm.common.model.enums.RequestStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.persistence.entity.load.LazyReference;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity(tableName = "Request")
 public class Request {
     @Key
-    @Column(name = "RequestID", type = "BIGINT")
-    private Long requestID;
+    @Column(name = "RequestID", type = "INT")
+    private Integer requestID;
 
     @Column(name = "RequestDescription", length = 255)
     private String requestDescription;
 
     @Column(name = "RequestStatus")
-    @Convert(converter = RequestStatusConverter.class)
     private RequestStatus requestStatus;
 
     @Column(name = "StartDate", type = "DATETIME", nullable = false)
-    private LocalDateTime startDate;
+    private Timestamp startDate;
 
     @Column(name = "FinishedDate", type = "DATETIME")
-    private LocalDateTime finishedDate;
+    private Timestamp finishedDate;
 
     @Column(name = "Note", length = 255)
     private String note;
 
-    @Column(name = "ContractID", type = "BIGINT", nullable = false)
-    private Long contractID; // corrected relationship to ContractID
+    @Column(name = "ContractID", type = "INT", nullable = false)
+    private Integer contractID; // corrected relationship to ContractID
 
     @ManyToOne(joinColumn = "ContractID")
     private LazyReference<Contract> contract;
@@ -38,23 +37,11 @@ public class Request {
     @OneToMany(mappedBy = "requestID", joinColumn = "RequestID")
     private List<RequestLog> logs;
 
-    public Request() {
-    }
-
-    public Request(Long requestID, String requestDescription, RequestStatus requestStatus, LocalDateTime startDate,
-            Long contractID) {
-        this.requestID = requestID;
-        this.requestDescription = requestDescription;
-        this.requestStatus = requestStatus;
-        this.startDate = startDate;
-        this.contractID = contractID;
-    }
-
-    public Long getRequestID() {
+    public Integer getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Long requestID) {
+    public void setRequestID(Integer requestID) {
         this.requestID = requestID;
     }
 
@@ -74,19 +61,19 @@ public class Request {
         this.requestStatus = requestStatus;
     }
 
-    public LocalDateTime getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getFinishedDate() {
+    public Timestamp getFinishedDate() {
         return finishedDate;
     }
 
-    public void setFinishedDate(LocalDateTime finishedDate) {
+    public void setFinishedDate(Timestamp finishedDate) {
         this.finishedDate = finishedDate;
     }
 
@@ -98,31 +85,20 @@ public class Request {
         this.note = note;
     }
 
-    public Long getContractID() {
+    public Integer getContractID() {
         return contractID;
     }
 
-    public void setContractID(Long contractID) {
+    public void setContractID(Integer contractID) {
         this.contractID = contractID;
     }
 
     public Contract getContract() {
-        if (contract == null) {
-            return null;
-        }
         return contract.get();
     }
 
     public void setContract(Contract contract) {
-        if (this.contract == null) {
-            this.contract = new LazyReference<>(contract);
-        } else {
-            this.contract.setValue(contract);
-        }
-        // synchronize ContractID
-        if (this.contractID == null && contract != null) {
-            this.contractID = contract.getContractID();
-        }
+        this.contract.setValue(contract);
     }
 
     public List<RequestLog> getLogs() {

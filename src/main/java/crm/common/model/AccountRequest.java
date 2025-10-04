@@ -9,14 +9,14 @@ import crm.core.repository.persistence.entity.load.LazyReference;
 @Entity(tableName = "AccountRequest")
 public class AccountRequest {
     @Key
-    @Column(name = "AccountRequestID", type = "BIGINT")
-    private Long accountRequestID;
+    @Column(name = "AccountRequestID", type = "INT")
+    private Integer accountRequestID; // surrogate key
 
     @Column(name = "Username", length = 100, nullable = false)
     private String username;
 
-    @Column(name = "RequestID", type = "BIGINT", nullable = false)
-    private Long requestID;
+    @Column(name = "RequestID", type = "INT", nullable = false)
+    private Integer requestID;
 
     @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
@@ -24,11 +24,11 @@ public class AccountRequest {
     @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
 
-    public Long getAccountRequestID() {
+    public Integer getAccountRequestID() {
         return accountRequestID;
     }
 
-    public void setAccountRequestID(Long accountRequestID) {
+    public void setAccountRequestID(Integer accountRequestID) {
         this.accountRequestID = accountRequestID;
     }
 
@@ -40,49 +40,27 @@ public class AccountRequest {
         this.username = username;
     }
 
-    public Long getRequestID() {
+    public Integer getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Long requestID) {
+    public void setRequestID(Integer requestID) {
         this.requestID = requestID;
     }
 
     public Account getAccount() {
-        if (account == null) {
-            return null;
-        }
         return account.get();
     }
 
     public void setAccount(Account account) {
-        if (this.account == null) {
-            this.account = new LazyReference<>(account);
-        } else {
-            this.account.setValue(account);
-        }
-        // synchronize Username
-        if (this.username == null && account != null) {
-            this.username = account.getUsername();
-        }
+        this.account.setValue(account);
     }
 
     public Request getRequest() {
-        if (request == null) {
-            return null;
-        }
         return request.get();
     }
 
     public void setRequest(Request request) {
-        if (this.request == null) {
-            this.request = new LazyReference<>(request);
-        } else {
-            this.request.setValue(request);
-        }
-        // synchronize RequestID
-        if (this.requestID == null && request != null) {
-            this.requestID = request.getRequestID();
-        }
+        this.request.setValue(request);
     }
 }

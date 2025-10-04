@@ -7,29 +7,28 @@ import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.persistence.entity.load.LazyReference;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity(tableName = "ProductTransaction")
 public class ProductTransaction {
     @Key
-    @Column(name = "TransactionID", type = "BIGINT")
-    private Long transactionID;
+    @Column(name = "TransactionID", type = "INT")
+    private Integer transactionID;
 
     @Column(name = "TransactionDate", type = "DATETIME", nullable = false)
-    private LocalDateTime transactionDate;
+    private Timestamp transactionDate;
 
-    @Column(name = "SourceWarehouse", type = "BIGINT")
-    private Long sourceWarehouseID;
+    @Column(name = "SourceWarehouse", type = "INT")
+    private Integer sourceWarehouseID;
 
-    @Column(name = "DestinationWarehouse", type = "BIGINT")
-    private Long destinationWarehouseID;
+    @Column(name = "DestinationWarehouse", type = "INT")
+    private Integer destinationWarehouseID;
 
     @Column(name = "TransactionStatus", length = 20, nullable = false)
-    @Convert(converter = TransactionStatusConverter.class)
     private TransactionStatus transactionStatus;
 
-    @Column(name = "ItemID", type = "BIGINT", nullable = false)
-    private Long itemID;
+    @Column(name = "ItemID", type = "INT", nullable = false)
+    private Integer itemID;
 
     @Column(name = "Note", length = 255)
     private String note;
@@ -43,27 +42,27 @@ public class ProductTransaction {
     @ManyToOne(joinColumn = "DestinationWarehouse")
     private LazyReference<Warehouse> destinationWarehouse;
 
-    public Long getTransactionID() {
+    public Integer getTransactionID() {
         return transactionID;
     }
 
-    public void setTransactionID(Long transactionID) {
+    public void setTransactionID(Integer transactionID) {
         this.transactionID = transactionID;
     }
 
-    public LocalDateTime getTransactionDate() {
+    public Timestamp getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDate) {
+    public void setTransactionDate(Timestamp transactionDate) {
         this.transactionDate = transactionDate;
     }
 
-    public Long getDestinationWarehouseID() {
+    public Integer getDestinationWarehouseID() {
         return destinationWarehouseID;
     }
 
-    public void setDestinationWarehouseID(Long destinationWarehouseID) {
+    public void setDestinationWarehouseID(Integer destinationWarehouseID) {
         this.destinationWarehouseID = destinationWarehouseID;
     }
 
@@ -75,11 +74,11 @@ public class ProductTransaction {
         this.transactionStatus = transactionStatus;
     }
 
-    public Long getItemID() {
+    public Integer getItemID() {
         return itemID;
     }
 
-    public void setItemID(Long itemID) {
+    public void setItemID(Integer itemID) {
         this.itemID = itemID;
     }
 
@@ -92,67 +91,34 @@ public class ProductTransaction {
     }
 
     public InventoryItem getInventoryItem() {
-        if (inventoryItem == null) {
-            return null;
-        }
         return inventoryItem.get();
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        if (this.inventoryItem == null) {
-            this.inventoryItem = new LazyReference<>(inventoryItem);
-        } else {
-            this.inventoryItem.setValue(inventoryItem);
-        }
-        // synchronize ItemID
-        if (this.itemID == null && inventoryItem != null) {
-            this.itemID = inventoryItem.getItemId();
-        }
+        this.inventoryItem.setValue(inventoryItem);
     }
 
     public Warehouse getSourceWarehouseEntity() {
-        if (sourceWarehouse == null) {
-            return null;
-        }
         return sourceWarehouse.get();
     }
 
     public void setSourceWarehouseEntity(Warehouse sourceWarehouse) {
-        if (this.sourceWarehouse == null) {
-            this.sourceWarehouse = new LazyReference<>(sourceWarehouse);
-        } else {
-            this.sourceWarehouse.setValue(sourceWarehouse);
-        }
-        // synchronize SourceWarehouseID
-        if (this.sourceWarehouseID == null && sourceWarehouse != null) {
-            this.sourceWarehouseID = sourceWarehouse.getWarehouseID();
-        }
+        this.sourceWarehouse.setValue(sourceWarehouse);
     }
 
-    public Long getSourceWarehouseID() {
+    public Integer getSourceWarehouseID() {
         return sourceWarehouseID;
     }
 
-    public void setSourceWarehouseID(Long sourceWarehouseID) {
+    public void setSourceWarehouseID(Integer sourceWarehouseID) {
         this.sourceWarehouseID = sourceWarehouseID;
     }
 
     public Warehouse getDestinationWarehouseEntity() {
-        if (destinationWarehouse == null) {
-            return null;
-        }
         return destinationWarehouse.get();
     }
 
     public void setDestinationWarehouseEntity(Warehouse destinationWarehouse) {
-        if (this.destinationWarehouse == null) {
-            this.destinationWarehouse = new LazyReference<>(destinationWarehouse);
-        } else {
-            this.destinationWarehouse.setValue(destinationWarehouse);
-        }
-        // synchronize DestinationWarehouseID
-        if (this.destinationWarehouseID == null && destinationWarehouse != null) {
-            this.destinationWarehouseID = destinationWarehouse.getWarehouseID();
-        }
+        this.destinationWarehouse.setValue(destinationWarehouse);
     }
 }

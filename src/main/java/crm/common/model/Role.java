@@ -7,25 +7,14 @@ import crm.core.repository.hibernate.annotation.Key;
 @Entity(tableName = "Role")
 public class Role {
     @Key
-    @Column(name = "RoleID", type = "BIGINT")
-    private Long roleID;
+    @Column(name = "RoleID", type = "INT")
+    private Integer roleID;
 
     @Column(name = "RoleName", length = 50, unique = true)
     private String roleName;
 
-    public Long getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(Long roleID) {
-        this.roleID = roleID;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
+    public Integer getRoleID() { return roleID; }
+    public void setRoleID(Integer roleID) { this.roleID = roleID; }
+    public String getRoleName() { return roleName; }
+    public void setRoleName(String roleName) { this.roleName = roleName; }
 }

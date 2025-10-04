@@ -12,8 +12,8 @@ import java.util.List;
 @Entity(tableName = "Type")
 public class Type {
     @Key
-    @Column(name = "TypeID", type = "BIGINT")
-    private Long typeID;
+    @Column(name = "TypeID", type = "INT")
+    private Integer typeID;
 
     @Column(name = "TypeName", length = 100, nullable = false)
     private String typeName;
@@ -21,8 +21,8 @@ public class Type {
     @Column(name = "TypeImage", length = 255)
     private String typeImage;
 
-    @Column(name = "CategoryID", type = "BIGINT", nullable = false)
-    private Long categoryID;
+    @Column(name = "CategoryID", type = "INT", nullable = false)
+    private Integer categoryID;
 
     @ManyToOne(joinColumn = "CategoryID")
     private LazyReference<Category> category;
@@ -33,11 +33,11 @@ public class Type {
     @OneToMany(mappedBy = "typeID", joinColumn = "TypeID")
     private List<SpecificationType> specificationTypes;
 
-    public Long getTypeID() {
+    public Integer getTypeID() {
         return typeID;
     }
 
-    public void setTypeID(Long typeID) {
+    public void setTypeID(Integer typeID) {
         this.typeID = typeID;
     }
 
@@ -57,31 +57,20 @@ public class Type {
         this.typeImage = typeImage;
     }
 
-    public Long getCategoryID() {
+    public Integer getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(Long categoryID) {
+    public void setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
     }
 
     public Category getCategory() {
-        if (category == null) {
-            return null;
-        }
         return category.get();
     }
 
     public void setCategory(Category category) {
-        if (this.category == null) {
-            this.category = new LazyReference<>(category);
-        } else {
-            this.category.setValue(category);
-        }
-        // synchronize CategoryID
-        if (this.categoryID == null && category != null) {
-            this.categoryID = category.getCategoryID();
-        }
+        this.category.setValue(category);
     }
 
     public List<Product> getProducts() {

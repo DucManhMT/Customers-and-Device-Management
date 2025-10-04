@@ -10,11 +10,11 @@ import crm.core.repository.persistence.entity.load.LazyReference;
 @Entity(tableName = "ProductContract")
 public class ProductContract {
     @Key
-    @Column(name = "ContractID", type = "BIGINT", nullable = false)
-    private Long contractID;
+    @Column(name = "ContractID", type = "INT", nullable = false)
+    private Integer contractID;
 
-    @Column(name = "ItemID", type = "BIGINT", nullable = false)
-    private Long itemID;
+    @Column(name = "ItemID", type = "INT", nullable = false)
+    private Integer itemID;
 
     @ManyToOne(joinColumn = "ContractID")
     private LazyReference<Contract> contract;
@@ -22,19 +22,19 @@ public class ProductContract {
     @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    public Long getContractID() {
+    public Integer getContractID() {
         return contractID;
     }
 
-    public void setContractID(Long contractID) {
+    public void setContractID(Integer contractID) {
         this.contractID = contractID;
     }
 
-    public Long getItemID() {
+    public Integer getItemID() {
         return itemID;
     }
 
-    public void setItemID(Long itemID) {
+    public void setItemID(Integer itemID) {
         this.itemID = itemID;
     }
 

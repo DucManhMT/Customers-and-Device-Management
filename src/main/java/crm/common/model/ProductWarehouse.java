@@ -9,18 +9,18 @@ import crm.core.repository.persistence.entity.load.LazyReference;
 @Entity(tableName = "ProductWarehouse")
 public class ProductWarehouse {
     @Key
-    @Column(name = "ProductWarehouseID", type = "BIGINT")
-    private Long productWarehouseID;
+    @Column(name = "ProductWarehouseID", type = "INT")
+    private Integer productWarehouseID;
 
     @Column(name = "ProductStatus", length = 20)
     @Convert(converter = ProductStatusConverter.class)
     private ProductStatus productStatus;
 
-    @Column(name = "WarehouseID", type = "BIGINT", nullable = false)
-    private Long warehouseID;
+    @Column(name = "WarehouseID", type = "INT", nullable = false)
+    private Integer warehouseID;
 
-    @Column(name = "ItemID", type = "BIGINT", nullable = false)
-    private Long itemID;
+    @Column(name = "ItemID", type = "INT", nullable = false)
+    private Integer itemID;
 
     @ManyToOne(joinColumn = "WarehouseID")
     private LazyReference<Warehouse> warehouse;
@@ -33,11 +33,11 @@ public class ProductWarehouse {
     @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID")
     private LazyReference<ProductExported> productExported;
 
-    public Long getProductWarehouseID() {
+    public Integer getProductWarehouseID() {
         return productWarehouseID;
     }
 
-    public void setProductWarehouseID(Long productWarehouseID) {
+    public void setProductWarehouseID(Integer productWarehouseID) {
         this.productWarehouseID = productWarehouseID;
     }
 
@@ -49,73 +49,43 @@ public class ProductWarehouse {
         this.productStatus = productStatus;
     }
 
-    public Long getWarehouseID() {
+    public Integer getWarehouseID() {
         return warehouseID;
     }
 
-    public void setWarehouseID(Long warehouseID) {
+    public void setWarehouseID(Integer warehouseID) {
         this.warehouseID = warehouseID;
     }
 
-    public Long getItemID() {
+    public Integer getItemID() {
         return itemID;
     }
 
-    public void setItemID(Long itemID) {
+    public void setItemID(Integer itemID) {
         this.itemID = itemID;
     }
 
     public Warehouse getWarehouse() {
-        if (warehouse == null) {
-            return null;
-        }
         return warehouse.get();
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        if (this.warehouse == null) {
-            this.warehouse = new LazyReference<>(warehouse);
-        } else {
-            this.warehouse.setValue(warehouse);
-        }
-        // synchronize WarehouseID
-        if (this.warehouseID == null && warehouse != null) {
-            this.warehouseID = warehouse.getWarehouseID();
-        }
+        this.warehouse.setValue(warehouse);
     }
 
     public InventoryItem getInventoryItem() {
-        if (inventoryItem == null) {
-            return null;
-        }
         return inventoryItem.get();
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        if (this.inventoryItem == null) {
-            this.inventoryItem = new LazyReference<>(inventoryItem);
-        } else {
-            this.inventoryItem.setValue(inventoryItem);
-        }
-        // synchronize ItemID
-        if (this.itemID == null && inventoryItem != null) {
-            this.itemID = inventoryItem.getItemId();
-        }
+        this.inventoryItem.setValue(inventoryItem);
     }
 
     public ProductExported getProductExported() {
-        if (productExported == null) {
-            return null;
-        }
         return productExported.get();
     }
 
     public void setProductExported(ProductExported productExported) {
-        if (this.productExported == null) {
-            this.productExported = new LazyReference<>(productExported);
-        } else {
-            this.productExported.setValue(productExported);
-        }
-
+        this.productExported.setValue(productExported);
     }
 }
