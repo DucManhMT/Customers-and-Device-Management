@@ -1,8 +1,10 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +29,7 @@ public class Feedback {
     @Column(name = "CustomerID", length = 100)
     private String customerID; // references Account.Username per schema
 
-    @ManyToOne(joinColumn = "CustomerID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Account> account;
 
     public Long getFeedbackID() {

@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.annotation;
+package crm.core.repository.hibernate.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

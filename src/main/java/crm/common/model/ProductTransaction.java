@@ -1,11 +1,11 @@
 package crm.common.model;
 
 import crm.common.model.enums.TransactionStatus;
-import crm.common.model.enums.converter.TransactionStatusConverter;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.convert.Convert;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +25,6 @@ public class ProductTransaction {
     private Long destinationWarehouseID;
 
     @Column(name = "TransactionStatus", length = 20, nullable = false)
-    @Convert(converter = TransactionStatusConverter.class)
     private TransactionStatus transactionStatus;
 
     @Column(name = "ItemID", type = "BIGINT", nullable = false)
@@ -34,13 +33,13 @@ public class ProductTransaction {
     @Column(name = "Note", length = 255)
     private String note;
 
-    @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    @ManyToOne(joinColumn = "SourceWarehouse", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "SourceWarehouse")
     private LazyReference<Warehouse> sourceWarehouse;
 
-    @ManyToOne(joinColumn = "DestinationWarehouse", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "DestinationWarehouse")
     private LazyReference<Warehouse> destinationWarehouse;
 
     public Long getTransactionID() {
