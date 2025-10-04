@@ -3,6 +3,8 @@ package crm.core.repository.persistence.config;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import crm.core.repository.persistence.cache.EntityCache;
+
 /**
  * Manages database transactions using ThreadLocal to ensure thread safety.
  * <p>
@@ -50,6 +52,8 @@ public class TransactionManager {
     // To keep track of transaction depth for nested transactions
     private static ThreadLocal<Integer> transactionDepthHolder = ThreadLocal.withInitial(() -> 0);
 
+    private static ThreadLocal<EntityCache> cacheHolder = new ThreadLocal<>();
+
     /**
      * Begins a new transaction by setting auto-commit to false on the current
      * connection.
@@ -59,9 +63,10 @@ public class TransactionManager {
     public static void beginTransaction() throws SQLException {
 
         if (transactionDepthHolder.get() < 1 && connectionHolder.get() == null) {
-            Connection connection = DBcontext.createConnection();
+            Connection connection = DBcontext.getConnection();
             connection.setAutoCommit(false);
             connectionHolder.set(connection);
+            cacheHolder.set(EntityCache.defaultCache());
         }
 
         transactionDepthHolder.set(transactionDepthHolder.get() + 1);
@@ -83,7 +88,6 @@ public class TransactionManager {
             throw new SQLException("No transaction to commit");
         } else if (depth == 0) {
             connection.commit();
-            connection.close();
             connectionHolder.remove();
         }
 
@@ -105,8 +109,8 @@ public class TransactionManager {
             throw new SQLException("No transaction to rollback");
         } else if (depth == 0) {
             connection.rollback();
-            connection.close();
             connectionHolder.remove();
+            cacheHolder.remove();
         }
 
     }
@@ -120,15 +124,18 @@ public class TransactionManager {
     public static Connection getConnection() {
         Connection connection = connectionHolder.get();
         if (connection == null) {
-            try {
-                connection = DBcontext.createConnection();
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            connectionHolder.set(connection);
-
+            throw new IllegalStateException(
+                    "No active transaction. Please call beginTransaction() first.");
         }
         return connection;
+    }
+
+    public static EntityCache getCache() {
+        EntityCache cache = cacheHolder.get();
+        if (cache == null) {
+            throw new IllegalStateException(
+                    "No active transaction. Please call beginTransaction() first.");
+        }
+        return cache;
     }
 }

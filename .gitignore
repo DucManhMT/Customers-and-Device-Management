@@ -6,6 +6,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .smarttomcat
+**/src/main/**/application.properties
 
 ### STS ###
 .apt_generated

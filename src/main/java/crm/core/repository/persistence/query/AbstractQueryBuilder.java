@@ -3,6 +3,8 @@ package crm.core.repository.persistence.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import crm.core.repository.persistence.entity.EntityMeta;
+
 /**
  * Abstract base class for building SQL queries.
  * Provides methods to set and get query parameters, and abstract methods
@@ -18,7 +20,6 @@ import java.util.List;
  */
 public abstract class AbstractQueryBuilder {
     private List<Object> parameters;
-
     protected String tableName;
 
     public AbstractQueryBuilder(String tableName) {

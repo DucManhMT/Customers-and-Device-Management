@@ -1,8 +1,10 @@
 package crm.core.repository.persistence.query.crud;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import crm.core.repository.persistence.config.RepositoryConfig;
+import crm.core.repository.persistence.entity.EntityMeta;
 import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 /**
@@ -24,7 +26,7 @@ import crm.core.repository.persistence.query.AbstractQueryBuilder;
  * @author Nguyen Anh Tu
  * @since 1.0
  */
-public class DeleteBuilder extends AbstractQueryBuilder {
+public class DeleteBuilder<E> extends AbstractQueryBuilder {
 
     public DeleteBuilder(String tableName) {
         super(tableName);
@@ -32,8 +34,8 @@ public class DeleteBuilder extends AbstractQueryBuilder {
 
     private String whereClause;
 
-    public static DeleteBuilder builder(String tableName) {
-        return new DeleteBuilder(tableName);
+    public static <E> DeleteBuilder<E> builder(String tableName) {
+        return new DeleteBuilder<E>(tableName);
     }
 
     /**
@@ -54,7 +56,7 @@ public class DeleteBuilder extends AbstractQueryBuilder {
      * @param values      the values to be set in the WHERE clause
      * @return the current DeleteBuilder instance for method chaining
      */
-    public DeleteBuilder where(String whereClause, Object... values) {
+    public DeleteBuilder<E> where(String whereClause, Object... values) {
         this.whereClause = whereClause;
         this.getParameters().addAll(List.of(values));
         return this;
@@ -103,7 +105,7 @@ public class DeleteBuilder extends AbstractQueryBuilder {
     @Override
     public String build() {
         String query = createQuery();
-        if (RepositoryConfig.isPrintSql) {
+        if (RepositoryConfig.PRINT_SQL) {
             System.out.println("Generated Query: " + query);
         }
         return query;

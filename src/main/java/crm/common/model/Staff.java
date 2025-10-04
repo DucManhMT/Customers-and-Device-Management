@@ -1,46 +1,125 @@
 package crm.common.model;
+
+import crm.core.repository.persistence.annotation.Column;
+import crm.core.repository.persistence.annotation.Entity;
+import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.annotation.ManyToOne;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+
 import java.sql.Date;
 
+@Entity(tableName = "Staff")
 public class Staff {
-    private int staffId;
-    private String staffLastName;
-    private String staffFirstName;
-    private String staffPhone;
-    private String staffAddress;
-    private String staffEmail;
-    private byte[] image;
+    @Key
+    @Column(name = "StaffID", type = "BIGINT")
+    private Long staffID;
+
+    @Column(name = "StaffName", length = 150, nullable = false)
+    private String staffName;
+
+    @Column(name = "Phone", length = 50, nullable = false, unique = true)
+    private String phone;
+
+    @Column(name = "Address", length = 100)
+    private String address;
+
+    @Column(name = "Email", length = 150, nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "Image", length = 255)
+    private String image;
+
+    @Column(name = "DateOfBirth", type = "DATE")
     private Date dateOfBirth;
-    private Account account;
 
-    public Staff() {}
-    public Staff(int staffId, String staffLastName, String staffFirstName, String staffPhone, String staffAddress, String staffEmail, byte[] image, Date dateOfBirth, Account account) {
-        this.staffId = staffId;
-        this.staffLastName = staffLastName;
-        this.staffFirstName = staffFirstName;
-        this.staffPhone = staffPhone;
-        this.staffAddress = staffAddress;
-        this.staffEmail = staffEmail;
-        this.image = image;
-        this.dateOfBirth = dateOfBirth;
-        this.account = account;
+    @Column(name = "Username", length = 100)
+    private String username;
+
+    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
+    private LazyReference<Account> account;
+
+    public Long getStaffID() {
+        return staffID;
     }
-    public int getStaffId() { return staffId; }
-    public void setStaffId(int staffId) { this.staffId = staffId; }
-    public String getStaffLastName() { return staffLastName; }
-    public void setStaffLastName(String staffLastName) { this.staffLastName = staffLastName; }
-    public String getStaffFirstName() { return staffFirstName; }
-    public void setStaffFirstName(String staffFirstName) { this.staffFirstName = staffFirstName; }
-    public String getStaffPhone() { return staffPhone; }
-    public void setStaffPhone(String staffPhone) { this.staffPhone = staffPhone; }
-    public String getStaffAddress() { return staffAddress; }
-    public void setStaffAddress(String staffAddress) { this.staffAddress = staffAddress; }
-    public String getStaffEmail() { return staffEmail; }
-    public void setStaffEmail(String staffEmail) { this.staffEmail = staffEmail; }
-    public byte[] getImage() { return image; }
-    public void setImage(byte[] image) { this.image = image; }
-    public Date getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(Date dateOfBirth) { this.dateOfBirth = dateOfBirth; }
-    public Account getAccount() { return account; }
-    public void setAccount(Account account) { this.account = account; }
-}
 
+    public void setStaffID(Long staffID) {
+        this.staffID = staffID;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Account getAccount() {
+        if (account == null) {
+            return null;
+        }
+        return account.get();
+    }
+
+    public void setAccount(Account account) {
+        if (this.account == null) {
+            this.account = new LazyReference<>(account);
+        } else {
+            this.account.setValue(account);
+        }
+        // synchronize Username
+        if (this.username == null && account != null) {
+            this.username = account.getUsername();
+        }
+    }
+
+}

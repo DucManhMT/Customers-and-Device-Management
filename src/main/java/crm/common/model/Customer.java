@@ -1,33 +1,89 @@
 package crm.common.model;
 
+import crm.core.repository.persistence.annotation.Column;
+import crm.core.repository.persistence.annotation.Entity;
+import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.annotation.ManyToOne;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+
+@Entity(tableName = "Customer")
 public class Customer {
-    private int customerId;
+    @Key
+    @Column(name = "CustomerID", type = "BIGINT")
+    private Long customerID;
+
+    @Column(name = "CustomerName", length = 150, nullable = false)
     private String customerName;
-    private String customerAddress;
-    private String customerPhone;
-    private String customerMail;
-    private Account account;
 
-    public Customer() {}
-    public Customer(int customerId, String customerName, String customerAddress, String customerPhone, String customerMail, Account account) {
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.customerAddress = customerAddress;
-        this.customerPhone = customerPhone;
-        this.customerMail = customerMail;
-        this.account = account;
+    @Column(name = "Address", length = 255, nullable = false)
+    private String address;
+
+    @Column(name = "Phone", length = 50, nullable = false, unique = true)
+    private String phone;
+
+    @Column(name = "Email", length = 150, nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "Username", length = 100)
+    private String username;
+
+    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
+    private LazyReference<Account> account;
+
+    public Long getCustomerID() {
+        return customerID;
     }
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
-    public String getCustomerAddress() { return customerAddress; }
-    public void setCustomerAddress(String customerAddress) { this.customerAddress = customerAddress; }
-    public String getCustomerPhone() { return customerPhone; }
-    public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
-    public String getCustomerMail() { return customerMail; }
-    public void setCustomerMail(String customerMail) { this.customerMail = customerMail; }
-    public Account getAccount() { return account; }
-    public void setAccount(Account account) { this.account = account; }
-}
 
+    public void setCustomerID(Long customerID) {
+        this.customerID = customerID;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Account getAccount() {
+        return account.get();
+    }
+
+    public void setAccount(Account account) {
+        this.account.setValue(account);
+    }
+}
