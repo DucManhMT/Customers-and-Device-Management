@@ -8,14 +8,14 @@ import java.util.List;
 @Entity(tableName = "SpecificationType")
 public class SpecificationType {
     @Key
-    @Column(name = "SpecificationTypeID", type = "INT")
-    private Integer specificationTypeID;
+    @Column(name = "SpecificationTypeID", type = "BIGINT")
+    private Long specificationTypeID;
 
     @Column(name = "SpecificationTypeName", length = 100, nullable = false)
     private String specificationTypeName;
 
-    @Column(name = "TypeID", type = "INT", nullable = false)
-    private Integer typeID;
+    @Column(name = "TypeID", type = "BIGINT", nullable = false)
+    private Long typeID;
 
     @ManyToOne(joinColumn = "TypeID")
     private LazyReference<Type> type;
@@ -23,11 +23,11 @@ public class SpecificationType {
     @OneToMany(mappedBy = "specificationTypeID", joinColumn = "SpecificationTypeID")
     private List<Specification> specifications;
 
-    public Integer getSpecificationTypeID() {
+    public Long getSpecificationTypeID() {
         return specificationTypeID;
     }
 
-    public void setSpecificationTypeID(Integer specificationTypeID) {
+    public void setSpecificationTypeID(Long specificationTypeID) {
         this.specificationTypeID = specificationTypeID;
     }
 
@@ -39,20 +39,31 @@ public class SpecificationType {
         this.specificationTypeName = specificationTypeName;
     }
 
-    public Integer getTypeID() {
+    public Long getTypeID() {
         return typeID;
     }
 
-    public void setTypeID(Integer typeID) {
+    public void setTypeID(Long typeID) {
         this.typeID = typeID;
     }
 
     public Type getType() {
+        if (type == null) {
+            return null;
+        }
         return type.get();
     }
 
     public void setType(Type type) {
-        this.type.setValue(type);
+        if (this.type == null) {
+            this.type = new LazyReference<>(type);
+        } else {
+            this.type.setValue(type);
+        }
+        // synchronize TypeID
+        if (this.typeID == null && type != null) {
+            this.typeID = type.getTypeID();
+        }
     }
 
     public List<Specification> getSpecifications() {

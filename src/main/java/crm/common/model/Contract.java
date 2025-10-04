@@ -9,8 +9,8 @@ import java.util.List;
 @Entity(tableName = "Contract")
 public class Contract {
     @Key
-    @Column(name = "ContractID", type = "INT")
-    private Integer contractID;
+    @Column(name = "ContractID", type = "BIGINT")
+    private Long contractID;
 
     @Column(name = "ContractImage", length = 255, nullable = false)
     private String contractImage;
@@ -21,8 +21,8 @@ public class Contract {
     @Column(name = "ExpiredDate", type = "DATE", nullable = false)
     private Date expiredDate;
 
-    @Column(name = "CustomerID", type = "INT", nullable = false)
-    private Integer customerID;
+    @Column(name = "CustomerID", type = "BIGINT", nullable = false)
+    private Long customerID;
 
     @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Customer> customer;
@@ -30,11 +30,11 @@ public class Contract {
     @OneToMany(mappedBy = "contractID", joinColumn = "ContractID")
     private List<Request> requests;
 
-    public Integer getContractID() {
+    public Long getContractID() {
         return contractID;
     }
 
-    public void setContractID(Integer contractID) {
+    public void setContractID(Long contractID) {
         this.contractID = contractID;
     }
 
@@ -62,11 +62,11 @@ public class Contract {
         this.expiredDate = expiredDate;
     }
 
-    public Integer getCustomerID() {
+    public Long getCustomerID() {
         return customerID;
     }
 
-    public void setCustomerID(Integer customerID) {
+    public void setCustomerID(Long customerID) {
         this.customerID = customerID;
     }
 

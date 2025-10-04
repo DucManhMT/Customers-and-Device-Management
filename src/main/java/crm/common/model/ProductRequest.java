@@ -12,8 +12,8 @@ import java.sql.Date;
 @Entity(tableName = "ProductRequest")
 public class ProductRequest {
     @Key
-    @Column(name = "ProductRequestID", type = "INT")
-    private Integer productRequestID;
+    @Column(name = "ProductRequestID", type = "BIGINT")
+    private Long productRequestID;
 
     @Column(name = "Quantity", type = "INT", nullable = false)
     private Integer quantity;
@@ -27,14 +27,14 @@ public class ProductRequest {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @Column(name = "RequestID", type = "INT", nullable = false)
-    private Integer requestID;
+    @Column(name = "RequestID", type = "BIGINT", nullable = false)
+    private Long requestID;
 
-    @Column(name = "ProductID", type = "INT", nullable = false)
-    private Integer productID;
+    @Column(name = "ProductID", type = "BIGINT", nullable = false)
+    private Long productID;
 
-    @Column(name = "WarehouseID", type = "INT", nullable = false)
-    private Integer warehouseID;
+    @Column(name = "WarehouseID", type = "BIGINT", nullable = false)
+    private Long warehouseID;
 
     @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
@@ -45,11 +45,11 @@ public class ProductRequest {
     @ManyToOne(joinColumn = "WarehouseID")
     private LazyReference<Warehouse> warehouse;
 
-    public Integer getProductRequestID() {
+    public Long getProductRequestID() {
         return productRequestID;
     }
 
-    public void setProductRequestID(Integer productRequestID) {
+    public void setProductRequestID(Long productRequestID) {
         this.productRequestID = productRequestID;
     }
 
@@ -85,27 +85,27 @@ public class ProductRequest {
         this.description = description;
     }
 
-    public Integer getRequestID() {
+    public Long getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Integer requestID) {
+    public void setRequestID(Long requestID) {
         this.requestID = requestID;
     }
 
-    public Integer getProductID() {
+    public Long getProductID() {
         return productID;
     }
 
-    public void setProductID(Integer productID) {
+    public void setProductID(Long productID) {
         this.productID = productID;
     }
 
-    public Integer getWarehouseID() {
+    public Long getWarehouseID() {
         return warehouseID;
     }
 
-    public void setWarehouseID(Integer warehouseID) {
+    public void setWarehouseID(Long warehouseID) {
         this.warehouseID = warehouseID;
     }
 

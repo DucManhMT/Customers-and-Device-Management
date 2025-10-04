@@ -18,8 +18,11 @@ public class Account {
     @Column(name = "AccountStatus")
     private AccountStatus accountStatus;
 
+    @Column(name = "RoleID", type = "BIGINT")
+    private Long roleID;
+
     @ManyToOne(joinColumn = "RoleID")
-    LazyReference<Role> role;
+    private LazyReference<Role> role;
 
     public String getUsername() {
         return username;
@@ -53,6 +56,10 @@ public class Account {
         }
     }
     public Role getRole() {
+        // Prevent NullPointerException
+        if (role == null) {
+            return null;
+        }
         return role.get();
     }
 

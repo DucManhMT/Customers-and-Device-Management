@@ -15,8 +15,8 @@ import java.sql.Date;
 @Entity(tableName = "RequestLog")
 public class RequestLog {
     @Key
-    @Column(name = "RequestLogID", type = "INT")
-    private Integer requestLogID;
+    @Column(name = "RequestLogID", type = "BIGINT")
+    private Long requestLogID;
 
     @Column(name = "ActionDate", type = "DATE")
     private Date actionDate;
@@ -26,10 +26,11 @@ public class RequestLog {
     private OldRequestStatus oldStatus;
 
     @Column(name = "NewStatus", length = 20)
+    @Convert(converter = RequestStatusConverter.class)
     private RequestStatus newStatus;
 
-    @Column(name = "RequestID", type = "INT", nullable = false)
-    private Integer requestID;
+    @Column(name = "RequestID", type = "BIGINT", nullable = false)
+    private Long requestID;
 
     @Column(name = "Username", length = 100)
     private String username;
@@ -40,11 +41,11 @@ public class RequestLog {
     @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
-    public Integer getRequestLogID() {
+    public Long getRequestLogID() {
         return requestLogID;
     }
 
-    public void setRequestLogID(Integer requestLogID) {
+    public void setRequestLogID(Long requestLogID) {
         this.requestLogID = requestLogID;
     }
 
@@ -72,11 +73,11 @@ public class RequestLog {
         this.newStatus = newStatus;
     }
 
-    public Integer getRequestID() {
+    public Long getRequestID() {
         return requestID;
     }
 
-    public void setRequestID(Integer requestID) {
+    public void setRequestID(Long requestID) {
         this.requestID = requestID;
     }
 
@@ -89,18 +90,40 @@ public class RequestLog {
     }
 
     public Request getRequest() {
+        if (request == null) {
+            return null;
+        }
         return request.get();
     }
 
     public void setRequest(Request request) {
-        this.request.setValue(request);
+        if (this.request == null) {
+            this.request = new LazyReference<>(request);
+        } else {
+            this.request.setValue(request);
+        }
+        // synchronize RequestID
+        if (this.requestID == null && request != null) {
+            this.requestID = request.getRequestID();
+        }
     }
 
     public Account getAccount() {
+        if (account == null) {
+            return null;
+        }
         return account.get();
     }
 
     public void setAccount(Account account) {
-        this.account.setValue(account);
+        if (this.account == null) {
+            this.account = new LazyReference<>(account);
+        } else {
+            this.account.setValue(account);
+        }
+        // synchronize Username
+        if (this.username == null && account != null) {
+            this.username = account.getUsername();
+        }
     }
 }

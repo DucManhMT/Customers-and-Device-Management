@@ -9,8 +9,8 @@ import crm.core.repository.persistence.entity.load.LazyReference;
 @Entity(tableName = "Customer")
 public class Customer {
     @Key
-    @Column(name = "CustomerID", type = "INT")
-    private Integer customerID;
+    @Column(name = "CustomerID", type = "BIGINT")
+    private Long customerID;
 
     @Column(name = "CustomerName", length = 150, nullable = false)
     private String customerName;
@@ -30,11 +30,11 @@ public class Customer {
     @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
-    public Integer getCustomerID() {
+    public Long getCustomerID() {
         return customerID;
     }
 
-    public void setCustomerID(Integer customerID) {
+    public void setCustomerID(Long customerID) {
         this.customerID = customerID;
     }
 

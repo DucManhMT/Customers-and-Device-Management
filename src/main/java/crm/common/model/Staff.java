@@ -11,8 +11,8 @@ import java.sql.Date;
 @Entity(tableName = "Staff")
 public class Staff {
     @Key
-    @Column(name = "StaffID", type = "INT")
-    private Integer staffID;
+    @Column(name = "StaffID", type = "BIGINT")
+    private Long staffID;
 
     @Column(name = "StaffName", length = 150, nullable = false)
     private String staffName;
@@ -38,11 +38,11 @@ public class Staff {
     @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
-    public Integer getStaffID() {
+    public Long getStaffID() {
         return staffID;
     }
 
-    public void setStaffID(Integer staffID) {
+    public void setStaffID(Long staffID) {
         this.staffID = staffID;
     }
 
@@ -103,11 +103,22 @@ public class Staff {
     }
 
     public Account getAccount() {
+        if (account == null) {
+            return null;
+        }
         return account.get();
     }
 
     public void setAccount(Account account) {
-        this.account.setValue(account);
+        if (this.account == null) {
+            this.account = new LazyReference<>(account);
+        } else {
+            this.account.setValue(account);
+        }
+        // synchronize Username
+        if (this.username == null && account != null) {
+            this.username = account.getUsername();
+        }
     }
 
 }

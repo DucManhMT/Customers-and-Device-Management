@@ -140,7 +140,7 @@ CREATE TABLE ProductTransaction (
     ItemID INT NOT NULL,
     Note NVARCHAR(255),
     FOREIGN KEY (ItemID) REFERENCES InventoryItem(ProductID),
-    FOREIGN KEY (SourseWarehouse) REFERENCES Warehouse(WarehouseID),
+    FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
 	FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
 );
 
