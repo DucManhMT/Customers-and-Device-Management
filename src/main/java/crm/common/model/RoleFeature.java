@@ -1,10 +1,11 @@
 package crm.common.model;
 
-import crm.core.repository.hibernate.annotation.Column;
-import crm.core.repository.hibernate.annotation.Entity;
-import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.persistence.annotation.Column;
+import crm.core.repository.persistence.annotation.Entity;
+import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.annotation.ManyToOne;
 import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 @Entity(tableName = "RoleFeature")
 public class RoleFeature {
@@ -19,10 +20,10 @@ public class RoleFeature {
     @Column(name = "FeatureID", type = "BIGINT", nullable = false)
     private Long featureID;
 
-    @ManyToOne(joinColumn = "RoleID")
+    @ManyToOne(joinColumn = "RoleID", fetch = FetchMode.LAZY)
     private LazyReference<Role> role;
 
-    @ManyToOne(joinColumn = "FeatureID")
+    @ManyToOne(joinColumn = "FeatureID", fetch = FetchMode.LAZY)
     private LazyReference<Feature> feature;
 
     public Long getRoleFeatureID() {

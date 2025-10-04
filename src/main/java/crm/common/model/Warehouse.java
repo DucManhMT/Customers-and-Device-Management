@@ -1,10 +1,8 @@
 package crm.common.model;
 
-import crm.core.repository.hibernate.annotation.Column;
-import crm.core.repository.hibernate.annotation.Entity;
-import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.persistence.annotation.*;
 import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 @Entity(tableName = "Warehouse")
 public class Warehouse {
@@ -21,7 +19,7 @@ public class Warehouse {
     @Column(name = "WarehouseManager", length = 255, nullable = false)
     private String warehouseManager;
 
-    @ManyToOne(joinColumn = "WarehouseManager")
+    @ManyToOne(joinColumn = "WarehouseManager", fetch = FetchMode.EAGER)
     private LazyReference<Account> managerAccount;
 
     public Long getWarehouseID() {

@@ -2,9 +2,10 @@ package crm.common.model;
 
 import crm.common.model.enums.ProductStatus;
 import crm.common.model.enums.converter.ProductStatusConverter;
-import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.persistence.annotation.*;
 import crm.core.repository.persistence.entity.convert.Convert;
 import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 @Entity(tableName = "ProductWarehouse")
 public class ProductWarehouse {
@@ -22,15 +23,15 @@ public class ProductWarehouse {
     @Column(name = "ItemID", type = "BIGINT", nullable = false)
     private Long itemID;
 
-    @ManyToOne(joinColumn = "WarehouseID")
+    @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
     private LazyReference<Warehouse> warehouse;
 
-    @ManyToOne(joinColumn = "ItemID")
+    @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
     private LazyReference<InventoryItem> inventoryItem;
 
     // Inverse side of one-to-one to ProductExported (optional / may be null until
     // exported)
-    @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID")
+    @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID", fetch = FetchMode.LAZY)
     private LazyReference<ProductExported> productExported;
 
     public Long getProductWarehouseID() {

@@ -1,10 +1,8 @@
 package crm.common.model;
 
-import crm.core.repository.hibernate.annotation.Column;
-import crm.core.repository.hibernate.annotation.Entity;
-import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.persistence.annotation.*;
 import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 import java.sql.Date;
 
@@ -26,10 +24,10 @@ public class WarehouseLog {
     @Column(name = "ProductRequestID", type = "BIGINT", nullable = false)
     private Long productRequestID;
 
-    @ManyToOne(joinColumn = "WarehouseID")
+    @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
     private LazyReference<Warehouse> warehouse;
 
-    @ManyToOne(joinColumn = "ProductRequestID")
+    @ManyToOne(joinColumn = "ProductRequestID", fetch = FetchMode.EAGER)
     private LazyReference<ProductRequest> productRequest;
 
     public Long getWarehouseLogID() {

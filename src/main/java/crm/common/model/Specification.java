@@ -1,7 +1,8 @@
 package crm.common.model;
 
-import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.persistence.annotation.*;
 import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 import java.util.List;
 
@@ -20,10 +21,10 @@ public class Specification {
     @Column(name = "SpecificationTypeID", type = "BIGINT", nullable = false)
     private Long specificationTypeID;
 
-    @ManyToOne(joinColumn = "SpecificationTypeID")
+    @ManyToOne(joinColumn = "SpecificationTypeID", fetch = FetchMode.EAGER)
     private LazyReference<SpecificationType> specificationType;
 
-    @OneToMany(mappedBy = "specificationID", joinColumn = "SpecificationID")
+    @OneToMany(mappedBy = "specificationID", joinColumn = "SpecificationID", fetch = FetchMode.LAZY)
     private List<ProductSpecification> productSpecifications;
 
     public Long getSpecificationID() {

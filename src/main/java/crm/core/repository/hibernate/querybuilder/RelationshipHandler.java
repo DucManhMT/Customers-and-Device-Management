@@ -1,47 +1,49 @@
 package crm.core.repository.hibernate.querybuilder;
 
-/**
- * Handler to manage relationships like @ManyToOne when mapping from ResultSet to entity.
- */
+
+import java.lang.reflect.Field;
+
+
+import crm.core.repository.persistence.annotation.ManyToOne;
+import crm.core.repository.persistence.annotation.OneToOne;
+
+
 public class RelationshipHandler {
 
-//    public static void handleRelationships(Object entity, ResultSet rs) {
-//        for (Field f : entity.getClass().getDeclaredFields()) {
-//            try {
-//                if (f.isAnnotationPresent(ManyToOne.class)) {
-//                    handleManyToOne(entity, f, rs);
-//                }
-//                // TODO: OneToOne, OneToMany nếu cần thêm
-//            } catch (Exception e) {
-//                throw new RuntimeException("Failed to handle relationship for field " + f.getName(), e);
-//            }
-//        }
-//
-//    }
+    public static boolean isManyToOne(Field field) {
+        return field.isAnnotationPresent(ManyToOne.class);
+    }
 
-//    private static void handleManyToOne(Object entity, Field field, ResultSet rs) throws Exception {
-//        field.setAccessible(true);
-//        ManyToOne ann = field.getAnnotation(ManyToOne.class);
-//
-//        String joinColumn = ann.joinColumn();
-//        Object fkValue = rs.getObject(joinColumn);
-//
-//        if (fkValue != null) {
-//            Class<?> targetType = getGenericType(field);
-//            LazyReference<?> ref = new LazyReference<>(targetType, fkValue);
-//            field.set(entity, ref);
-//        }
-//    }
+    public static boolean isOneToOne(Field field) {
+        return field.isAnnotationPresent(OneToOne.class);
+    }
 
-// Lấy kiểu generic của LazyReference<>
-//    private static Class<?> getGenericType(Field field) {
-//        try {
-//            // field type is LazyReference<Role>, so extract Role
-//            String typeName = field.getGenericType().getTypeName();
-//            String innerClass = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
-//            return Class.forName(innerClass);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Cannot resolve generic type for field " + field.getName(), e);
-//        }
-//    }
+    public static String getJoinColumn(Field field) {
+        if (field.isAnnotationPresent(ManyToOne.class)) {
+            return field.getAnnotation(ManyToOne.class).joinColumn();
+        }
+        if (field.isAnnotationPresent(OneToOne.class)) {
+            return field.getAnnotation(OneToOne.class).joinColumn();
+        }
+        return null;
+    }
+
+    public static Object extractManyToOneValue(Object entity, Field field) {
+        try {
+            field.setAccessible(true);
+            Object ref = field.get(entity);
+            if (ref == null) return null;
+
+            // Tìm @Key trong entity được tham chiếu
+            for (Field f : ref.getClass().getDeclaredFields()) {
+                if (f.isAnnotationPresent(crm.core.repository.persistence.annotation.Key.class)) {
+                    f.setAccessible(true);
+                    return f.get(ref);
+                }
+            }
+            throw new RuntimeException("No @Key found in related entity " + ref.getClass().getName());
+        } catch (Exception e) {
+            throw new RuntimeException("Error extracting ManyToOne value from " + field.getName(), e);
+        }
+    }
 }

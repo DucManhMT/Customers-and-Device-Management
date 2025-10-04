@@ -57,5 +57,34 @@ public class DBcontext {
         return conn;
     }
 
+    private static void runSchema(Connection conn, String classpathResource) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null) {
+            cl = DBcontext.class.getClassLoader();
+        }
+        try (InputStream is = cl.getResourceAsStream(classpathResource)) {
+            if (is == null)
+                return; // nothing to run
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    sb.append(line).append('\n');
+                }
+            }
+            String[] statements = sb.toString().split(";\\s*\n");
+            try (Statement st = conn.createStatement()) {
+                for (String sql : statements) {
+                    String trimmed = sql.trim();
+                    if (trimmed.isEmpty())
+                        continue;
+                    st.execute(trimmed);
+                }
+            }
+        } catch (Exception e) {
+            // log and continue (schema init failure should surface via later SQL errors)
+            e.printStackTrace();
+        }
+    }
 
 }
