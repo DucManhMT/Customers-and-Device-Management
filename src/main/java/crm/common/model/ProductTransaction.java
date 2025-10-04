@@ -25,6 +25,7 @@ public class ProductTransaction {
     private Long destinationWarehouseID;
 
     @Column(name = "TransactionStatus", length = 20, nullable = false)
+    @Convert(converter = TransactionStatusConverter.class)
     private TransactionStatus transactionStatus;
 
     @Column(name = "ItemID", type = "BIGINT", nullable = false)

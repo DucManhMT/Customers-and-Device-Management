@@ -17,6 +17,7 @@ public class Request {
     private String requestDescription;
 
     @Column(name = "RequestStatus")
+    @Convert(converter = RequestStatusConverter.class)
     private RequestStatus requestStatus;
 
     @Column(name = "StartDate", type = "DATETIME", nullable = false)
