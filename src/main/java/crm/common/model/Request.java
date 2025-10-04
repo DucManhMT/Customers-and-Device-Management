@@ -110,11 +110,22 @@ public class Request {
     }
 
     public Contract getContract() {
+        if (contract == null) {
+            return null;
+        }
         return contract.get();
     }
 
     public void setContract(Contract contract) {
-        this.contract.setValue(contract);
+        if (this.contract == null) {
+            this.contract = new LazyReference<>(contract);
+        } else {
+            this.contract.setValue(contract);
+        }
+        // synchronize ContractID
+        if (this.contractID == null && contract != null) {
+            this.contractID = contract.getContractID();
+        }
     }
 
     public List<RequestLog> getLogs() {

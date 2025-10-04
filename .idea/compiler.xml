@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="CRM" options="-endorseddirs &quot;C:\Users\FPT SHOP\Documents\CRM\CRM-hunter\Customers-and-Device-Management\target/endorsed&quot;" />
+      <module name="CRM" options="-endorseddirs A:\SE\project\Customers-and-Device-Management\target/endorsed" />
     </option>
   </component>
 </project>

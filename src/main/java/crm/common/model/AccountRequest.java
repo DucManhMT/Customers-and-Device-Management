@@ -47,18 +47,40 @@ public class AccountRequest {
     }
 
     public Account getAccount() {
+        if (account == null) {
+            return null;
+        }
         return account.get();
     }
 
     public void setAccount(Account account) {
-        this.account.setValue(account);
+        if (this.account == null) {
+            this.account = new LazyReference<>(account);
+        } else {
+            this.account.setValue(account);
+        }
+        // synchronize Username
+        if (this.username == null && account != null) {
+            this.username = account.getUsername();
+        }
     }
 
     public Request getRequest() {
+        if (request == null) {
+            return null;
+        }
         return request.get();
     }
 
     public void setRequest(Request request) {
-        this.request.setValue(request);
+        if (this.request == null) {
+            this.request = new LazyReference<>(request);
+        } else {
+            this.request.setValue(request);
+        }
+        // synchronize RequestID
+        if (this.requestID == null && request != null) {
+            this.requestID = request.getRequestID();
+        }
     }
 }

@@ -66,11 +66,22 @@ public class Type {
     }
 
     public Category getCategory() {
+        if (category == null) {
+            return null;
+        }
         return category.get();
     }
 
     public void setCategory(Category category) {
-        this.category.setValue(category);
+        if (this.category == null) {
+            this.category = new LazyReference<>(category);
+        } else {
+            this.category.setValue(category);
+        }
+        // synchronize CategoryID
+        if (this.categoryID == null && category != null) {
+            this.categoryID = category.getCategoryID();
+        }
     }
 
     public List<Product> getProducts() {

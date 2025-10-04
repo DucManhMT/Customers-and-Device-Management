@@ -29,8 +29,6 @@ public class ProductWarehouse {
     @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
     private LazyReference<InventoryItem> inventoryItem;
 
-    // Inverse side of one-to-one to ProductExported (optional / may be null until
-    // exported)
     @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID", fetch = FetchMode.LAZY)
     private LazyReference<ProductExported> productExported;
 
@@ -67,26 +65,56 @@ public class ProductWarehouse {
     }
 
     public Warehouse getWarehouse() {
+        if (warehouse == null) {
+            return null;
+        }
         return warehouse.get();
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        this.warehouse.setValue(warehouse);
+        if (this.warehouse == null) {
+            this.warehouse = new LazyReference<>(warehouse);
+        } else {
+            this.warehouse.setValue(warehouse);
+        }
+        // synchronize WarehouseID
+        if (this.warehouseID == null && warehouse != null) {
+            this.warehouseID = warehouse.getWarehouseID();
+        }
     }
 
     public InventoryItem getInventoryItem() {
+        if (inventoryItem == null) {
+            return null;
+        }
         return inventoryItem.get();
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        this.inventoryItem.setValue(inventoryItem);
+        if (this.inventoryItem == null) {
+            this.inventoryItem = new LazyReference<>(inventoryItem);
+        } else {
+            this.inventoryItem.setValue(inventoryItem);
+        }
+        // synchronize ItemID
+        if (this.itemID == null && inventoryItem != null) {
+            this.itemID = inventoryItem.getItemId();
+        }
     }
 
     public ProductExported getProductExported() {
+        if (productExported == null) {
+            return null;
+        }
         return productExported.get();
     }
 
     public void setProductExported(ProductExported productExported) {
-        this.productExported.setValue(productExported);
+        if (this.productExported == null) {
+            this.productExported = new LazyReference<>(productExported);
+        } else {
+            this.productExported.setValue(productExported);
+        }
+
     }
 }

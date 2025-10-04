@@ -14,9 +14,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transaction;
 
-@WebServlet(name = "RequestCreationController", urlPatterns = { "/requests/create" })
+@WebServlet(name = "RequestCreationController", urlPatterns = {"/requests/create"})
 public class RequestCreationController extends HttpServlet {
 
     @Override
@@ -59,7 +58,6 @@ public class RequestCreationController extends HttpServlet {
             TransactionManager.beginTransaction();
             contracts = (List<Contract>) contractRepo.findAll();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             try {

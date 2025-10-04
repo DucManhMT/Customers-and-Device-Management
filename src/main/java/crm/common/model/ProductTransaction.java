@@ -92,19 +92,41 @@ public class ProductTransaction {
     }
 
     public InventoryItem getInventoryItem() {
+        if (inventoryItem == null) {
+            return null;
+        }
         return inventoryItem.get();
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        this.inventoryItem.setValue(inventoryItem);
+        if (this.inventoryItem == null) {
+            this.inventoryItem = new LazyReference<>(inventoryItem);
+        } else {
+            this.inventoryItem.setValue(inventoryItem);
+        }
+        // synchronize ItemID
+        if (this.itemID == null && inventoryItem != null) {
+            this.itemID = inventoryItem.getItemId();
+        }
     }
 
     public Warehouse getSourceWarehouseEntity() {
+        if (sourceWarehouse == null) {
+            return null;
+        }
         return sourceWarehouse.get();
     }
 
     public void setSourceWarehouseEntity(Warehouse sourceWarehouse) {
-        this.sourceWarehouse.setValue(sourceWarehouse);
+        if (this.sourceWarehouse == null) {
+            this.sourceWarehouse = new LazyReference<>(sourceWarehouse);
+        } else {
+            this.sourceWarehouse.setValue(sourceWarehouse);
+        }
+        // synchronize SourceWarehouseID
+        if (this.sourceWarehouseID == null && sourceWarehouse != null) {
+            this.sourceWarehouseID = sourceWarehouse.getWarehouseID();
+        }
     }
 
     public Long getSourceWarehouseID() {
@@ -116,10 +138,21 @@ public class ProductTransaction {
     }
 
     public Warehouse getDestinationWarehouseEntity() {
+        if (destinationWarehouse == null) {
+            return null;
+        }
         return destinationWarehouse.get();
     }
 
     public void setDestinationWarehouseEntity(Warehouse destinationWarehouse) {
-        this.destinationWarehouse.setValue(destinationWarehouse);
+        if (this.destinationWarehouse == null) {
+            this.destinationWarehouse = new LazyReference<>(destinationWarehouse);
+        } else {
+            this.destinationWarehouse.setValue(destinationWarehouse);
+        }
+        // synchronize DestinationWarehouseID
+        if (this.destinationWarehouseID == null && destinationWarehouse != null) {
+            this.destinationWarehouseID = destinationWarehouse.getWarehouseID();
+        }
     }
 }

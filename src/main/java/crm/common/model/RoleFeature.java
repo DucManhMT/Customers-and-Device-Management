@@ -51,18 +51,40 @@ public class RoleFeature {
     }
 
     public Role getRole() {
+        if (role == null) {
+            return null;
+        }
         return role.get();
     }
 
     public void setRole(Role role) {
-        this.role.setValue(role);
+        if (this.role == null) {
+            this.role = new LazyReference<>(role);
+        } else {
+            this.role.setValue(role);
+        }
+        // synchronize RoleID
+        if (this.roleID == null && role != null) {
+            this.roleID = role.getRoleID();
+        }
     }
 
     public Feature getFeature() {
+        if (feature == null) {
+            return null;
+        }
         return feature.get();
     }
 
     public void setFeature(Feature feature) {
-        this.feature.setValue(feature);
+        if (this.feature == null) {
+            this.feature = new LazyReference<>(feature);
+        } else {
+            this.feature.setValue(feature);
+        }
+        // synchronize FeatureID
+        if (this.featureID == null && feature != null) {
+            this.featureID = feature.getFeatureID();
+        }
     }
 }

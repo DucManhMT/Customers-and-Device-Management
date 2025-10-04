@@ -49,11 +49,22 @@ public class SpecificationType {
     }
 
     public Type getType() {
+        if (type == null) {
+            return null;
+        }
         return type.get();
     }
 
     public void setType(Type type) {
-        this.type.setValue(type);
+        if (this.type == null) {
+            this.type = new LazyReference<>(type);
+        } else {
+            this.type.setValue(type);
+        }
+        // synchronize TypeID
+        if (this.typeID == null && type != null) {
+            this.typeID = type.getTypeID();
+        }
     }
 
     public List<Specification> getSpecifications() {

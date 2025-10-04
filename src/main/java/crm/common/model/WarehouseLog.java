@@ -71,18 +71,40 @@ public class WarehouseLog {
     }
 
     public Warehouse getWarehouse() {
+        if (warehouse == null) {
+            return null;
+        }
         return warehouse.get();
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        this.warehouse.setValue(warehouse);
+        if (this.warehouse == null) {
+            this.warehouse = new LazyReference<>(warehouse);
+        } else {
+            this.warehouse.setValue(warehouse);
+        }
+        // synchronize WarehouseID
+        if (this.warehouseID == null && warehouse != null) {
+            this.warehouseID = warehouse.getWarehouseID();
+        }
     }
 
     public ProductRequest getProductRequest() {
+        if (productRequest == null) {
+            return null;
+        }
         return productRequest.get();
     }
 
     public void setProductRequest(ProductRequest productRequest) {
-        this.productRequest.setValue(productRequest);
+        if (this.productRequest == null) {
+            this.productRequest = new LazyReference<>(productRequest);
+        } else {
+            this.productRequest.setValue(productRequest);
+        }
+        // synchronize ProductRequestID
+        if (this.productRequestID == null && productRequest != null) {
+            this.productRequestID = productRequest.getProductRequestID();
+        }
     }
 }

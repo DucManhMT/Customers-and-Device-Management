@@ -55,10 +55,21 @@ public class Warehouse {
     }
 
     public Account getManagerAccount() {
+        if (managerAccount == null) {
+            return null;
+        }
         return managerAccount.get();
     }
 
     public void setManagerAccount(Account managerAccount) {
-        this.managerAccount.setValue(managerAccount);
+        if (this.managerAccount == null) {
+            this.managerAccount = new LazyReference<>(managerAccount);
+        } else {
+            this.managerAccount.setValue(managerAccount);
+        }
+        // synchronize WarehouseManager (Username)
+        if (this.warehouseManager == null && managerAccount != null) {
+            this.warehouseManager = managerAccount.getUsername();
+        }
     }
 }

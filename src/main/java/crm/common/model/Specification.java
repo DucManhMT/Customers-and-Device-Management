@@ -60,11 +60,22 @@ public class Specification {
     }
 
     public SpecificationType getSpecificationType() {
+        if (specificationType == null) {
+            return null;
+        }
         return specificationType.get();
     }
 
     public void setSpecificationType(SpecificationType specificationType) {
-        this.specificationType.setValue(specificationType);
+        if (this.specificationType == null) {
+            this.specificationType = new LazyReference<>(specificationType);
+        } else {
+            this.specificationType.setValue(specificationType);
+        }
+        // synchronize SpecificationTypeID
+        if (this.specificationTypeID == null && specificationType != null) {
+            this.specificationTypeID = specificationType.getSpecificationTypeID();
+        }
     }
 
     public List<ProductSpecification> getProductSpecifications() {

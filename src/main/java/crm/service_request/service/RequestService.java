@@ -48,6 +48,7 @@ public class RequestService {
         if (status != null && !status.isEmpty()) {
             builder.equal("RequestStatus", status);
         }
+
         if (description != null && !description.isEmpty()) {
             builder.like("RequestDescription", "%" + description + "%");
         }

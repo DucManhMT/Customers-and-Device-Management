@@ -489,17 +489,17 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                 if (rel.isCollection()) {
                     // Collection side: assign LazyList placeholder (no immediate fetch even if
                     // EAGER until batch logic exists)
-                    var repo = resolveRepository(rel.getTargetType());
+                    CrudRepository repo = resolveRepository(rel.getTargetType());
                     int keyIdx = labelIndex.get(keyField.getName().toLowerCase());
                     Object keyVal = rs.getObject(keyIdx);
                     if (TransactionManager.getCache().contains(EntityKey.of(cls, keyVal))) {
                         LazyReference wrapper = new LazyReference(
-                                () -> (Object) TransactionManager.getCache().get(EntityKey.of(cls, keyVal)));
+                                () -> TransactionManager.getCache().get(EntityKey.of(cls, keyVal)));
                         f.set(obj, wrapper);
                         continue;
                     }
                     @SuppressWarnings("unchecked")
-                    LazyList<?> list = new LazyList<Object>(() -> (List) repo
+                    LazyList list = new LazyList<Object>(() -> (List) repo
                             .findWithCondition(ClauseBuilder.builder().equal(keyField.getName(), keyVal)));
                     f.set(obj, list);
                     continue;
@@ -507,7 +507,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
                 // Single-valued relation
                 if (rel.getFetchMode() == FetchMode.EAGER) {
                     // Attempt eager load via repository lookup if available
-                    var repo = resolveRepository(rel.getTargetType());
+                    CrudRepository repo = resolveRepository(rel.getTargetType());
 
                     // Assume FK column stored on this row as rel.getJoinColumn()
                     Object fkValue = null;

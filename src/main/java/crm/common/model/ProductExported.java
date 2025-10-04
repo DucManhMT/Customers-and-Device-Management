@@ -36,18 +36,40 @@ public class ProductExported {
     }
 
     public ProductWarehouse getProductWarehouse() {
+        if (productWarehouse == null) {
+            return null;
+        }
         return productWarehouse.get();
     }
 
     public void setProductWarehouse(ProductWarehouse productWarehouse) {
-        this.productWarehouse.setValue(productWarehouse);
+        if (this.productWarehouse == null) {
+            this.productWarehouse = new LazyReference<>(productWarehouse);
+        } else {
+            this.productWarehouse.setValue(productWarehouse);
+        }
+        // synchronize ProductWarehouseID
+        if (this.productWarehouseID == null && productWarehouse != null) {
+            this.productWarehouseID = productWarehouse.getProductWarehouseID();
+        }
     }
 
     public WarehouseLog getWarehouseLog() {
+        if (warehouseLog == null) {
+            return null;
+        }
         return warehouseLog.get();
     }
 
     public void setWarehouseLog(WarehouseLog warehouseLog) {
-        this.warehouseLog.setValue(warehouseLog);
+        if (this.warehouseLog == null) {
+            this.warehouseLog = new LazyReference<>(warehouseLog);
+        } else {
+            this.warehouseLog.setValue(warehouseLog);
+        }
+        // synchronize WarehouseLogID
+        if (this.warehouseLogID == null && warehouseLog != null) {
+            this.warehouseLogID = warehouseLog.getWarehouseLogID();
+        }
     }
 }

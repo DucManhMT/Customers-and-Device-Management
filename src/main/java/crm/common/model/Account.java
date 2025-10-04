@@ -63,10 +63,22 @@ public class Account {
     }
 
     public Role getRole() {
+        // Prevent NullPointerException
+        if (role == null) {
+            return null;
+        }
         return role.get();
     }
 
     public void setRole(Role role) {
-        this.role.setValue(role);
+        if (this.role == null) {
+            this.role = new LazyReference<>(role);
+        } else {
+            this.role.setValue(role);
+        }
+        // synchronize roleID
+        if (this.roleID == null && role != null) {
+            this.roleID = role.getRoleID();
+        }
     }
 }
