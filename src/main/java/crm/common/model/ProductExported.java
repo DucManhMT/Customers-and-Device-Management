@@ -1,15 +1,31 @@
 package crm.common.model;
 
+<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+=======
+import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+>>>>>>> main
 
 @Entity(tableName = "ProductExported")
 public class ProductExported {
     @Key
+<<<<<<< HEAD
     @OneToOne(joinColumn = "ProductWarehouseID", mappedBy = "productWarehouseID")
+=======
+    @Column(name = "ProductWarehouseID", type = "BIGINT", nullable = false)
+    private Long productWarehouseID;
+
+    @Column(name = "WarehouseLogID", type = "BIGINT", nullable = false)
+    private Long warehouseLogID;
+
+    @OneToOne(joinColumn = "ProductWarehouseID", fetch = FetchMode.EAGER, mappedBy = "productWarehouseID")
+>>>>>>> main
     private LazyReference<ProductWarehouse> productWarehouse;
 
-    @ManyToOne(joinColumn = "WarehouseLogID")
+    @ManyToOne(joinColumn = "WarehouseLogID", fetch = FetchMode.EAGER)
     private LazyReference<WarehouseLog> warehouseLog;
 
 

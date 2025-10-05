@@ -1,6 +1,9 @@
 package crm.core.repository.hibernate.querybuilder;
 
+import crm.core.repository.persistence.annotation.*;
+
 import java.lang.reflect.Field;
+<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;
@@ -8,21 +11,25 @@ import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+=======
+
+>>>>>>> main
 
 public class EntityFieldMapper {
 
-    public static boolean isKey(Field field) {
-        return field.isAnnotationPresent(Key.class);
-    }
-
     public static boolean isColumn(Field field) {
         return field.isAnnotationPresent(Column.class);
+    }
+
+    public static boolean isKey(Field field) {
+        return field.isAnnotationPresent(Key.class);
     }
 
     public static boolean isEnumerated(Field field) {
         return field.isAnnotationPresent(Enumerated.class);
     }
 
+<<<<<<< HEAD
     public static boolean isManyToOne(Field field) {
         return field.isAnnotationPresent(ManyToOne.class);
     }
@@ -39,6 +46,8 @@ public class EntityFieldMapper {
         return clazz.isAnnotationPresent(Entity.class);
     }
 
+=======
+>>>>>>> main
     public static String getColumnName(Field field) {
         if (isColumn(field)) {
             return field.getAnnotation(Column.class).name();
@@ -49,8 +58,12 @@ public class EntityFieldMapper {
             OneToOne ann = field.getAnnotation(OneToOne.class);
             return ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
         }
+<<<<<<< HEAD
 
         throw new RuntimeException("Field " + field.getName() + " has no @Column annotation");
+=======
+        return field.getName();
+>>>>>>> main
     }
     public static String getTableName(Class<?> clazz) {
         if (clazz.isAnnotationPresent(Entity.class)) {
@@ -64,21 +77,15 @@ public class EntityFieldMapper {
             field.setAccessible(true);
             Object value = field.get(entity);
 
-            // Enum xử lý đặc biệt nếu có @Enumerated
-            if (isEnumerated(field) && value != null) {
-                return value.toString(); // Lưu dưới dạng VARCHAR
+            if (value != null && isEnumerated(field)) {
+                return value.toString(); // Enum lưu dưới dạng String trong DB
             }
-
-            // LazyReference thì lấy FK
-            if (value instanceof LazyReference<?> ref) {
-                return ref.getForeignKeyValue();
-            }
-
             return value;
         } catch (Exception e) {
-            throw new RuntimeException("Cannot extract value for field " + field.getName(), e);
+            throw new RuntimeException("Error extracting value from field " + field.getName(), e);
         }
     }
+<<<<<<< HEAD
 
 
     public static Object extractValueFromResultSet(Field field, ResultSet rs) {
@@ -207,4 +214,6 @@ public class EntityFieldMapper {
         }
     }
 
+=======
+>>>>>>> main
 }

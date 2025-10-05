@@ -1,9 +1,11 @@
-package crm.core.repository.hibernate.annotation;
+package crm.core.repository.persistence.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 /**
  * Defines a many-to-one association from the declaring entity to a target
@@ -28,5 +30,11 @@ public @interface ManyToOne {
      */
     String joinColumn();
 
-
+    /**
+     * Fetch strategy for the association (e.g. LAZY or EAGER). Defaults to
+     * {@link FetchMode#LAZY}.
+     * 
+     * @return fetch mode
+     */
+    FetchMode fetch() default FetchMode.LAZY;
 }

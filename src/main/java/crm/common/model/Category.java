@@ -1,9 +1,10 @@
 package crm.common.model;
 
-import crm.core.repository.hibernate.annotation.Column;
-import crm.core.repository.hibernate.annotation.Entity;
-import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.OneToMany;
+import crm.core.repository.persistence.annotation.Column;
+import crm.core.repository.persistence.annotation.Entity;
+import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.annotation.OneToMany;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Category {
     @Column(name = "CategoryImage", length = 255)
     private String categoryImage;
 
-    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID")
+    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID", fetch = FetchMode.LAZY)
     private List<Type> types;
 
     public Integer getCategoryID() {

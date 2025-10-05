@@ -1,8 +1,11 @@
 package crm.common.model;
-import crm.common.model.enums.AccountStatus;
-import crm.core.repository.hibernate.annotation.*;
-import crm.core.repository.hibernate.entitymanager.LazyReference;
 
+import crm.common.model.enums.AccountStatus;
+import crm.common.model.enums.converter.AccountStatusConverter;
+import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
 
 @Entity(tableName = "Account")
 public class Account {
@@ -14,12 +17,20 @@ public class Account {
     private String passwordHash;
 
     // Stored as VARCHAR in DB representing ENUM
-    @Enumerated
     @Column(name = "AccountStatus")
+    @Enumerated
     private AccountStatus accountStatus;
 
+<<<<<<< HEAD
     @ManyToOne(joinColumn = "RoleID")
     LazyReference<Role> role;
+=======
+    @Column(name = "RoleID")
+    private Integer roleID;
+
+    @ManyToOne(joinColumn = "RoleID", fetch = FetchMode.EAGER)
+    private LazyReference<Role> role;
+>>>>>>> main
 
     public String getUsername() {
         return username;
@@ -45,24 +56,19 @@ public class Account {
         this.accountStatus = accountStatus;
     }
 
-    public void setRole(Role role) {
-        if (role != null) {
-            this.role = new LazyReference<>(Role.class, role.getRoleID());
-        } else {
-            this.role = null;
-        }
+    public Integer getRoleID() {
+        return roleID;
     }
+
+    public void setRoleID(Integer roleID) {
+        this.roleID = roleID;
+    }
+
     public Role getRole() {
         return role.get();
     }
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                ", accountStatus=" + accountStatus +
-                ", role=" + role +
-                '}';
+    public void setRole(Role role) {
+        this.role.setValue(role);
     }
 }

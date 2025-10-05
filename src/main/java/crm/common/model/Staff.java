@@ -1,10 +1,19 @@
 package crm.common.model;
 
+<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+=======
+import crm.core.repository.persistence.annotation.Column;
+import crm.core.repository.persistence.annotation.Entity;
+import crm.core.repository.persistence.annotation.Key;
+import crm.core.repository.persistence.annotation.ManyToOne;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+>>>>>>> main
 
 import java.sql.Date;
 
@@ -33,7 +42,7 @@ public class Staff {
     private Date dateOfBirth;
 
 
-    @ManyToOne(joinColumn = "Username")
+    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
     private LazyReference<Account> account;
 
     public Integer getStaffID() {

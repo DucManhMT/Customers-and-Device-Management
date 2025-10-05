@@ -1,691 +1,691 @@
-//package crm.core.repository.persistence.repository;
-//
-//import java.lang.reflect.Field;
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.ResultSetMetaData;
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//import crm.core.repository.persistence.cache.EntityKey;
-//import crm.core.repository.persistence.config.DBcontext;
-//import crm.core.repository.persistence.config.TransactionManager;
-//import crm.core.repository.persistence.entity.ColumnMeta;
-//import crm.core.repository.persistence.entity.EntityMeta;
-//import crm.core.repository.persistence.entity.load.LazyList;
-//import crm.core.repository.persistence.entity.load.LazyReference;
-//import crm.core.repository.persistence.entity.relation.FetchMode;
-//import crm.core.repository.persistence.entity.relation.RelationshipMeta;
-//import crm.core.repository.persistence.query.clause.ClauseBuilder;
-//import crm.core.repository.persistence.query.common.Page;
-//import crm.core.repository.persistence.query.common.PageRequest;
-//import crm.core.repository.persistence.query.crud.DeleteBuilder;
-//import crm.core.repository.persistence.query.crud.InsertBuilder;
-//import crm.core.repository.persistence.query.crud.SelectBuilder;
-//import crm.core.repository.persistence.query.crud.UpdateBuilder;
-//
-//import java.sql.SQLException;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-///**
-// * An abstract base class for implementing CRUD (Create, Read, Update, Delete)
-// * operations on entities of type {@code E} with primary key of type {@code K}.
-// * <p>
-// * This class provides common functionality for interacting with a database,
-// * including methods for saving, updating, deleting, and finding entities.
-// * It uses reflection to map entity fields to database columns and supports
-// * pagination through the {@link PageRequest} and {@link Page} classes.
-// * </p>
-// *
-// * @param <E> the type of entity
-// * @param <K> the type of the primary key
-// *
-// * @author Kepter
-// * @author Nguyen Anh Tu
-// * @since 1.0
-// *
-// */
-//public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
-//
-//    private final Class<E> cls;
-//    private final EntityMeta<E> entityMeta;
-//    /**
-//     * Persistent (scalar) fields only (those annotated with @Column) used for DML.
-//     */
-//    private final List<Field> persistentFields;
-//    private final Field keyField;
-//
-//    public AbstractRepository(Class<E> cls) {
-//        this.cls = cls;
-//        // Build metadata once
-//        this.entityMeta = EntityMeta.scanAnnotation(cls);
-//        this.keyField = entityMeta.getKeyField();
-//        this.persistentFields = entityMeta.getFields();
-//    }
-//
-//    @Override
-//    public boolean isExist(K key) {
-//        Connection connection = DBcontext.getConnection();
-//        SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
-//                .columns(List.of("1"))
-//                .where(keyField.getName() + " = ?", key)
-//                .limit(1);
-//        boolean exists = false;
-//        try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
-//                ResultSet rs = preparedSt.executeQuery()) {
-//            if (rs.next()) {
-//                exists = true;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return exists;
-//    }
-//
-//    @Override
-//    public int count() {
-//        Connection connection = DBcontext.getConnection();
-//        SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
-//                .columns(List.of("COUNT(*) AS total"));
-//        int count = 0;
-//        try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
-//                ResultSet rs = preparedSt.executeQuery()) {
-//            if (rs.next()) {
-//                count = rs.getInt("total");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return count;
-//    }
-//
-//    @Override
-//    public Iterable<E> findAll() {
-//        List<E> result = null;
-//        try {
-//            TransactionManager.beginTransaction();
-//            Connection connection = TransactionManager.getConnection();
-//            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
-//                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList());
-//
-//            try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
-//                    ResultSet rs = preparedSt.executeQuery()) {
-//                result = mapListResultSet(rs, cls);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            TransactionManager.getCache().put(result);
-//            TransactionManager.commit();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                TransactionManager.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//
-//        return result;
-//    }
-//
-//    @Override
-//    public Iterable<E> findWithCondition(ClauseBuilder clause) {
-//        List<E> result = null;
-//        try {
-//            TransactionManager.beginTransaction();
-//            Connection connection = DBcontext.getConnection();
-//            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
-//                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
-//                    .where(clause.build());
-//            builder.setParameters(clause.getParameters());
-//
-//            try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());) {
-//                setPreparedStatementValue(preparedSt, builder.getParameters());
-//                try (ResultSet rs = preparedSt.executeQuery()) {
-//                    result = mapListResultSet(rs, cls);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            TransactionManager.getCache().put(result);
-//            TransactionManager.commit();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                TransactionManager.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//
-//        return result;
-//
-//    }
-//
-//    public Page<E> findWithCondition(ClauseBuilder clause, PageRequest request) {
-//        List<E> result = null;
-//        int total = 0;
-//        try {
-//            TransactionManager.beginTransaction();
-//            Connection connection = TransactionManager.getConnection();
-//            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
-//                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
-//                    .where(clause.build());
-//            builder.setParameters(clause.getParameters());
-//            String query = builder.build(false);
-//
-//            // Count total records
-//            total = countRecord(query, connection, builder.getParameters());
-//
-//            // Calculate offset for pagination
-//            int offset = (request.getPageNumber() - 1) * request.getPageSize();
-//            // Apply pagination and sorting to the original query
-//            builder.limit(request.getPageSize() > total ? total : request.getPageSize()).offset(offset);
-//            if (request.getSort() != null && request.getSort().getOrders() != null) {
-//                builder.orderBy(request.getSort().getOrders());
-//            }
-//
-//            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//                setPreparedStatementValue(ps, builder.getParameters());
-//                try (ResultSet rs = ps.executeQuery()) {
-//                    result = mapListResultSet(rs, cls);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            TransactionManager.getCache().put(result);
-//            TransactionManager.commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            try {
-//                TransactionManager.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//        return new Page<>(total, request, result);
-//    }
-//
-//    /**
-//     * Retrieves a paginated list of entities from the database based on the
-//     * provided {@link PageRequest}.
-//     * <p>
-//     * This method builds a SQL SELECT query using the {@link SelectBuilder},
-//     * applies pagination and sorting,
-//     * executes a count query to determine the total number of records, and then
-//     * fetches the requested page of results.
-//     * The results are mapped to a list of entities of type {@code E}.
-//     * </p>
-//     *
-//     * @param request the {@link PageRequest} containing pagination and sorting
-//     *                information
-//     * @return a {@link Page} object containing the total number of records, the
-//     *         page request, and the list of entities
-//     */
-//    public Page<E> findAll(PageRequest request) {
-//        List<E> result = null;
-//        int total = 0;
-//        try {
-//            TransactionManager.beginTransaction();
-//            Connection connection = TransactionManager.getConnection();
-//            // Build the base select query
-//            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
-//                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList());
-//            String query = builder.build(false);
-//
-//            // Count total records
-//            total = countRecord(query, connection, null);
-//
-//            int offset = (request.getPageNumber() - 1) * request.getPageSize();
-//            // Apply pagination and sorting to the original query
-//            builder.limit(request.getPageSize() > total ? total : request.getPageSize()).offset(offset);
-//            if (request.getSort() != null && request.getSort().getOrders() != null) {
-//                builder.orderBy(request.getSort().getOrders());
-//            }
-//
-//            try (PreparedStatement ps = connection.prepareStatement(builder.build());
-//                    ResultSet rs = ps.executeQuery()) {
-//                result = mapListResultSet(rs, cls);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            TransactionManager.getCache().put(result);
-//            TransactionManager.commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            try {
-//                TransactionManager.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//        return new Page<>(total, request, result);
-//    }
-//
-//    @Override
-//    public void deleteById(K key) throws SQLException {
-//        TransactionManager.beginTransaction();
-//        Connection connection = TransactionManager.getConnection();
-//        DeleteBuilder<E> builder = DeleteBuilder.builder(entityMeta).where(keyField.getName() + " = ?", key);
-//        try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//            setPreparedStatementValue(ps, builder.getParameters());
-//            ps.execute();
-//            TransactionManager.getCache().remove(EntityKey.of(cls, key));
-//            TransactionManager.commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            TransactionManager.rollback();
-//        }
-//    }
-//
-//    @Override
-//    public void deleteWithCondition(ClauseBuilder clause) throws SQLException {
-//        TransactionManager.beginTransaction();
-//        Connection connection = TransactionManager.getConnection();
-//        DeleteBuilder<E> builder = DeleteBuilder.builder(entityMeta).where(clause.build());
-//        builder.setParameters(clause.getParameters());
-//        try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//            setPreparedStatementValue(ps, builder.getParameters());
-//            ps.execute();
-//            TransactionManager.getCache().clear(entityMeta.getClass());
-//            TransactionManager.commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            TransactionManager.rollback();
-//        }
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public E findById(K key) {
-//        E entity = null;
-//        try {
-//            TransactionManager.beginTransaction();
-//            if (TransactionManager.getCache().contains(EntityKey.of(cls, key))) {
-//                return (E) TransactionManager.getCache().get(EntityKey.of(cls, key));
-//            }
-//            Connection connection = TransactionManager.getConnection();
-//            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta).where(keyField.getName() + " = ?", key);
-//            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//                setPreparedStatementValue(ps, builder.getParameters());
-//                try (ResultSet rs = ps.executeQuery()) {
-//                    if (rs.next()) {
-//                        entity = mapResultSet(rs, cls);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            TransactionManager.getCache().put(EntityKey.of(cls, key), entity);
-//            TransactionManager.commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            try {
-//                TransactionManager.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//        return entity;
-//    }
-//
-//    @Override
-//    public E save(E entity) throws SQLException {
-//        TransactionManager.beginTransaction();
-//        Connection connection = TransactionManager.getConnection();
-//        try {
-//            if (keyField == null) {
-//                throw new IllegalStateException("Entity without primary key @Key");
-//            }
-//            keyField.setAccessible(true);
-//            Object keyVal = keyField.get(entity);
-//            if (keyVal == null) {
-//                throw new IllegalArgumentException("Primary key must be set manual (no AUTO_INCREMENT)");
-//            }
-//            List<Object> values = new ArrayList<>();
-//            List<String> columnNames = new ArrayList<>();
-//            for (Field field : persistentFields) {
-//                field.setAccessible(true);
-//                columnNames.add(entityMeta.getColnumName(field.getName()));
-//
-//                // do convert here
-//                Object value = entityMeta.getColnumValue(field.get(entity), field);
-//                values.add(value);
-//            }
-//            InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
-//                    .columns(columnNames)
-//                    .values(values);
-//            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//                setPreparedStatementValue(ps, builder.getParameters());
-//                ps.executeUpdate();
-//            }
-//            TransactionManager.getCache().put(EntityKey.of(cls, keyVal), entity);
-//            TransactionManager.commit();
-//            return entity;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            TransactionManager.rollback();
-//            return null;
-//        }
-//    }
-//
-//    @Override
-//    public Iterable<E> saveAll(Iterable<E> entities) throws SQLException {
-//        TransactionManager.beginTransaction();
-//        Connection connection = TransactionManager.getConnection();
-//        try {
-//            if (keyField == null) {
-//                throw new IllegalStateException("Entity without primary key @Key");
-//            }
-//            keyField.setAccessible(true);
-//
-//            List<Object> keyValues = new ArrayList<>();
-//            for (E entity : entities) {
-//                Object keyVal = keyField.get(entity);
-//                if (keyVal == null) {
-//                    throw new IllegalArgumentException("Primary key must be set manual (no AUTO_INCREMENT)");
-//                }
-//                keyValues.add(keyVal);
-//            }
-//
-//            InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
-//                    .columns(persistentFields.stream().map(Field::getName).toList());
-//
-//            for (E entity : entities) {
-//                List<Object> values = new ArrayList<>();
-//                for (Field field : persistentFields) {
-//                    field.setAccessible(true);
-//
-//                    // do convert here
-//                    values.add(entityMeta.getColnumValue(field.get(entity), field));
-//                }
-//                builder.values(values.toArray());
-//            }
-//
-//            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//                setPreparedStatementValue(ps, builder.getParameters());
-//                ps.executeUpdate();
-//            }
-//            TransactionManager.getCache().put(entities);
-//            TransactionManager.commit();
-//            return entities;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            TransactionManager.rollback();
-//            return null;
-//        }
-//    }
-//
-//    @Override
-//    public E update(E entity) throws SQLException {
-//        TransactionManager.beginTransaction();
-//        Connection connection = TransactionManager.getConnection();
-//        try {
-//            UpdateBuilder<E> builder = UpdateBuilder.builder(entityMeta);
-//            Object keyValue = null;
-//            for (Field field : persistentFields) {
-//                field.setAccessible(true);
-//
-//                // do convert here
-//                Object value = entityMeta.getColnumValue(field.get(entity), field);
-//                if (field.getName().equals(keyField.getName())) {
-//                    keyValue = value;
-//                    continue;
-//                }
-//                builder.set(entityMeta.getColnumName(field.getName()), value);
-//            }
-//            if (keyValue == null) {
-//                throw new IllegalArgumentException("Khóa chính null khi update: cần set trước khi gọi update()");
-//            }
-//            builder.where(keyField.getName() + " = ?", keyValue);
-//
-//            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
-//                setPreparedStatementValue(ps, builder.getParameters());
-//                int affected = ps.executeUpdate();
-//                if (affected == 0) {
-//                    throw new SQLException("No rows updated, entity may not exist.");
-//                }
-//            }
-//            TransactionManager.getCache().put(EntityKey.of(cls, keyValue), entity);
-//            TransactionManager.commit();
-//            return entity;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            TransactionManager.rollback();
-//            return null;
-//        }
-//    }
-//
-//    /**
-//     * Counts the total number of records for the given SQL query.
-//     * <p>
-//     * This method wraps the provided SQL query in a COUNT query to determine the
-//     * total number of records that would be returned by the original query.
-//     * It executes the count query and retrieves the total count from the result
-//     * set.
-//     * </p>
-//     *
-//     * @param query      the base SQL query to count records for
-//     * @param connection the database connection to use for executing the query
-//     * @param parameters the list of parameters to set in the prepared statement
-//     * @return the total number of records for the given query
-//     */
-//    public int countRecord(String query, Connection connection, List<Object> parameters) {
-//        // Wrap the base query in a count query to get total number of records
-//        String countQuery = "SELECT COUNT(1) AS total FROM (" + query + ") AS count_table";
-//        int total = 0;
-//        // Count total records
-//        try (PreparedStatement countPs = connection.prepareStatement(countQuery);) {
-//            setPreparedStatementValue(countPs, parameters);
-//            try (ResultSet countRs = countPs.executeQuery()) {
-//                if (countRs.next()) {
-//                    total = countRs.getInt("total");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return total;
-//    }
-//
-//    protected E mapResultSet(ResultSet rs, Class<E> cls) throws Exception {
-//        ResultSetMetaData meta = rs.getMetaData();
-//        int colCount = meta.getColumnCount();
-//        E obj = cls.getDeclaredConstructor().newInstance();
-//
-//        // Create a map of column labels to their indices for quick lookup
-//        Map<String, Integer> labelIndex = new HashMap<>();
-//        for (int i = 1; i <= colCount; i++) {
-//            labelIndex.put(meta.getColumnLabel(i).toLowerCase(), i);
-//        }
-//
-//        // Map columns to fields
-//        for (Map.Entry<String, ColumnMeta> entry : entityMeta.getFieldToColumnMap().entrySet()) {
-//            String fieldName = entry.getKey();
-//            ColumnMeta colMeta = entry.getValue();
-//            String physicalCol = colMeta.getName();
-//            Integer idx = labelIndex.get(physicalCol.toLowerCase());
-//            if (idx == null) {
-//                continue; // column not in result set
-//            }
-//
-//            try {
-//                Field field = cls.getDeclaredField(fieldName);
-//                // do convert here
-//                Object value = entityMeta.getFieldValue(rs.getObject(idx), field);
-//                field.setAccessible(true);
-//                field.set(obj, value);
-//            } catch (NoSuchFieldException ignored) {
-//            }
-//        }
-//        // Attach relationship placeholders (lazy / eager) - simple eager hook
-//        // placeholder.
-//        // NOTE: Actual loading logic (e.g., repository lookup, lazy wrappers) not yet
-//        // implemented here.
-//        // Future: Iterate entityMeta.getRelationships() and, based on FetchMode, load
-//        // or assign lazy wrapper.
-//        // Relationship wiring (prototype implementation):
-//        for (RelationshipMeta rel : entityMeta.getRelationships()) {
-//            Field f = rel.getField();
-//            f.setAccessible(true);
-//            // Only handle single-valued for now; collections later
-//            try {
-//                if (rel.isCollection()) {
-//                    // Collection side: assign LazyList placeholder (no immediate fetch even if
-//                    // EAGER until batch logic exists)
-//                    var repo = resolveRepository(rel.getTargetType());
-//                    int keyIdx = labelIndex.get(keyField.getName().toLowerCase());
-//                    Object keyVal = rs.getObject(keyIdx);
-//                    if (TransactionManager.getCache().contains(EntityKey.of(cls, keyVal))) {
-//                        LazyReference wrapper = new LazyReference(
-//                                () -> (Object) TransactionManager.getCache().get(EntityKey.of(cls, keyVal)));
-//                        f.set(obj, wrapper);
-//                        continue;
-//                    }
-//                    @SuppressWarnings("unchecked")
-//                    LazyList<?> list = new LazyList<Object>(() -> (List) repo
-//                            .findWithCondition(ClauseBuilder.builder().equal(keyField.getName(), keyVal)));
-//                    f.set(obj, list);
-//                    continue;
-//                }
-//                // Single-valued relation
-//                if (rel.getFetchMode() == FetchMode.EAGER) {
-//                    // Attempt eager load via repository lookup if available
-//                    var repo = resolveRepository(rel.getTargetType());
-//
-//                    // Assume FK column stored on this row as rel.getJoinColumn()
-//                    Object fkValue = null;
-//                    if (rel.getJoinColumn() != null && !rel.getJoinColumn().isBlank()) {
-//                        Integer fkIdx = labelIndex.get(rel.getJoinColumn().toLowerCase());
-//                        if (fkIdx != null) {
-//                            fkValue = rs.getObject(fkIdx);
-//                        }
-//                    }
-//                    Object related = fkValue == null ? null : repo.findById(fkValue);
-//
-//                    // If the declared field type is LazyReference, wrap the loaded entity
-//                    if (LazyReference.class.isAssignableFrom(f.getType())) {
-//                        @SuppressWarnings({ "rawtypes", "unchecked" })
-//                        LazyReference wrapper = new LazyReference(() -> (Object) related);
-//                        // Mark as loaded directly to avoid re-query
-//                        wrapper.setValue(related);
-//                        f.set(obj, wrapper);
-//                    } else {
-//                        f.set(obj, related);
-//                    }
-//                } else { // LAZY
-//                    LazyReference<?> ref = new LazyReference<>(() -> {
-//                        var repo = resolveRepository(rel.getTargetType());
-//                        Object fk = null;
-//                        if (rel.getJoinColumn() != null) {
-//                            Integer fkIdx = labelIndex.get(rel.getJoinColumn().toLowerCase());
-//                            if (fkIdx != null) {
-//                                try {
-//                                    fk = rs.getObject(fkIdx);
-//                                } catch (SQLException ignored) {
-//                                }
-//                            }
-//                        }
-//                        return fk == null ? null : repo.findById(fk);
-//                    });
-//                    f.set(obj, ref);
-//                }
-//            } catch (IllegalAccessException iae) {
-//                // ignore assignment errors for now
-//            }
-//        }
-//        return obj;
-//    }
-//
-//    /**
-//     * Maps all rows of the given {@link ResultSet} to a list of instances of the
-//     * specified class.
-//     * <p>
-//     * This method iterates over the rows of the {@link ResultSet}, using the
-//     * {@link #mapResultSet(ResultSet, Class)} method to map each row to an instance
-//     * of the specified class.
-//     * The resulting instances are collected into a list and returned.
-//     * </p>
-//     *
-//     * @param rs  the {@link ResultSet} containing the rows to map
-//     * @param cls the class to map each result set row to
-//     * @return a list of instances of the specified class populated with values from
-//     *         the result set rows
-//     * @throws Exception if an error occurs during reflection or SQL operations
-//     */
-//    protected List<E> mapListResultSet(ResultSet rs, Class<E> cls) throws Exception {
-//        List<E> result = new ArrayList<>();
-//        while (rs.next()) {
-//            result.add(mapResultSet(rs, cls));
-//        }
-//        return result;
-//    }
-//
-//    /**
-//     * Sets the values of the given {@link PreparedStatement} using the provided
-//     * list of parameters.
-//     * <p>
-//     * This method iterates over the list of parameters and sets each value in the
-//     * {@link PreparedStatement}
-//     * at the corresponding index (1-based).
-//     * </p>
-//     *
-//     * @param ps      the {@link PreparedStatement} to set values for
-//     * @param objects the list of parameter values to set in the prepared statement
-//     * @throws SQLException if an error occurs while setting the parameter values
-//     */
-//    private void setPreparedStatementValue(PreparedStatement ps, List<Object> objects) throws SQLException {
-//        if (objects == null || objects.isEmpty()) {
-//            return;
-//        }
-//        int idx = 1;
-//        for (Object p : objects) {
-//            ps.setObject(idx++, p);
-//        }
-//    }
-//
-//    /**
-//     * Retrieves the field annotated with {@link Key} from the given list of
-//     * fields.
-//     * <p>
-//     * This method iterates over the provided list of fields and checks for the
-//     * presence of the {@link Key} annotation.
-//     * If multiple fields are found with the {@link Key} annotation, a
-//     * {@link DuplicateKeyException} is thrown.
-//     * If no field is found with the {@link Key} annotation, this method returns
-//     * {@code null}.
-//     * </p>
-//     *
-//     * @param fields the list of fields to search for the key field
-//     * @return the field annotated with {@link Key}, or {@code null} if none is
-//     *         found
-//     * @throws DuplicateKeyException if multiple fields are found with the
-//     *                               {@link Key} annotation
-//     */
-//    /**
-//     * Exposes entity metadata in subclasses if advanced queries (joins, eager fetch
-//     * planning) are needed.
-//     */
-//    protected EntityMeta<E> getEntityMeta() {
-//        return entityMeta;
-//    }
-//
-//    /**
-//     * Resolves and returns a repository instance for the specified target entity
-//     * type.
-//     */
-//    protected <R> CrudRepository<R, Object> resolveRepository(Class<R> targetType) {
-//
-//        return (CrudRepository<R, Object>) new SimpleRepository<R, Object>(targetType);
-//    }
-//}
+package crm.core.repository.persistence.repository;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.HashMap;
+import java.util.Map;
+
+import crm.core.repository.persistence.cache.EntityKey;
+import crm.core.repository.persistence.config.DBcontext;
+import crm.core.repository.persistence.config.TransactionManager;
+import crm.core.repository.persistence.entity.ColumnMeta;
+import crm.core.repository.persistence.entity.EntityMeta;
+import crm.core.repository.persistence.entity.load.LazyList;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.persistence.entity.relation.RelationshipMeta;
+import crm.core.repository.persistence.query.clause.ClauseBuilder;
+import crm.core.repository.persistence.query.common.Page;
+import crm.core.repository.persistence.query.common.PageRequest;
+import crm.core.repository.persistence.query.crud.DeleteBuilder;
+import crm.core.repository.persistence.query.crud.InsertBuilder;
+import crm.core.repository.persistence.query.crud.SelectBuilder;
+import crm.core.repository.persistence.query.crud.UpdateBuilder;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * An abstract base class for implementing CRUD (Create, Read, Update, Delete)
+ * operations on entities of type {@code E} with primary key of type {@code K}.
+ * <p>
+ * This class provides common functionality for interacting with a database,
+ * including methods for saving, updating, deleting, and finding entities.
+ * It uses reflection to map entity fields to database columns and supports
+ * pagination through the {@link PageRequest} and {@link Page} classes.
+ * </p>
+ * 
+ * @param <E> the type of entity
+ * @param <K> the type of the primary key
+ * 
+ * @author Kepter
+ * @author Nguyen Anh Tu
+ * @since 1.0
+ * 
+ */
+public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
+
+    private final Class<E> cls;
+    private final EntityMeta<E> entityMeta;
+    /**
+     * Persistent (scalar) fields only (those annotated with @Column) used for DML.
+     */
+    private final List<Field> persistentFields;
+    private final Field keyField;
+
+    public AbstractRepository(Class<E> cls) {
+        this.cls = cls;
+        // Build metadata once
+        this.entityMeta = EntityMeta.scanAnnotation(cls);
+        this.keyField = entityMeta.getKeyField();
+        this.persistentFields = entityMeta.getFields();
+    }
+
+    @Override
+    public boolean isExist(K key) {
+        Connection connection = DBcontext.getConnection();
+        SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+                .columns(List.of("1"))
+                .where(keyField.getName() + " = ?", key)
+                .limit(1);
+        boolean exists = false;
+        try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
+                ResultSet rs = preparedSt.executeQuery()) {
+            if (rs.next()) {
+                exists = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
+
+    @Override
+    public int count() {
+        Connection connection = DBcontext.getConnection();
+        SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+                .columns(List.of("COUNT(*) AS total"));
+        int count = 0;
+        try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
+                ResultSet rs = preparedSt.executeQuery()) {
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    @Override
+    public Iterable<E> findAll() {
+        List<E> result = null;
+        try {
+            TransactionManager.beginTransaction();
+            Connection connection = TransactionManager.getConnection();
+            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList());
+
+            try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());
+                    ResultSet rs = preparedSt.executeQuery()) {
+                result = mapListResultSet(rs, cls);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionManager.getCache().put(result);
+            TransactionManager.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public Iterable<E> findWithCondition(ClauseBuilder clause) {
+        List<E> result = null;
+        try {
+            TransactionManager.beginTransaction();
+            Connection connection = DBcontext.getConnection();
+            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
+                    .where(clause.build());
+            builder.setParameters(clause.getParameters());
+
+            try (PreparedStatement preparedSt = connection.prepareStatement(builder.build());) {
+                setPreparedStatementValue(preparedSt, builder.getParameters());
+                try (ResultSet rs = preparedSt.executeQuery()) {
+                    result = mapListResultSet(rs, cls);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionManager.getCache().put(result);
+            TransactionManager.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return result;
+
+    }
+
+    public Page<E> findWithCondition(ClauseBuilder clause, PageRequest request) {
+        List<E> result = null;
+        int total = 0;
+        try {
+            TransactionManager.beginTransaction();
+            Connection connection = TransactionManager.getConnection();
+            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList())
+                    .where(clause.build());
+            builder.setParameters(clause.getParameters());
+            String query = builder.build(false);
+
+            // Count total records
+            total = countRecord(query, connection, builder.getParameters());
+
+            // Calculate offset for pagination
+            int offset = (request.getPageNumber() - 1) * request.getPageSize();
+            // Apply pagination and sorting to the original query
+            builder.limit(request.getPageSize() > total ? total : request.getPageSize()).offset(offset);
+            if (request.getSort() != null && request.getSort().getOrders() != null) {
+                builder.orderBy(request.getSort().getOrders());
+            }
+
+            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+                setPreparedStatementValue(ps, builder.getParameters());
+                try (ResultSet rs = ps.executeQuery()) {
+                    result = mapListResultSet(rs, cls);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionManager.getCache().put(result);
+            TransactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                TransactionManager.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return new Page<>(total, request, result);
+    }
+
+    /**
+     * Retrieves a paginated list of entities from the database based on the
+     * provided {@link PageRequest}.
+     * <p>
+     * This method builds a SQL SELECT query using the {@link SelectBuilder},
+     * applies pagination and sorting,
+     * executes a count query to determine the total number of records, and then
+     * fetches the requested page of results.
+     * The results are mapped to a list of entities of type {@code E}.
+     * </p>
+     *
+     * @param request the {@link PageRequest} containing pagination and sorting
+     *                information
+     * @return a {@link Page} object containing the total number of records, the
+     *         page request, and the list of entities
+     */
+    public Page<E> findAll(PageRequest request) {
+        List<E> result = null;
+        int total = 0;
+        try {
+            TransactionManager.beginTransaction();
+            Connection connection = TransactionManager.getConnection();
+            // Build the base select query
+            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta)
+                    .columns(persistentFields.stream().map((f) -> entityMeta.getColnumName(f.getName())).toList());
+            String query = builder.build(false);
+
+            // Count total records
+            total = countRecord(query, connection, null);
+
+            int offset = (request.getPageNumber() - 1) * request.getPageSize();
+            // Apply pagination and sorting to the original query
+            builder.limit(request.getPageSize() > total ? total : request.getPageSize()).offset(offset);
+            if (request.getSort() != null && request.getSort().getOrders() != null) {
+                builder.orderBy(request.getSort().getOrders());
+            }
+
+            try (PreparedStatement ps = connection.prepareStatement(builder.build());
+                    ResultSet rs = ps.executeQuery()) {
+                result = mapListResultSet(rs, cls);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionManager.getCache().put(result);
+            TransactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                TransactionManager.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return new Page<>(total, request, result);
+    }
+
+    @Override
+    public void deleteById(K key) throws SQLException {
+        TransactionManager.beginTransaction();
+        Connection connection = TransactionManager.getConnection();
+        DeleteBuilder<E> builder = DeleteBuilder.builder(entityMeta).where(keyField.getName() + " = ?", key);
+        try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+            setPreparedStatementValue(ps, builder.getParameters());
+            ps.execute();
+            TransactionManager.getCache().remove(EntityKey.of(cls, key));
+            TransactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionManager.rollback();
+        }
+    }
+
+    @Override
+    public void deleteWithCondition(ClauseBuilder clause) throws SQLException {
+        TransactionManager.beginTransaction();
+        Connection connection = TransactionManager.getConnection();
+        DeleteBuilder<E> builder = DeleteBuilder.builder(entityMeta).where(clause.build());
+        builder.setParameters(clause.getParameters());
+        try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+            setPreparedStatementValue(ps, builder.getParameters());
+            ps.execute();
+            TransactionManager.getCache().clear(entityMeta.getClass());
+            TransactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionManager.rollback();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public E findById(K key) {
+        E entity = null;
+        try {
+            TransactionManager.beginTransaction();
+            if (TransactionManager.getCache().contains(EntityKey.of(cls, key))) {
+                return (E) TransactionManager.getCache().get(EntityKey.of(cls, key));
+            }
+            Connection connection = TransactionManager.getConnection();
+            SelectBuilder<E> builder = SelectBuilder.builder(entityMeta).where(keyField.getName() + " = ?", key);
+            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+                setPreparedStatementValue(ps, builder.getParameters());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        entity = mapResultSet(rs, cls);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionManager.getCache().put(EntityKey.of(cls, key), entity);
+            TransactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                TransactionManager.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return entity;
+    }
+
+    @Override
+    public E save(E entity) throws SQLException {
+        TransactionManager.beginTransaction();
+        Connection connection = TransactionManager.getConnection();
+        try {
+            if (keyField == null) {
+                throw new IllegalStateException("Entity without primary key @Key");
+            }
+            keyField.setAccessible(true);
+            Object keyVal = keyField.get(entity);
+            if (keyVal == null) {
+                throw new IllegalArgumentException("Primary key must be set manual (no AUTO_INCREMENT)");
+            }
+            List<Object> values = new ArrayList<>();
+            List<String> columnNames = new ArrayList<>();
+            for (Field field : persistentFields) {
+                field.setAccessible(true);
+                columnNames.add(entityMeta.getColnumName(field.getName()));
+
+                // do convert here
+                Object value = entityMeta.getColnumValue(field.get(entity), field);
+                values.add(value);
+            }
+            InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
+                    .columns(columnNames)
+                    .values(values);
+            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+                setPreparedStatementValue(ps, builder.getParameters());
+                ps.executeUpdate();
+            }
+            TransactionManager.getCache().put(EntityKey.of(cls, keyVal), entity);
+            TransactionManager.commit();
+            return entity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionManager.rollback();
+            return null;
+        }
+    }
+
+    @Override
+    public Iterable<E> saveAll(Iterable<E> entities) throws SQLException {
+        TransactionManager.beginTransaction();
+        Connection connection = TransactionManager.getConnection();
+        try {
+            if (keyField == null) {
+                throw new IllegalStateException("Entity without primary key @Key");
+            }
+            keyField.setAccessible(true);
+
+            List<Object> keyValues = new ArrayList<>();
+            for (E entity : entities) {
+                Object keyVal = keyField.get(entity);
+                if (keyVal == null) {
+                    throw new IllegalArgumentException("Primary key must be set manual (no AUTO_INCREMENT)");
+                }
+                keyValues.add(keyVal);
+            }
+
+            InsertBuilder<E> builder = InsertBuilder.builder(entityMeta)
+                    .columns(persistentFields.stream().map(Field::getName).toList());
+
+            for (E entity : entities) {
+                List<Object> values = new ArrayList<>();
+                for (Field field : persistentFields) {
+                    field.setAccessible(true);
+
+                    // do convert here
+                    values.add(entityMeta.getColnumValue(field.get(entity), field));
+                }
+                builder.values(values.toArray());
+            }
+
+            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+                setPreparedStatementValue(ps, builder.getParameters());
+                ps.executeUpdate();
+            }
+            TransactionManager.getCache().put(entities);
+            TransactionManager.commit();
+            return entities;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionManager.rollback();
+            return null;
+        }
+    }
+
+    @Override
+    public E update(E entity) throws SQLException {
+        TransactionManager.beginTransaction();
+        Connection connection = TransactionManager.getConnection();
+        try {
+            UpdateBuilder<E> builder = UpdateBuilder.builder(entityMeta);
+            Object keyValue = null;
+            for (Field field : persistentFields) {
+                field.setAccessible(true);
+
+                // do convert here
+                Object value = entityMeta.getColnumValue(field.get(entity), field);
+                if (field.getName().equals(keyField.getName())) {
+                    keyValue = value;
+                    continue;
+                }
+                builder.set(entityMeta.getColnumName(field.getName()), value);
+            }
+            if (keyValue == null) {
+                throw new IllegalArgumentException("Khóa chính null khi update: cần set trước khi gọi update()");
+            }
+            builder.where(keyField.getName() + " = ?", keyValue);
+
+            try (PreparedStatement ps = connection.prepareStatement(builder.build())) {
+                setPreparedStatementValue(ps, builder.getParameters());
+                int affected = ps.executeUpdate();
+                if (affected == 0) {
+                    throw new SQLException("No rows updated, entity may not exist.");
+                }
+            }
+            TransactionManager.getCache().put(EntityKey.of(cls, keyValue), entity);
+            TransactionManager.commit();
+            return entity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionManager.rollback();
+            return null;
+        }
+    }
+
+    /**
+     * Counts the total number of records for the given SQL query.
+     * <p>
+     * This method wraps the provided SQL query in a COUNT query to determine the
+     * total number of records that would be returned by the original query.
+     * It executes the count query and retrieves the total count from the result
+     * set.
+     * </p>
+     *
+     * @param query      the base SQL query to count records for
+     * @param connection the database connection to use for executing the query
+     * @param parameters the list of parameters to set in the prepared statement
+     * @return the total number of records for the given query
+     */
+    public int countRecord(String query, Connection connection, List<Object> parameters) {
+        // Wrap the base query in a count query to get total number of records
+        String countQuery = "SELECT COUNT(1) AS total FROM (" + query + ") AS count_table";
+        int total = 0;
+        // Count total records
+        try (PreparedStatement countPs = connection.prepareStatement(countQuery);) {
+            setPreparedStatementValue(countPs, parameters);
+            try (ResultSet countRs = countPs.executeQuery()) {
+                if (countRs.next()) {
+                    total = countRs.getInt("total");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    protected E mapResultSet(ResultSet rs, Class<E> cls) throws Exception {
+        ResultSetMetaData meta = rs.getMetaData();
+        int colCount = meta.getColumnCount();
+        E obj = cls.getDeclaredConstructor().newInstance();
+
+        // Create a map of column labels to their indices for quick lookup
+        Map<String, Integer> labelIndex = new HashMap<>();
+        for (int i = 1; i <= colCount; i++) {
+            labelIndex.put(meta.getColumnLabel(i).toLowerCase(), i);
+        }
+
+        // Map columns to fields
+        for (Map.Entry<String, ColumnMeta> entry : entityMeta.getFieldToColumnMap().entrySet()) {
+            String fieldName = entry.getKey();
+            ColumnMeta colMeta = entry.getValue();
+            String physicalCol = colMeta.getName();
+            Integer idx = labelIndex.get(physicalCol.toLowerCase());
+            if (idx == null) {
+                continue; // column not in result set
+            }
+
+            try {
+                Field field = cls.getDeclaredField(fieldName);
+                // do convert here
+                Object value = entityMeta.getFieldValue(rs.getObject(idx), field);
+                field.setAccessible(true);
+                field.set(obj, value);
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        // Attach relationship placeholders (lazy / eager) - simple eager hook
+        // placeholder.
+        // NOTE: Actual loading logic (e.g., repository lookup, lazy wrappers) not yet
+        // implemented here.
+        // Future: Iterate entityMeta.getRelationships() and, based on FetchMode, load
+        // or assign lazy wrapper.
+        // Relationship wiring (prototype implementation):
+        for (RelationshipMeta rel : entityMeta.getRelationships()) {
+            Field f = rel.getField();
+            f.setAccessible(true);
+            // Only handle single-valued for now; collections later
+            try {
+                if (rel.isCollection()) {
+                    // Collection side: assign LazyList placeholder (no immediate fetch even if
+                    // EAGER until batch logic exists)
+                    var repo = resolveRepository(rel.getTargetType());
+                    int keyIdx = labelIndex.get(keyField.getName().toLowerCase());
+                    Object keyVal = rs.getObject(keyIdx);
+                    if (TransactionManager.getCache().contains(EntityKey.of(cls, keyVal))) {
+                        LazyReference wrapper = new LazyReference(
+                                () -> (Object) TransactionManager.getCache().get(EntityKey.of(cls, keyVal)));
+                        f.set(obj, wrapper);
+                        continue;
+                    }
+                    @SuppressWarnings("unchecked")
+                    LazyList<?> list = new LazyList<Object>(() -> (List) repo
+                            .findWithCondition(ClauseBuilder.builder().equal(keyField.getName(), keyVal)));
+                    f.set(obj, list);
+                    continue;
+                }
+                // Single-valued relation
+                if (rel.getFetchMode() == FetchMode.EAGER) {
+                    // Attempt eager load via repository lookup if available
+                    var repo = resolveRepository(rel.getTargetType());
+
+                    // Assume FK column stored on this row as rel.getJoinColumn()
+                    Object fkValue = null;
+                    if (rel.getJoinColumn() != null && !rel.getJoinColumn().isBlank()) {
+                        Integer fkIdx = labelIndex.get(rel.getJoinColumn().toLowerCase());
+                        if (fkIdx != null) {
+                            fkValue = rs.getObject(fkIdx);
+                        }
+                    }
+                    Object related = fkValue == null ? null : repo.findById(fkValue);
+
+                    // If the declared field type is LazyReference, wrap the loaded entity
+                    if (LazyReference.class.isAssignableFrom(f.getType())) {
+                        @SuppressWarnings({ "rawtypes", "unchecked" })
+                        LazyReference wrapper = new LazyReference(() -> (Object) related);
+                        // Mark as loaded directly to avoid re-query
+                        wrapper.setValue(related);
+                        f.set(obj, wrapper);
+                    } else {
+                        f.set(obj, related);
+                    }
+                } else { // LAZY
+                    LazyReference<?> ref = new LazyReference<>(() -> {
+                        var repo = resolveRepository(rel.getTargetType());
+                        Object fk = null;
+                        if (rel.getJoinColumn() != null) {
+                            Integer fkIdx = labelIndex.get(rel.getJoinColumn().toLowerCase());
+                            if (fkIdx != null) {
+                                try {
+                                    fk = rs.getObject(fkIdx);
+                                } catch (SQLException ignored) {
+                                }
+                            }
+                        }
+                        return fk == null ? null : repo.findById(fk);
+                    });
+                    f.set(obj, ref);
+                }
+            } catch (IllegalAccessException iae) {
+                // ignore assignment errors for now
+            }
+        }
+        return obj;
+    }
+
+    /**
+     * Maps all rows of the given {@link ResultSet} to a list of instances of the
+     * specified class.
+     * <p>
+     * This method iterates over the rows of the {@link ResultSet}, using the
+     * {@link #mapResultSet(ResultSet, Class)} method to map each row to an instance
+     * of the specified class.
+     * The resulting instances are collected into a list and returned.
+     * </p>
+     *
+     * @param rs  the {@link ResultSet} containing the rows to map
+     * @param cls the class to map each result set row to
+     * @return a list of instances of the specified class populated with values from
+     *         the result set rows
+     * @throws Exception if an error occurs during reflection or SQL operations
+     */
+    protected List<E> mapListResultSet(ResultSet rs, Class<E> cls) throws Exception {
+        List<E> result = new ArrayList<>();
+        while (rs.next()) {
+            result.add(mapResultSet(rs, cls));
+        }
+        return result;
+    }
+
+    /**
+     * Sets the values of the given {@link PreparedStatement} using the provided
+     * list of parameters.
+     * <p>
+     * This method iterates over the list of parameters and sets each value in the
+     * {@link PreparedStatement}
+     * at the corresponding index (1-based).
+     * </p>
+     *
+     * @param ps      the {@link PreparedStatement} to set values for
+     * @param objects the list of parameter values to set in the prepared statement
+     * @throws SQLException if an error occurs while setting the parameter values
+     */
+    private void setPreparedStatementValue(PreparedStatement ps, List<Object> objects) throws SQLException {
+        if (objects == null || objects.isEmpty()) {
+            return;
+        }
+        int idx = 1;
+        for (Object p : objects) {
+            ps.setObject(idx++, p);
+        }
+    }
+
+    /**
+     * Retrieves the field annotated with {@link Key} from the given list of
+     * fields.
+     * <p>
+     * This method iterates over the provided list of fields and checks for the
+     * presence of the {@link Key} annotation.
+     * If multiple fields are found with the {@link Key} annotation, a
+     * {@link DuplicateKeyException} is thrown.
+     * If no field is found with the {@link Key} annotation, this method returns
+     * {@code null}.
+     * </p>
+     *
+     * @param fields the list of fields to search for the key field
+     * @return the field annotated with {@link Key}, or {@code null} if none is
+     *         found
+     * @throws DuplicateKeyException if multiple fields are found with the
+     *                               {@link Key} annotation
+     */
+    /**
+     * Exposes entity metadata in subclasses if advanced queries (joins, eager fetch
+     * planning) are needed.
+     */
+    protected EntityMeta<E> getEntityMeta() {
+        return entityMeta;
+    }
+
+    /**
+     * Resolves and returns a repository instance for the specified target entity
+     * type.
+     */
+    protected <R> CrudRepository<R, Object> resolveRepository(Class<R> targetType) {
+
+        return (CrudRepository<R, Object>) new SimpleRepository<R, Object>(targetType);
+    }
+}

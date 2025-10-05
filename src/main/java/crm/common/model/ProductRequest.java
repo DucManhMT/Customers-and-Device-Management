@@ -1,8 +1,16 @@
 package crm.common.model;
 
 import crm.common.model.enums.ProductRequestStatus;
+<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+=======
+import crm.common.model.enums.converter.ProductRequestStatusConverter;
+import crm.core.repository.persistence.annotation.*;
+import crm.core.repository.persistence.entity.convert.Convert;
+import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.persistence.entity.relation.FetchMode;
+>>>>>>> main
 
 import java.sql.Date;
 
@@ -20,18 +28,32 @@ public class ProductRequest {
 
     @Enumerated
     @Column(name = "Status", length = 20)
+    @Convert(converter = ProductRequestStatusConverter.class)
     private ProductRequestStatus status;
 
     @Column(name = "Description", length = 255)
     private String description;
 
+<<<<<<< HEAD
     @ManyToOne(joinColumn = "RequestID")
+=======
+    @Column(name = "RequestID", type = "BIGINT", nullable = false)
+    private Long requestID;
+
+    @Column(name = "ProductID", type = "BIGINT", nullable = false)
+    private Long productID;
+
+    @Column(name = "WarehouseID", type = "BIGINT", nullable = false)
+    private Long warehouseID;
+
+    @ManyToOne(joinColumn = "RequestID", fetch = FetchMode.EAGER)
+>>>>>>> main
     private LazyReference<Request> request;
 
-    @ManyToOne(joinColumn = "ProductID")
+    @ManyToOne(joinColumn = "ProductID", fetch = FetchMode.EAGER)
     private LazyReference<Product> product;
 
-    @ManyToOne(joinColumn = "WarehouseID")
+    @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
     private LazyReference<Warehouse> warehouse;
 
     public Integer getProductRequestID() {
