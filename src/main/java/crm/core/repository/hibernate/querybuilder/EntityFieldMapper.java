@@ -90,6 +90,10 @@ public class EntityFieldMapper {
                 // Lấy tên cột từ @ManyToOne/@JoinColumn
                 ManyToOne ann = field.getAnnotation(ManyToOne.class);
                 columnName = ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
+            } else if (isOneToOne(field)) {
+                // Lấy tên cột từ @OneToOne/@JoinColumn
+                OneToOne ann = field.getAnnotation(OneToOne.class);
+                columnName = ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
             }
 
             if (columnName == null) {
