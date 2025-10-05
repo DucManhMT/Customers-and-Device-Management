@@ -1,46 +1,34 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
+
+import java.security.PrivateKey;
 
 @Entity(tableName = "ProductContract")
 public class ProductContract {
     @Key
-    @Column(name = "ContractID", type = "BIGINT", nullable = false)
-    private Long contractID;
+    @Column(name = "ProductContractID", type = "INT")
+    private Integer ProductContractID;
 
-    @Column(name = "ItemID", type = "BIGINT", nullable = false)
-    private Long itemID;
 
-    @ManyToOne(joinColumn = "ContractID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ContractID")
     private LazyReference<Contract> contract;
 
-    @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
-
-    public Long getContractID() {
-        return contractID;
-    }
-
-    public void setContractID(Long contractID) {
-        this.contractID = contractID;
-    }
-
-    public Long getItemID() {
-        return itemID;
-    }
-
-    public void setItemID(Long itemID) {
-        this.itemID = itemID;
-    }
 
     public Contract getContract() {
         return contract.get();
     }
 
     public void setContract(Contract contract) {
-        this.contract.setValue(contract);
+
+        this.contract = new LazyReference<>(Contract.class, contract.getContractID());
     }
 
     public InventoryItem getInventoryItem() {
@@ -48,6 +36,6 @@ public class ProductContract {
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        this.inventoryItem.setValue(inventoryItem);
+        this.inventoryItem = new LazyReference<>(InventoryItem.class, inventoryItem.getItemId());
     }
 }
