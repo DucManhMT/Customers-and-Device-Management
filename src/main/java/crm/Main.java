@@ -4,6 +4,7 @@ import java.security.Key;
 import java.sql.SQLException;
 
 import crm.common.model.*;
+import crm.common.model.enums.AccountStatus;
 import crm.core.repository.persistence.config.DBcontext;
 import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.entity.EntityRegistry;
@@ -14,7 +15,7 @@ import crm.service_request.service.RequestService;
 
 public class Main {
     public static void main(String[] args) {
-        test();
+
     }
 
     public static void test() {

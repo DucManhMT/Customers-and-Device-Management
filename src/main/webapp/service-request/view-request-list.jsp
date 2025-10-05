@@ -14,9 +14,19 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
 </head>
 <body>
-<div>
+<div class="container">
+    <c:set var="requests" value="${[
+    {'requestID': 1001, 'contractID': 'C001', 'username': 'john_doe', 'requestStatus': 'Pending', 'startDate': '2025-09-10', 'finishedDate': null},
+    {'requestID': 1002, 'contractID': 'C002', 'username': 'mary_smith', 'requestStatus': 'Approved', 'startDate': '2025-09-12', 'finishedDate': '2025-09-15'},
+    {'requestID': 1003, 'contractID': 'C003', 'username': 'kevin_lee', 'requestStatus': 'Rejected', 'startDate': '2025-09-14', 'finishedDate': null},
+    {'requestID': 1004, 'contractID': 'C004', 'username': 'alice_nguyen', 'requestStatus': 'Finished', 'startDate': '2025-09-10', 'finishedDate': '2025-09-20'},
+    {'requestID': 1005, 'contractID': 'C005', 'username': 'tuanpham', 'requestStatus': 'Pending', 'startDate': '2025-09-22', 'finishedDate': null}
+]}"/>
 
-    <h2>Service Request List</h2>
+    <c:set var="currentPage" value="${param.page != null ? param.page : 2}"/>
+    <c:set var="totalPages" value="5"/>
+
+    <h2 class="mt-1">Service Request List</h2>
     <form method="get" action="../requests/list">
         <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
             <c:choose>
@@ -41,7 +51,7 @@
                     <option value="Rejected" ${status == 'Rejected' ? 'selected' : ''}>Rejected</option>
                     <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
                 </select>
-                <button type="submit" class="btn btn-primary">Filter</button></div>
+            </div>
 
             <div class="m-auto d-flex align-items-center gap-3">
                 <input class="form-control" type="text" name="search" placeholder="Search by username"  value="${search}" style="width: 300px; display: inline-block; margin-left: 10px;">
@@ -51,6 +61,8 @@
                 <input class="form-control" type="text" name="search" placeholder="Search by description"  value="${search}" style="width: 300px; display: inline-block; margin-left: 10px;">
                 <button type="submit" class="btn btn-primary">Search</button>
             </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-danger">Reset</button>
         </div>
         <table class="table table-bordered">
             <thead class="table-light">
@@ -69,14 +81,15 @@
                 <tr>
                     <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
                     <td><a href="./list">${request.contractID}</a></td>
-                    <td><a href="./list">Xong cái join rồi có</a></td>
+                    <td><a href="./list">${request.username}</a></td>
                     <td>${request.requestStatus}</td>
                     <td>${request.startDate}</td>
                     <td><c:out value="${empty request.finishedDate ? '-' : request.finishedDate}"/></td>
                     <td>
                         <a href="/requests/view?requestId=${request.requestID}" class="btn btn-info btn-sm">View</a>
                         <c:if test="${request.requestStatus == 'Pending'}">
-                            <a href="/requests/edit?requestId=${request.requestID}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/requests/edit?requestId=${request.requestID}"
+                               class="btn btn-warning btn-sm">Edit</a>
                         </c:if>
                     </td>
                 </tr>
@@ -89,18 +102,30 @@
             <button>Set item</button>
         </div>
 
-        <div class="d-flex justify-content-center align-items-center gap-3">
-            <c:if test="${currentPage > 1}">
-                <a href="./list?page=${currentPage - 1}&sort=${sort}&status=${status}&search=${search}&recordsPerPage=${recordsPerPage}" class="btn btn-primary">Previous</a>
-            </c:if>
-            <span>Page ${currentPage} of ${totalPages}</span>
-            <c:if test="${currentPage < totalPages}">
-                <a href="./list?page=${currentPage + 1}&sort=${sort}&status=${status}&search=${search}&recordsPerPage=${recordsPerPage}" class="btn btn-primary">Next</a>
-            </c:if>
-         </div>
-    </div>
+            <div class="d-flex justify-content-center align-items-center gap-3">
+                <c:if test="${currentPage > 1}">
+                    <a href="./list?page=${currentPage - 1}&sort=${sort}&status=${status}&search=${search}&recordsPerPage=${recordsPerPage}"
+                       class="btn btn-primary">Previous</a>
+                </c:if>
+                <span>Page ${currentPage} of ${totalPages}</span>
+                <c:if test="${currentPage < totalPages}">
+                    <a href="./list?page=${currentPage + 1}&sort=${sort}&status=${status}&search=${search}&recordsPerPage=${recordsPerPage}"
+                       class="btn btn-primary">Next</a>
+                </c:if>
+            </div>
+        </div>
     </form>
 
+    <button type="button" id="btnScrollTop" class="btn btn-primary position-fixed bottom-0 end-0 m-4"
+            style="display:none; border-radius:50%; width:50px; height:50px;">
+        ↑
+    </button>
+
+    <button type="button" id="btnScrollBottom" class="btn btn-secondary position-fixed bottom-0 start-0 m-4"
+            style="border-radius:50%; width:50px; height:50px;">
+        ↓
+    </button>
 </div>
+
 </body>
 </html>

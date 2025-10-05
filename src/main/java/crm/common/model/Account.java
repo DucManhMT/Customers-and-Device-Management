@@ -24,8 +24,7 @@ public class Account {
     @Convert(converter = AccountStatusConverter.class)
     private AccountStatus accountStatus;
 
-    @Column(name = "RoleID", type = "BIGINT")
-    private Long roleID;
+    @Column(name = "RoleID", nullable = false)
 
     @ManyToOne(joinColumn = "RoleID", fetch = FetchMode.EAGER)
     private LazyReference<Role> role;
@@ -54,19 +53,8 @@ public class Account {
         this.accountStatus = accountStatus;
     }
 
-    public Long getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(Long roleID) {
-        this.roleID = roleID;
-    }
-
     public Role getRole() {
         return role.get();
     }
 
-    public void setRole(Role role) {
-        this.role.setValue(role);
-    }
 }
