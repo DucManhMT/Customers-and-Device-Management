@@ -1,16 +1,15 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.util.List;
 
 @Entity(tableName = "Product")
 public class Product {
     @Key
-    @Column(name = "ProductID", type = "BIGINT")
-    private Long productID;
+    @Column(name = "ProductID", type = "INT")
+    private Integer productID;
 
     @Column(name = "ProductName", length = 150, nullable = false)
     private String productName;
@@ -21,20 +20,17 @@ public class Product {
     @Column(name = "ProductDescription", length = 255)
     private String productDescription;
 
-    @Column(name = "TypeID", type = "BIGINT", nullable = false)
-    private Long typeID;
-
-    @ManyToOne(joinColumn = "TypeID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "TypeID")
     private LazyReference<Type> type;
 
-    @OneToMany(mappedBy = "productID", joinColumn = "ProductID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "productID", joinColumn = "ProductID")
     private List<ProductSpecification> productSpecifications;
 
-    public Long getProductID() {
+    public Integer getProductID() {
         return productID;
     }
 
-    public void setProductID(Long productID) {
+    public void setProductID(Integer productID) {
         this.productID = productID;
     }
 
@@ -62,20 +58,13 @@ public class Product {
         this.productDescription = productDescription;
     }
 
-    public Long getTypeID() {
-        return typeID;
-    }
-
-    public void setTypeID(Long typeID) {
-        this.typeID = typeID;
-    }
-
     public Type getType() {
         return type.get();
     }
 
     public void setType(Type type) {
-        this.type.setValue(type);
+
+        this.type = new LazyReference<>(Type.class,type.getTypeID());
     }
 
     public List<ProductSpecification> getProductSpecifications() {

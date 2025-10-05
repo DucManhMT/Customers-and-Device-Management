@@ -1,86 +1,44 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 @Entity(tableName = "AccountRequest")
 public class AccountRequest {
     @Key
-    @Column(name = "AccountRequestID", type = "BIGINT")
-    private Long accountRequestID;
+    @Column(name = "AccountRequestID", type = "INT")
+    private Integer accountRequestID;
 
-    @Column(name = "Username", length = 100, nullable = false)
-    private String username;
-
-    @Column(name = "RequestID", type = "BIGINT", nullable = false)
-    private Long requestID;
-
-    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
-    @ManyToOne(joinColumn = "RequestID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
 
-    public Long getAccountRequestID() {
+    public Integer getAccountRequestID() {
         return accountRequestID;
     }
 
-    public void setAccountRequestID(Long accountRequestID) {
+    public void setAccountRequestID(Integer accountRequestID) {
         this.accountRequestID = accountRequestID;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Long getRequestID() {
-        return requestID;
-    }
-
-    public void setRequestID(Long requestID) {
-        this.requestID = requestID;
-    }
-
     public Account getAccount() {
-        if (account == null) {
-            return null;
-        }
         return account.get();
     }
 
-    public void setAccount(Account account) {
-        if (this.account == null) {
-            this.account = new LazyReference<>(account);
-        } else {
-            this.account.setValue(account);
-        }
-        // synchronize Username
-        if (this.username == null && account != null) {
-            this.username = account.getUsername();
-        }
+    public void setAccount(Account acc) {
+            this.account = new LazyReference<>(Account.class, acc.getUsername());
     }
 
     public Request getRequest() {
-        if (request == null) {
-            return null;
-        }
-        return request.get();
+        return request == null ? null : request.get();
     }
 
-    public void setRequest(Request request) {
-        if (this.request == null) {
-            this.request = new LazyReference<>(request);
-        } else {
-            this.request.setValue(request);
-        }
-        // synchronize RequestID
-        if (this.requestID == null && request != null) {
-            this.requestID = request.getRequestID();
-        }
+    public void setRequest(Request req) {
+            this.request = new LazyReference<>(Request.class, req.getRequestID());
     }
 }
