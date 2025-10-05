@@ -1,11 +1,9 @@
-package crm.core.repository.persistence.annotation;
+package crm.core.repository.hibernate.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import crm.core.repository.persistence.entity.relation.FetchMode;
 
 /**
  * Declares a one-to-many relationship where the annotated field holds a
@@ -47,5 +45,4 @@ public @interface OneToMany {
      * 
      * @return fetch mode
      */
-    FetchMode fetch() default FetchMode.LAZY;
 }

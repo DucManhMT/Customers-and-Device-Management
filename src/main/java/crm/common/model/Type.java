@@ -1,6 +1,5 @@
 package crm.common.model;
 
-<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
@@ -8,15 +7,6 @@ import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.annotation.OneToMany;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-=======
-import crm.core.repository.persistence.annotation.Column;
-import crm.core.repository.persistence.annotation.Entity;
-import crm.core.repository.persistence.annotation.Key;
-import crm.core.repository.persistence.annotation.ManyToOne;
-import crm.core.repository.persistence.annotation.OneToMany;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
->>>>>>> main
 import java.util.List;
 
 @Entity(tableName = "Type")
@@ -31,20 +21,13 @@ public class Type {
     @Column(name = "TypeImage", length = 255)
     private String typeImage;
 
-<<<<<<< HEAD
     @ManyToOne(joinColumn = "CategoryID")
-=======
-    @Column(name = "CategoryID", type = "BIGINT", nullable = false)
-    private Long categoryID;
-
-    @ManyToOne(joinColumn = "CategoryID", fetch = FetchMode.EAGER)
->>>>>>> main
     private LazyReference<Category> category;
 
-    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID")
     private List<Product> products;
 
-    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID")
     private List<SpecificationType> specificationTypes;
 
     public Integer getTypeID() {

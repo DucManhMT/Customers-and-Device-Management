@@ -1,14 +1,8 @@
 package crm.common.model;
 
 import crm.common.model.enums.RequestStatus;
-<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
-=======
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
->>>>>>> main
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -35,17 +29,10 @@ public class Request {
     @Column(name = "Note", length = 255)
     private String note;
 
-<<<<<<< HEAD
     @ManyToOne(joinColumn = "ContractID")
-=======
-    @Column(name = "ContractID", type = "BIGINT", nullable = false)
-    private Long contractID; // corrected relationship to ContractID
-
-    @ManyToOne(joinColumn = "ContractID", fetch = FetchMode.EAGER)
->>>>>>> main
     private LazyReference<Contract> contract;
 
-    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID")
     private List<RequestLog> logs;
 
     public Integer getRequestID() {

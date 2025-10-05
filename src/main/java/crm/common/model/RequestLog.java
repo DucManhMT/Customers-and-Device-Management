@@ -2,16 +2,8 @@ package crm.common.model;
 
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
-<<<<<<< HEAD
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
-=======
-import crm.common.model.enums.converter.OldRequestStatusConverter;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.convert.Convert;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
->>>>>>> main
 
 import java.sql.Date;
 
@@ -33,10 +25,10 @@ public class RequestLog {
     private RequestStatus newStatus;
 
 
-    @ManyToOne(joinColumn = "RequestID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
 
-    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
     public Integer getRequestLogID() {
