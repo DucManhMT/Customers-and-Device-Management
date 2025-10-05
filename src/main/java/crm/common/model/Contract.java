@@ -1,8 +1,7 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 import java.util.List;
@@ -25,10 +24,10 @@ public class Contract {
     @Column(name = "CustomerID", type = "INT", nullable = false)
     private Integer customerID;
 
-    @ManyToOne(joinColumn = "CustomerID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Customer> customer;
 
-    @OneToMany(mappedBy = "contractID", joinColumn = "ContractID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "contractID", joinColumn = "ContractID")
     private List<Request> requests;
 
     public Integer getContractID() {
@@ -72,11 +71,11 @@ public class Contract {
     }
 
     public Customer getCustomer() {
-        return customer.get();
+        return this.customer.get();
     }
 
     public void setCustomer(Customer customer) {
-        this.customer.setValue(customer);
+        this.customer = new LazyReference<>(Customer.class, customer.getCustomerID());
     }
 
     public List<Request> getRequests() {

@@ -1,9 +1,8 @@
 package crm.common.model;
 
 import crm.common.model.enums.RequestStatus;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -17,6 +16,7 @@ public class Request {
     @Column(name = "RequestDescription", length = 255)
     private String requestDescription;
 
+    @Enumerated
     @Column(name = "RequestStatus")
     private RequestStatus requestStatus;
 
@@ -29,13 +29,10 @@ public class Request {
     @Column(name = "Note", length = 255)
     private String note;
 
-    @Column(name = "ContractID", type = "INT", nullable = false)
-    private Integer contractID; // corrected relationship to ContractID
-
-    @ManyToOne(joinColumn = "ContractID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ContractID")
     private LazyReference<Contract> contract;
 
-    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID")
     private List<RequestLog> logs;
 
     public Integer getRequestID() {
@@ -86,20 +83,12 @@ public class Request {
         this.note = note;
     }
 
-    public Integer getContractID() {
-        return contractID;
-    }
-
-    public void setContractID(Integer contractID) {
-        this.contractID = contractID;
-    }
-
     public Contract getContract() {
         return contract.get();
     }
 
     public void setContract(Contract contract) {
-        this.contract.setValue(contract);
+        this.contract = new LazyReference<>(Contract.class, contract);
     }
 
     public List<RequestLog> getLogs() {

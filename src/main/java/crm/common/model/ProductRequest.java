@@ -1,11 +1,8 @@
 package crm.common.model;
 
 import crm.common.model.enums.ProductRequestStatus;
-import crm.common.model.enums.converter.ProductRequestStatusConverter;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.convert.Convert;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 
@@ -21,29 +18,20 @@ public class ProductRequest {
     @Column(name = "RequestDate", type = "DATE", nullable = false)
     private Date requestDate;
 
+    @Enumerated
     @Column(name = "Status", length = 20)
-    @Convert(converter = ProductRequestStatusConverter.class)
     private ProductRequestStatus status;
 
     @Column(name = "Description", length = 255)
     private String description;
 
-    @Column(name = "RequestID", type = "INT", nullable = false)
-    private Integer requestID;
-
-    @Column(name = "ProductID", type = "INT", nullable = false)
-    private Integer productID;
-
-    @Column(name = "WarehouseID", type = "INT", nullable = false)
-    private Integer warehouseID;
-
-    @ManyToOne(joinColumn = "RequestID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
 
-    @ManyToOne(joinColumn = "ProductID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
 
-    @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "WarehouseID")
     private LazyReference<Warehouse> warehouse;
 
     public Integer getProductRequestID() {
@@ -86,36 +74,13 @@ public class ProductRequest {
         this.description = description;
     }
 
-    public Integer getRequestID() {
-        return requestID;
-    }
-
-    public void setRequestID(Integer requestID) {
-        this.requestID = requestID;
-    }
-
-    public Integer getProductID() {
-        return productID;
-    }
-
-    public void setProductID(Integer productID) {
-        this.productID = productID;
-    }
-
-    public Integer getWarehouseID() {
-        return warehouseID;
-    }
-
-    public void setWarehouseID(Integer warehouseID) {
-        this.warehouseID = warehouseID;
-    }
-
     public Request getRequest() {
         return request.get();
     }
 
     public void setRequest(Request request) {
-        this.request.setValue(request);
+
+        this.request = new LazyReference<>(Request.class, request.getRequestID());
     }
 
     public Product getProduct() {
@@ -123,7 +88,8 @@ public class ProductRequest {
     }
 
     public void setProduct(Product product) {
-        this.product.setValue(product);
+
+        this.product = new LazyReference<>(Product.class, product.getProductID());
     }
 
     public Warehouse getWarehouse() {
@@ -131,6 +97,7 @@ public class ProductRequest {
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        this.warehouse.setValue(warehouse);
+
+        this.warehouse = new LazyReference<>(Warehouse.class, warehouse.getWarehouseID());
     }
 }
