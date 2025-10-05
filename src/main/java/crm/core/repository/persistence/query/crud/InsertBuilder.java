@@ -1,121 +1,123 @@
-package crm.core.repository.persistence.query.crud;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import crm.core.repository.persistence.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
-
-/**
- * A builder class for constructing SQL INSERT queries.
- * <p>
- * Example usage:
- * 
- * <pre>
- * InsertBuilder builder = InsertBuilder.builder("users")
- *         .columns("name", "email", "age")
- *         .values("John Doe", "test@gmail.com", 30);
- * String sql = builder.build();
- * System.out.println(sql);
- * // Output: INSERT INTO users (name, email, age) VALUES (?, ?, ?
- * </pre>
- * </p>
- * 
- * @author Kepter
- * @author Nguyen Anh Tu
- * @since 1.0
- * 
- */
-public class InsertBuilder<E> extends AbstractQueryBuilder {
-
-    private List<String> columns;
-
-    public InsertBuilder(String tableName) {
-        super(tableName);
-    }
-
-    public static <E> InsertBuilder<E> builder(String tableName) {
-        return new InsertBuilder<E>(tableName);
-    }
-
-    public InsertBuilder<E> columns(List<String> columns) {
-        this.columns = columns;
-        return this;
-    }
-
-    public InsertBuilder<E> columns(String... columns) {
-        this.columns = List.of(columns);
-        return this;
-    }
-
-    public InsertBuilder<E> values(List<Object> values) {
-        this.getParameters().addAll(values);
-        return this;
-    }
-
-    public InsertBuilder<E> values(Object... values) {
-        if (values == null || values.length == 0) {
-            return this; // nothing to add
-        }
-        this.getParameters().addAll(List.of(values));
-        return this;
-    }
-
-    @Override
-    public String createQuery() {
-        if (tableName == null || tableName.isEmpty()) {
-            throw new IllegalStateException("Table name is required for INSERT query");
-        }
-        if (columns == null || columns.isEmpty()) {
-            throw new IllegalStateException("At least one column is required for INSERT query");
-        }
-        if (this.getParameters() == null || this.getParameters().isEmpty()) {
-            throw new IllegalStateException("Values must be provided for INSERT query");
-        }
-        int columnCount = columns.size();
-        if (columnCount == 0) {
-            throw new IllegalStateException("Column count must be greater than zero");
-        }
-        if (this.getParameters().size() % columnCount != 0) {
-            throw new IllegalStateException(
-                    "Values count (" + this.getParameters().size() + ") must be a multiple of columns count ("
-                            + columnCount + ") for batch INSERT");
-        }
-        int rowCount = this.getParameters().size() / columnCount;
-
-        // Build placeholder for a single row e.g. "?, ?, ?"
-        String singleRowPlaceholders = String.join(", ", columns.stream().map(c -> "?").toList());
-
-        StringBuilder query = new StringBuilder("INSERT INTO ");
-        query.append(tableName).append(" (");
-        query.append(String.join(", ", columns));
-        query.append(") VALUES ");
-
-        for (int i = 0; i < rowCount; i++) {
-            if (i > 0) {
-                query.append(", ");
-            }
-            query.append("(").append(singleRowPlaceholders).append(")");
-        }
-        return query.toString();
-    }
-
-    @Override
-    public String build(boolean isPrintSql) {
-        String query = createQuery();
-        if (isPrintSql) {
-            System.out.println("Generated Query: " + query);
-        }
-        return query;
-    }
-
-    @Override
-    public String build() {
-        String query = createQuery();
-        if (RepositoryConfig.PRINT_SQL) {
-            System.out.println("Generated Query: " + query);
-        }
-        return query;
-    }
-
-}
+//package crm.core.repository.persistence.query.crud;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import crm.core.repository.persistence.config.RepositoryConfig;
+//import crm.core.repository.persistence.entity.EntityMeta;
+//import crm.core.repository.persistence.query.AbstractQueryBuilder;
+//
+///**
+// * A builder class for constructing SQL INSERT queries.
+// * <p>
+// * Example usage:
+// *
+// * <pre>
+// * InsertBuilder builder = InsertBuilder.builder("users")
+// *         .columns("name", "email", "age")
+// *         .values("John Doe", "test@gmail.com", 30);
+// * String sql = builder.build();
+// * System.out.println(sql);
+// * // Output: INSERT INTO users (name, email, age) VALUES (?, ?, ?
+// * </pre>
+// * </p>
+// *
+// * @author Kepter
+// * @author Nguyen Anh Tu
+// * @since 1.0
+// *
+// */
+//public class InsertBuilder<E> extends AbstractQueryBuilder<E> {
+//
+//    private List<String> columns;
+//
+//    public InsertBuilder(EntityMeta<E> entityMeta) {
+//        super(entityMeta);
+//    }
+//
+//    public static <E> InsertBuilder<E> builder(EntityMeta<E> entityMeta) {
+//        return new InsertBuilder<E>(entityMeta);
+//    }
+//
+//    public InsertBuilder<E> columns(List<String> columns) {
+//        this.columns = columns;
+//        return this;
+//    }
+//
+//    public InsertBuilder<E> columns(String... columns) {
+//        this.columns = List.of(columns);
+//        return this;
+//    }
+//
+//    public InsertBuilder<E> values(List<Object> values) {
+//        this.getParameters().addAll(values);
+//        return this;
+//    }
+//
+//    public InsertBuilder<E> values(Object... values) {
+//        if (values == null || values.length == 0) {
+//            return this; // nothing to add
+//        }
+//        this.getParameters().addAll(List.of(values));
+//        return this;
+//    }
+//
+//    @Override
+//    public String createQuery() {
+//        String tableName = entityMeta.getTableName();
+//        if (tableName == null || tableName.isEmpty()) {
+//            throw new IllegalStateException("Table name is required for INSERT query");
+//        }
+//        if (columns == null || columns.isEmpty()) {
+//            throw new IllegalStateException("At least one column is required for INSERT query");
+//        }
+//        if (this.getParameters() == null || this.getParameters().isEmpty()) {
+//            throw new IllegalStateException("Values must be provided for INSERT query");
+//        }
+//        int columnCount = columns.size();
+//        if (columnCount == 0) {
+//            throw new IllegalStateException("Column count must be greater than zero");
+//        }
+//        if (this.getParameters().size() % columnCount != 0) {
+//            throw new IllegalStateException(
+//                    "Values count (" + this.getParameters().size() + ") must be a multiple of columns count ("
+//                            + columnCount + ") for batch INSERT");
+//        }
+//        int rowCount = this.getParameters().size() / columnCount;
+//
+//        // Build placeholder for a single row e.g. "?, ?, ?"
+//        String singleRowPlaceholders = String.join(", ", columns.stream().map(c -> "?").toList());
+//
+//        StringBuilder query = new StringBuilder("INSERT INTO ");
+//        query.append(tableName).append(" (");
+//        query.append(String.join(", ", columns));
+//        query.append(") VALUES ");
+//
+//        for (int i = 0; i < rowCount; i++) {
+//            if (i > 0) {
+//                query.append(", ");
+//            }
+//            query.append("(").append(singleRowPlaceholders).append(")");
+//        }
+//        return query.toString();
+//    }
+//
+//    @Override
+//    public String build(boolean isPrintSql) {
+//        String query = createQuery();
+//        if (isPrintSql) {
+//            System.out.println("Generated Query: " + query);
+//        }
+//        return query;
+//    }
+//
+//    @Override
+//    public String build() {
+//        String query = createQuery();
+//        if (RepositoryConfig.PRINT_SQL) {
+//            System.out.println("Generated Query: " + query);
+//        }
+//        return query;
+//    }
+//
+//}

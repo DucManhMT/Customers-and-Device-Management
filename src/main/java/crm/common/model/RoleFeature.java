@@ -1,53 +1,30 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.Column;
-import crm.core.repository.persistence.annotation.Entity;
-import crm.core.repository.persistence.annotation.Key;
-import crm.core.repository.persistence.annotation.ManyToOne;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 @Entity(tableName = "RoleFeature")
 public class RoleFeature {
     // Surrogate key instead of composite
     @Key
-    @Column(name = "RoleFeatureID", type = "BIGINT")
-    private Long roleFeatureID;
+    @Column(name = "RoleFeatureID", type = "INT")
+    private Integer roleFeatureID;
 
-    @Column(name = "RoleID", type = "BIGINT", nullable = false)
-    private Long roleID;
-
-    @Column(name = "FeatureID", type = "BIGINT", nullable = false)
-    private Long featureID;
-
-    @ManyToOne(joinColumn = "RoleID", fetch = FetchMode.LAZY)
+    @ManyToOne(joinColumn = "RoleID")
     private LazyReference<Role> role;
 
-    @ManyToOne(joinColumn = "FeatureID", fetch = FetchMode.LAZY)
+    @ManyToOne(joinColumn = "FeatureID")
     private LazyReference<Feature> feature;
 
-    public Long getRoleFeatureID() {
+    public Integer getRoleFeatureID() {
         return roleFeatureID;
     }
 
-    public void setRoleFeatureID(Long roleFeatureID) {
+    public void setRoleFeatureID(Integer roleFeatureID) {
         this.roleFeatureID = roleFeatureID;
-    }
-
-    public Long getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(Long roleID) {
-        this.roleID = roleID;
-    }
-
-    public Long getFeatureID() {
-        return featureID;
-    }
-
-    public void setFeatureID(Long featureID) {
-        this.featureID = featureID;
     }
 
     public Role getRole() {
@@ -55,7 +32,8 @@ public class RoleFeature {
     }
 
     public void setRole(Role role) {
-        this.role.setValue(role);
+
+        this.role = new LazyReference<>(Role.class,role.getRoleID());
     }
 
     public Feature getFeature() {
@@ -63,6 +41,7 @@ public class RoleFeature {
     }
 
     public void setFeature(Feature feature) {
-        this.feature.setValue(feature);
+
+        this.feature = new LazyReference<>(Feature.class,feature.getFeatureID());
     }
 }

@@ -1,19 +1,18 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.Column;
-import crm.core.repository.persistence.annotation.Entity;
-import crm.core.repository.persistence.annotation.Key;
-import crm.core.repository.persistence.annotation.ManyToOne;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 
 @Entity(tableName = "Staff")
 public class Staff {
     @Key
-    @Column(name = "StaffID", type = "BIGINT")
-    private Long staffID;
+    @Column(name = "StaffID", type = "INT")
+    private Integer staffID;
 
     @Column(name = "StaffName", length = 150, nullable = false)
     private String staffName;
@@ -33,17 +32,15 @@ public class Staff {
     @Column(name = "DateOfBirth", type = "DATE")
     private Date dateOfBirth;
 
-    @Column(name = "Username", length = 100)
-    private String username;
 
-    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
-    public Long getStaffID() {
+    public Integer getStaffID() {
         return staffID;
     }
 
-    public void setStaffID(Long staffID) {
+    public void setStaffID(Integer staffID) {
         this.staffID = staffID;
     }
 
@@ -95,20 +92,13 @@ public class Staff {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Account getAccount() {
         return account.get();
     }
 
     public void setAccount(Account account) {
-        this.account.setValue(account);
+
+        this.account = new LazyReference<>(Account.class, account.getUsername());
     }
 
 }
