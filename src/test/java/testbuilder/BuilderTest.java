@@ -3,32 +3,28 @@ import crm.common.model.enums.AccountStatus;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.*;
 import crm.common.model.*;
-import crm.core.config.DBcontext;
+import crm.core.repository.persistence.config.DBcontext;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
-        QueryUtils queryUtils = new QueryUtils();
-        //Role
-        Role role = new Role();
-        role.setRoleID(1);
-        role.setRoleName("Customer");
-        //Account
-        Account acc = new Account();
-        acc.setUsername("john_doe");
-        acc.setPasswordHash("hashed_primaryied");
-        acc.setAccountStatus(AccountStatus.Active);
-        acc.setRole(role);
+        List<Contract> contracts;
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put("contractID", 1);
+        contracts = em.findWithConditions(Contract.class, conditions);
 
-        //persist
-
-
-   //    em.persist(acc,Account.class);
-
-//       em.remove(acc,Account.class);
-///em.merge(acc, Account.class);
-        Account newAcc = em.find(Account.class, "john_doe");
-        System.out.println(em.count(Account.class));
+        for (Contract contract : contracts) {
+            System.out.println("Contract ID: " + contract.getContractID());
+            System.out.println("Contract Image: " + contract.getContractImage());
+            System.out.println("Start Date: " + contract.getStartDate());
+            System.out.println("Expired Date: " + contract.getExpiredDate());
+            System.out.println("Customer ID: " + contract.getCustomerID());
+            System.out.println("-----------------------");
+        }
 
 
     }

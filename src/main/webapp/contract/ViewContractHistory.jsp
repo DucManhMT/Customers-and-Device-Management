@@ -1,5 +1,15 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!-- <%--
+  Created by IntelliJ IDEA.
+  User: FPT SHOP
+  Date: 10/4/2025
+  Time: 6:26 PM
+  To change this template use File | Settings | File Templates.
+--%> -->
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+<html>
 
 <head>
   <meta charset="UTF-8">
@@ -7,7 +17,7 @@
   <title>Contract History</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ViewContractHistory.css">
 </head>
 
 <body>
@@ -27,56 +37,36 @@
       <div class="p-4">
         <div class="search-section">
           <h5 class="mb-3"><i class="bi bi-search me-2"></i>Search Contracts</h5>
-          <div class="row g-3">
-            <div class="col-md-3">
-              <label class="form-label">Contract ID</label>
-              <input type="text" class="form-control" id="contractIdSearch" placeholder="Enter contract ID...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Status</label>
-              <select class="form-select" id="statusFilter">
-                <option value="">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="expired">Expired</option>
-                <option value="pending">Pending</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Start Date</label>
-              <input type="date" class="form-control" id="startDateSearch">
-            </div>
-            <div class="col-md-3 d-flex align-items-end gap-2">
-              <button class="btn btn-primary-custom w-50" onclick="searchContracts()">
-                <i class="bi bi-search me-1"></i>Search
-              </button>
-              <button class="btn btn-secondary-custom w-50" onclick="resetFilters()">
-                <i class="bi bi-arrow-clockwise me-1"></i>Reset
-              </button>
-            </div>
-          </div>
+            <form action="ViewContractHistory" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Contract ID</label>
+                    <input type="text" class="form-control" name="contractId" placeholder="Enter contract ID...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-control" name="startDate">
+                </div>
+                <div class="col-md-4 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary-custom w-50">
+                        <i class="bi bi-search me-1"></i>Search
+                    </button>
+                    <a href="ViewContractHistory" class="btn btn-secondary-custom w-50">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                    </a>
+                </div>
+            </form>
 
         </div>
       </div>
     </div>
 
     <div class="contract-summary">
-      <div class="row">
-        <div class="col-md-3 text-center">
-          <h3 class="text-success mb-1" id="totalContracts">1</h3>
+      <div class="card">
+        <div class="col-md text-center">
+          <h3 class="text-success mb-1" id="totalContracts">${count}</h3>
           <small class="text-muted">Total Contracts</small>
         </div>
-        <div class="col-md-3 text-center">
-          <h3 class="text-primary mb-1" id="activeContracts">1</h3>
-          <small class="text-muted">Active</small>
-        </div>
-        <div class="col-md-3 text-center">
-          <h3 class="text-warning mb-1" id="expiringSoon">0</h3>
-          <small class="text-muted">Expiring Soon</small>
-        </div>
-        <div class="col-md-3 text-center">
-          <h3 class="text-danger mb-1" id="expiredContracts">0</h3>
-          <small class="text-muted">Expired</small>
-        </div>
+
       </div>
     </div>
 
@@ -95,78 +85,74 @@
               <th>Contract ID</th>
               <th>Start Date</th>
               <th>End Date</th>
-              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="contractsTableBody">
-            <tr class="align-middle">
-              <td>
-                <strong class="text-primary">HD001</strong>
-              </td>
+            <tbody id="contractsTableBody">
+                <c:forEach items="${contracts}" var="contract">
+                    <tr class="align-middle">
+                        <td>${contract.contractID}</td>
+                        <td>${contract.startDate}</td>
+                        <td>${contract.expiredDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info text-white me-2" onclick="viewDetails('${contract.contractID}')">
+                                <i class="bi bi-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
 
-              <td>
-                <i class="bi bi-calendar-check text-success me-1"></i>
-                15/01/2024
-              </td>
-              <td>
-                <i class="bi bi-calendar-x text-danger me-1"></i>
-                31/12/2024
-              </td>
-
-              <td>
-                <span class="status-badge status-active">
-                  Active
-                </span>
-              </td>
-              <td>
-                <div class="btn-group-vertical btn-group-sm" role="group">
-                  <button class="btn btn-outline-primary btn-sm mb-1" onclick="viewContractDetails('HD001')"
-                    title="Xem chi tiết">
-                    View detail
-                  </button>
-
-                </div>
-              </td>
-            </tr>
-
-          </tbody>
         </table>
       </div>
     </div>
     <!-- Pagination Controls -->
-    <div>
-      <div class="row mt-4 align-items-center">
-        <div class="col-md-6">
+      <form method="get" action="ViewContractHistory">
           <div class="d-flex align-items-center">
-            <span class="me-3">Show:</span>
-            <select class="form-select form-select-sm" style="width: auto;" id="itemsPerPageSelect">
-              <option value="5">5 </option>
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
-            </select>
-
+              <span class="me-3">Show:</span>
+              <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
+                      onchange="this.form.submit()">
+                  <option value="5"  ${recordsPerPage == 5 ? 'selected' : ''}>5</option>
+                  <option value="10" ${recordsPerPage == 10 ? 'selected' : ''}>10</option>
+                  <option value="15" ${recordsPerPage == 15 ? 'selected' : ''}>15</option>
+                  <option value="20" ${recordsPerPage == 20 ? 'selected' : ''}>20</option>
+              </select>
           </div>
-        </div>
+      </form>
         <!-- Pagination -->
-        <nav aria-label="Phân trang hợp đồng" class="mt-4">
-          <ul class="pagination justify-content-center" id="pagination">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" onclick="changePage(0)">Previous</a>
-            </li>
-            <li class="page-item active">
-              <a class="page-link" href="#" onclick="changePage(1)">1</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="#" onclick="changePage(2)">2</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="#" onclick="changePage(3)">3</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="#" onclick="changePage(2)">Next</a>
-            </li>
+      <nav  class="mt-4">
+          <ul class="pagination justify-content-center">
+
+              <!-- Previous -->
+              <c:if test="${currentPage > 1}">
+                  <li class="page-item">
+                      <a class="page-link"
+                         href="ViewContractHistory?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                          Previous
+                      </a>
+                  </li>
+              </c:if>
+
+              <!-- Các số trang -->
+              <c:forEach begin="1" end="${totalPages}" var="i">
+                  <li class="page-item ${i == currentPage ? 'active' : ''}">
+                      <a class="page-link"
+                         href="ViewContractHistory?page=${i}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                              ${i}
+                      </a>
+                  </li>
+              </c:forEach>
+
+              <!-- Next -->
+              <c:if test="${currentPage < totalPages}">
+                  <li class="page-item">
+                      <a class="page-link"
+                         href="ViewContractHistory?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                          Next
+                      </a>
+                  </li>
+              </c:if>
+
           </ul>
         </nav>
       </div>
