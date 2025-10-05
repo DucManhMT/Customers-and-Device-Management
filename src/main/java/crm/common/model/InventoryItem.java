@@ -1,29 +1,28 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 @Entity(tableName = "InventoryItem")
 public class InventoryItem {
     @Key
-    @Column(name = "Item_ID", type = "BIGINT")
-    private Long itemId;
+    @Column(name = "Item_ID", type = "INT")
+    private Integer itemId;
 
     @Column(name = "SerialNumber", length = 255, nullable = false, unique = true)
     private String serialNumber;
 
-    @Column(name = "ProductID", type = "BIGINT", nullable = false)
-    private Long productID;
-
-    @ManyToOne(joinColumn = "ProductID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
 
-    public Long getItemId() {
+    public Integer getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
 
@@ -35,19 +34,11 @@ public class InventoryItem {
         this.serialNumber = serialNumber;
     }
 
-    public Long getProductID() {
-        return productID;
-    }
-
-    public void setProductID(Long productID) {
-        this.productID = productID;
-    }
-
     public Product getProduct() {
         return product.get();
     }
 
     public void setProduct(Product product) {
-        this.product.setValue(product);
+        this.product = new LazyReference<>(Product.class,product.getProductID());
     }
 }

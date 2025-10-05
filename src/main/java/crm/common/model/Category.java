@@ -1,18 +1,17 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.Column;
-import crm.core.repository.persistence.annotation.Entity;
-import crm.core.repository.persistence.annotation.Key;
-import crm.core.repository.persistence.annotation.OneToMany;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.OneToMany;
 
 import java.util.List;
 
 @Entity(tableName = "Category")
 public class Category {
     @Key
-    @Column(name = "CategoryID", type = "BIGINT")
-    private Long categoryID;
+    @Column(name = "CategoryID", type = "INT")
+    private Integer categoryID;
 
     @Column(name = "CategoryName", length = 100, nullable = false)
     private String categoryName;
@@ -20,14 +19,14 @@ public class Category {
     @Column(name = "CategoryImage", length = 255)
     private String categoryImage;
 
-    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID")
     private List<Type> types;
 
-    public Long getCategoryID() {
+    public Integer getCategoryID() {
         return categoryID;
     }
 
-    public void setCategoryID(Long categoryID) {
+    public void setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
     }
 

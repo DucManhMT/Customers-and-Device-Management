@@ -124,8 +124,14 @@ public class TransactionManager {
     public static Connection getConnection() {
         Connection connection = connectionHolder.get();
         if (connection == null) {
-            throw new IllegalStateException(
-                    "No active transaction. Please call beginTransaction() first.");
+            try {
+                connection = DBcontext.createConnection();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            connectionHolder.set(connection);
+
         }
         return connection;
     }
@@ -133,8 +139,8 @@ public class TransactionManager {
     public static EntityCache getCache() {
         EntityCache cache = cacheHolder.get();
         if (cache == null) {
-            throw new IllegalStateException(
-                    "No active transaction. Please call beginTransaction() first.");
+            cache = EntityCache.defaultCache();
+            cacheHolder.set(cache);
         }
         return cache;
     }

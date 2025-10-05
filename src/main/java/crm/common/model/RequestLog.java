@@ -2,49 +2,40 @@ package crm.common.model;
 
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
-import crm.common.model.enums.converter.OldRequestStatusConverter;
-import crm.common.model.enums.converter.RequestStatusConverter;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.convert.Convert;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 
 @Entity(tableName = "RequestLog")
 public class RequestLog {
     @Key
-    @Column(name = "RequestLogID", type = "BIGINT")
-    private Long requestLogID;
+    @Column(name = "RequestLogID", type = "INT")
+    private Integer requestLogID;
 
     @Column(name = "ActionDate", type = "DATE")
     private Date actionDate;
 
+    @Enumerated
     @Column(name = "OldStatus", length = 20)
-    @Convert(converter = OldRequestStatusConverter.class)
     private OldRequestStatus oldStatus;
 
+    @Enumerated
     @Column(name = "NewStatus", length = 20)
-    @Convert(converter = RequestStatusConverter.class)
     private RequestStatus newStatus;
 
-    @Column(name = "RequestID", type = "BIGINT", nullable = false)
-    private Long requestID;
 
-    @Column(name = "Username", length = 100)
-    private String username;
-
-    @ManyToOne(joinColumn = "RequestID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
 
-    @ManyToOne(joinColumn = "Username", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
-    public Long getRequestLogID() {
+    public Integer getRequestLogID() {
         return requestLogID;
     }
 
-    public void setRequestLogID(Long requestLogID) {
+    public void setRequestLogID(Integer requestLogID) {
         this.requestLogID = requestLogID;
     }
 
@@ -72,57 +63,22 @@ public class RequestLog {
         this.newStatus = newStatus;
     }
 
-    public Long getRequestID() {
-        return requestID;
-    }
-
-    public void setRequestID(Long requestID) {
-        this.requestID = requestID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public Request getRequest() {
-        if (request == null) {
-            return null;
-        }
         return request.get();
     }
 
     public void setRequest(Request request) {
-        if (this.request == null) {
-            this.request = new LazyReference<>(request);
-        } else {
-            this.request.setValue(request);
-        }
-        // synchronize RequestID
-        if (this.requestID == null && request != null) {
-            this.requestID = request.getRequestID();
-        }
+
+        this.request = new LazyReference<>(Request.class, request.getRequestID());
     }
 
     public Account getAccount() {
-        if (account == null) {
-            return null;
-        }
         return account.get();
     }
 
     public void setAccount(Account account) {
-        if (this.account == null) {
-            this.account = new LazyReference<>(account);
-        } else {
-            this.account.setValue(account);
-        }
-        // synchronize Username
-        if (this.username == null && account != null) {
-            this.username = account.getUsername();
-        }
+
+        this.account = new LazyReference<>(Account.class, account.getUsername());
     }
 }
