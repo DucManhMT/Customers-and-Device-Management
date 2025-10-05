@@ -1,11 +1,9 @@
 package crm.common.model;
 
 import crm.common.model.enums.ProductStatus;
-import crm.common.model.enums.converter.ProductStatusConverter;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.convert.Convert;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 @Entity(tableName = "ProductWarehouse")
 public class ProductWarehouse {
@@ -13,25 +11,19 @@ public class ProductWarehouse {
     @Column(name = "ProductWarehouseID", type = "INT")
     private Integer productWarehouseID;
 
+    @Enumerated
     @Column(name = "ProductStatus", length = 20)
-    @Convert(converter = ProductStatusConverter.class)
     private ProductStatus productStatus;
 
-    @Column(name = "WarehouseID", type = "INT", nullable = false)
-    private Integer warehouseID;
-
-    @Column(name = "ItemID", type = "INT", nullable = false)
-    private Integer itemID;
-
-    @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "WarehouseID")
     private LazyReference<Warehouse> warehouse;
 
-    @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
     // Inverse side of one-to-one to ProductExported (optional / may be null until
     // exported)
-    @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID", fetch = FetchMode.LAZY)
+    @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID")
     private LazyReference<ProductExported> productExported;
 
     public Integer getProductWarehouseID() {
@@ -50,28 +42,14 @@ public class ProductWarehouse {
         this.productStatus = productStatus;
     }
 
-    public Integer getWarehouseID() {
-        return warehouseID;
-    }
-
-    public void setWarehouseID(Integer warehouseID) {
-        this.warehouseID = warehouseID;
-    }
-
-    public Integer getItemID() {
-        return itemID;
-    }
-
-    public void setItemID(Integer itemID) {
-        this.itemID = itemID;
-    }
 
     public Warehouse getWarehouse() {
         return warehouse.get();
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        this.warehouse.setValue(warehouse);
+
+        this.warehouse = new LazyReference<>(Warehouse.class, warehouse.getWarehouseID());
     }
 
     public InventoryItem getInventoryItem() {
@@ -79,7 +57,8 @@ public class ProductWarehouse {
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        this.inventoryItem.setValue(inventoryItem);
+
+        this.inventoryItem = new LazyReference<>(InventoryItem.class, inventoryItem.getItemId());
     }
 
     public ProductExported getProductExported() {
@@ -87,6 +66,7 @@ public class ProductWarehouse {
     }
 
     public void setProductExported(ProductExported productExported) {
-        this.productExported.setValue(productExported);
+
+        this.productExported = new LazyReference<>(ProductExported.class, productExported);
     }
 }

@@ -1,8 +1,7 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.util.List;
 
@@ -18,13 +17,10 @@ public class Specification {
     @Column(name = "SpecificationValue", length = 255, nullable = false)
     private String specificationValue;
 
-    @Column(name = "SpecificationTypeID", type = "INT", nullable = false)
-    private Integer specificationTypeID;
-
-    @ManyToOne(joinColumn = "SpecificationTypeID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "SpecificationTypeID")
     private LazyReference<SpecificationType> specificationType;
 
-    @OneToMany(mappedBy = "specificationID", joinColumn = "SpecificationID", fetch = FetchMode.LAZY)
+    @OneToMany(mappedBy = "specificationID", joinColumn = "SpecificationID")
     private List<ProductSpecification> productSpecifications;
 
     public Integer getSpecificationID() {
@@ -51,20 +47,13 @@ public class Specification {
         this.specificationValue = specificationValue;
     }
 
-    public Integer getSpecificationTypeID() {
-        return specificationTypeID;
-    }
-
-    public void setSpecificationTypeID(Integer specificationTypeID) {
-        this.specificationTypeID = specificationTypeID;
-    }
 
     public SpecificationType getSpecificationType() {
         return specificationType.get();
     }
 
     public void setSpecificationType(SpecificationType specificationType) {
-        this.specificationType.setValue(specificationType);
+        this.specificationType = new LazyReference<>(SpecificationType.class ,specificationType.getSpecificationTypeID());
     }
 
     public List<ProductSpecification> getProductSpecifications() {

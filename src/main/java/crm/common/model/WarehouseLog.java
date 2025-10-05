@@ -1,8 +1,10 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 
@@ -18,16 +20,10 @@ public class WarehouseLog {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @Column(name = "WarehouseID", type = "INT", nullable = false)
-    private Integer warehouseID;
-
-    @Column(name = "ProductRequestID", type = "INT", nullable = false)
-    private Integer productRequestID;
-
-    @ManyToOne(joinColumn = "WarehouseID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "WarehouseID")
     private LazyReference<Warehouse> warehouse;
 
-    @ManyToOne(joinColumn = "ProductRequestID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ProductRequestID")
     private LazyReference<ProductRequest> productRequest;
 
     public Integer getWarehouseLogID() {
@@ -54,28 +50,14 @@ public class WarehouseLog {
         this.description = description;
     }
 
-    public Integer getWarehouseID() {
-        return warehouseID;
-    }
-
-    public void setWarehouseID(Integer warehouseID) {
-        this.warehouseID = warehouseID;
-    }
-
-    public Integer getProductRequestID() {
-        return productRequestID;
-    }
-
-    public void setProductRequestID(Integer productRequestID) {
-        this.productRequestID = productRequestID;
-    }
 
     public Warehouse getWarehouse() {
         return warehouse.get();
     }
 
     public void setWarehouse(Warehouse warehouse) {
-        this.warehouse.setValue(warehouse);
+
+        this.warehouse = new LazyReference<>(Warehouse.class,warehouse.getWarehouseID());
     }
 
     public ProductRequest getProductRequest() {
@@ -83,6 +65,7 @@ public class WarehouseLog {
     }
 
     public void setProductRequest(ProductRequest productRequest) {
-        this.productRequest.setValue(productRequest);
+
+        this.productRequest = new LazyReference<>(ProductRequest.class,productRequest.getProductRequestID());
     }
 }

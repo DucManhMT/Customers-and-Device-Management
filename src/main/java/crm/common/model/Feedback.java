@@ -1,8 +1,10 @@
 package crm.common.model;
 
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.Column;
+import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Timestamp;
 
@@ -24,10 +26,8 @@ public class Feedback {
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
     private Timestamp feedbackDate;
 
-    @Column(name = "CustomerID", length = 100)
-    private String customerID; // references Account.Username per schema
 
-    @ManyToOne(joinColumn = "CustomerID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
 
     public Integer getFeedbackID() {
@@ -70,19 +70,11 @@ public class Feedback {
         this.feedbackDate = feedbackDate;
     }
 
-    public String getCustomerID() {
-        return customerID;
-    }
-
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
-    }
-
     public Account getAccount() {
         return account.get();
     }
 
     public void setAccount(Account account) {
-        this.account.setValue(account);
+        this.account = new LazyReference<>(Account.class, account.getUsername());
     }
 }

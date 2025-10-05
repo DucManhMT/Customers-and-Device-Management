@@ -1,9 +1,8 @@
 package crm.common.model;
 
 import crm.common.model.enums.TransactionStatus;
-import crm.core.repository.persistence.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
-import crm.core.repository.persistence.entity.relation.FetchMode;
+import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Timestamp;
 
@@ -16,28 +15,20 @@ public class ProductTransaction {
     @Column(name = "TransactionDate", type = "DATETIME", nullable = false)
     private Timestamp transactionDate;
 
-    @Column(name = "SourceWarehouse", type = "INT")
-    private Integer sourceWarehouseID;
-
-    @Column(name = "DestinationWarehouse", type = "INT")
-    private Integer destinationWarehouseID;
-
+    @Enumerated
     @Column(name = "TransactionStatus", length = 20, nullable = false)
     private TransactionStatus transactionStatus;
-
-    @Column(name = "ItemID", type = "INT", nullable = false)
-    private Integer itemID;
 
     @Column(name = "Note", length = 255)
     private String note;
 
-    @ManyToOne(joinColumn = "ItemID", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    @ManyToOne(joinColumn = "SourceWarehouse", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "SourceWarehouse")
     private LazyReference<Warehouse> sourceWarehouse;
 
-    @ManyToOne(joinColumn = "DestinationWarehouse", fetch = FetchMode.EAGER)
+    @ManyToOne(joinColumn = "DestinationWarehouse")
     private LazyReference<Warehouse> destinationWarehouse;
 
     public Integer getTransactionID() {
@@ -56,28 +47,12 @@ public class ProductTransaction {
         this.transactionDate = transactionDate;
     }
 
-    public Integer getDestinationWarehouseID() {
-        return destinationWarehouseID;
-    }
-
-    public void setDestinationWarehouseID(Integer destinationWarehouseID) {
-        this.destinationWarehouseID = destinationWarehouseID;
-    }
-
     public TransactionStatus getTransactionStatus() {
         return transactionStatus;
     }
 
     public void setTransactionStatus(TransactionStatus transactionStatus) {
         this.transactionStatus = transactionStatus;
-    }
-
-    public Integer getItemID() {
-        return itemID;
-    }
-
-    public void setItemID(Integer itemID) {
-        this.itemID = itemID;
     }
 
     public String getNote() {
@@ -93,7 +68,8 @@ public class ProductTransaction {
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
-        this.inventoryItem.setValue(inventoryItem);
+
+        this.inventoryItem = new LazyReference<>(InventoryItem.class, inventoryItem.getItemId());
     }
 
     public Warehouse getSourceWarehouseEntity() {
@@ -101,15 +77,7 @@ public class ProductTransaction {
     }
 
     public void setSourceWarehouseEntity(Warehouse sourceWarehouse) {
-        this.sourceWarehouse.setValue(sourceWarehouse);
-    }
-
-    public Integer getSourceWarehouseID() {
-        return sourceWarehouseID;
-    }
-
-    public void setSourceWarehouseID(Integer sourceWarehouseID) {
-        this.sourceWarehouseID = sourceWarehouseID;
+        this.sourceWarehouse = new LazyReference<>(Warehouse.class, sourceWarehouse.getWarehouseID());
     }
 
     public Warehouse getDestinationWarehouseEntity() {
@@ -117,6 +85,6 @@ public class ProductTransaction {
     }
 
     public void setDestinationWarehouseEntity(Warehouse destinationWarehouse) {
-        this.destinationWarehouse.setValue(destinationWarehouse);
+        this.destinationWarehouse = new LazyReference<>(Warehouse.class, destinationWarehouse.getWarehouseID());
     }
 }

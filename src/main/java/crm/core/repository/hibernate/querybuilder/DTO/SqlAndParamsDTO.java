@@ -1,4 +1,4 @@
-package crm.core.repository.hibernate.querybuilder;
+package crm.core.repository.hibernate.querybuilder.DTO;
 import java.util.ArrayList;
 import java.util.List;
 /**
