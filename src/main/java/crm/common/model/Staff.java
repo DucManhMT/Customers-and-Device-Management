@@ -4,7 +4,7 @@ import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
-import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 
@@ -32,8 +32,6 @@ public class Staff {
     @Column(name = "DateOfBirth", type = "DATE")
     private Date dateOfBirth;
 
-    @Column(name = "Username", length = 100)
-    private String username;
 
     @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
@@ -94,20 +92,13 @@ public class Staff {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Account getAccount() {
         return account.get();
     }
 
     public void setAccount(Account account) {
-        this.account.setValue(account);
+
+        this.account = new LazyReference<>(Account.class, account.getUsername());
     }
 
 }

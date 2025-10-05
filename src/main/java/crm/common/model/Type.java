@@ -5,7 +5,7 @@ import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.annotation.OneToMany;
-import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.util.List;
 
@@ -20,9 +20,6 @@ public class Type {
 
     @Column(name = "TypeImage", length = 255)
     private String typeImage;
-
-    @Column(name = "CategoryID", type = "INT", nullable = false)
-    private Integer categoryID;
 
     @ManyToOne(joinColumn = "CategoryID")
     private LazyReference<Category> category;
@@ -57,20 +54,13 @@ public class Type {
         this.typeImage = typeImage;
     }
 
-    public Integer getCategoryID() {
-        return categoryID;
-    }
-
-    public void setCategoryID(Integer categoryID) {
-        this.categoryID = categoryID;
-    }
 
     public Category getCategory() {
         return category.get();
     }
 
     public void setCategory(Category category) {
-        this.category.setValue(category);
+        this.category  = new LazyReference<>(Category.class, category.getCategoryID());
     }
 
     public List<Product> getProducts() {

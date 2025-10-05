@@ -3,7 +3,11 @@ package crm.core.repository.hibernate.querybuilder;
 import java.lang.reflect.Field;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;
+
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityFieldMapper {
 
@@ -31,11 +35,28 @@ public class EntityFieldMapper {
         return field.isAnnotationPresent(OneToMany.class);
     }
 
+    public static boolean isEntity(Class<?> clazz) {
+        return clazz.isAnnotationPresent(Entity.class);
+    }
+
     public static String getColumnName(Field field) {
-        if (field.isAnnotationPresent(Column.class)) {
+        if (isColumn(field)) {
             return field.getAnnotation(Column.class).name();
+        } else if (isManyToOne(field)) {
+            ManyToOne ann = field.getAnnotation(ManyToOne.class);
+            return ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
+        } else if (isOneToOne(field)) {
+            OneToOne ann = field.getAnnotation(OneToOne.class);
+            return ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
         }
+
         throw new RuntimeException("Field " + field.getName() + " has no @Column annotation");
+    }
+    public static String getTableName(Class<?> clazz) {
+        if (clazz.isAnnotationPresent(Entity.class)) {
+            return clazz.getAnnotation(Entity.class).tableName();
+        }
+        throw new RuntimeException("Class " + clazz.getName() + " has no @Entity annotation");
     }
 
     public static Object extractValue(Object entity, Field field) {
@@ -88,8 +109,13 @@ public class EntityFieldMapper {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
             }
-            // TODO: handle OneToOne, OneToMany nếu cần
+            //Nếu là OneToOne, tạo LazyReference
+            if (isOneToOne(field) && value != null) {
+                Class<?> targetType = getGenericType(field);
+                return new LazyReference<>(targetType, value);
+            }
 
+            // TODO: handle OneToMany nếu cần
 
             return value;
         } catch (Exception e) {
@@ -108,7 +134,12 @@ public class EntityFieldMapper {
                 if (isColumn(field)) {
                     Object value = extractValueFromResultSet(field, rs);
                     field.set(entity, value);
-                } if (isManyToOne(field)) {
+                }
+                if (isManyToOne(field)) {
+                    Object value = extractValueFromResultSet(field, rs);
+                    field.set(entity, value);
+                }
+                if (isOneToOne(field)) {
                     Object value = extractValueFromResultSet(field, rs);
                     field.set(entity, value);
                 }
@@ -121,7 +152,7 @@ public class EntityFieldMapper {
         }
     }
 
-
+// Lấy kiểu generic của LazyReference<Role> -> Role
     private static Class<?> getGenericType(Field field) {
         try {
             // field type is LazyReference<Role>, so extract Role
@@ -130,6 +161,49 @@ public class EntityFieldMapper {
             return Class.forName(innerClass);
         } catch (Exception e) {
             throw new RuntimeException("Cannot resolve generic type for field " + field.getName(), e);
+        }
+    }
+
+    public static Field findKeyField(Class<?> clazz) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (isKey(field)) {
+                return field;
+            }
+        }
+        throw new RuntimeException("No @Key field found in class " + clazz.getName());
+    }
+
+    public static ColumnsAndValuesDTO mapToColumnsAndValues(Object entity) {
+        try {
+            Class<?> clazz = entity.getClass();
+            List<String> columns = new ArrayList<>();
+            List<Object> values = new ArrayList<>();
+
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true);
+                if (isColumn(field)) {
+                    String column = getColumnName(field);
+                    Object value = extractValue(entity, field);
+                    columns.add(column);
+                    values.add(value);
+                } else if (isManyToOne(field)) {
+                    ManyToOne ann = field.getAnnotation(ManyToOne.class);
+                    String column = ann.joinColumn();
+                    Object value = extractValue(entity, field);
+                    columns.add(column);
+                    values.add(value);
+                } else if (isOneToOne(field)) {
+                    OneToOne ann = field.getAnnotation(OneToOne.class);
+                    String column = ann.joinColumn();
+                    Object value = extractValue(entity, field);
+                    columns.add(column);
+                    values.add(value);
+                }
+            }
+
+            return new ColumnsAndValuesDTO(columns, values);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to map entity to columns and values", e);
         }
     }
 

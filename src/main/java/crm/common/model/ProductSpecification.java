@@ -4,19 +4,13 @@ import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
-import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 @Entity(tableName = "ProductSpecification")
 public class ProductSpecification {
     @Key
     @Column(name = "ProductSpecificationID", type = "INT")
     private Integer productSpecificationID;
-
-    @Column(name = "ProductID", type = "INT", nullable = false)
-    private Integer productID;
-
-    @Column(name = "SpecificationID", type = "INT", nullable = false)
-    private Integer specificationID;
 
     @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
@@ -32,28 +26,12 @@ public class ProductSpecification {
         this.productSpecificationID = productSpecificationID;
     }
 
-    public Integer getProductID() {
-        return productID;
-    }
-
-    public void setProductID(Integer productID) {
-        this.productID = productID;
-    }
-
-    public Integer getSpecificationID() {
-        return specificationID;
-    }
-
-    public void setSpecificationID(Integer specificationID) {
-        this.specificationID = specificationID;
-    }
 
     public Product getProduct() {
         return product.get();
     }
-
     public void setProduct(Product product) {
-        this.product.setValue(product);
+        this.product = new LazyReference<>(Product.class, product.getProductID());
     }
 
     public Specification getSpecification() {
@@ -61,6 +39,6 @@ public class ProductSpecification {
     }
 
     public void setSpecification(Specification specification) {
-        this.specification.setValue(specification);
+        this.specification = new LazyReference<>(Specification.class, specification.getSpecificationID());
     }
 }

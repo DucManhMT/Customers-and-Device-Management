@@ -4,7 +4,7 @@ import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
-import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 @Entity(tableName = "Warehouse")
 public class Warehouse {
@@ -18,10 +18,7 @@ public class Warehouse {
     @Column(name = "Location", length = 255)
     private String location;
 
-    @Column(name = "WarehouseManager", length = 255, nullable = false)
-    private String warehouseManager;
-
-    @ManyToOne(joinColumn = "WarehouseManager")
+    @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> managerAccount;
 
     public Integer getWarehouseID() {
@@ -48,19 +45,12 @@ public class Warehouse {
         this.location = location;
     }
 
-    public String getWarehouseManager() {
-        return warehouseManager;
-    }
-
-    public void setWarehouseManager(String warehouseManager) {
-        this.warehouseManager = warehouseManager;
-    }
 
     public Account getManagerAccount() {
         return managerAccount.get();
     }
 
     public void setManagerAccount(Account managerAccount) {
-        this.managerAccount.setValue(managerAccount);
+        this.managerAccount = new LazyReference<>(Account.class, managerAccount.getUsername());
     }
 }

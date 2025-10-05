@@ -1,7 +1,7 @@
 package crm.common.model;
 
 import crm.core.repository.hibernate.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.util.List;
 
@@ -13,9 +13,6 @@ public class SpecificationType {
 
     @Column(name = "SpecificationTypeName", length = 100, nullable = false)
     private String specificationTypeName;
-
-    @Column(name = "TypeID", type = "INT", nullable = false)
-    private Integer typeID;
 
     @ManyToOne(joinColumn = "TypeID")
     private LazyReference<Type> type;
@@ -39,20 +36,13 @@ public class SpecificationType {
         this.specificationTypeName = specificationTypeName;
     }
 
-    public Integer getTypeID() {
-        return typeID;
-    }
-
-    public void setTypeID(Integer typeID) {
-        this.typeID = typeID;
-    }
 
     public Type getType() {
         return type.get();
     }
 
     public void setType(Type type) {
-        this.type.setValue(type);
+        this.type = new LazyReference<>(Type.class, type.getTypeID());
     }
 
     public List<Specification> getSpecifications() {

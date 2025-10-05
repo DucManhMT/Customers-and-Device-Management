@@ -1,7 +1,7 @@
 package crm.common.model;
 
 import crm.core.repository.hibernate.annotation.*;
-import crm.core.repository.persistence.entity.load.LazyReference;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.sql.Date;
 import java.util.List;
@@ -71,11 +71,11 @@ public class Contract {
     }
 
     public Customer getCustomer() {
-        return customer.get();
+        return this.customer.get();
     }
 
     public void setCustomer(Customer customer) {
-        this.customer.setValue(customer);
+        this.customer = new LazyReference<>(Customer.class, customer.getCustomerID());
     }
 
     public List<Request> getRequests() {
