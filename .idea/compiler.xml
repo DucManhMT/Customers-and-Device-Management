@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="CRM" options="-endorseddirs &quot;D:\Code Files\SWP_Project(Backup)\target/endorsed&quot;" />
+      <module name="CRM" options="-endorseddirs &quot;D:\Code Files\SWP_Project\target/endorsed&quot;" />
     </option>
   </component>
 </project>

@@ -3,20 +3,17 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import java.util.List;
 import java.sql.Connection;
-import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
-import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
-import crm.core.repository.hibernate.querybuilder.QueryUtils;
-import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 
-import java.sql.*;
-import java.util.ArrayList;
+import crm.core.repository.hibernate.querybuilder.QueryOperation;
+import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+
 import java.util.Map;
 
-public class FullOperationEntityManager<T> {
+public class FuntionalityDAO<T> {
     private final EntityManager entityManager;
     private final Class<T> entityClass;
 
-    public FullOperationEntityManager(Class<T> entityClass) {
+    public FuntionalityDAO(Class<T> entityClass) {
         Connection connection = DBcontext.getConnection();
         this.entityManager = new EntityManager(connection);
         this.entityClass = entityClass;
@@ -66,6 +63,10 @@ public class FullOperationEntityManager<T> {
     //Find with condition, sorting and pagination
     public List<T> findWithAll(Map<String, Object> conditions, Map<String, SortDirection> sorting, int limit, int offset) {
         return entityManager.findWithConditionsOrderAndPagination(entityClass, conditions, sorting, limit, offset);
+    }
+    // Execute custom query
+    public List<T> executeCustomQuery(QueryOperation queryOperation) {
+        return entityManager.executeCustomQuery(entityClass, queryOperation);
     }
 
 }
