@@ -17,6 +17,11 @@
   <title>Contract History</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var contextPath = "${pageContext.request.contextPath}";
+    </script>
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ViewContractHistory.css">
 </head>
 
@@ -154,10 +159,30 @@
               </c:if>
 
           </ul>
-        </nav>
-      </div>
-    </div>
+      </nav>
   </div>
+  <!-- Modal contract -->
+  <div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="contractModalLabel">Contract Image</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center">
+                  <img id="contractImage" src="" alt="Contract Image" class="img-fluid rounded shadow" style="display:none;">
+                  <div id="noImageNotice" class="alert alert-warning mt-3" style="display:none;">
+                      No image!
+                  </div>
+                  <br>
+                  <a id="downloadContractBtn" class="btn btn-success mt-3" href="#" download style="display:none;">
+                      <i class="bi bi-download"></i> Dowload Contract
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
+<script src="${pageContext.request.contextPath}/js/ViewContractHistory.js" ></script>
 </body>
 
 </html>
