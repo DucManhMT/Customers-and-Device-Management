@@ -46,7 +46,7 @@ public class QueryUtils {
         Field keyField = EntityFieldMapper.findKeyField(clazz);
         String keyFieldName = keyField.getName();
         whereCondition.put(keyFieldName, id);
-        selectByIdBuilder.whereCondition(whereCondition);
+        selectByIdBuilder.where(whereCondition);
         return selectByIdBuilder.build();
     }
 
@@ -59,48 +59,48 @@ public class QueryUtils {
     // ---------- SELECT WITH ORDER ----------
     public <T> SqlAndParamsDTO buildSelectWithOrder(Class<T> clazz, Map<String, SortDirection> orderConditions) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.orderByCondition(orderConditions);
+        selectBuilder.orderBy(orderConditions);
         return selectBuilder.build();
     }
 
     // ---------- SELECT WITH LIMIT & OFFSET ----------
     public <T> SqlAndParamsDTO buildSelectWithLimitOffset(Class<T> clazz, int limit, int offset) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.limitCondition(limit).offsetCondition(offset);
+        selectBuilder.limit(limit).offset(offset);
         return selectBuilder.build();
     }
 
     //---------- SELECT WITH CONDITIONS ----------
     public <T> SqlAndParamsDTO buildSelectWithConditions(Class<T> clazz, Map<String, Object> conditions) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.whereCondition(conditions);
+        selectBuilder.where(conditions);
         return selectBuilder.build();
     }
 
     // ---------- SELECT WITH CONDITIONS AND ORDER ----------
     public <T> SqlAndParamsDTO buildSelectWithConditionsAndOrder(Class<T> clazz, Map<String, Object> conditions, Map<String, SortDirection> orderConditions) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.whereCondition(conditions).orderByCondition(orderConditions);
+        selectBuilder.where(conditions).orderBy(orderConditions);
         return selectBuilder.build();
     }
 
     // ---------- SELECT WITH CONDITIONS AND LIMIT & OFFSET ----------
     public <T> SqlAndParamsDTO buildSelectWithConditionsAndLimitOffset(Class<T> clazz, Map<String, Object> conditions, int limit, int offset) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.whereCondition(conditions).limitCondition(limit).offsetCondition(offset);
+        selectBuilder.where(conditions).limit(limit).offset(offset);
         return selectBuilder.build();
     }
     // ---------- SELECT WITH ORDER, LIMIT & OFFSET ----------
     public <T> SqlAndParamsDTO buildSelectWithOrderAndLimitOffset(Class<T> clazz, Map<String, SortDirection> orderConditions, int limit, int offset) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.orderByCondition(orderConditions).limitCondition(limit).offsetCondition(offset);
+        selectBuilder.orderBy(orderConditions).limit(limit).offset(offset);
         return selectBuilder.build();
     }
 
     //SELECT WITH CONDITIONS, ORDER, LIMIT & OFFSET ----------
     public <T> SqlAndParamsDTO buildSelectWithAll(Class<T> clazz, Map<String, Object> conditions, Map<String, SortDirection> orderConditions, int limit, int offset) {
         SelectBuilder selectBuilder = new SelectBuilder(clazz);
-        selectBuilder.whereCondition(conditions).orderByCondition(orderConditions).limitCondition(limit).offsetCondition(offset);
+        selectBuilder.where(conditions).orderBy(orderConditions).limit(limit).offset(offset);
         return selectBuilder.build();
     }
 
