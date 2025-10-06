@@ -6,6 +6,7 @@ import crm.core.repository.hibernate.entitymanager.LazyReference;
 import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
