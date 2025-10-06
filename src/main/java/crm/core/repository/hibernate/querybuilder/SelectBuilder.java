@@ -26,8 +26,9 @@ public class SelectBuilder {
         this.tableName = entity.tableName();
     }
 
+
     // ---------- WHERE ----------
-    public SelectBuilder where(Map<String,Object> whereCondition) {
+    public SelectBuilder whereCondition(Map<String,Object> whereCondition) {
         for (String fieldName : whereCondition.keySet()){
             try {
                 Field field = this.entityClass.getDeclaredField(fieldName);
@@ -44,7 +45,7 @@ public class SelectBuilder {
     }
 
     // ---------- ORDER BY ----------
-    public SelectBuilder orderBy(Map<String,SortDirection> orderCondition) {
+    public SelectBuilder orderByCondition(Map<String,SortDirection> orderCondition) {
         for (String fieldName : orderCondition.keySet()){
             try {
                 Field field = this.entityClass.getDeclaredField(fieldName);
@@ -60,12 +61,12 @@ public class SelectBuilder {
     }
 
     // ---------- LIMIT / OFFSET ----------
-    public SelectBuilder limit(int limit) {
+    public SelectBuilder limitCondition(int limit) {
         this.limit = limit;
         return this;
     }
 
-    public SelectBuilder offset(int offset) {
+    public SelectBuilder offsetCondition(int offset) {
         this.offset = offset;
         return this;
     }
@@ -83,4 +84,8 @@ public class SelectBuilder {
         if (offset != null) sql.append(" OFFSET ").append(offset);
         return new SqlAndParamsDTO(sql.toString(), params);
     }
+
+
+
+    //
 }

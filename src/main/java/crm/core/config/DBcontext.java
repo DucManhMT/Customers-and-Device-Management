@@ -7,33 +7,24 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBcontext {
-    private static Connection connection;
+    // Deprecated: previously cached a single static connection leading to inconsistent autocommit state
+    // private static Connection connection;
 
     /**
-     * Get a connection, create one if it doesn't exist or is closed
-     *
-     * @return Connection use for readonly operations
+     * Always returns a new connection. Caller is responsible for closing it when finished.
      */
     public static Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-                connection = createConnection();
-            }
+            return createConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to obtain connection", e);
         }
-        return connection;
     }
 
-    public static void closeConnection() {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    /**
+     * Explicit factory method for new connection (alias of getConnection for clarity)
+     */
+    public static Connection newConnection() { return getConnection(); }
 
     /**
      * Create a new database connection using the configuration parameters.
@@ -48,9 +39,15 @@ public class DBcontext {
         try {
             Class.forName(RepositoryConfig.DRIVER);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Driver not found", e);
         }
-        Connection conn = DriverManager.getConnection(url, user, password);
-        return conn;
+        return DriverManager.getConnection(url, user, password);
+    }
+
+    // No-op retained for backward compatibility; each call returns fresh connection now so close externally.
+    public static void closeConnection(Connection c) {
+        if (c != null) {
+            try { c.close(); } catch (Exception ignored) {}
+        }
     }
 }
