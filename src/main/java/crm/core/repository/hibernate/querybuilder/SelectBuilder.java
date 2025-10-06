@@ -26,6 +26,7 @@ public class SelectBuilder {
         this.tableName = entity.tableName();
     }
 
+
     // ---------- WHERE ----------
     public SelectBuilder where(Map<String,Object> whereCondition) {
         for (String fieldName : whereCondition.keySet()){
@@ -49,8 +50,7 @@ public class SelectBuilder {
             try {
                 Field field = this.entityClass.getDeclaredField(fieldName);
                 String columnName = EntityFieldMapper.getColumnName(field);
-                orderByCondition.add(columnName + " ?");
-                params.add(orderCondition.get(fieldName).name());
+                orderByCondition.add(columnName + " " + orderCondition.get(fieldName).name());
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException("Field not found: " + fieldName, e);
             }
@@ -83,4 +83,8 @@ public class SelectBuilder {
         if (offset != null) sql.append(" OFFSET ").append(offset);
         return new SqlAndParamsDTO(sql.toString(), params);
     }
+
+
+
+    //
 }
