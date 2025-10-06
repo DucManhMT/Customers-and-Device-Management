@@ -52,15 +52,21 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Specification</th>
                 <th>Stock</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="productWarehouse" items="${warehouse}">
+            <c:forEach var="productWarehouse" items="${products}">
                 <tr>
                     <td>${productWarehouse.productName}</td>
                     <td>${productWarehouse.productDescription}</td>
+                    <td>
+                        <c:forEach var="spec" items="${productWarehouse.productSpecifications}">
+                            ${spec.specification.specificationName}: ${spec.specification.specificationValue}<br/>
+                        </c:forEach>
+                    </td>
                     <td>${productCounts[productWarehouse.productID]}</td>
                     <td>
                         <button class="btn btn-edit editBtn">Edit</button>
