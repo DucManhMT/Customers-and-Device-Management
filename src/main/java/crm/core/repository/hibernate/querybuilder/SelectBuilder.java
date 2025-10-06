@@ -28,7 +28,7 @@ public class SelectBuilder {
 
 
     // ---------- WHERE ----------
-    public SelectBuilder whereCondition(Map<String,Object> whereCondition) {
+    public SelectBuilder where(Map<String,Object> whereCondition) {
         for (String fieldName : whereCondition.keySet()){
             try {
                 Field field = this.entityClass.getDeclaredField(fieldName);
@@ -45,13 +45,12 @@ public class SelectBuilder {
     }
 
     // ---------- ORDER BY ----------
-    public SelectBuilder orderByCondition(Map<String,SortDirection> orderCondition) {
+    public SelectBuilder orderBy(Map<String,SortDirection> orderCondition) {
         for (String fieldName : orderCondition.keySet()){
             try {
                 Field field = this.entityClass.getDeclaredField(fieldName);
                 String columnName = EntityFieldMapper.getColumnName(field);
-                orderByCondition.add(columnName + " ?");
-                params.add(orderCondition.get(fieldName).name());
+                orderByCondition.add(columnName + " " + orderCondition.get(fieldName).name());
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException("Field not found: " + fieldName, e);
             }
@@ -61,12 +60,12 @@ public class SelectBuilder {
     }
 
     // ---------- LIMIT / OFFSET ----------
-    public SelectBuilder limitCondition(int limit) {
+    public SelectBuilder limit(int limit) {
         this.limit = limit;
         return this;
     }
 
-    public SelectBuilder offsetCondition(int offset) {
+    public SelectBuilder offset(int offset) {
         this.offset = offset;
         return this;
     }
