@@ -62,16 +62,20 @@ public class Request {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
     public LocalDateTime getFinishedDate() {
         return finishedDate;
     }
 
     public void setFinishedDate(LocalDateTime finishedDate) {
         this.finishedDate = finishedDate;
+    }
+
+    public void setContract(LazyReference<Contract> contract) {
+        this.contract = contract;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
     public String getNote() {

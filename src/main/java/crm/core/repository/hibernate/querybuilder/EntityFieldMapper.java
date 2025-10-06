@@ -10,6 +10,7 @@ import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
