@@ -314,13 +314,13 @@
                                     <th>Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
-                                </tr>
                             </thead>
                             <tbody id="requestsTableBody">
                                 <!-- Static Sample Data -->
                                 
                                 <tr>
-                                    <td>
+                                    <td>  
+
                                         <input type="checkbox" class="form-check-input">
                                     </td>
                                     <td>
