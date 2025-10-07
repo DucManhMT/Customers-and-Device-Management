@@ -38,7 +38,7 @@ public interface CrudRepository<E, K> {
 
     void deleteWithCondition(ClauseBuilder clause) throws SQLException;
 
-    int count();
+    int count() throws SQLException;
 
     Iterable<E> findAll();
 

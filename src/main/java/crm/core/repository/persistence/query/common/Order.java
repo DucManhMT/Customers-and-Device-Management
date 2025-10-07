@@ -1,14 +1,5 @@
 package crm.core.repository.persistence.query.common;
 
-/**
- * Represents an ordering for a query, specifying the column and direction
- * (ascending or descending).
- * 
- * @author Kepter
- * @author Nguyen Anh Tu
- * @since 1.0
- * 
- */
 public class Order {
     // column name to order by
     private String column;

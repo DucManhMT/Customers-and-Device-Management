@@ -2,23 +2,6 @@ package crm.core.repository.persistence.query.common;
 
 import java.util.List;
 
-/**
- * Represents sorting criteria for queries.
- * Contains a list of {@link Order} objects specifying the sort order.
- * <p>
- * Example usage:
- * 
- * <pre>
- * Sort sort = Sort.by(Order.desc("id"), Order.asc("age"));
- * </pre>
- * </p>
- * 
- * @params orders can not be null or empty no need to check, want to know why?
- *         Read source code of by() method
- * @author Kepter
- * @author Nguyen Anh Tu
- * @since 1.0
- */
 public class Sort {
     // List of Order objects representing sorting criteria
     private List<Order> orders;

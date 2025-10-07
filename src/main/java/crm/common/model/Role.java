@@ -13,8 +13,19 @@ public class Role {
     @Column(name = "RoleName", length = 50, unique = true)
     private String roleName;
 
-    public Integer getRoleID() { return roleID; }
-    public void setRoleID(Integer roleID) { this.roleID = roleID; }
-    public String getRoleName() { return roleName; }
-    public void setRoleName(String roleName) { this.roleName = roleName; }
+    public Integer getRoleID() {
+        return roleID;
+    }
+
+    public void setRoleID(Integer roleID) {
+        this.roleID = roleID;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 }

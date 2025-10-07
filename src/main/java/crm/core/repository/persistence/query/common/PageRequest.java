@@ -1,28 +1,5 @@
 package crm.core.repository.persistence.query.common;
 
-/**
- * Represents a request for a specific page of data with optional sorting.
- * <p>
- * This class is used to encapsulate pagination information such as the page
- * number (1-indexed),
- * page size, and sorting criteria. It provides factory methods for convenient
- * instantiation.
- * </p>
- *
- * <p>
- * Example usage:
- * 
- * <pre>
- * PageRequest request = PageRequest.of(1, 20, Sort.by("name"));
- * </pre>
- * </p>
- *
- * 
- * 
- * @author Kepter
- * @author Nguyen Anh Tu
- * @since 1.0
- */
 public class PageRequest {
     // 1-indexed page number
     private int pageNumber;

@@ -3,56 +3,11 @@ package crm.core.repository.persistence.config;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import crm.core.repository.persistence.cache.EntityCache;
-
-/**
- * Manages database transactions using ThreadLocal to ensure thread safety.
- * <p>
- * This class provides methods to begin, commit, and rollback transactions,
- * as well as to retrieve the current connection associated with the thread.
- * </p>
- * 
- * <p>
- * Note: Best practice is to use this class within a try-catch block to handle
- * exceptions and ensure proper transaction management.
- * </p>
- * <p>
- * Note: Best practice is to use this in a service layer to manage transactions
- * across multiple
- * repository operations.
- * </p>
- * <p>
- * Example usage:
- * 
- * <pre>
- * TransactionManager.beginTransaction();
- * try {
- *     Connection conn = TransactionManager.getConnection();
- *     // Perform database operations
- *     TransactionManager.commit();
- * } catch (Exception e) {
- *     TransactionManager.rollback();
- * }
- * </pre>
- * 
- * </p>
- * <p>
- * Note: Ensure that connections are properly closed after use to prevent
- * resource leaks.
- * </p>
- * 
- * @author Kepter
- * @author Nguyen Anh Tu
- * @since 1.0
- * 
- */
 public class TransactionManager {
     // ThreadLocal to hold the connection for each thread
     private static ThreadLocal<Connection> connectionHolder = new ThreadLocal<>();
     // To keep track of transaction depth for nested transactions
     private static ThreadLocal<Integer> transactionDepthHolder = ThreadLocal.withInitial(() -> 0);
-
-    private static ThreadLocal<EntityCache> cacheHolder = new ThreadLocal<>();
 
     /**
      * Begins a new transaction by setting auto-commit to false on the current
@@ -62,11 +17,10 @@ public class TransactionManager {
      */
     public static void beginTransaction() throws SQLException {
 
-        if (transactionDepthHolder.get() < 1 && connectionHolder.get() == null) {
-            Connection connection = DBcontext.getConnection();
+        if (transactionDepthHolder.get() < 1 || connectionHolder.get() == null) {
+            Connection connection = getConnection();
             connection.setAutoCommit(false);
             connectionHolder.set(connection);
-            cacheHolder.set(EntityCache.defaultCache());
         }
 
         transactionDepthHolder.set(transactionDepthHolder.get() + 1);
@@ -110,7 +64,6 @@ public class TransactionManager {
         } else if (depth == 0) {
             connection.rollback();
             connectionHolder.remove();
-            cacheHolder.remove();
         }
 
     }
@@ -124,24 +77,10 @@ public class TransactionManager {
     public static Connection getConnection() {
         Connection connection = connectionHolder.get();
         if (connection == null) {
-            try {
-                connection = DBcontext.createConnection();
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            connection = DBcontext.getConnection();
             connectionHolder.set(connection);
 
         }
         return connection;
-    }
-
-    public static EntityCache getCache() {
-        EntityCache cache = cacheHolder.get();
-        if (cache == null) {
-            cache = EntityCache.defaultCache();
-            cacheHolder.set(cache);
-        }
-        return cache;
     }
 }

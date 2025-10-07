@@ -49,9 +49,10 @@ public class EntityFieldMapper {
             OneToOne ann = field.getAnnotation(OneToOne.class);
             return ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
         }
-
-        throw new RuntimeException("Field " + field.getName() + " has no @Column annotation");
+        System.out.println(field.getName());
+        return null;
     }
+
     public static String getTableName(Class<?> clazz) {
         if (clazz.isAnnotationPresent(Entity.class)) {
             return clazz.getAnnotation(Entity.class).tableName();
@@ -78,8 +79,8 @@ public class EntityFieldMapper {
         } catch (Exception e) {
             throw new RuntimeException("Cannot extract value for field " + field.getName(), e);
         }
-    }
 
+    }
 
     public static Object extractValueFromResultSet(Field field, ResultSet rs) {
         try {
@@ -113,7 +114,7 @@ public class EntityFieldMapper {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
             }
-            //Nếu là OneToOne, tạo LazyReference
+            // Nếu là OneToOne, tạo LazyReference
             if (isOneToOne(field) && value != null) {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
@@ -123,8 +124,9 @@ public class EntityFieldMapper {
 
             return value;
         } catch (Exception e) {
-            throw new RuntimeException("Cannot extract value from ResultSet for field " + field.getName(), e);
+            e.printStackTrace();
         }
+        return null;
     }
 
     public static <T> T mapEntity(ResultSet rs, Class<T> clazz) {
@@ -133,7 +135,6 @@ public class EntityFieldMapper {
 
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-
 
                 if (isColumn(field)) {
                     Object value = extractValueFromResultSet(field, rs);
@@ -152,11 +153,12 @@ public class EntityFieldMapper {
 
             return entity;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to map entity " + clazz.getSimpleName(), e);
+            e.printStackTrace();
         }
+        return null;
     }
 
-// Lấy kiểu generic của LazyReference<Role> -> Role
+    // Lấy kiểu generic của LazyReference<Role> -> Role
     private static Class<?> getGenericType(Field field) {
         try {
             // field type is LazyReference<Role>, so extract Role

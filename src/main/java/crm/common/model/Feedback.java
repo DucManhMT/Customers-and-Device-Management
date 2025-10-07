@@ -6,7 +6,7 @@ import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "Feedback")
 public class Feedback {
@@ -24,8 +24,7 @@ public class Feedback {
     private String response;
 
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
-    private Timestamp feedbackDate;
-
+    private LocalDateTime feedbackDate;
 
     @ManyToOne(joinColumn = "Username")
     private LazyReference<Account> account;
@@ -62,11 +61,11 @@ public class Feedback {
         this.response = response;
     }
 
-    public Timestamp getFeedbackDate() {
+    public LocalDateTime getFeedbackDate() {
         return feedbackDate;
     }
 
-    public void setFeedbackDate(Timestamp feedbackDate) {
+    public void setFeedbackDate(LocalDateTime feedbackDate) {
         this.feedbackDate = feedbackDate;
     }
 
