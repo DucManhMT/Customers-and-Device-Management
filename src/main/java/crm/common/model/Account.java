@@ -1,4 +1,5 @@
 package crm.common.model;
+import crm.auth.service.Hasher;
 import crm.common.model.enums.AccountStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
@@ -21,6 +22,16 @@ public class Account {
     @ManyToOne(joinColumn = "RoleID")
     LazyReference<Role> role;
 
+    public Account() {
+    }
+
+    public Account(String username, String passwordHash, AccountStatus accountStatus, Role role) {
+        this.username = username;
+        this.passwordHash = Hasher.hashPassword(passwordHash);
+        this.accountStatus = accountStatus;
+        this.role = new LazyReference<>(Role.class, role.getRoleID());
+    }
+
     public String getUsername() {
         return username;
     }
@@ -34,7 +45,7 @@ public class Account {
     }
 
     public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+        this.passwordHash = Hasher.hashPassword(passwordHash);
     }
 
     public AccountStatus getAccountStatus() {
@@ -46,23 +57,10 @@ public class Account {
     }
 
     public void setRole(Role role) {
-        if (role != null) {
-            this.role = new LazyReference<>(Role.class, role.getRoleID());
-        } else {
-            this.role = null;
-        }
+        this.role = new LazyReference<>(Role.class, role.getRoleID());
     }
     public Role getRole() {
         return role.get();
     }
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                ", accountStatus=" + accountStatus +
-                ", role=" + role +
-                '}';
-    }
 }

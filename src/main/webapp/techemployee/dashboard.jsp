@@ -178,7 +178,7 @@
         function logout() {
             if(confirm('Are you sure you want to logout?')) {
                 // Implement logout logic here
-                window.location.href = '${pageContext.request.contextPath}/login.jsp';
+                window.location.href = '${pageContext.request.contextPath}/customer_login.jsp';
             }
         }
     </script>

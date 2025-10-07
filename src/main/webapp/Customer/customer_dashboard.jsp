@@ -1,19 +1,17 @@
 <%--
   Created by IntelliJ IDEA.
-  User: anhtu
-  Date: 9/27/2025
-  Time: 9:16 AM
+  User: MasterLong
+  Date: 10/7/2025
+  Time: 6:18 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Title</title>
+
 </head>
 <body>
-<p>
-    Hello World!
-    <a href="${pageContext.request.contextPath}/auth/customer_login">Login here</a>
-</p>
+    <p>${sessionScope.account.username}</p>
 </body>
 </html>
