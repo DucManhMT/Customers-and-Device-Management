@@ -11,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <title>View Product List</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/Warehouse/ViewProduct.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ViewProduct.css">
 </head>
 <body>
 <div class="container">
@@ -54,6 +54,7 @@
                 <th>Type</th>
                 <th>Specification</th>
                 <th>Stock</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -68,10 +69,23 @@
                         </c:forEach>
                     </td>
                     <td>${productCounts[productWarehouse.productID]}</td>
+                    <td><a href="editProductWarehouse?productID=${productWarehouse.productID}"
+                           class="btn btn-edit">Edit</a>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+    </div>
+
+    <div class="paging-controls">
+        <c:if test="${page > 1}">
+            <a href="viewProductWarehouse?page=${page - 1}" class="btn btn-secondary">Previous</a>
+        </c:if>
+        Page ${page} of ${totalPages}
+        <c:if test="${page < totalPages}">
+            <a href="viewProductWarehouse?page=${page + 1}" class="btn btn-secondary">Next</a>
+        </c:if>
     </div>
 
 </div>

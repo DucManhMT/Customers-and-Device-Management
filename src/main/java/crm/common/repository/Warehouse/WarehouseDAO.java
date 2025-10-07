@@ -5,14 +5,14 @@ import crm.common.model.ProductSpecification;
 import crm.common.model.ProductWarehouse;
 import crm.common.model.Warehouse;
 import crm.common.model.enums.ProductStatus;
-import crm.common.repository.FullOperationEntityManager;
+import crm.common.repository.FuntionalityDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class WarehouseDAO extends FullOperationEntityManager<Warehouse> {
+public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
 
     public WarehouseDAO() {
         super(Warehouse.class);
