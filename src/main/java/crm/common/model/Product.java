@@ -23,7 +23,7 @@ public class Product {
     @ManyToOne(joinColumn = "TypeID")
     private LazyReference<Type> type;
 
-    @OneToMany(mappedBy = "productID", joinColumn = "ProductID")
+    @OneToMany(mappedBy = "productID", joinColumn = "ProductID", targetEntity = ProductSpecification.class)
     private List<ProductSpecification> productSpecifications;
 
     public Integer getProductID() {
@@ -64,7 +64,7 @@ public class Product {
 
     public void setType(Type type) {
 
-        this.type = new LazyReference<>(Type.class,type.getTypeID());
+        this.type = new LazyReference<>(Type.class, type.getTypeID());
     }
 
     public List<ProductSpecification> getProductSpecifications() {

@@ -27,7 +27,7 @@ public class Contract {
     @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Customer> customer;
 
-    @OneToMany(mappedBy = "contractID", joinColumn = "ContractID")
+    @OneToMany(mappedBy = "contractID", joinColumn = "ContractID", targetEntity = Request.class)
     private List<Request> requests;
 
     public Integer getContractID() {

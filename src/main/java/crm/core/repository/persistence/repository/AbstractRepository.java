@@ -97,8 +97,8 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     @Override
-    public Iterable<E> findAll() {
-        Iterable<E> results = null;
+    public List<E> findAll() {
+        List<E> results = null;
         SelectBuilder selectBuilder = SelectBuilder.builder(tableName).columns(columns);
         Connection connection = TransactionManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(selectBuilder.build())) {
@@ -114,7 +114,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     public Page<E> findAll(PageRequest pageRequest) {
-        Iterable<E> results = null;
+        List<E> results = null;
         int total = 0;
         try {
             TransactionManager.beginTransaction();
@@ -172,8 +172,8 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     @Override
-    public Iterable<E> findWithCondition(ClauseBuilder clause) {
-        Iterable<E> results = null;
+    public List<E> findWithCondition(ClauseBuilder clause) {
+        List<E> results = null;
         SelectBuilder builder = SelectBuilder.builder(tableName).columns(columns).where(clause);
         try {
             TransactionManager.beginTransaction();
@@ -199,7 +199,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
     public Page<E> findWithCondtion(ClauseBuilder clause, PageRequest pageRequest) {
         int total = 0;
-        Iterable<E> results = null;
+        List<E> results = null;
         SelectBuilder builder = SelectBuilder.builder(tableName).columns(columns).where(clause);
 
         try {
@@ -273,7 +273,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     @Override
-    public Iterable<E> saveAll(Iterable<E> entities) throws SQLException {
+    public List<E> saveAll(List<E> entities) throws SQLException {
         Connection connection = TransactionManager.getConnection();
         InsertBuilder insertBuilder = InsertBuilder.builder(tableName).columns(columns);
         for (E entity : entities) {

@@ -3,17 +3,18 @@ package crm.service_request.service;
 import java.sql.SQLException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import crm.common.model.Contract;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
-import crm.common.repository.RequestRepository;
 import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 import crm.core.repository.persistence.query.common.Order;
 import crm.core.repository.persistence.query.common.Page;
 import crm.core.repository.persistence.query.common.PageRequest;
 import crm.core.repository.persistence.query.common.Sort;
+import crm.service_request.repository.RequestRepository;
 
 public class RequestService {
     public Request createServiceRequest(String description, int contractId) throws SQLException {
@@ -40,8 +41,9 @@ public class RequestService {
         return request;
     }
 
-    public Page<Request> getRequestByUser(String username, String field, String sort, String status, int contractId,
-            int page, int recordsPerPage) throws SQLException {
+    public Page<Request> getRequestByUsername(String username, String field, String sort, String status, int contractId,
+            int page, int recordsPerPage) {
+        RequestRepository requestRepository = new RequestRepository();
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -50,34 +52,24 @@ public class RequestService {
             sort = "desc";
         }
 
-        if (username != null && !username.isEmpty()) {
-            builder.equal("Contract.Customer.UserName", username);
-        }
-
         if (status != null && !status.isEmpty()) {
             builder.equal("RequestStatus", status);
         }
 
         if (contractId > 0) {
             builder.equal("Contract.ContractID", contractId);
+            System.out.println("Contract ID filter applied: " + contractId);
         }
 
-        RequestRepository requestRepository = new RequestRepository();
         Order order = sort.equals("asc") ? Order.asc(field) : Order.desc(field);
 
-        Page<Request> pageResult = null;
-        try {
-            TransactionManager.beginTransaction();
-            pageResult = requestRepository.findWithCondtion(builder,
-                    PageRequest.of(page, recordsPerPage, Sort.by(order)));
-            TransactionManager.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionManager.rollback();
-            return null;
+        PageRequest request = PageRequest.of(page, recordsPerPage, Sort.by(order));
+        if (username == null || username.isEmpty()) {
+            return requestRepository.findWithCondtion(builder, request);
+
         }
 
-        return pageResult;
+        return requestRepository.findByUsernameAndCondition(username, builder, request);
     }
 
     public Page<Request> getRequests(int page, int recordsPerPage, String field, String sort, String status,

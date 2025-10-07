@@ -1,6 +1,8 @@
 
 package crm.core.repository.persistence.query.common;
 
+import java.util.List;
+
 public class Page<T> {
     // The total number of elements across all pages.
     private long totalElements;
@@ -9,7 +11,7 @@ public class Page<T> {
     private PageRequest pageRequest;
 
     // The content of this page.
-    private Iterable<T> content;
+    private List<T> content;
 
     /**
      * Constructs a new Page with the given total elements, page request, and
@@ -19,7 +21,7 @@ public class Page<T> {
      * @param pageRequest   the pagination information
      * @param content       the content of the current page
      */
-    public Page(long totalElements, PageRequest pageRequest, Iterable<T> content) {
+    public Page(long totalElements, PageRequest pageRequest, List<T> content) {
         this.totalElements = totalElements;
         this.pageRequest = pageRequest;
         this.content = content;
@@ -60,7 +62,7 @@ public class Page<T> {
      *
      * @return page content
      */
-    public Iterable<T> getContent() {
+    public List<T> getContent() {
         return content;
     }
 

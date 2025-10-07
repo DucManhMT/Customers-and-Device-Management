@@ -24,10 +24,10 @@ public class Type {
     @ManyToOne(joinColumn = "CategoryID")
     private LazyReference<Category> category;
 
-    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID")
+    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", targetEntity = Product.class)
     private List<Product> products;
 
-    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID")
+    @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", targetEntity = SpecificationType.class)
     private List<SpecificationType> specificationTypes;
 
     public Integer getTypeID() {
@@ -54,13 +54,12 @@ public class Type {
         this.typeImage = typeImage;
     }
 
-
     public Category getCategory() {
         return category.get();
     }
 
     public void setCategory(Category category) {
-        this.category  = new LazyReference<>(Category.class, category.getCategoryID());
+        this.category = new LazyReference<>(Category.class, category.getCategoryID());
     }
 
     public List<Product> getProducts() {

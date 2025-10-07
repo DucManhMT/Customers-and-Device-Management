@@ -1,6 +1,7 @@
 package crm.core.repository.persistence.repository;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 
@@ -26,7 +27,7 @@ public interface CrudRepository<E, K> {
 
     E save(E entity) throws SQLException;
 
-    Iterable<E> saveAll(Iterable<E> entities) throws SQLException;
+    List<E> saveAll(List<E> entities) throws SQLException;
 
     E findById(K key);
 
@@ -40,7 +41,7 @@ public interface CrudRepository<E, K> {
 
     int count() throws SQLException;
 
-    Iterable<E> findAll();
+    List<E> findAll();
 
-    Iterable<E> findWithCondition(ClauseBuilder clause);
+    List<E> findWithCondition(ClauseBuilder clause);
 }
