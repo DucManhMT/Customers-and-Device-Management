@@ -4,14 +4,17 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import java.util.List;
 import java.sql.Connection;
+
+import crm.core.repository.hibernate.querybuilder.QueryOperation;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+
 import java.util.Map;
 
-public class FullOperationEntityManager<T> {
+public class FuntionalityDAO<T> {
     private final EntityManager entityManager;
     private final Class<T> entityClass;
 
-    public FullOperationEntityManager(Class<T> entityClass) {
+    public FuntionalityDAO(Class<T> entityClass) {
         Connection connection = DBcontext.getConnection();
         this.entityManager = new EntityManager(connection);
         this.entityClass = entityClass;
@@ -19,7 +22,9 @@ public class FullOperationEntityManager<T> {
 
     // Insert
     public void persist(T entity) {
+        entityManager.beginTransaction();
         entityManager.persist(entity, entityClass);
+        entityManager.commit();
     }
 
     // Select
@@ -29,12 +34,17 @@ public class FullOperationEntityManager<T> {
 
     // Update
     public T merge(T entity) {
-        return entityManager.merge(entity, entityClass);
+        entityManager.beginTransaction();
+        entityManager.merge(entity, entityClass);
+        entityManager.commit();
+        return entity;
     }
 
     // Delete
     public void remove(T entity) {
+        entityManager.beginTransaction();
         entityManager.remove(entity, entityClass);
+        entityManager.commit();
     }
 
     // Count
@@ -71,6 +81,11 @@ public class FullOperationEntityManager<T> {
     public List<T> findWithAll(Map<String, Object> conditions, Map<String, SortDirection> sorting, int limit,
             int offset) {
         return entityManager.findWithConditionsOrderAndPagination(entityClass, conditions, sorting, limit, offset);
+    }
+
+    // Execute custom query
+    public List<T> executeCustomQuery(QueryOperation queryOperation) {
+        return entityManager.executeCustomQuery(entityClass, queryOperation);
     }
 
 }

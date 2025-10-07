@@ -2,6 +2,9 @@ package crm.core.repository.hibernate.entitymanager;
 
 import java.sql.Connection;
 import java.util.List;
+
+import crm.core.repository.hibernate.querybuilder.QueryOperation;
+import crm.core.repository.hibernate.querybuilder.SelectBuilder;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
 import crm.core.repository.hibernate.querybuilder.QueryUtils;
@@ -25,9 +28,17 @@ public class EntityManager implements IEntityManager {
         this.connection = connection;
     }
 
+    // Helper to enforce active transaction before any operation
+    private void ensureTransactionActive() {
+        if (!inTransaction) {
+            throw new IllegalStateException("No active transaction. Call beginTransaction() first.");
+        }
+    }
+
     // ---------- PERSIST ----------
     @Override
     public <T> void persist(T entity, Class<T> entityClass) {
+        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildInsert(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -42,6 +53,7 @@ public class EntityManager implements IEntityManager {
     // ---------- MERGE (UPDATE) ----------
     @Override
     public <T> T merge(T entity, Class<T> entityClass) {
+        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildUpdate(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -57,6 +69,7 @@ public class EntityManager implements IEntityManager {
     // ---------- REMOVE ----------
     @Override
     public <T> void remove(T entity, Class<T> entityClass) {
+        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildDelete(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -71,6 +84,7 @@ public class EntityManager implements IEntityManager {
     // ---------- FIND ----------
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey) {
+        // Read operations no longer require explicit transaction
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectById(entityClass, primaryKey);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -89,6 +103,7 @@ public class EntityManager implements IEntityManager {
 
     // ---------- FIND ALL----------
     public <T> List<T> findAll(Class<T> entityClass) {
+        // Read operations allowed outside transaction
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectAll(entityClass);
             List<T> results = new ArrayList<>();
@@ -188,86 +203,42 @@ public class EntityManager implements IEntityManager {
         }
     }
 
-    // ---------- FIND WITH CONDITIONS AND PAGINATION ----------
-    public <T> List<T> findWithConditionsAndPagination(Class<T> entityClass, Map<String, Object> conditions, int limit,
-            int offset) {
-        try {
-            SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithConditionsAndLimitOffset(entityClass, conditions,
-                    limit, offset);
-            List<T> results = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
-                setParams(ps, sqlParams.getParams());
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        T entity = EntityFieldMapper.mapEntity(rs, entityClass);
-                        results.add(entity);
-                    }
-                }
-            }
-            return results;
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error finding entities of type " + entityClass.getName() + " with conditions and pagination", e);
-        }
-    }
-
-    // ---------- FIND WITH ORDER AND PAGINATION ----------
-    public <T> List<T> findWithOrderAndPagination(Class<T> entityClass, Map<String, SortDirection> orderConditions,
-            int limit, int offset) {
-        try {
-            SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithOrderAndLimitOffset(entityClass, orderConditions,
-                    limit, offset);
-            List<T> results = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
-                setParams(ps, sqlParams.getParams());
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        T entity = EntityFieldMapper.mapEntity(rs, entityClass);
-                        results.add(entity);
-                    }
-                }
-            }
-            return results;
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error finding entities of type " + entityClass.getName() + " with order and pagination", e);
-        }
-    }
-
-    // ---------- FIND WITH CONDITIONS, ORDER AND PAGINATION ----------
-    public <T> List<T> findWithConditionsOrderAndPagination(Class<T> entityClass, Map<String, Object> conditions,
-            Map<String, SortDirection> orderConditions, int limit, int offset) {
-        try {
-            SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithAll(entityClass, conditions, orderConditions, limit,
-                    offset);
-            List<T> results = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
-                setParams(ps, sqlParams.getParams());
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        T entity = EntityFieldMapper.mapEntity(rs, entityClass);
-                        results.add(entity);
-                    }
-                }
-            }
-            return results;
-        } catch (Exception e) {
-            throw new RuntimeException("Error finding entities of type " + entityClass.getName()
-                    + " with conditions, order and pagination", e);
-        }
-    }
-
     // ---------- QUERY ----------
-    @Override
-    public <T> List<T> createQuery(String sql, Class<T> resultClass) {
+    public <T> List<T> executeQuery(SqlAndParamsDTO sqlAndParamsDTO, Class<T> resultClass) {
         try {
             List<T> results = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(sql);
-                    ResultSet rs = ps.executeQuery()) {
+            try (PreparedStatement ps = connection.prepareStatement(sqlAndParamsDTO.getSql())) {
+                setParams(ps, sqlAndParamsDTO.getParams());
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    T entity = EntityFieldMapper.mapEntity(rs, resultClass);
+                    results.add(entity);
+                }
             }
             return results;
         } catch (Exception e) {
-            throw new RuntimeException("Error executing query for " + resultClass.getName(), e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // ADVANCED QUERY WITH BUILDER
+    public <T> List<T> executeCustomQuery(Class<T> resultClass, QueryOperation queryOperation) {
+        try {
+            SqlAndParamsDTO sqlParams = queryOperation.getSqlAndParamsDTO();
+            List<T> results = new ArrayList<>();
+            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
+                setParams(ps, sqlParams.getParams());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        T entity = EntityFieldMapper.mapEntity(rs, resultClass);
+                        results.add(entity);
+                    }
+                }
+            }
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException("Error executing advanced query for " + resultClass.getName(), e);
         }
     }
 
@@ -291,7 +262,13 @@ public class EntityManager implements IEntityManager {
     @Override
     public void beginTransaction() {
         try {
-            if (!inTransaction) {
+            if (inTransaction) {
+                throw new IllegalStateException("A transaction is already active");
+            }
+            if (connection.getAutoCommit() == false) {
+                // Someone disabled auto-commit outside our API but we think no transaction
+                inTransaction = true; // adopt it
+            } else {
                 connection.setAutoCommit(false);
                 inTransaction = true;
             }
@@ -303,26 +280,53 @@ public class EntityManager implements IEntityManager {
     @Override
     public void commit() {
         try {
-            if (inTransaction) {
-                connection.commit();
-                connection.setAutoCommit(true);
-                inTransaction = false;
+            if (!inTransaction) {
+                throw new IllegalStateException("No active transaction to commit");
             }
+            if (connection.getAutoCommit()) {
+                throw new IllegalStateException(
+                        "Cannot commit: connection is in auto-commit mode. Did beginTransaction() fail or was autoCommit changed externally?");
+            }
+            connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to commit transaction", e);
+        } finally {
+            try {
+                if (!connection.getAutoCommit()) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException ignore) {
+            }
+            inTransaction = false;
         }
     }
 
     @Override
     public void rollback() {
         try {
-            if (inTransaction) {
-                connection.rollback();
-                connection.setAutoCommit(true);
-                inTransaction = false;
+            if (!inTransaction) {
+                // Nothing to rollback but ensure autocommit is true
+                if (!connection.getAutoCommit()) {
+                    connection.setAutoCommit(true);
+                }
+                return;
             }
+            if (connection.getAutoCommit()) {
+                // Unexpected state: can't rollback if auto-commit true, just reset flag
+                inTransaction = false;
+                return;
+            }
+            connection.rollback();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to rollback transaction", e);
+        } finally {
+            try {
+                if (!connection.getAutoCommit()) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException ignore) {
+            }
+            inTransaction = false;
         }
     }
 

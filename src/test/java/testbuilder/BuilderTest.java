@@ -1,35 +1,28 @@
 package testbuilder;
+
+import crm.common.model.Account;
+import crm.common.model.Feedback;
+import crm.common.model.Request;
+import crm.common.model.Role;
 import crm.common.model.enums.AccountStatus;
+import crm.common.model.enums.RequestStatus;
+import crm.common.repository.account.AccountDAO;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.*;
-import crm.common.model.*;
 import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
+import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = new Account("user1", "password123", AccountStatus.Active, new Role(1, "Admin"));
+
         EntityManager em = new EntityManager(DBcontext.getConnection());
-        QueryUtils queryUtils = new QueryUtils();
-        //Role
-        Role role = new Role();
-        role.setRoleID(1);
-        role.setRoleName("Customer");
-        //Account
-        Account acc = new Account();
-        acc.setUsername("john_doe");
-        acc.setPasswordHash("hashed_primaryied");
-        acc.setAccountStatus(AccountStatus.Active);
-        acc.setRole(role);
-
-        //persist
-
-
-   //    em.persist(acc,Account.class);
-
-//       em.remove(acc,Account.class);
-///em.merge(acc, Account.class);
-        Account newAcc = em.find(Account.class, "john_doe");
-        System.out.println(em.count(Account.class));
-
-
+        List<Contract> contracts;
     }
-}
+ }
