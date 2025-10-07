@@ -27,8 +27,8 @@ public class Feedback {
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
     private LocalDateTime feedbackDate;
 
-    @ManyToOne(joinColumn = "CustomerID")
-    private LazyReference<Account> account;
+    @Column(name = "CustomerID")
+    private String customerID;
 
     public Integer getFeedbackID() {
         return feedbackID;
@@ -70,11 +70,10 @@ public class Feedback {
         this.feedbackDate = feedbackDate;
     }
 
-    public Account getAccount() {
-        return account.get();
+    public String getCustomerID() {
+        return customerID;
     }
-
-    public void setAccount(Account account) {
-        this.account = new LazyReference<>(Account.class, account.getUsername());
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
     }
 }
