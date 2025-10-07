@@ -16,6 +16,15 @@ public class Role {
 
     @OneToMany(mappedBy = "roleID", joinColumn = "RoleID" , targetEntity = Account.class)
     List<Account> accounts;
+
+    public Role() {
+    }
+
+    public Role(Integer roleID, String roleName) {
+        this.roleID = roleID;
+        this.roleName = roleName;
+    }
+
     public Integer getRoleID() { return roleID; }
     public void setRoleID(Integer roleID) { this.roleID = roleID; }
     public String getRoleName() { return roleName; }
