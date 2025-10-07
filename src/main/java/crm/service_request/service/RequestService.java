@@ -8,7 +8,6 @@ import crm.common.model.Contract;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 import crm.common.repository.RequestRepository;
-import crm.core.repository.hibernate.querybuilder.InsertBuilder;
 import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 import crm.core.repository.persistence.query.common.Order;
@@ -39,6 +38,46 @@ public class RequestService {
         }
 
         return request;
+    }
+
+    public Page<Request> getRequestByUser(String username, String field, String sort, String status, int contractId,
+            int page, int recordsPerPage) throws SQLException {
+        ClauseBuilder builder = new ClauseBuilder();
+        if (field == null || field.isEmpty()) {
+            field = "StartDate";
+        }
+        if (sort == null || sort.isEmpty() || (!sort.equals("asc") && !sort.equals("desc"))) {
+            sort = "desc";
+        }
+
+        if (username != null && !username.isEmpty()) {
+            builder.equal("Contract.Customer.UserName", username);
+        }
+
+        if (status != null && !status.isEmpty()) {
+            builder.equal("RequestStatus", status);
+        }
+
+        if (contractId > 0) {
+            builder.equal("Contract.ContractID", contractId);
+        }
+
+        RequestRepository requestRepository = new RequestRepository();
+        Order order = sort.equals("asc") ? Order.asc(field) : Order.desc(field);
+
+        Page<Request> pageResult = null;
+        try {
+            TransactionManager.beginTransaction();
+            pageResult = requestRepository.findWithCondtion(builder,
+                    PageRequest.of(page, recordsPerPage, Sort.by(order)));
+            TransactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionManager.rollback();
+            return null;
+        }
+
+        return pageResult;
     }
 
     public Page<Request> getRequests(int page, int recordsPerPage, String field, String sort, String status,

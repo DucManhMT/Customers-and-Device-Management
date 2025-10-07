@@ -1,4 +1,4 @@
-package crm.common.repository;
+package crm.service_request.repository;
 
 import crm.common.model.Account;
 import crm.core.repository.persistence.repository.AbstractRepository;

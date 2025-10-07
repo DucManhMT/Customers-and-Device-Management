@@ -96,7 +96,7 @@ public class EntityManager implements IEntityManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error finding entity " + entityClass.getName(), e);
         }
         return null;
     }
@@ -200,6 +200,75 @@ public class EntityManager implements IEntityManager {
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error finding entities of type " + entityClass.getName() + " with conditions and order", e);
+        }
+    }
+
+    // ---------- FIND WITH CONDITIONS AND PAGINATION ----------
+    public <T> List<T> findWithConditionsAndPagination(Class<T> entityClass, Map<String, Object> conditions, int limit,
+            int offset) {
+        try {
+            SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithConditionsAndLimitOffset(entityClass, conditions,
+                    limit, offset);
+            List<T> results = new ArrayList<>();
+            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
+                setParams(ps, sqlParams.getParams());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        T entity = EntityFieldMapper.mapEntity(rs, entityClass);
+                        results.add(entity);
+                    }
+                }
+            }
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error finding entities of type " + entityClass.getName() + " with conditions and pagination", e);
+        }
+    }
+
+    // ---------- FIND WITH ORDER AND PAGINATION ----------
+    public <T> List<T> findWithOrderAndPagination(Class<T> entityClass, Map<String, SortDirection> orderConditions,
+            int limit, int offset) {
+        try {
+            SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithOrderAndLimitOffset(entityClass, orderConditions,
+                    limit, offset);
+            List<T> results = new ArrayList<>();
+            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
+                setParams(ps, sqlParams.getParams());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        T entity = EntityFieldMapper.mapEntity(rs, entityClass);
+                        results.add(entity);
+                    }
+                }
+            }
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Error finding entities of type " + entityClass.getName() + " with order and pagination", e);
+        }
+    }
+
+    // ---------- FIND WITH CONDITIONS, ORDER AND PAGINATION ----------
+    public <T> List<T> findWithConditionsOrderAndPagination(Class<T> entityClass, Map<String, Object> conditions,
+            Map<String, SortDirection> orderConditions, int limit, int offset) {
+        try {
+            SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithAll(entityClass, conditions, orderConditions, limit,
+                    offset);
+            List<T> results = new ArrayList<>();
+            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
+                setParams(ps, sqlParams.getParams());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        T entity = EntityFieldMapper.mapEntity(rs, entityClass);
+                        results.add(entity);
+                    }
+                }
+            }
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException("Error finding entities of type " + entityClass.getName()
+                    + " with conditions, order and pagination", e);
         }
     }
 

@@ -84,6 +84,7 @@ public class EntityFieldMapper {
         } catch (Exception e) {
             throw new RuntimeException("Cannot extract value for field " + field.getName(), e);
         }
+    }
 
     // Lấy giá trị từ ResultSet dựa trên kiểu trường
     public static Object extractValueFromResultSet(Field field, ResultSet rs) {

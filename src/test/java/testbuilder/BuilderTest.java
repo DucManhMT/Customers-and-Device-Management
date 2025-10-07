@@ -1,6 +1,7 @@
 package testbuilder;
 
 import crm.common.model.Account;
+import crm.common.model.Contract;
 import crm.common.model.Feedback;
 import crm.common.model.Request;
 import crm.common.model.Role;
@@ -25,4 +26,4 @@ public class BuilderTest {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         List<Contract> contracts;
     }
- }
+}
