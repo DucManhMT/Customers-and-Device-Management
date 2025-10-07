@@ -9,7 +9,7 @@ import crm.core.repository.hibernate.entitymanager.LazyReference;
 @Entity(tableName = "InventoryItem")
 public class InventoryItem {
     @Key
-    @Column(name = "Item_ID", type = "INT")
+    @Column(name = "ItemID", type = "INT")
     private Integer itemId;
 
     @Column(name = "SerialNumber", length = 255, nullable = false, unique = true)

@@ -21,6 +21,8 @@ public class BuilderTest {
     public static void main(String[] args) {
         AccountDAO accountDAO = new AccountDAO();
         Account account = new Account("user1", "password123", AccountStatus.Active, new Role(1, "Admin"));
-        accountDAO.persist(account);
+
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        List<Contract> contracts;
     }
-}
+ }
