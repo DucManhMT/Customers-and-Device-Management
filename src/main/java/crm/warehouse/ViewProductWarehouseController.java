@@ -24,6 +24,8 @@ public class ViewProductWarehouseController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
         Warehouse warehouse = warehouseDAO.find(1);
@@ -47,6 +49,35 @@ public class ViewProductWarehouseController extends HttpServlet {
                         Collectors.counting()
                 ));
 
+        //Filter
+        String productNameFilter = req.getParameter("productName");
+        String productTypeFilter = req.getParameter("productType");
+        String stockStatusFilter = req.getParameter("status");
+
+        if(productNameFilter != null && !productNameFilter.isEmpty()){
+            products = products.stream()
+                    .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
+                    .collect(Collectors.toCollection(HashSet::new));
+        }
+
+        if(productTypeFilter != null && !productTypeFilter.isEmpty()){
+            products = products.stream()
+                    .filter(p -> p.getType().getTypeName().equalsIgnoreCase(productTypeFilter))
+                    .collect(Collectors.toCollection(HashSet::new));
+        }
+
+        if(stockStatusFilter != null && !stockStatusFilter.isEmpty()){
+            if(stockStatusFilter.equalsIgnoreCase("In_Stock")){
+                products = products.stream()
+                        .filter(p -> productCounts.getOrDefault(p.getProductID(), 0L) > 0)
+                        .collect(Collectors.toCollection(HashSet::new));
+            } else if(stockStatusFilter.equalsIgnoreCase("Exported")){
+                products = products.stream()
+                        .filter(p -> productCounts.getOrDefault(p.getProductID(), 0L) == 0)
+                        .collect(Collectors.toCollection(HashSet::new));
+            }
+        }
+
         req.setAttribute("products", products);
         req.setAttribute("productCounts", productCounts);
 
@@ -54,8 +85,4 @@ public class ViewProductWarehouseController extends HttpServlet {
         req.getRequestDispatcher("/Warehouse/ViewProduct.jsp").forward(req, resp);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
 }

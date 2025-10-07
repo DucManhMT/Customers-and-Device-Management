@@ -11,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <title>View Product List</title>
-    <link rel="stylesheet" href="ViewProduct.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/Warehouse/ViewProduct.css">
 </head>
 <body>
 <div class="container">
@@ -23,25 +23,24 @@
         <div class="filter-section">
             <h3>Filters</h3>
 
-            <form action="/viewProductWarehouse" method="post">
+            <form action="viewProductWarehouse" method="GET">
                 <div class="filter-group">
                     <label>Product Name:</label>
                     <input type="text" name="productName" placeholder="Search by name">
                 </div>
                 <div class="filter-group">
-                    <label>Specifications:</label>
-                    <div id="specFilters">
-                    </div>
+                    <label>Type:</label>
+                    <input type="text" name="productType" placeholder="Search by type">
                 </div>
                 <div class="filter-group">
                     <label>Stock Status:</label>
-                    <select id="stockFilter">
+                    <select name="status" id="stockFilter">
                         <option value="">All</option>
                         <option value="In_Stock">In Stock</option>
                         <option value="Exported">Exported</option>
                     </select>
                 </div>
-                <button id="applyFiltersBtn" class="btn">Apply Filters</button>
+                <input type="submit" value="Apply Filters" class="btn btn-secondary">
             </form>
         </div>
     </div>
@@ -52,9 +51,9 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Type</th>
                 <th>Specification</th>
                 <th>Stock</th>
-                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -62,16 +61,13 @@
                 <tr>
                     <td>${productWarehouse.productName}</td>
                     <td>${productWarehouse.productDescription}</td>
+                    <td>${productWarehouse.type.typeName}</td>
                     <td>
                         <c:forEach var="spec" items="${productWarehouse.productSpecifications}">
                             ${spec.specification.specificationName}: ${spec.specification.specificationValue}<br/>
                         </c:forEach>
                     </td>
                     <td>${productCounts[productWarehouse.productID]}</td>
-                    <td>
-                        <button class="btn btn-edit editBtn">Edit</button>
-                        <button class="btn btn-danger deleteBtn">Delete</button>
-                    </td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -79,8 +75,7 @@
     </div>
 
 </div>
-</div>
-</div>
+
 
 </body>
 </html>
