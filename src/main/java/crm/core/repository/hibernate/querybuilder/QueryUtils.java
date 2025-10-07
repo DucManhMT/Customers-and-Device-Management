@@ -1,12 +1,8 @@
 package crm.core.repository.hibernate.querybuilder;
 
-import crm.core.repository.hibernate.annotation.ManyToOne;
-
 import java.lang.reflect.Field;
 import java.util.*;
 
-import crm.core.repository.hibernate.annotation.Entity;
-import crm.core.repository.hibernate.annotation.OneToOne;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 

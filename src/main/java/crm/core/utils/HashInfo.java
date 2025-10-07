@@ -3,7 +3,9 @@ package crm.core.utils;
 import java.security.MessageDigest;
 
 public class HashInfo {
+
     public static String hash(String info) {
+
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(info.getBytes("UTF-8"));
@@ -22,5 +24,7 @@ public class HashInfo {
         } catch (Exception e) {
             throw new RuntimeException("Error when hash SHA-256", e);
         }
+
     }
+
 }
