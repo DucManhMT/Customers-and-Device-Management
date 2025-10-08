@@ -12,6 +12,8 @@ import crm.core.repository.hibernate.querybuilder.*;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+import crm.core.service.MailService;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +21,10 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-        AccountDAO accountDAO = new AccountDAO();
-        Account account = new Account("user1", "password123", AccountStatus.Active, new Role(1, "Admin"));
-
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        List<Contract> contracts;
+        MailService.sendEmail(
+                "pakoc65101@noidos.com",
+                "Your OTP Code",
+                "Your verification code is 842931. It expires in 5 minutes."
+        );
     }
  }

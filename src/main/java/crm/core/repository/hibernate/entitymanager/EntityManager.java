@@ -3,6 +3,7 @@ package crm.core.repository.hibernate.entitymanager;
 import java.sql.Connection;
 import java.util.List;
 
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.querybuilder.QueryOperation;
 import crm.core.repository.hibernate.querybuilder.SelectBuilder;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
@@ -17,14 +18,14 @@ import java.util.Map;
 /**
  * Lightweight EntityManager implementation
  */
-public class EntityManager implements IEntityManager {
+public class EntityManager implements IEntityManager,AutoCloseable {
 
     private final Connection connection;
     private final QueryUtils queryUtils = new QueryUtils();
 
     private boolean inTransaction = false;
 
-    public EntityManager(Connection connection) {
+     public EntityManager(Connection connection) {
         this.connection = connection;
     }
 
@@ -270,6 +271,16 @@ public class EntityManager implements IEntityManager {
         return null;
     }
 
+    public void executeUpdate(SqlAndParamsDTO sqlAndParamsDTO) {
+        ensureTransactionActive();
+        try (PreparedStatement ps = connection.prepareStatement(sqlAndParamsDTO.getSql())) {
+            setParams(ps, sqlAndParamsDTO.getParams());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Error executing update", e);
+        }
+    }
+
     //ADVANCED QUERY WITH BUILDER
     public <T> List<T> executeCustomQuery(Class<T> resultClass, QueryOperation queryOperation) {
         try {
@@ -379,6 +390,16 @@ public class EntityManager implements IEntityManager {
     private void setParams(PreparedStatement ps, List<Object> params) throws SQLException {
         for (int i = 0; i < params.size(); i++) {
             ps.setObject(i + 1, params.get(i));
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (inTransaction) {
+            rollback();
+        }
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
         }
     }
 }
