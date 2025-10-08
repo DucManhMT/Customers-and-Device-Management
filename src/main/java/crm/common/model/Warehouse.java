@@ -18,7 +18,7 @@ public class Warehouse {
     @Column(name = "Location", length = 255)
     private String location;
 
-    @ManyToOne(joinColumn = "Username")
+    @ManyToOne(joinColumn = "WarehouseManager")
     private LazyReference<Account> managerAccount;
 
     public Integer getWarehouseID() {
