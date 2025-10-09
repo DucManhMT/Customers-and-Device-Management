@@ -60,6 +60,16 @@
                     </c:forEach>
                 </select>
             </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Warehouse</label>
+                <select id="warehouse" name="warehouse"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Warehouse</option>
+                    <c:forEach items="${warehouses}" var="warehouse">
+                        <option value="${warehouse.warehouseName}" ${param.warehouse == warehouse.warehouseName ? 'selected' : ''}>${warehouse.warehouseName}</option>
+                    </c:forEach>
+                </select>
+            </div>
             <div class="flex items-end">
                 <button type="submit"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
@@ -124,13 +134,13 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                <c:forEach var="productWarehouse" items="${products}">
+                <c:forEach var="item" items="${inventorySummary}">
                     <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-sm text-gray-800">${productWarehouse.inventoryItem.product.productName}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">${productWarehouse.inventoryItem.product.productDescription}</td>
-                        <td class="px-4 py-3 text-sm text-gray-700">${productWarehouse.inventoryItem.product.type.typeName}</td>
+                        <td class="px-4 py-3 text-sm text-gray-800">${item.product.productName}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600">${item.product.productDescription}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">${item.product.type.typeName}</td>
                         <td class="px-4 py-3 text-sm text-gray-700">
-                            <c:forEach var="spec" items="${productWarehouse.inventoryItem.product.productSpecifications}">
+                            <c:forEach var="spec" items="${item.product.productSpecifications}">
                                 <div class="whitespace-nowrap">
                                     <span class="font-medium text-gray-800">${spec.specification.specificationName}:</span>
                                     <span class="text-gray-600">${spec.specification.specificationValue}</span>
@@ -138,13 +148,13 @@
                             </c:forEach>
                         </td>
                         <td class="px-4 py-3 text-sm font-semibold text-gray-900">
-                                ${productWarehouse.warehouse.warehouseName}
+                                ${item.warehouse.warehouseName}
                         </td>
                         <td class="px-4 py-3 text-sm font-semibold text-gray-900">
-                                ${productCountsByWarehouse[productWarehouse.inventoryItem.product.productID]}
+                                ${item.count}
                         </td>
                         <td class="px-4 py-3">
-                            <a href="editProductWarehouse?productID=${productWarehouse.inventoryItem.product.productID}"
+                            <a href="editProductWarehouse?productID="
                                class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
                                 Edit
                             </a>
