@@ -33,10 +33,12 @@ public class UpdateTaskStatusServlet extends HttpServlet {
         }
         
         Connection connection = null;
+        EntityManager entityManager = null;
+        
         try {
             int requestId = Integer.parseInt(requestIdStr);
             connection = DBcontext.getConnection();
-            EntityManager entityManager = new EntityManager(connection);
+            entityManager = new EntityManager(connection);
             
             Request req = entityManager.find(Request.class, requestId);
             if (req == null) {
@@ -51,10 +53,14 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
             
             if ("finished".equals(newStatus)) {
+                entityManager.beginTransaction();
+                
                 req.setRequestStatus(RequestStatus.Finished);
                 req.setFinishedDate(LocalDateTime.now());
                 
                 entityManager.merge(req, Request.class);
+                
+                entityManager.commit();
                 
                 request.getSession().setAttribute("successMessage", "Task #" + requestId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
@@ -63,8 +69,22 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
             
         } catch (NumberFormatException e) {
+            if (entityManager != null) {
+                try {
+                    entityManager.rollback();
+                } catch (Exception rollbackException) {
+                    rollbackException.printStackTrace();
+                }
+            }
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID");
         } catch (Exception e) {
+            if (entityManager != null) {
+                try {
+                    entityManager.rollback();
+                } catch (Exception rollbackException) {
+                    rollbackException.printStackTrace();
+                }
+            }
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
         } finally {
