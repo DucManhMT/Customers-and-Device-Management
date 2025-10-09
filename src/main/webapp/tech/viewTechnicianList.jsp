@@ -136,12 +136,14 @@
               </select>
             </div>
             <div class="col-md-3">
-              <label for="filterTime" class="form-label">Activity Period</label>
-              <select class="form-select" id="filterTime" name="activityPeriod">
-                <option value="">All Time</option>
-                <option value="1week" ${selectedActivityPeriod == '1week' ? 'selected' : ''}>Last 1 Week</option>
-                <option value="1month" ${selectedActivityPeriod == '1month' ? 'selected' : ''}>Last 1 Month</option>
-                <option value="6months" ${selectedActivityPeriod == '6months' ? 'selected' : ''}>Last 6 Months</option>
+              <label for="filterAge" class="form-label">Age Range</label>
+              <select class="form-select" id="filterAge" name="ageRange">
+                <option value="">All Ages</option>
+                <option value="18-25" ${selectedAgeRange == '18-25' ? 'selected' : ''}>18-25 years old</option>
+                <option value="26-35" ${selectedAgeRange == '26-35' ? 'selected' : ''}>26-35 years old</option>
+                <option value="36-45" ${selectedAgeRange == '36-45' ? 'selected' : ''}>36-45 years old</option>
+                <option value="46-55" ${selectedAgeRange == '46-55' ? 'selected' : ''}>46-55 years old</option>
+                <option value="56+" ${selectedAgeRange == '56+' ? 'selected' : ''}>56+ years old</option>
               </select>
             </div>
             <div class="col-md-3">
@@ -157,83 +159,6 @@
                 >
                   <i class="bi bi-arrow-clockwise"></i> Clear Filter
                 </button>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-3">
-            <button 
-              class="btn btn-outline-info btn-sm" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#advancedFilters" 
-              aria-expanded="false" 
-              aria-controls="advancedFilters"
-            >
-              <i class="bi bi-sliders me-1"></i> Advanced Filters
-            </button>
-          </div>
-          
-          <div class="collapse mt-3" id="advancedFilters">
-            <div class="card card-body">
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label for="sortBy" class="form-label">Sort By</label>
-                  <select class="form-select" id="sortBy" name="sortBy">
-                    <option value="name" ${param.sortBy == 'name' ? 'selected' : ''}>Name (A-Z)</option>
-                    <option value="name_desc" ${param.sortBy == 'name_desc' ? 'selected' : ''}>Name (Z-A)</option>
-                    <option value="id" ${param.sortBy == 'id' ? 'selected' : ''}>Staff ID (Low to High)</option>
-                    <option value="id_desc" ${param.sortBy == 'id_desc' ? 'selected' : ''}>Staff ID (High to Low)</option>
-                    <option value="recent" ${param.sortBy == 'recent' ? 'selected' : ''}>Most Recent</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label for="emailFilter" class="form-label">Email Domain</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="emailFilter" 
-                    name="emailDomain"
-                    value="${param.emailDomain}"
-                    placeholder="e.g., @company.com"
-                  />
-                </div>
-                <div class="col-md-4">
-                  <label for="phoneFilter" class="form-label">Phone Prefix</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="phoneFilter" 
-                    name="phonePrefix"
-                    value="${param.phonePrefix}"
-                    placeholder="e.g., +84, 0123"
-                  />
-                </div>
-              </div>
-              
-              <div class="row g-3 mt-2">
-                <div class="col-md-6">
-                  <label class="form-label">Quick Actions</label>
-                  <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-success btn-sm" onclick="exportResults()">
-                      <i class="bi bi-download me-1"></i> Export Results
-                    </button>
-                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="saveFilter()">
-                      <i class="bi bi-bookmark me-1"></i> Save Filter
-                    </button>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Filter Presets</label>
-                  <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="applyPreset('recent')">
-                      Recent Hires
-                    </button>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="applyPreset('hanoi')">
-                      Hanoi Only
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -274,7 +199,7 @@
                   <th>Contact Info</th>
                   <th>Address</th>
                   <th>Date of Birth</th>
-                  <th>Account</th>
+                  <th>Role</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -341,9 +266,9 @@
                           </c:choose>
                         </td>
                         <td>
-                          <div class="fw-bold">Role ID: 5</div>
+                          <div class="fw-bold">Tech Employee</div>
                           <small class="text-success">
-                            <i class="bi bi-check-circle me-1"></i>Tech Employee
+                            <i class="bi bi-check-circle me-1"></i>ROLE
                           </small>
                         </td>
                         <td>
@@ -465,7 +390,7 @@
       function clearFilters() {
         document.getElementById('searchName').value = '';
         document.getElementById('filterLocation').value = '';
-        document.getElementById('filterTime').value = '';
+        document.getElementById('filterAge').value = '';
         
         document.getElementById('filterForm').submit();
       }
@@ -499,27 +424,16 @@
         form.submit();
       }
       
-      let searchTimeout;
-      function handleSearchInput() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          const searchValue = document.getElementById('searchName').value;
-          if (searchValue.length >= 2 || searchValue.length === 0) {
-            applyFilters();
-          }
-        }, 1000);
-      }
-      
       function updatePaginationLinks() {
         const searchName = document.getElementById('searchName').value;
         const location = document.getElementById('filterLocation').value;
-        const activityPeriod = document.getElementById('filterTime').value;
+        const ageRange = document.getElementById('filterAge').value;
         const recordsPerPage = document.getElementById('pageSize').value;
         
         let filterParams = '';
         if (searchName) filterParams += '&searchName=' + encodeURIComponent(searchName);
         if (location) filterParams += '&location=' + encodeURIComponent(location);
-        if (activityPeriod) filterParams += '&activityPeriod=' + encodeURIComponent(activityPeriod);
+        if (ageRange) filterParams += '&ageRange=' + encodeURIComponent(ageRange);
         if (recordsPerPage) filterParams += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
         
         const paginationLinks = document.querySelectorAll('.pagination .page-link');
@@ -528,7 +442,7 @@
             const url = new URL(link.href);
             if (searchName) url.searchParams.set('searchName', searchName);
             if (location) url.searchParams.set('location', location);
-            if (activityPeriod) url.searchParams.set('activityPeriod', activityPeriod);
+            if (ageRange) url.searchParams.set('ageRange', ageRange);
             if (recordsPerPage) url.searchParams.set('recordsPerPage', recordsPerPage);
             link.href = url.toString();
           }
@@ -538,7 +452,7 @@
       document.addEventListener('DOMContentLoaded', function() {
         console.log('Tech employees loaded: ${totalCount}');
         
-        document.getElementById('searchName').addEventListener('input', handleSearchInput);
+        // Remove automatic search input filtering - only filter when Apply Filter button is clicked
         document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
         document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
         
@@ -553,17 +467,7 @@
         
         updatePaginationLinks();
         
-        document.getElementById('filterLocation').addEventListener('change', function() {
-          if (this.value !== '') {
-            setTimeout(applyFilters, 500);
-          }
-        });
-        
-        document.getElementById('filterTime').addEventListener('change', function() {
-          if (this.value !== '') {
-            setTimeout(applyFilters, 500);
-          }
-        });
+        // Remove automatic filtering - only filter when Apply Filter button is clicked
         
         showFilterSummary();
       });
@@ -571,17 +475,17 @@
       function showFilterSummary() {
         const searchName = document.getElementById('searchName').value;
         const location = document.getElementById('filterLocation').value;
-        const activityPeriod = document.getElementById('filterTime').value;
+        const ageRange = document.getElementById('filterAge').value;
         
-        if (searchName || location || activityPeriod) {
+        if (searchName || location || ageRange) {
           let summary = 'Active filters: ';
           const filters = [];
           
           if (searchName) filters.push('Search: "' + searchName + '"');
           if (location) filters.push('Location: "' + location + '"');
-          if (activityPeriod) {
-            const periodText = document.querySelector('#filterTime option[value="' + activityPeriod + '"]').textContent;
-            filters.push('Period: "' + periodText + '"');
+          if (ageRange) {
+            const ageText = document.querySelector('#filterAge option[value="' + ageRange + '"]').textContent;
+            filters.push('Age: "' + ageText + '"');
           }
           
           summary += filters.join(', ');
@@ -605,88 +509,10 @@
         }
       }
       
-      function exportResults() {
-        const techEmployees = Array.from(document.querySelectorAll('tbody tr')).map(row => {
-          const cells = row.querySelectorAll('td');
-          return {
-            id: cells[1]?.textContent?.trim() || '',
-            name: cells[0]?.querySelector('.fw-bold')?.textContent?.trim() || '',
-            email: cells[2]?.querySelector('a[href^="mailto:"]')?.textContent?.trim() || '',
-            phone: cells[2]?.querySelector('a[href^="tel:"]')?.textContent?.trim() || '',
-            address: cells[3]?.textContent?.trim() || ''
-          };
-        });
-        
-        if (techEmployees.length === 0) {
-          alert('No data to export');
-          return;
-        }
-        
-        const csvContent = [
-          ['Staff ID', 'Name', 'Email', 'Phone', 'Address'],
-          ...techEmployees.map(emp => [emp.id, emp.name, emp.email, emp.phone, emp.address])
-        ].map(row => row.map(field => '"' + field.replace(/"/g, '""') + '"').join(','))
-         .join('\\n');
-        
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', 'tech_employees_' + new Date().toISOString().slice(0,10) + '.csv');
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-      
-      function saveFilter() {
-        const filterData = {
-          searchName: document.getElementById('searchName').value,
-          location: document.getElementById('filterLocation').value,
-          activityPeriod: document.getElementById('filterTime').value,
-          sortBy: document.getElementById('sortBy')?.value || '',
-          emailDomain: document.getElementById('emailFilter')?.value || '',
-          phonePrefix: document.getElementById('phoneFilter')?.value || ''
-        };
-        
-        const filterName = prompt('Enter a name for this filter:');
-        if (filterName) {
-          const savedFilters = JSON.parse(localStorage.getItem('savedTechFilters') || '{}');
-          savedFilters[filterName] = filterData;
-          localStorage.setItem('savedTechFilters', JSON.stringify(savedFilters));
-          alert('Filter saved successfully!');
-        }
-      }
-      
-      function applyPreset(presetType) {
-        clearFilters();
-        
-        setTimeout(() => {
-          switch(presetType) {
-            case 'recent':
-              document.getElementById('filterTime').value = '1month';
-              document.getElementById('sortBy').value = 'recent';
-              break;
-            case 'hanoi':
-              document.getElementById('filterLocation').value = 'Hanoi';
-              break;
-          }
-          applyFilters();
-        }, 100);
-      }
-      
       function clearFilters() {
         document.getElementById('searchName').value = '';
         document.getElementById('filterLocation').value = '';
-        document.getElementById('filterTime').value = '';
-        
-        const sortBy = document.getElementById('sortBy');
-        const emailFilter = document.getElementById('emailFilter');
-        const phoneFilter = document.getElementById('phoneFilter');
-        
-        if (sortBy) sortBy.value = 'name';
-        if (emailFilter) emailFilter.value = '';
-        if (phoneFilter) phoneFilter.value = '';
+        document.getElementById('filterAge').value = '';
         
         document.getElementById('filterForm').submit();
       }
