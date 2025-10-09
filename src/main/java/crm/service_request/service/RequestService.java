@@ -41,13 +41,19 @@ public class RequestService {
         return request;
     }
 
-    public Page<Request> getRequestByUsername(String username, String field, String sort, String status, int contractId,
-            int page, int recordsPerPage) {
+    public Page<Request> getRequests(String customerName, String field, String sort, String description,
+                                     String status, int contractId,
+                                     int page, int recordsPerPage) {
         RequestRepository requestRepository = new RequestRepository();
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
         }
+
+        if (description != null && !description.isEmpty()) {
+            builder.like("RequestDescription", "%" + description + "%");
+        }
+
         if (sort == null || sort.isEmpty() || (!sort.equals("asc") && !sort.equals("desc"))) {
             sort = "desc";
         }
@@ -58,7 +64,42 @@ public class RequestService {
 
         if (contractId > 0) {
             builder.equal("Contract.ContractID", contractId);
-            System.out.println("Contract ID filter applied: " + contractId);
+        }
+
+        Order order = sort.equals("asc") ? Order.asc(field) : Order.desc(field);
+
+        PageRequest request = PageRequest.of(page, recordsPerPage, Sort.by(order));
+        if (customerName == null || customerName.isEmpty()) {
+            return requestRepository.findWithCondtion(builder, request);
+
+        }
+        return requestRepository.findByCustomerName(customerName, builder, request);
+    }
+
+    public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
+                                              String status, int contractId,
+                                              int page, int recordsPerPage) {
+        RequestRepository requestRepository = new RequestRepository();
+        ClauseBuilder builder = new ClauseBuilder();
+        if (field == null || field.isEmpty()) {
+            field = "StartDate";
+        }
+
+        if (description != null && !description.isEmpty()) {
+            builder.like("RequestDescription", "%" + description + "%");
+
+        }
+
+        if (sort == null || sort.isEmpty() || (!sort.equals("asc") && !sort.equals("desc"))) {
+            sort = "desc";
+        }
+
+        if (status != null && !status.isEmpty()) {
+            builder.equal("RequestStatus", status);
+        }
+
+        if (contractId > 0) {
+            builder.equal("Contract.ContractID", contractId);
         }
 
         Order order = sort.equals("asc") ? Order.asc(field) : Order.desc(field);
@@ -70,42 +111,6 @@ public class RequestService {
         }
 
         return requestRepository.findByUsernameAndCondition(username, builder, request);
-    }
-
-    public Page<Request> getRequests(int page, int recordsPerPage, String field, String sort, String status,
-            String description) throws SQLException {
-        ClauseBuilder builder = new ClauseBuilder();
-
-        if (field == null || field.isEmpty()) {
-            field = "StartDate";
-        }
-        if (sort == null || sort.isEmpty() || (!sort.equals("asc") && !sort.equals("desc"))) {
-            sort = "desc";
-        }
-
-        if (status != null && !status.isEmpty()) {
-            builder.equal("RequestStatus", status);
-        }
-
-        if (description != null && !description.isEmpty()) {
-            builder.like("RequestDescription", "%" + description + "%");
-        }
-        RequestRepository requestRepository = new RequestRepository();
-        Order order = sort.equals("asc") ? Order.asc(field) : Order.desc(field);
-
-        Page<Request> pageResult = null;
-        try {
-            TransactionManager.beginTransaction();
-            pageResult = requestRepository.findWithCondtion(builder,
-                    PageRequest.of(page, recordsPerPage, Sort.by(order)));
-            TransactionManager.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionManager.rollback();
-            return null;
-        }
-
-        return pageResult;
     }
 
 }

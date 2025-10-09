@@ -49,6 +49,23 @@ public class ContractRepository extends AbstractRepository<Contract, Integer> {
 
     }
 
+    public List<Contract> findByCustomerName(String customerName) {
+        if (customerName == null || customerName.isEmpty()) {
+            return findAll();
+        }
+        CustomerRepository customerRepository = new CustomerRepository();
+        List<Customer> customers = (List<Customer>) customerRepository
+                .findWithCondition(ClauseBuilder.builder().like("CustomerName", "%" + customerName + "%"));
+        if (customers == null || customers.isEmpty()) {
+            return null;
+        }
+
+        return findWithCondition(
+                ClauseBuilder.builder().in("CustomerID",
+                        customers.stream().map(c -> c.getCustomerID()).toList()));
+
+    }
+
     public Integer getNewKey() {
         int count = count() + 1;
         while (isExist(count)) {

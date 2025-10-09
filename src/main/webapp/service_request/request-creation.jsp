@@ -4,7 +4,9 @@
 <html>
 <head>
     <title>Request Creation</title>
-    <link href="../css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
+
 </head>
 <body class="bg-light">
 
@@ -39,22 +41,25 @@
                                    class="form-control"
                                    placeholder="Enter request description"/>
                         </div>
-
+                        <!-- Messages -->
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger mt-3">${error}</div>
+                        </c:if>
+                        <c:if test="${not empty success}">
+                            <div class="alert alert-success mt-3">${success}</div>
+                        </c:if>
                         <!-- Submit button -->
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success">
                                 Create Request
                             </button>
+                            <button class="mt-1 btn btn-danger" onclick="window.history.back(); return false;">
+                                Cancel
+                            </button>
                         </div>
                     </form>
 
-                    <!-- Messages -->
-                    <c:if test="${not empty error}">
-                        <div class="alert alert-danger mt-3">${error}</div>
-                    </c:if>
-                    <c:if test="${not empty success}">
-                        <div class="alert alert-success mt-3">${success}</div>
-                    </c:if>
+
                 </div>
             </div>
         </div>

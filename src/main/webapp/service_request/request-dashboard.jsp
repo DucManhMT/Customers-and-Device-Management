@@ -10,7 +10,8 @@
 <html>
 <head>
     <title>Request Dashboard</title>
-    <link href="../css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
 </head>
 <body>
 

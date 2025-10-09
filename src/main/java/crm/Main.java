@@ -3,6 +3,8 @@ package crm;
 import java.sql.SQLException;
 import java.util.List;
 
+import crm.auth.service.Hasher;
+import crm.auth.service.LoginService;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 import crm.core.repository.persistence.config.TransactionManager;
@@ -14,14 +16,15 @@ import crm.service_request.service.RequestService;
 
 public class Main {
     public static void main(String[] args) {
-        testRequest();
+        System.out.println(LoginService.login("customer01", "@Maxkeptergg2005"));
+
     }
 
     public static void testRequest() {
         List<Request> requests;
         RequestService requestService = new RequestService();
         PageRequest pageRequest = new PageRequest(1, 10);
-        requests = requestService.getRequestByUsername("customer01", null, null, null, 0, 1, 10).getContent();
+        requests = requestService.getRequestByUsername("customer01", null, null, null, null, 0, 1, 10).getContent();
         requests.forEach(r -> {
             System.out.println("Request ID: " + r.getRequestID());
             System.out.println("Description: " + r.getRequestDescription());

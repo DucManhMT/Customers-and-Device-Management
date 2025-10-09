@@ -45,4 +45,23 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
         return findWithCondtion(clause, pageRequest);
 
     }
+
+    public Page<Request> findByCustomerName(String customerName, ClauseBuilder clause, PageRequest pageRequest) {
+        if (customerName == null || customerName.isEmpty()) {
+            return findWithCondtion(clause, pageRequest);
+        }
+
+        ContractRepository contractRepository = new ContractRepository();
+        List<Contract> contracts = contractRepository.findByCustomerName(customerName);
+        if (contracts == null || contracts.isEmpty()) {
+            return new Page<>(0, pageRequest, null);
+        }
+        List<Integer> contractIds = contracts.stream().map(c -> c.getContractID()).toList();
+
+        clause.in("ContractID", contractIds);
+
+        return findWithCondtion(clause, pageRequest);
+
+    }
+
 }
