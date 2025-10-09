@@ -9,5 +9,4 @@ public class ProductWarehouseDAO extends FuntionalityDAO {
         super(ProductWarehouse.class);
     }
 
-
 }

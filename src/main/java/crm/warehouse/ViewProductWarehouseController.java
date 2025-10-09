@@ -1,10 +1,11 @@
 package crm.warehouse;
 
 import crm.common.model.Product;
-import crm.common.model.ProductSpecification;
 import crm.common.model.ProductWarehouse;
+import crm.common.model.Type;
 import crm.common.model.Warehouse;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
+import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,8 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,21 +24,42 @@ public class ViewProductWarehouseController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Filter parameters
+        String productNameFilter = req.getParameter("productName");
+        String productTypeFilter = req.getParameter("productType");
+
+        // Pagination parameters
+        int pageSize = 10; // Default items per page
+        int currentPage = 1; // Default page
+
+        // Get pagination parameters from request
+        String pageSizeParam = req.getParameter("pageSize");
+        String pageParam = req.getParameter("page");
+
+        if (pageSizeParam != null && !pageSizeParam.isEmpty()) {
+            try {
+                pageSize = Integer.parseInt(pageSizeParam);
+            } catch (NumberFormatException e) {
+                // Use default if invalid
+            }
+        }
+
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                currentPage = Integer.parseInt(pageParam);
+                if (currentPage < 1) currentPage = 1;
+            } catch (NumberFormatException e) {
+                // Use default if invalid
+            }
+        }
+
 
         //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
         Warehouse warehouse = warehouseDAO.find(1);
 
-        HashSet<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
-        System.out.println("Warehouse: " + warehouse.getWarehouseName());
-        for (Product product : products) {
-            System.out.print("Product: " + product.getProductName());
-            System.out.println(" Specifications:");
-            for (ProductSpecification spec : product.getProductSpecifications()) {
-                System.out.println(" - " + spec.getSpecification().getSpecificationName() + ": " + spec.getSpecification().getSpecificationValue());
-            }
-        }
+        List<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
 
         List<ProductWarehouse> pw = productWarehouseDAO.findAll();
 
@@ -49,38 +70,54 @@ public class ViewProductWarehouseController extends HttpServlet {
                         Collectors.counting()
                 ));
 
-        //Filter
-        String productNameFilter = req.getParameter("productName");
-        String productTypeFilter = req.getParameter("productType");
-        String stockStatusFilter = req.getParameter("status");
+        // Get unique product types for filter dropdown
+        TypeDAO typeDAO = new TypeDAO();
+        List<Type> ProductTypes = typeDAO.findAll();
 
-        if(productNameFilter != null && !productNameFilter.isEmpty()){
+
+        //Filter
+        if (productNameFilter != null && !productNameFilter.isEmpty()) {
             products = products.stream()
                     .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
-                    .collect(Collectors.toCollection(HashSet::new));
+                    .collect(Collectors.toCollection(LinkedList::new));
         }
 
-        if(productTypeFilter != null && !productTypeFilter.isEmpty()){
+        if (productTypeFilter != null && !productTypeFilter.isEmpty()) {
             products = products.stream()
                     .filter(p -> p.getType().getTypeName().equalsIgnoreCase(productTypeFilter))
-                    .collect(Collectors.toCollection(HashSet::new));
+                    .collect(Collectors.toCollection(LinkedList::new));
         }
 
-        if(stockStatusFilter != null && !stockStatusFilter.isEmpty()){
-            if(stockStatusFilter.equalsIgnoreCase("In_Stock")){
-                products = products.stream()
-                        .filter(p -> productCounts.getOrDefault(p.getProductID(), 0L) > 0)
-                        .collect(Collectors.toCollection(HashSet::new));
-            } else if(stockStatusFilter.equalsIgnoreCase("Exported")){
-                products = products.stream()
-                        .filter(p -> productCounts.getOrDefault(p.getProductID(), 0L) == 0)
-                        .collect(Collectors.toCollection(HashSet::new));
-            }
+        // Pagination logic
+        int totalProducts = products.size();
+        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+
+        if (currentPage > totalPages && totalPages > 0) {
+            currentPage = totalPages;
         }
 
-        req.setAttribute("products", products);
+        int offset = (currentPage - 1) * pageSize;
+
+        // Get products for current page
+        List<Product> pagedProducts = products.stream()
+                .skip((offset))
+                .limit(pageSize)
+                .collect(Collectors.toList());
+
+        // Send paged products to view instead of all products
+        req.setAttribute("products", pagedProducts);
         req.setAttribute("productCounts", productCounts);
+        req.setAttribute("uniqueProductTypes", ProductTypes);
 
+        // Pagination metadata
+        req.setAttribute("currentPage", currentPage);
+        req.setAttribute("totalPages", totalPages);
+        req.setAttribute("pageSize", pageSize);
+        req.setAttribute("totalProducts", totalProducts);
+
+        // Pass filter parameters for pagination links
+        req.setAttribute("productName", productNameFilter);
+        req.setAttribute("productType", productTypeFilter);
 
         req.getRequestDispatcher("/Warehouse/ViewProduct.jsp").forward(req, resp);
     }

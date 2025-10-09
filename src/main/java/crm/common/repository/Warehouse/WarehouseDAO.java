@@ -18,8 +18,10 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
         super(Warehouse.class);
     }
 
-    public HashSet<Product> getProductsInWarehouse(int warehouseId) {
+    public List<Product> getProductsInWarehouse(int warehouseId) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
+
+        List<Product> products;
 
         Map<String, Object> conditions = new HashMap<>();
         conditions.put("warehouse", warehouseId);
@@ -27,18 +29,20 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
 
         List<ProductWarehouse> pw = em.findWithConditions(ProductWarehouse.class, conditions);
 
-        HashSet<Product> products = pw.stream()
+        HashSet<Product> uniqueProducts = pw.stream()
                 .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == warehouseId)
                 .map(pw1 -> pw1.getInventoryItem().getProduct())
                 .collect(Collectors.toCollection(HashSet::new));
 
         Map<String, Object> productConditions = new HashMap<>();
 
-        for (Product p : products) {
+        for (Product p : uniqueProducts) {
             productConditions.put("product", p.getProductID());
             List<ProductSpecification> specs = em.findWithConditions(ProductSpecification.class, productConditions);
             p.setProductSpecifications(specs);
         }
+
+        products = uniqueProducts.stream().toList();
 
         return products;
     }
