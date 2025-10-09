@@ -47,5 +47,24 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
         return products;
     }
 
+    public List<ProductWarehouse> getInventory() {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        List<ProductWarehouse> inventory = new LinkedList<>();
+
+        List<Warehouse> warehouse;
+        warehouse = em.findAll(Warehouse.class);
+
+        for (ProductWarehouse pw : em.findAll(ProductWarehouse.class)) {
+            for (Warehouse w : warehouse) {
+                if (pw.getWarehouse().getWarehouseID() == w.getWarehouseID() && pw.getProductStatus() == ProductStatus.In_Stock) {
+                    pw.setWarehouse(w);
+                    inventory.add(pw);
+                }
+            }
+        }
+
+        return inventory;
+    }
+
 
 }

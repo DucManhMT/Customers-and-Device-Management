@@ -1,3 +1,11 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Admin
+  Date: 10/10/2025
+  Time: 2:53 AM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -33,7 +41,7 @@
     <!-- Filters -->
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Filter</h2>
-        <form action="viewProductWarehouse" method="GET" id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form action="viewInventory" method="GET" id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input type="hidden" name="pageSize" value="${pageSize}">
             <input type="hidden" name="page" value="${currentPage}">
             <div>
@@ -66,7 +74,7 @@
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-4">
                 <span class="text-sm text-gray-600">Display:</span>
-                <form action="viewProductWarehouse" method="GET">
+                <form action="viewInventory" method="GET">
                     <input type="hidden" name="productName" value="${productName}">
                     <input type="hidden" name="productType" value="${productType}">
                     <input type="hidden" name="page" value="${currentPage}">
@@ -105,6 +113,9 @@
                         Specification
                     </th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Warehouse
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Stock
                     </th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -115,11 +126,11 @@
                 <tbody class="divide-y divide-gray-100">
                 <c:forEach var="productWarehouse" items="${products}">
                     <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-sm text-gray-800">${productWarehouse.productName}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">${productWarehouse.productDescription}</td>
-                        <td class="px-4 py-3 text-sm text-gray-700">${productWarehouse.type.typeName}</td>
+                        <td class="px-4 py-3 text-sm text-gray-800">${productWarehouse.inventoryItem.product.productName}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600">${productWarehouse.inventoryItem.product.productDescription}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">${productWarehouse.inventoryItem.product.type.typeName}</td>
                         <td class="px-4 py-3 text-sm text-gray-700">
-                            <c:forEach var="spec" items="${productWarehouse.productSpecifications}">
+                            <c:forEach var="spec" items="${productWarehouse.inventoryItem.product.productSpecifications}">
                                 <div class="whitespace-nowrap">
                                     <span class="font-medium text-gray-800">${spec.specification.specificationName}:</span>
                                     <span class="text-gray-600">${spec.specification.specificationValue}</span>
@@ -127,12 +138,15 @@
                             </c:forEach>
                         </td>
                         <td class="px-4 py-3 text-sm font-semibold text-gray-900">
-                                ${productCounts[productWarehouse.productID]}
+                                ${productWarehouse.warehouse.warehouseName}
+                        </td>
+                        <td class="px-4 py-3 text-sm font-semibold text-gray-900">
+                                ${productCountsByWarehouse[productWarehouse.inventoryItem.product.productID]}
                         </td>
                         <td class="px-4 py-3">
-                            <a href=""
+                            <a href="editProductWarehouse?productID=${productWarehouse.inventoryItem.product.productID}"
                                class="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
-                                View Detail
+                                Edit
                             </a>
                         </td>
                     </tr>
@@ -165,7 +179,7 @@
                 <c:if test="${currentPage > 1}">
                     <li>
                         <a class="px-3 py-2 ml-0 leading-tight text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50"
-                           href="viewProductWarehouse?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">
+                           href="viewInventory?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">
                             Previous
                         </a>
                     </li>
@@ -175,7 +189,7 @@
                 <c:forEach begin="1" end="${totalPages}" var="i">
                     <li>
                         <a class="px-3 py-2 leading-tight border text-sm ${i == currentPage ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
-                           href="viewProductWarehouse?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">
+                           href="viewInventory?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">
                                 ${i}
                         </a>
                     </li>
@@ -185,7 +199,7 @@
                 <c:if test="${currentPage < totalPages}">
                     <li>
                         <a class="px-3 py-2 leading-tight text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50"
-                           href="viewProductWarehouse?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">
+                           href="viewInventory?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">
                             Next
                         </a>
                     </li>

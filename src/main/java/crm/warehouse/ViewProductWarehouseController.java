@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/viewProductWarehouse")
+@WebServlet(urlPatterns = "/warehouse/viewProductWarehouse")
 public class ViewProductWarehouseController extends HttpServlet {
 
     @Override
