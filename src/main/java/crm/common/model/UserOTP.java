@@ -2,11 +2,13 @@ package crm.common.model;
 
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Key;
 
 import java.time.LocalDateTime;
 
 @Entity(tableName = "UserOTP")
 public class UserOTP {
+    @Key
     @Column(name = "UserOTPID")
     private int UserOTPID;
 

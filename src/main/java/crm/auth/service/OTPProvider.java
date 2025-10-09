@@ -5,11 +5,11 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.core.repository.hibernate.querybuilder.QueryOperation;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+
+import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+import crm.core.service.MailService;
 
 public class OTPProvider {
     public static String generateOTP() {
@@ -22,10 +22,10 @@ public class OTPProvider {
         return otp.toString();
     }
 
-    public static boolean verifyOTP(String inputOtp, String actualOtp, String userEmail) {
+    public static boolean verifyOTP(String inputOtp, String userEmail) {
         try (EntityManager em = new EntityManager(DBcontext.getConnection())) {
             deleteExpiredOtp(em);
-            UserOTP userOTP = em.executeCustomQuery(UserOTP.class, QueryOperation.select(UserOTP.class).where("userEmail", userEmail).and("otpCode", actualOtp).build()).get(0);
+            UserOTP userOTP = em.executeCustomQuery(UserOTP.class, QueryOperation.select(UserOTP.class).where("email", userEmail).orderBy("expiredTime", SortDirection.DESC).build()).get(0);
             if (userOTP == null || userOTP.getExpiredTime().isBefore(LocalDateTime.now())) {
                 return false; // OTP not found or expired
             }
@@ -34,11 +34,12 @@ public class OTPProvider {
             } else {
                 // OTP is valid, delete it after successful verification
                 em.remove(userOTP, UserOTP.class);
+                System.out.println("OTP verified and deleted successfully.");
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return true;
     }
 
@@ -50,9 +51,22 @@ public class OTPProvider {
     }
 
     public static boolean sendOTPEmail(String toEmail, String otp) {
-        // Simulate sending email
-        System.out.println("Sending OTP " + otp + " to email: " + toEmail);
-        return true; // Assume email sent successfully
+        String subject = "Your OTP Code";
+        String body = "Your verification code is " + otp + ". It expires in 1 minute.";
+        try (EntityManager em = new EntityManager(DBcontext.getConnection())) {
+            // Save OTP to database with 1 minute expiration
+            deleteExpiredOtp(em);
+            UserOTP userOTP = new UserOTP();
+            userOTP.setEmail(toEmail);
+            userOTP.setOtpCode(otp);
+            userOTP.setExpiredTime(LocalDateTime.now().plusMinutes(1));
+            em.persist(userOTP, UserOTP.class);
+            MailService.sendEmail(toEmail, subject, body);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -3,9 +3,7 @@ package crm.core.repository.hibernate.entitymanager;
 import java.sql.Connection;
 import java.util.List;
 
-import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.querybuilder.QueryOperation;
-import crm.core.repository.hibernate.querybuilder.SelectBuilder;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
 import crm.core.repository.hibernate.querybuilder.QueryUtils;
@@ -29,17 +27,9 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         this.connection = connection;
     }
 
-    // Helper to enforce active transaction before any operation
-    private void ensureTransactionActive() {
-        if (!inTransaction) {
-            throw new IllegalStateException("No active transaction. Call beginTransaction() first.");
-        }
-    }
-
     // ---------- PERSIST ----------
     @Override
     public <T> void persist(T entity, Class<T> entityClass) {
-        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildInsert(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -54,7 +44,6 @@ public class EntityManager implements IEntityManager,AutoCloseable {
     // ---------- MERGE (UPDATE) ----------
     @Override
     public <T> T merge(T entity, Class<T> entityClass) {
-        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildUpdate(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -70,7 +59,6 @@ public class EntityManager implements IEntityManager,AutoCloseable {
     // ---------- REMOVE ----------
     @Override
     public <T> void remove(T entity, Class<T> entityClass) {
-        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildDelete(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -272,7 +260,6 @@ public class EntityManager implements IEntityManager,AutoCloseable {
     }
 
     public void executeUpdate(SqlAndParamsDTO sqlAndParamsDTO) {
-        ensureTransactionActive();
         try (PreparedStatement ps = connection.prepareStatement(sqlAndParamsDTO.getSql())) {
             setParams(ps, sqlAndParamsDTO.getParams());
             ps.executeUpdate();
@@ -316,74 +303,8 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         return 0;
     }
 
-    // ---------- TRANSACTION ----------
-    @Override
-    public void beginTransaction() {
-        try {
-            if (inTransaction) {
-                throw new IllegalStateException("A transaction is already active");
-            }
-            if (connection.getAutoCommit() == false) {
-                // Someone disabled auto-commit outside our API but we think no transaction
-                inTransaction = true; // adopt it
-            } else {
-                connection.setAutoCommit(false);
-                inTransaction = true;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to begin transaction", e);
-        }
-    }
 
-    @Override
-    public void commit() {
-        try {
-            if (!inTransaction) {
-                throw new IllegalStateException("No active transaction to commit");
-            }
-            if (connection.getAutoCommit()) {
-                throw new IllegalStateException("Cannot commit: connection is in auto-commit mode. Did beginTransaction() fail or was autoCommit changed externally?");
-            }
-            connection.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to commit transaction", e);
-        } finally {
-            try {
-                if (!connection.getAutoCommit()) {
-                    connection.setAutoCommit(true);
-                }
-            } catch (SQLException ignore) {}
-            inTransaction = false;
-        }
-    }
 
-    @Override
-    public void rollback() {
-        try {
-            if (!inTransaction) {
-                // Nothing to rollback but ensure autocommit is true
-                if (!connection.getAutoCommit()) {
-                    connection.setAutoCommit(true);
-                }
-                return;
-            }
-            if (connection.getAutoCommit()) {
-                // Unexpected state: can't rollback if auto-commit true, just reset flag
-                inTransaction = false;
-                return;
-            }
-            connection.rollback();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to rollback transaction", e);
-        } finally {
-            try {
-                if (!connection.getAutoCommit()) {
-                    connection.setAutoCommit(true);
-                }
-            } catch (SQLException ignore) {}
-            inTransaction = false;
-        }
-    }
 
     // ---------- UTILITIES ----------
 
@@ -395,9 +316,6 @@ public class EntityManager implements IEntityManager,AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (inTransaction) {
-            rollback();
-        }
         if (connection != null && !connection.isClosed()) {
             connection.close();
         }

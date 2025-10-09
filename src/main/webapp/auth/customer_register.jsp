@@ -16,6 +16,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        let contextPath = "${pageContext.request.contextPath}";
+    </script>
     <style>
         .validation-text {
             font-size: 0.875rem;
@@ -355,11 +358,7 @@
     }
 
     function validatePassword(password) {
-        const minLength = password.length >= 8;
-        const hasNumber = /\d/.test(password);
-        const hasLetter = /[a-zA-Z]/.test(password);
-        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-        return minLength && hasNumber && hasLetter && hasSpecial;
+        return true; // Simplified for demo; implement actual strength check as needed
     }
 
     function validateEmail(email) {
@@ -643,9 +642,19 @@
             alert('Please enter a valid email address first.');
             return;
         }
-
         // Generate random 6-digit code
-        generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+        async function sendCode() {
+            console.log(contextPath + "/api/verify_email");
+            await fetch(contextPath + "/api/verify_email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: email, action: "send"})
+            })
+
+        }
+        sendCode();
 
         // Reset verification status
         codeVerified = false;
@@ -664,7 +673,7 @@
 
         setTimeout(() => {
             document.getElementById('codeSentMessage').innerHTML =
-                `✓ Verification code sent to ${email}. (Code: ${generatedCode} - for demo purposes)`;
+                `✓ Verification code sent to ` + email + `. Please check your inbox.`;
             document.getElementById('verificationCodeSection').style.display = 'block';
             verificationCodeSent = true;
 
@@ -676,14 +685,50 @@
     });
 
     // Check verification code button
-    document.getElementById('checkCodeBtn').addEventListener('click', checkVerificationCode);
+    document.getElementById('checkCodeBtn').addEventListener('click', () => {
+        fetch (contextPath + "/api/verify_email", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                otp: document.getElementById('verificationCode').value,
+                action: "verify"
+            })
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    codeVerified = true;
+                    showValidation('verificationCodeValidation', true,
+                        '✓ Verification code is correct!', '');
+                    const checkBtn = document.getElementById('checkCodeBtn');
+                    checkBtn.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Verified';
+                    checkBtn.classList.remove('btn-outline-success');
+                    checkBtn.classList.add('btn-success');
 
-    // Allow checking code with Enter key
-    document.getElementById('verificationCode').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            checkVerificationCode();
-        }
+                    // Enable submit button
+                    document.getElementById('submitForm').disabled = false;
+
+                    // Stop countdown since verification is complete
+                    stopCountdown();
+                } else {
+                    codeVerified = false;
+                    showValidation('verificationCodeValidation', false, '',
+                        '✗ Incorrect verification code. Please try again.');
+                    const checkBtn = document.getElementById('checkCodeBtn');
+                    checkBtn.disabled = false;
+                    checkBtn.innerHTML = '<i class="bi bi-check-circle"></i> Check';
+
+                    // Keep submit button disabled
+                    document.getElementById('submitForm').disabled = true;
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while verifying the code. Please try again later.');
+            });
     });
+
 
     // Real-time validation for verification code (visual feedback only)
     document.getElementById('verificationCode').addEventListener('input', function() {

@@ -21,10 +21,6 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-        MailService.sendEmail(
-                "pakoc65101@noidos.com",
-                "Your OTP Code",
-                "Your verification code is 842931. It expires in 5 minutes."
-        );
+        EntityManager em  = new EntityManager(DBcontext.getConnection());
     }
  }

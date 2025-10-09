@@ -21,9 +21,7 @@ public class FuntionalityDAO<T> {
 
     //Insert
     public void persist(T entity) {
-        entityManager.beginTransaction();
         entityManager.persist(entity, entityClass);
-        entityManager.commit();
     }
 
     //Select
@@ -32,16 +30,12 @@ public class FuntionalityDAO<T> {
     }
     //Update
     public T merge(T entity) {
-        entityManager.beginTransaction();
         entityManager.merge(entity, entityClass);
-        entityManager.commit();
         return entity;
     }
     //Delete
     public void remove(T entity) {
-        entityManager.beginTransaction();
         entityManager.remove(entity, entityClass);
-        entityManager.commit();
     }
     //Count
     public int count() {
