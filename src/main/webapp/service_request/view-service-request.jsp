@@ -17,23 +17,23 @@
 
     <!-- Contracts -->
     <c:set var="contracts" value="${[
-    {'contractID':'C001'},
-    {'contractID':'C002'},
-    {'contractID':'C003'},
-    {'contractID':'C004'},
-    {'contractID':'C005'}
-]}"/>
+        {'contractID':'C001'},
+        {'contractID':'C002'},
+        {'contractID':'C003'},
+        {'contractID':'C004'},
+        {'contractID':'C005'}
+    ]}"/>
 
     <!-- Requests -->
     <c:set var="requests" value="${[
-    {'requestID':'R-1001', 'contractID':'C001', 'description':'Install new network router for Branch A', 'status':'Pending',  'creationDate':'2025-09-12', 'finishDate': null},
-    {'requestID':'R-1002', 'contractID':'C002', 'description':'Replace faulty server fan and update firmware', 'status':'Approved', 'creationDate':'2025-09-08', 'finishDate': null},
-    {'requestID':'R-1003', 'contractID':'C003', 'description':'Check power stability at data center', 'status':'Rejected', 'creationDate':'2025-09-15', 'finishDate': null},
-    {'requestID':'R-1004', 'contractID':'C004', 'description':'Preventive maintenance for all CCTV systems', 'status':'Finished','creationDate':'2025-08-30', 'finishDate':'2025-09-02'},
-    {'requestID':'R-1005', 'contractID':'C002', 'description':'Upgrade storage capacity for warehouse server', 'status':'Approved', 'creationDate':'2025-09-20', 'finishDate': null},
-    {'requestID':'R-1006', 'contractID':'C003', 'description':'Database backup & restore test', 'status':'Finished', 'creationDate':'2025-07-01', 'finishDate':'2025-07-02'},
-    {'requestID':'R-1007', 'contractID':'C001', 'description':'Replace broken monitor at Office B', 'status':'Pending',  'creationDate':'2025-09-25', 'finishDate': null}
-]}"/>
+        {'requestID':'R-1001', 'contractID':'C001', 'description':'Install new network router for Branch A', 'status':'Pending',  'creationDate':'2025-09-12', 'finishDate': null},
+        {'requestID':'R-1002', 'contractID':'C002', 'description':'Replace faulty server fan and update firmware', 'status':'Approved', 'creationDate':'2025-09-08', 'finishDate': null},
+        {'requestID':'R-1003', 'contractID':'C003', 'description':'Check power stability at data center', 'status':'Rejected', 'creationDate':'2025-09-15', 'finishDate': null},
+        {'requestID':'R-1004', 'contractID':'C004', 'description':'Preventive maintenance for all CCTV systems', 'status':'Finished','creationDate':'2025-08-30', 'finishDate':'2025-09-02'},
+        {'requestID':'R-1005', 'contractID':'C002', 'description':'Upgrade storage capacity for warehouse server', 'status':'Approved', 'creationDate':'2025-09-20', 'finishDate': null},
+        {'requestID':'R-1006', 'contractID':'C003', 'description':'Database backup & restore test', 'status':'Finished', 'creationDate':'2025-07-01', 'finishDate':'2025-07-02'},
+        {'requestID':'R-1007', 'contractID':'C001', 'description':'Replace broken monitor at Office B', 'status':'Pending',  'creationDate':'2025-09-25', 'finishDate': null}
+    ]}"/>
     <!-- Pagination Variables -->
     <%
         request.setAttribute("currentPage", 3);
