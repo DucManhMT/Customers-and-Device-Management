@@ -1,4 +1,4 @@
-package crm.common.validator;
+package crm.core.validator;
 
 public class Validator {
     public final static String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
