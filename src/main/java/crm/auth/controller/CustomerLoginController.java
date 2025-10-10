@@ -20,18 +20,24 @@ public class CustomerLoginController extends HttpServlet {
 
         if (Validator.isValidUsername(username) && Validator.isValidPassword(password)) {
             Account account = LoginService.login(username, password);
-            if (account != null){
+            if (account != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("account", account);
                 response.sendRedirect(request.getContextPath() + "/customer/customer_actioncenter");
-                return; // ✅ stop after redirect
+                return;
+                // ✅ stop after redirect
             } else {
                 request.setAttribute("error", "Invalid username or password.");
-                return; // ✅ stop after forward
+                request.getRequestDispatcher("/auth/customer_login.jsp").forward(request, response);
+                return;
+                // ✅ stop after forward
+            }
+        } else {
             request.setAttribute("error", "Invalid username or password format.");
             request.getRequestDispatcher("/auth/customer_login.jsp").forward(request, response);
-            return; // ✅ stop after forward
+            return;
+            // ✅ stop after forward
+
         }
     }
-
 }

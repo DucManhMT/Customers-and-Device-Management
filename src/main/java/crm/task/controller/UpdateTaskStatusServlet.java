@@ -53,14 +53,11 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
 
             if ("finished".equals(newStatus)) {
-                entityManager.beginTransaction();
                 
                 req.setRequestStatus(RequestStatus.Finished);
                 req.setFinishedDate(LocalDateTime.now());
 
                 entityManager.merge(req, Request.class);
-                
-                entityManager.commit();
                 
                 request.getSession().setAttribute("successMessage", "Task #" + requestId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
@@ -71,7 +68,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             if (entityManager != null) {
                 try {
-                    entityManager.rollback();
+                    entityManager.close();
                 } catch (Exception rollbackException) {
                     rollbackException.printStackTrace();
                 }
@@ -80,7 +77,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
         } catch (Exception e) {
             if (entityManager != null) {
                 try {
-                    entityManager.rollback();
+                    entityManager.close();
                 } catch (Exception rollbackException) {
                     rollbackException.printStackTrace();
                 }
