@@ -1,7 +1,5 @@
 package crm.core.config;
 
-import crm.core.repository.persistence.config.RepositoryConfig;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

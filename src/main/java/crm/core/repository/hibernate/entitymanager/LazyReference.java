@@ -1,9 +1,9 @@
 package crm.core.repository.hibernate.entitymanager;
 
-import crm.core.repository.persistence.config.DBcontext;
-
 import java.sql.Connection;
 import java.util.function.Function;
+
+import crm.core.config.DBcontext;
 
 public class LazyReference<T> {
 

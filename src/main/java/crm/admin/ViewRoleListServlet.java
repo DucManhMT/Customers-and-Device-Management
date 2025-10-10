@@ -2,8 +2,8 @@ package crm.admin;
 
 import crm.common.model.Role;
 import crm.common.model.Account;
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.core.repository.persistence.config.DBcontext;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
