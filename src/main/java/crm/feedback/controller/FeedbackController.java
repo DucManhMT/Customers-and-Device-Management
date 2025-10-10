@@ -106,7 +106,6 @@ public class FeedbackController extends HttpServlet {
         
         req.removeAttribute("errorMessage");
         
-        // Handle pagination for recent feedbacks
         int page = 1;
         int recordsPerPage = 5;
         
@@ -118,7 +117,6 @@ public class FeedbackController extends HttpServlet {
                 recordsPerPage = Integer.parseInt(req.getParameter("recordsPerPage"));
             }
         } catch (NumberFormatException e) {
-            // Use defaults if parsing fails
         }
         
         try {

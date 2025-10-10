@@ -11,6 +11,7 @@ import crm.core.repository.persistence.query.common.Order;
 import crm.core.repository.persistence.query.common.Page;
 import crm.core.repository.persistence.query.common.PageRequest;
 import crm.core.repository.persistence.query.common.Sort;
+import crm.core.utils.KeyGenerator;
 
 public class FeedbackService {
 
@@ -18,6 +19,7 @@ public class FeedbackService {
         LocalDateTime currentTimestamp = LocalDateTime.now();
 
         Feedback feedback = new Feedback();
+        feedback.setFeedbackID((int) KeyGenerator.nextId());
         feedback.setContent(content);
         feedback.setRating(rating);
         feedback.setResponse(response != null ? response.trim() : null);

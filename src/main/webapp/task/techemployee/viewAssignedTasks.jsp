@@ -178,7 +178,7 @@
                     </div>
                 </div>
                 <div class="task-footer">
-                    <a href="#" class="link">View details</a>
+                    <a href="${pageContext.request.contextPath}/task/detail?id=<%=req.getRequestID()%>" class="link">View details</a>
                     <% if (RequestStatus.Finished.equals(req.getRequestStatus())) { %>
                         <button class="btn btn-secondary btn-sm finish-btn" disabled>
                             <i class="fas fa-check"></i> Finished

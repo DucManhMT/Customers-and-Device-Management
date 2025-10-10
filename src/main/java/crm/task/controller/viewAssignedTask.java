@@ -100,7 +100,7 @@ public class viewAssignedTask extends HttpServlet {
             //     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in");
             //     return;
             // }
-            String username = "tech01";
+            String username = "technician01";
             String statusFilter = (String) request.getAttribute("statusFilter");
             String sortBy = (String) request.getAttribute("sortBy");
             String fromDate = (String) request.getAttribute("fromDate");

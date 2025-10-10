@@ -94,8 +94,8 @@
                         <a href="../requests/detail?requestId=${request.requestID}" class="btn btn-info btn-sm">View</a>
                         <a href="../requests/detail?requestId=${request.requestID}"
                            class="btn btn-primary btn-sm">Timeline</a>
-                        <a href="../requests/detail?requestId=${request.requestID}"
-                           class="btn btn-primary btn-sm">Feedback</a>
+                        <a href="../feedback/create?requestId=${request.requestID}"
+                           class="btn btn-success btn-sm">Feedback</a>
                     </td>
                 </tr>
             </c:forEach>
