@@ -96,10 +96,13 @@
                         <a href="EditRole?id=${role.roleID}" class="btn btn-sm btn-primary me-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <a href="DeleteRole?id=${role.roleID}" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this role?');">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
+                        <form action="ViewRoleList" method="post" style="display:inline;">
+                            <input type="hidden" name="action" value="delete"/>
+                            <input type="hidden" name="id" value="${role.roleID}"/>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this role?');">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </form>
                     </td>
                 </tr>
             </c:forEach>
@@ -110,7 +113,7 @@
     <!-- Pagination -->
     <form method="get" action="ViewRoleList">
         <input type="hidden" name="search" value="${search}" />
-        <div class="d-flex align-items-center">
+        <div class="mt-4 d-flex align-items-center">
             <span class="me-3">Show:</span>
             <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
                     onchange="this.form.submit()">

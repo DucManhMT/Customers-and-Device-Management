@@ -176,7 +176,7 @@
                   </div>
                   <br>
                   <a id="downloadContractBtn" class="btn btn-success mt-3" href="#" download style="display:none;">
-                      <i class="bi bi-download"></i> Dowload Contract
+                      <i class="bi bi-download"></i> Download Contract
                   </a>
               </div>
           </div>

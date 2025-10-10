@@ -4,12 +4,10 @@ function viewDetails(contractId) {
     let noImageNotice = document.getElementById("noImageNotice");
     let downloadBtn = document.getElementById("downloadContractBtn");
 
-    // Ẩn mọi thứ trước khi kiểm tra
     contractImage.style.display = "none";
     noImageNotice.style.display = "none";
     downloadBtn.style.display = "none";
 
-    // Tạo ảnh tạm để kiểm tra tồn tại hay không
     const testImg = new Image();
     testImg.onload = function() {
         contractImage.src = imagePath;

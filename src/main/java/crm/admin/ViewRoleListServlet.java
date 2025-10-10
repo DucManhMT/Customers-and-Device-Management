@@ -83,6 +83,24 @@ public class ViewRoleListServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("delete".equals(action)) {
+            String roleIdParam = request.getParameter("id");
+            if (roleIdParam != null) {
+                try {
+                    int roleId = Integer.parseInt(roleIdParam);
+                    EntityManager em = new EntityManager(DBcontext.getConnection());
+                    Role roleToDelete = em.find(Role.class, roleId);
+                    if (roleToDelete != null) {
+                        em.remove(roleToDelete, Role.class);
+                    }
+                } catch (Exception e) {
+                    request.setAttribute("deleteError", "Không thể xóa role này!");
+                }
+            }
+            response.sendRedirect("ViewRoleList");
+            return;
+        }
         doGet(request, response);
     }
 }
