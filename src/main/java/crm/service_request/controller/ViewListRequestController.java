@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import crm.common.model.Request;
-import crm.core.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

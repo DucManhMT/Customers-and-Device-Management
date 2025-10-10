@@ -41,12 +41,5 @@ public interface IEntityManager {
     <T> void remove(T entity, Class<T> entityClass);
 
 
-
-    // Transaction handling
-    void beginTransaction();
-    void commit();
-    void rollback();
-    // Query execution
-
 }
 

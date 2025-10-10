@@ -74,4 +74,17 @@ public class Product {
     public void setProductSpecifications(List<ProductSpecification> productSpecifications) {
         this.productSpecifications = productSpecifications;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Product)) return false;
+        Product product = (Product) obj;
+        return productID == product.productID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(productID);
+    }
 }

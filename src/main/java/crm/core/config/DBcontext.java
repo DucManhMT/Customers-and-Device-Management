@@ -3,7 +3,11 @@ package crm.core.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import crm.core.config.RepositoryConfig;
 
+/**
+ * DBcontext class to manage database connections.
+ */
 public class DBcontext {
     private static Connection connection;
 

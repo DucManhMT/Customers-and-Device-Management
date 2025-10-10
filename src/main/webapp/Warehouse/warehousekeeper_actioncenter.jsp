@@ -1,16 +1,16 @@
 <%--
   Created by IntelliJ IDEA.
-  User: Admin
-  Date: 10/3/2025
-  Time: 9:45 AM
+  User: MasterLong
+  Date: 10/10/2025
+  Time: 7:49 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>View Product Request</title>
+    <title>Title</title>
 </head>
 <body>
-
+    <p>THIS IS WAREHOUSEKEEPER</p>
 </body>
 </html>
