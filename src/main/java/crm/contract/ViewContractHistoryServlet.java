@@ -1,8 +1,8 @@
 package crm.contract;
 
 import crm.common.model.Contract;
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.core.repository.persistence.config.DBcontext;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
