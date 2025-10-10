@@ -16,9 +16,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <script>
-        let contextPath = "${pageContext.request.contextPath}";
-    </script>
     <style>
         .validation-text {
             font-size: 0.875rem;
@@ -87,29 +84,6 @@
             font-size: 0.9rem;
             margin-top: 10px;
         }
-        .verification-code-container {
-            position: relative;
-        }
-        .countdown-timer {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-        .countdown-active {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        .input-group-verification {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-        .verification-code-input {
-            flex: 1;
-        }
-        .check-code-btn {
-            min-width: 80px;
-        }
     </style>
 </head>
 <body>
@@ -158,7 +132,7 @@
 
                 <div class="navigation-buttons">
                     <div></div>
-                    <button type="button" class="btn btn-primary btn-nav" id="nextStep1">
+                    <button type="button" class="btn btn-primary btn-nav" onclick="nextStep(2)">
                         Next <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
@@ -190,10 +164,10 @@
                 </div>
 
                 <div class="navigation-buttons">
-                    <button type="button" class="btn btn-outline-secondary btn-nav" id="prevStep2">
+                    <button type="button" class="btn btn-outline-secondary btn-nav" onclick="showStep(1)">
                         <i class="bi bi-arrow-left"></i> Previous
                     </button>
-                    <button type="button" class="btn btn-primary btn-nav" id="nextStep2">
+                    <button type="button" class="btn btn-primary btn-nav" onclick="nextStep(3)">
                         Next <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
@@ -245,10 +219,10 @@
                 </div>
 
                 <div class="navigation-buttons">
-                    <button type="button" class="btn btn-outline-secondary btn-nav" id="prevStep3">
+                    <button type="button" class="btn btn-outline-secondary btn-nav" onclick="showStep(2)">
                         <i class="bi bi-arrow-left"></i> Previous
                     </button>
-                    <button type="button" class="btn btn-primary btn-nav" id="nextStep3">
+                    <button type="button" class="btn btn-primary btn-nav" onclick="nextStep(4)">
                         Next <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
@@ -276,28 +250,20 @@
                             <i class="bi bi-envelope"></i> Send Verification Code
                         </button>
                         <div id="codeSentMessage" class="code-sent-message"></div>
-                        <div id="countdownTimer" class="countdown-timer"></div>
                     </div>
 
                     <div class="mb-3" id="verificationCodeSection" style="display: none;">
                         <label for="verificationCode" class="form-label">Verification Code</label>
-                        <div class="input-group-verification">
-                            <div class="verification-code-input">
-                                <input type="text" class="form-control" id="verificationCode" placeholder="Enter the 6-digit code" maxlength="6">
-                            </div>
-                            <button type="button" class="btn btn-outline-success check-code-btn" id="checkCodeBtn">
-                                <i class="bi bi-check-circle"></i> Check
-                            </button>
-                        </div>
+                        <input type="text" class="form-control" id="verificationCode" placeholder="Enter the 6-digit code" maxlength="6">
                         <div id="verificationCodeValidation" class="validation-text"></div>
                     </div>
                 </div>
 
                 <div class="navigation-buttons">
-                    <button type="button" class="btn btn-outline-secondary btn-nav" id="prevStep4">
+                    <button type="button" class="btn btn-outline-secondary btn-nav" onclick="showStep(3)">
                         <i class="bi bi-arrow-left"></i> Previous
                     </button>
-                    <button type="submit" class="btn btn-success btn-nav" id="submitForm" disabled>
+                    <button type="submit" class="btn btn-success btn-nav" id="submitForm">
                         <i class="bi bi-check-circle"></i> Complete Registration
                     </button>
                 </div>
@@ -320,9 +286,6 @@
     let currentStepNumber = 1;
     let verificationCodeSent = false;
     let generatedCode = '';
-    let codeVerified = false;
-    let countdownTimer = null;
-    let countdownSeconds = 0;
 
     // Location data (simplified)
     const locationData = {
@@ -358,7 +321,11 @@
     }
 
     function validatePassword(password) {
-        return true; // Simplified for demo; implement actual strength check as needed
+        const minLength = password.length >= 8;
+        const hasNumber = /\d/.test(password);
+        const hasLetter = /[a-zA-Z]/.test(password);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        return minLength && hasNumber && hasLetter && hasSpecial;
     }
 
     function validateEmail(email) {
@@ -388,32 +355,49 @@
         }
     }
 
-    // Step navigation functions
+    // Fixed Step navigation functions with error checking
     function showStep(stepNumber) {
+        console.log('Attempting to show step:', stepNumber);
+
         // Hide all steps
         for (let i = 1; i <= 4; i++) {
-            const stepEl = document.getElementById(`step`+ i );
-            if (stepEl) {
-                stepEl.classList.remove('active');
+            const stepElement = document.getElementById(`step` + i);
+            if (stepElement) {
+                stepElement.classList.remove('active');
+            } else {
+                console.warn(`Step element 'step${i}' not found`);
             }
         }
 
         // Show current step
-        const currentStepEl = document.getElementById(`step` + stepNumber);
-        if (currentStepEl) {
-            currentStepEl.classList.add('active');
+        const currentStepElement = document.getElementById(`step`+ stepNumber);
+        if (currentStepElement) {
+            currentStepElement.classList.add('active');
+            // Update progress
+            updateProgress(stepNumber);
+            currentStepNumber = stepNumber;
+        } else {
+            console.error(`Step element 'step${stepNumber}' not found`);
         }
+    }
 
-        // Update progress
-        updateProgress(stepNumber);
-        currentStepNumber = stepNumber;
+    function nextStep(stepNumber) {
+        if (validateStep(currentStepNumber)) {
+            showStep(stepNumber);
+        } else {
+            alert('Please fill all fields correctly before proceeding.');
+        }
     }
 
     function updateProgress(stepNumber) {
         const progress = (stepNumber / 4) * 100;
-        document.getElementById('progressBar').style.width = progress + '%';
-        document.getElementById('currentStep').textContent = stepNumber;
-        document.getElementById('progressPercent').textContent = progress;
+        const progressBar = document.getElementById('progressBar');
+        const currentStepSpan = document.getElementById('currentStep');
+        const progressPercentSpan = document.getElementById('progressPercent');
+
+        if (progressBar) progressBar.style.width = progress + '%';
+        if (currentStepSpan) currentStepSpan.textContent = stepNumber;
+        if (progressPercentSpan) progressPercentSpan.textContent = progress;
     }
 
     function validateStep(stepNumber) {
@@ -439,80 +423,10 @@
 
             case 4:
                 const email = document.getElementById('email').value;
-                return validateEmail(email) && verificationCodeSent && codeVerified;
+                const code = document.getElementById('verificationCode').value;
+                return validateEmail(email) && verificationCodeSent && validateVerificationCode(code) && code === generatedCode;
         }
         return false;
-    }
-
-    // Countdown timer functions
-    function startCountdown(seconds) {
-        countdownSeconds = seconds;
-        const timerElement = document.getElementById('countdownTimer');
-        const sendBtn = document.getElementById('sendCodeBtn');
-
-        countdownTimer = setInterval(() => {
-            if (countdownSeconds > 0) {
-                const secs = countdownSeconds;
-                timerElement.innerHTML = `<span class="countdown-active">Resend code in: `+ secs.toString().padStart(2, '0') + `</span>`;
-                sendBtn.disabled = true;
-                countdownSeconds--;
-            } else {
-                clearInterval(countdownTimer);
-                timerElement.innerHTML = '<span class="text-success">You can now resend the code</span>';
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Resend Code';
-            }
-        }, 1000);
-    }
-
-    function stopCountdown() {
-        if (countdownTimer) {
-            clearInterval(countdownTimer);
-            countdownTimer = null;
-        }
-        document.getElementById('countdownTimer').innerHTML = '';
-    }
-
-    // Check verification code function
-    function checkVerificationCode() {
-        const enteredCode = document.getElementById('verificationCode').value;
-        const checkBtn = document.getElementById('checkCodeBtn');
-
-        if (!validateVerificationCode(enteredCode)) {
-            showValidation('verificationCodeValidation', false, '',
-                '✗ Please enter a valid 6-digit verification code');
-            return;
-        }
-
-        // Simulate checking code (you can replace this with actual server verification)
-        checkBtn.disabled = true;
-        checkBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Checking...';
-
-        setTimeout(() => {
-            if (enteredCode === generatedCode) {
-                codeVerified = true;
-                showValidation('verificationCodeValidation', true,
-                    '✓ Verification code is correct!', '');
-                checkBtn.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Verified';
-                checkBtn.classList.remove('btn-outline-success');
-                checkBtn.classList.add('btn-success');
-
-                // Enable submit button
-                document.getElementById('submitForm').disabled = false;
-
-                // Stop countdown since verification is complete
-                stopCountdown();
-            } else {
-                codeVerified = false;
-                showValidation('verificationCodeValidation', false, '',
-                    '✗ Incorrect verification code. Please try again.');
-                checkBtn.disabled = false;
-                checkBtn.innerHTML = '<i class="bi bi-check-circle"></i> Check';
-
-                // Keep submit button disabled
-                document.getElementById('submitForm').disabled = true;
-            }
-        }, 1500);
     }
 
     // Real-time validation for Step 1
@@ -642,30 +556,9 @@
             alert('Please enter a valid email address first.');
             return;
         }
+
         // Generate random 6-digit code
-        async function sendCode() {
-            console.log(contextPath + "/api/verify_email");
-            await fetch(contextPath + "/api/verify_email", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email: email, action: "send"})
-            })
-
-        }
-        sendCode();
-
-        // Reset verification status
-        codeVerified = false;
-        document.getElementById('submitForm').disabled = true;
-
-        // Reset check button
-        const checkBtn = document.getElementById('checkCodeBtn');
-        checkBtn.disabled = false;
-        checkBtn.innerHTML = '<i class="bi bi-check-circle"></i> Check';
-        checkBtn.classList.remove('btn-success');
-        checkBtn.classList.add('btn-outline-success');
+        generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         // Simulate sending code
         this.disabled = true;
@@ -673,119 +566,20 @@
 
         setTimeout(() => {
             document.getElementById('codeSentMessage').innerHTML =
-                `✓ Verification code sent to ` + email + `. Please check your inbox.`;
+                `✓ Verification code sent to ${email}. (Code: ${generatedCode} - for demo purposes)`;
             document.getElementById('verificationCodeSection').style.display = 'block';
             verificationCodeSent = true;
 
-            // Start 30s countdown
-            startCountdown(30);
-
+            this.disabled = false;
             this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Resend Code';
         }, 2000);
     });
 
-    // Check verification code button
-    document.getElementById('checkCodeBtn').addEventListener('click', () => {
-        fetch (contextPath + "/api/verify_email", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: document.getElementById('email').value,
-                otp: document.getElementById('verificationCode').value,
-                action: "verify"
-            })
-        }).then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    codeVerified = true;
-                    showValidation('verificationCodeValidation', true,
-                        '✓ Verification code is correct!', '');
-                    const checkBtn = document.getElementById('checkCodeBtn');
-                    checkBtn.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Verified';
-                    checkBtn.classList.remove('btn-outline-success');
-                    checkBtn.classList.add('btn-success');
-
-                    // Enable submit button
-                    document.getElementById('submitForm').disabled = false;
-
-                    // Stop countdown since verification is complete
-                    stopCountdown();
-                } else {
-                    codeVerified = false;
-                    showValidation('verificationCodeValidation', false, '',
-                        '✗ Incorrect verification code. Please try again.');
-                    const checkBtn = document.getElementById('checkCodeBtn');
-                    checkBtn.disabled = false;
-                    checkBtn.innerHTML = '<i class="bi bi-check-circle"></i> Check';
-
-                    // Keep submit button disabled
-                    document.getElementById('submitForm').disabled = true;
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while verifying the code. Please try again later.');
-            });
-    });
-
-
-    // Real-time validation for verification code (visual feedback only)
     document.getElementById('verificationCode').addEventListener('input', function() {
-        if (codeVerified) {
-            // Reset verification status when user changes the code
-            codeVerified = false;
-            document.getElementById('submitForm').disabled = true;
-            const checkBtn = document.getElementById('checkCodeBtn');
-            checkBtn.disabled = false;
-            checkBtn.innerHTML = '<i class="bi bi-check-circle"></i> Check';
-            checkBtn.classList.remove('btn-success');
-            checkBtn.classList.add('btn-outline-success');
-        }
-
-        const isValidFormat = validateVerificationCode(this.value);
-        if (this.value.length > 0) {
-            showValidation('verificationCodeValidation', isValidFormat,
-                '✓ Code format is valid - click Check to verify',
-                '✗ Please enter a valid 6-digit verification code');
-        }
-    });
-
-    // Navigation event listeners
-    document.getElementById('nextStep1').addEventListener('click', function() {
-        if (validateStep(1)) {
-            showStep(2);
-        } else {
-            alert('Please fill all fields correctly before proceeding.');
-        }
-    });
-
-    document.getElementById('nextStep2').addEventListener('click', function() {
-        if (validateStep(2)) {
-            showStep(3);
-        } else {
-            alert('Please fill all fields correctly before proceeding.');
-        }
-    });
-
-    document.getElementById('nextStep3').addEventListener('click', function() {
-        if (validateStep(3)) {
-            showStep(4);
-        } else {
-            alert('Please fill all fields correctly before proceeding.');
-        }
-    });
-
-    document.getElementById('prevStep2').addEventListener('click', function() {
-        showStep(1);
-    });
-
-    document.getElementById('prevStep3').addEventListener('click', function() {
-        showStep(2);
-    });
-
-    document.getElementById('prevStep4').addEventListener('click', function() {
-        showStep(3);
+        const isValid = validateVerificationCode(this.value) && this.value === generatedCode;
+        showValidation('verificationCodeValidation', isValid,
+            '✓ Verification code is correct!',
+            '✗ Please enter the correct 6-digit verification code');
     });
 
     // Form submission

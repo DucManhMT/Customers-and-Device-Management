@@ -3,6 +3,7 @@ package crm.admin;
 import crm.common.model.Role;
 import crm.common.model.Account;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.repository.persistence.config.DBcontext;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -10,8 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import crm.core.config.DBcontext;
 
 @WebServlet(urlPatterns = "/ViewRoleList")
 public class ViewRoleListServlet extends HttpServlet {

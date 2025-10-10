@@ -1,7 +1,6 @@
 package crm.service_request.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import crm.common.model.Request;
 import crm.service_request.repository.persistence.query.common.Page;

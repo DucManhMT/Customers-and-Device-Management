@@ -1,20 +1,20 @@
-package crm.core.config;
-
-import crm.core.repository.persistence.config.RepositoryConfig;
+package crm.core.repository.persistence.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
-/**
- * DBcontext class to manage database connections.
- */
 public class DBcontext {
     private static Connection connection;
 
     /**
      * Get a connection, create one if it doesn't exist or is closed
-     *
+     * 
      * @return Connection use for readonly operations
      */
     public static Connection getConnection() {
@@ -40,7 +40,7 @@ public class DBcontext {
 
     /**
      * Create a new database connection using the configuration parameters.
-     *
+     * 
      * @return a new Connection object use for transactional operations
      * @throws SQLException if a database access error occurs
      */
@@ -56,4 +56,6 @@ public class DBcontext {
         Connection conn = DriverManager.getConnection(url, user, password);
         return conn;
     }
+
+
 }
