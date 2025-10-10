@@ -6,9 +6,6 @@ import java.util.List;
 
 import crm.common.model.Account;
 import crm.common.model.Contract;
-import crm.common.model.Request;
-import crm.core.repository.persistence.config.TransactionManager;
-import crm.core.repository.persistence.repository.SimpleRepository;
 import crm.service_request.repository.ContractRepository;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
@@ -17,14 +14,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "RequestCreationController", urlPatterns = {"/customer/requests/create"})
+@WebServlet(name = "RequestCreationController", urlPatterns = { "/customer/requests/create" })
 public class RequestCreationController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         RequestService requestService = new RequestService();
-        ContractRepository contractRepo = new ContractRepository();
 
         try {
             String description = req.getParameter("description");

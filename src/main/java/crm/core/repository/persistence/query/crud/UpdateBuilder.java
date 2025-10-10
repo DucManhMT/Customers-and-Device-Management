@@ -3,7 +3,7 @@ package crm.core.repository.persistence.query.crud;
 import java.util.ArrayList;
 import java.util.List;
 
-import crm.core.repository.persistence.config.RepositoryConfig;
+import crm.core.config.RepositoryConfig;
 import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 public class UpdateBuilder<E> extends AbstractQueryBuilder {

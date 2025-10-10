@@ -2,7 +2,7 @@ package crm.core.repository.persistence.query.crud;
 
 import java.util.List;
 
-import crm.core.repository.persistence.config.RepositoryConfig;
+import crm.core.config.RepositoryConfig;
 import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 public class DeleteBuilder<E> extends AbstractQueryBuilder {
@@ -17,37 +17,12 @@ public class DeleteBuilder<E> extends AbstractQueryBuilder {
         return new DeleteBuilder<E>(tableName);
     }
 
-    /**
-     * Adds a WHERE clause to the DELETE query.
-     * <p>
-     * Example:
-     * 
-     * <pre>
-     * DeleteBuilder builder = DeleteBuilder.builder("users")
-     *         .where("id = ?", 1);
-     * String sql = builder.build();
-     * System.out.println(sql);
-     * // Output: DELETE FROM users WHERE id = ?
-     * </pre>
-     * </p>
-     * 
-     * @param whereClause the WHERE clause (e.g., "id = ?")
-     * @param values      the values to be set in the WHERE clause
-     * @return the current DeleteBuilder instance for method chaining
-     */
     public DeleteBuilder<E> where(String whereClause, Object... values) {
         this.whereClause = whereClause;
         this.getParameters().addAll(List.of(values));
         return this;
     }
 
-    /**
-     * Creates the SQL DELETE query string based on the provided table name and
-     * optional WHERE clause.
-     * 
-     * @return the constructed SQL DELETE query string
-     * @throws IllegalStateException if the table name is not provided
-     */
     @Override
     public String createQuery() {
         if (tableName == null || tableName.isEmpty()) {
@@ -60,13 +35,6 @@ public class DeleteBuilder<E> extends AbstractQueryBuilder {
         return query.toString();
     }
 
-    /**
-     * Builds the SQL DELETE query string.
-     * 
-     * @param isPrintSql if true, prints the generated SQL query to the console
-     * @return the constructed SQL DELETE query string
-     * 
-     */
     @Override
     public String build(boolean isPrintSql) {
         String query = createQuery();
@@ -76,11 +44,6 @@ public class DeleteBuilder<E> extends AbstractQueryBuilder {
         return query;
     }
 
-    /**
-     * Builds the SQL DELETE query string.
-     * 
-     * @return the constructed SQL DELETE query string
-     */
     @Override
     public String build() {
         String query = createQuery();

@@ -5,25 +5,7 @@ import java.util.List;
 
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 
-/**
- * Generic CRUD repository interface for managing entities in a database.
- * <p>
- * This interface defines the standard operations for Create, Read, Update,
- * and Delete (CRUD) functionalities on entities of type E with primary key of
- * type K.
- * </p>
- * 
- * @param <E> the type of the entity
- * @param <K> the type of the primary key
- * 
- * @author Kepter
- * @author Nguyen Anh Tu
- * @since 1.0
- * 
- */
 public interface CrudRepository<E, K> {
-
-    // Cấm thằng nào yêu cầu làm UpdateWithCondition
 
     E save(E entity) throws SQLException;
 

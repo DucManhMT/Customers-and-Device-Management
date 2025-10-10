@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import crm.core.config.TransactionManager;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
-import crm.core.repository.persistence.config.TransactionManager;
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 import crm.core.repository.persistence.query.common.Page;
 import crm.core.repository.persistence.query.common.PageRequest;

@@ -3,12 +3,11 @@ package crm.service_request.service;
 import java.sql.SQLException;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import crm.common.model.Contract;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
-import crm.core.repository.persistence.config.TransactionManager;
+import crm.core.config.TransactionManager;
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 import crm.core.repository.persistence.query.common.Order;
 import crm.core.repository.persistence.query.common.Page;
@@ -42,8 +41,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
-                                     String status, int contractId,
-                                     int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         RequestRepository requestRepository = new RequestRepository();
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
@@ -77,8 +76,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
-                                              String status, int contractId,
-                                              int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         RequestRepository requestRepository = new RequestRepository();
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {

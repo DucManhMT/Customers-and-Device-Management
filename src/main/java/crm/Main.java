@@ -7,7 +7,7 @@ import crm.auth.service.Hasher;
 import crm.auth.service.LoginService;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
-import crm.core.repository.persistence.config.TransactionManager;
+import crm.core.config.TransactionManager;
 import crm.core.repository.persistence.query.clause.ClauseBuilder;
 import crm.core.repository.persistence.query.common.PageRequest;
 import crm.customer.repository.CustomerRepository;

@@ -1,7 +1,5 @@
 package crm.core.config;
 
-import crm.core.repository.persistence.config.RepositoryConfig;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -42,9 +40,9 @@ public class DBcontext {
      * @throws SQLException if a database access error occurs
      */
     public static Connection createConnection() throws SQLException {
-        String url = crm.core.repository.persistence.config.RepositoryConfig.DB_URL;
-        String user = crm.core.repository.persistence.config.RepositoryConfig.USER;
-        String password = crm.core.repository.persistence.config.RepositoryConfig.PASSWORD;
+        String url = RepositoryConfig.DB_URL;
+        String user = RepositoryConfig.USER;
+        String password = RepositoryConfig.PASSWORD;
         try {
             Class.forName(RepositoryConfig.DRIVER);
         } catch (ClassNotFoundException e) {
@@ -54,4 +52,3 @@ public class DBcontext {
         return conn;
     }
 }
-
