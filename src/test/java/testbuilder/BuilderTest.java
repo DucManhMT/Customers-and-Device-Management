@@ -3,6 +3,7 @@ package testbuilder;
 import crm.auth.service.Hasher;
 import crm.auth.service.LoginService;
 import crm.common.model.Account;
+import crm.common.model.Contract;
 import crm.common.model.Feedback;
 import crm.common.model.Request;
 import crm.common.model.Role;
