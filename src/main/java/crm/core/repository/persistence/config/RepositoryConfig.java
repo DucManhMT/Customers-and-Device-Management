@@ -1,5 +1,6 @@
-package crm.core.config;
+package crm.core.repository.persistence.config;
 
+import crm.core.config.PropertyLoader;
 
 /**
  * Repository configuration loaded from application.properties

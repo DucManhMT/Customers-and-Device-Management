@@ -1,8 +1,10 @@
 package crm.auth.controller;
 
+import crm.auth.service.Hasher;
 import crm.auth.service.LoginService;
 import crm.common.model.Account;
-import crm.core.validator.Validator;
+import crm.common.repository.account.AccountDAO;
+import crm.common.validator.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -23,7 +25,7 @@ public class CustomerLoginController extends HttpServlet {
             if (account != null){
                 HttpSession session = request.getSession();
                 session.setAttribute("account", account);
-                response.sendRedirect(request.getContextPath() + "/customer/customer_actioncenter");
+                response.sendRedirect(request.getContextPath() + "/customer/customer_dashboard");
                 return; // ✅ stop after redirect
             } else {
                 request.setAttribute("error", "Invalid username or password.");
