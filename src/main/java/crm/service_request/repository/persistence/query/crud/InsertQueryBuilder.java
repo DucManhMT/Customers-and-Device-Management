@@ -2,7 +2,6 @@ package crm.service_request.repository.persistence.query.crud;
 
 import java.util.List;
 import crm.core.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
 public class InsertQueryBuilder<E> extends AbstractQueryBuilder {
 

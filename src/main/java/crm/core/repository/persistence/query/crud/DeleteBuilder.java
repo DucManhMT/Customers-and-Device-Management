@@ -3,7 +3,7 @@ package crm.core.repository.persistence.query.crud;
 import java.util.List;
 
 import crm.core.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
+import crm.service_request.repository.persistence.query.crud.AbstractQueryBuilder;
 
 public class DeleteBuilder<E> extends AbstractQueryBuilder {
 

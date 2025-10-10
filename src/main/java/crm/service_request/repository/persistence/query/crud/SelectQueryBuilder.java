@@ -3,9 +3,8 @@ package crm.service_request.repository.persistence.query.crud;
 import java.util.ArrayList;
 import java.util.List;
 import crm.core.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
-import crm.core.repository.persistence.query.common.Order;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.Order;
 
 public class SelectQueryBuilder<E> extends AbstractQueryBuilder {
 

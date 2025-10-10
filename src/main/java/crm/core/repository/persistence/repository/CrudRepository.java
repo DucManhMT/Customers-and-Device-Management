@@ -1,6 +1,5 @@
 package crm.core.repository.persistence.repository;
-
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 
 import java.sql.SQLException;
 
