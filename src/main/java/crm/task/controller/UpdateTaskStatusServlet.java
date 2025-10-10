@@ -17,54 +17,74 @@ import java.time.LocalDateTime;
 
 @WebServlet("/task/updateStatus")
 public class UpdateTaskStatusServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String requestIdStr = request.getParameter("requestId");
         String newStatus = request.getParameter("status");
-        
+
         if (requestIdStr == null || newStatus == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
             return;
         }
-        
+
         Connection connection = null;
+        EntityManager entityManager = null;
+        
         try {
             int requestId = Integer.parseInt(requestIdStr);
             connection = DBcontext.getConnection();
-            EntityManager entityManager = new EntityManager(connection);
+            entityManager = new EntityManager(connection);
             
             Request req = entityManager.find(Request.class, requestId);
             if (req == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
                 return;
             }
-            
+
             if (RequestStatus.Finished.equals(req.getRequestStatus())) {
                 request.getSession().setAttribute("errorMessage", "Task is already finished");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
                 return;
             }
-            
+
             if ("finished".equals(newStatus)) {
+                entityManager.beginTransaction();
+                
                 req.setRequestStatus(RequestStatus.Finished);
                 req.setFinishedDate(LocalDateTime.now());
-                
+
                 entityManager.merge(req, Request.class);
+                
+                entityManager.commit();
                 
                 request.getSession().setAttribute("successMessage", "Task #" + requestId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
             }
-            
+
         } catch (NumberFormatException e) {
+            if (entityManager != null) {
+                try {
+                    entityManager.rollback();
+                } catch (Exception rollbackException) {
+                    rollbackException.printStackTrace();
+                }
+            }
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID");
         } catch (Exception e) {
+            if (entityManager != null) {
+                try {
+                    entityManager.rollback();
+                } catch (Exception rollbackException) {
+                    rollbackException.printStackTrace();
+                }
+            }
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
         } finally {

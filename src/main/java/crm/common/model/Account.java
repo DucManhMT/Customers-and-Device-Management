@@ -4,7 +4,6 @@ import crm.common.model.enums.AccountStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-
 @Entity(tableName = "Account")
 public class Account {
     @Key
@@ -59,6 +58,7 @@ public class Account {
     public void setRole(Role role) {
         this.role = new LazyReference<>(Role.class, role.getRoleID());
     }
+
     public Role getRole() {
         return role.get();
     }

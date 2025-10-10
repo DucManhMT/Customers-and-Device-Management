@@ -54,9 +54,10 @@ public class EntityFieldMapper {
             OneToOne ann = field.getAnnotation(OneToOne.class);
             return ann.joinColumn(); // có attribute joinColumn trong annotation
         }
-
-        throw new RuntimeException("Field " + field.getName() + " has no @Column annotation");
+        System.out.println(field.getName());
+        return null;
     }
+
     public static String getTableName(Class<?> clazz) {
         if (clazz.isAnnotationPresent(Entity.class)) {
             return clazz.getAnnotation(Entity.class).tableName();
@@ -118,7 +119,7 @@ public class EntityFieldMapper {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
             }
-            //Nếu là OneToOne, tạo LazyReference
+            // Nếu là OneToOne, tạo LazyReference
             if (isOneToOne(field) && value != null) {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
@@ -128,8 +129,9 @@ public class EntityFieldMapper {
 
             return value;
         } catch (Exception e) {
-            throw new RuntimeException("Cannot extract value from ResultSet for field " + field.getName(), e);
+            e.printStackTrace();
         }
+        return null;
     }
 
     // Ánh xạ ResultSet thành entity
@@ -139,7 +141,6 @@ public class EntityFieldMapper {
 
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-
 
                 if (isColumn(field)) {
                     Object value = extractValueFromResultSet(field, rs);
@@ -163,11 +164,12 @@ public class EntityFieldMapper {
 
             return entity;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to map entity " + clazz.getSimpleName(), e);
+            e.printStackTrace();
         }
+        return null;
     }
 
-// Lấy kiểu generic của LazyReference<Role> -> Role
+    // Lấy kiểu generic của LazyReference<Role> -> Role
     private static Class<?> getGenericType(Field field) {
         try {
             // field type is LazyReference<Role>, so extract Role
@@ -192,7 +194,7 @@ public class EntityFieldMapper {
         Class<?> clazz = entity.getClass();
         List<Object> result = new ArrayList<>();
         for (Field field : clazz.getDeclaredFields()) {
-            try{
+            try {
                 if (isOneToMany(field)) {
                     OneToMany ann = field.getAnnotation(OneToMany.class);
                     String mappedBy = ann.mappedBy();
@@ -251,6 +253,7 @@ public class EntityFieldMapper {
             throw new RuntimeException("Failed to map entity to columns and values", e);
         }
     }
+
     private <T> List<T> executeQuery(SqlAndParamsDTO sqlAndParamsDTO, Class<T> resultClass) {
         // Thực thi truy vấn SQL với tham số và trả về ResultSet
         EntityManager em = new EntityManager(DBcontext.getConnection());

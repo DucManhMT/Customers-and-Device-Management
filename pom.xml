@@ -6,7 +6,7 @@
     <version>1.0</version>
     <packaging>war</packaging>
     <name>CRM-1.0</name>
-    
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -50,9 +50,8 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>3.0.1</version>
         </dependency>
-
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -70,7 +69,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version> 
+                <version>3.3.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

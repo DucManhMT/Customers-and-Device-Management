@@ -27,11 +27,7 @@ public class CustomerLoginController extends HttpServlet {
                 return; // ✅ stop after redirect
             } else {
                 request.setAttribute("error", "Invalid username or password.");
-                request.getRequestDispatcher("/auth/customer_login.jsp").forward(request, response);
                 return; // ✅ stop after forward
-            }
-
-        } else {
             request.setAttribute("error", "Invalid username or password format.");
             request.getRequestDispatcher("/auth/customer_login.jsp").forward(request, response);
             return; // ✅ stop after forward
