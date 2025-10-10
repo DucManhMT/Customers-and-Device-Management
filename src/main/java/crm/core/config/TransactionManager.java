@@ -1,5 +1,7 @@
 package crm.core.config;
 
+import crm.core.config.DBcontext;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
