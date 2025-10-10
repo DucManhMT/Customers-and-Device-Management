@@ -1,23 +1,22 @@
-package crm.core.repository.persistence.query.crud;
+package crm.service_request.repository.persistence.query.crud;
 
 import java.util.List;
 
 import crm.core.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
-public class DeleteBuilder<E> extends AbstractQueryBuilder {
+public class DeleteQueryBuilder<E> extends AbstractQueryBuilder {
 
-    public DeleteBuilder(String tableName) {
+    public DeleteQueryBuilder(String tableName) {
         super(tableName);
     }
 
     private String whereClause;
 
-    public static <E> DeleteBuilder<E> builder(String tableName) {
-        return new DeleteBuilder<E>(tableName);
+    public static <E> DeleteQueryBuilder<E> builder(String tableName) {
+        return new DeleteQueryBuilder<E>(tableName);
     }
 
-    public DeleteBuilder<E> where(String whereClause, Object... values) {
+    public DeleteQueryBuilder<E> where(String whereClause, Object... values) {
         this.whereClause = whereClause;
         this.getParameters().addAll(List.of(values));
         return this;

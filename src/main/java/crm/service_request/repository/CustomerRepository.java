@@ -1,8 +1,8 @@
 package crm.service_request.repository;
 
 import crm.common.model.Customer;
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
-import crm.core.repository.persistence.repository.AbstractRepository;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.service_request.repository.persistence.repository.AbstractRepository;
 
 import java.util.List;
 

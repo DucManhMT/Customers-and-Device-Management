@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.repository;
+package crm.service_request.repository.persistence.repository;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.query.common;
+package crm.service_request.repository.persistence.query.common;
 
 public class Order {
     // column name to order by

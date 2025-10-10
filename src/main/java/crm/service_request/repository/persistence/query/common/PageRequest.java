@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.query.common;
+package crm.service_request.repository.persistence.query.common;
 
 public class PageRequest {
     // 1-indexed page number

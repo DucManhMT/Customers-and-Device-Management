@@ -5,9 +5,9 @@ import java.io.IOException;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.common.validator.Validator;
-import crm.core.repository.persistence.query.common.Page;
 import crm.service_request.repository.ContractRepository;
 import crm.service_request.repository.CustomerRepository;
+import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CustomerRequestController", urlPatterns = {"/customer/requests"})
+@WebServlet(name = "CustomerRequestController", urlPatterns = { "/customer/requests" })
 public class CustomerRequestController extends HttpServlet {
 
     @Override
@@ -32,7 +32,7 @@ public class CustomerRequestController extends HttpServlet {
                 page = Integer.parseInt(req.getParameter("page"));
             if (req.getParameter("recordsPerPage") != null)
                 recordsPerPage = Integer.parseInt(req.getParameter("recordsPerPage"));
-            //Get filter params
+            // Get filter params
             String field = req.getParameter("field");
             String sort = req.getParameter("sort");
             int contractId = Validator.parseInt(req.getParameter("contractId"), 0);
@@ -40,8 +40,8 @@ public class CustomerRequestController extends HttpServlet {
 
             req.setAttribute("contracts", contractRepository.findByUsername(account.getUsername()));
 
-            Page<Request> requestPage = requestService.getRequestByUsername
-                    (account.getUsername(), field, sort, null, status, contractId, page, recordsPerPage);
+            Page<Request> requestPage = requestService.getRequestByUsername(account.getUsername(), field, sort, null,
+                    status, contractId, page, recordsPerPage);
 
             req.setAttribute("currentPage", page);
             req.setAttribute("recordsPerPage", recordsPerPage);

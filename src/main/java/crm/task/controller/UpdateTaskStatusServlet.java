@@ -34,12 +34,12 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
         Connection connection = null;
         EntityManager entityManager = null;
-        
+
         try {
             int requestId = Integer.parseInt(requestIdStr);
             connection = DBcontext.getConnection();
             entityManager = new EntityManager(connection);
-            
+
             Request req = entityManager.find(Request.class, requestId);
             if (req == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
@@ -54,15 +54,16 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
             if ("finished".equals(newStatus)) {
                 entityManager.beginTransaction();
-                
+
                 req.setRequestStatus(RequestStatus.Finished);
                 req.setFinishedDate(LocalDateTime.now());
 
                 entityManager.merge(req, Request.class);
-                
+
                 entityManager.commit();
-                
-                request.getSession().setAttribute("successMessage", "Task #" + requestId + " has been marked as finished successfully!");
+
+                request.getSession().setAttribute("successMessage",
+                        "Task #" + requestId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
@@ -86,7 +87,8 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 }
             }
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Error updating task status: " + e.getMessage());
         } finally {
             if (connection != null) {
                 try {

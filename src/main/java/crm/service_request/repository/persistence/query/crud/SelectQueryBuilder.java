@@ -1,14 +1,13 @@
-package crm.core.repository.persistence.query.crud;
+package crm.service_request.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import crm.core.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
-import crm.core.repository.persistence.query.common.Order;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.Order;
 
-public class SelectBuilder<E> extends AbstractQueryBuilder {
+public class SelectQueryBuilder<E> extends AbstractQueryBuilder {
 
     private List<String> columns;
     private boolean isDistinct;
@@ -18,61 +17,61 @@ public class SelectBuilder<E> extends AbstractQueryBuilder {
     private Integer limit;
     private Integer offset;
 
-    public SelectBuilder(String tableName) {
+    public SelectQueryBuilder(String tableName) {
         super(tableName);
         this.orderByColumns = new ArrayList<>();
     }
 
-    public static <E> SelectBuilder<E> builder(String tableName) {
+    public static <E> SelectQueryBuilder<E> builder(String tableName) {
         if (tableName == null) {
             throw new IllegalArgumentException("EntityMeta cannot be null");
         }
-        return new SelectBuilder<E>(tableName);
+        return new SelectQueryBuilder<E>(tableName);
     }
 
-    public SelectBuilder<E> alias(String alias) {
+    public SelectQueryBuilder<E> alias(String alias) {
         this.alias = alias;
         return this;
     }
 
-    public SelectBuilder<E> columns(String... columns) {
+    public SelectQueryBuilder<E> columns(String... columns) {
         this.columns = List.of(columns);
         return this;
     }
 
-    public SelectBuilder<E> columns(List<String> columns) {
+    public SelectQueryBuilder<E> columns(List<String> columns) {
         this.columns = columns;
         return this;
     }
 
-    public SelectBuilder<E> distinct(boolean isDistinct) {
+    public SelectQueryBuilder<E> distinct(boolean isDistinct) {
         this.isDistinct = isDistinct;
         return this;
     }
 
-    public SelectBuilder<E> where(String whereClause, Object... params) {
+    public SelectQueryBuilder<E> where(String whereClause, Object... params) {
         this.getParameters().addAll(List.of(params));
         this.whereClause = whereClause;
         return this;
     }
 
-    public SelectBuilder<E> where(ClauseBuilder clause) {
+    public SelectQueryBuilder<E> where(ClauseBuilder clause) {
         this.whereClause = clause.build();
         this.getParameters().addAll(clause.getParameters());
         return this;
     }
 
-    public SelectBuilder<E> orderBy(List<Order> orderByColumns) {
+    public SelectQueryBuilder<E> orderBy(List<Order> orderByColumns) {
         this.orderByColumns = orderByColumns;
         return this;
     }
 
-    public SelectBuilder<E> limit(int limit) {
+    public SelectQueryBuilder<E> limit(int limit) {
         this.limit = limit;
         return this;
     }
 
-    public SelectBuilder<E> offset(int offset) {
+    public SelectQueryBuilder<E> offset(int offset) {
         this.offset = offset;
         return this;
     }

@@ -1,9 +1,9 @@
-package crm.core.repository.persistence.repository;
+package crm.service_request.repository.persistence.repository;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 
 public interface CrudRepository<E, K> {
 

@@ -8,12 +8,12 @@ import crm.common.model.Contract;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.TransactionManager;
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
-import crm.core.repository.persistence.query.common.Order;
-import crm.core.repository.persistence.query.common.Page;
-import crm.core.repository.persistence.query.common.PageRequest;
-import crm.core.repository.persistence.query.common.Sort;
 import crm.service_request.repository.RequestRepository;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.Order;
+import crm.service_request.repository.persistence.query.common.Page;
+import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.service_request.repository.persistence.query.common.Sort;
 
 public class RequestService {
     public Request createServiceRequest(String description, int contractId) throws SQLException {

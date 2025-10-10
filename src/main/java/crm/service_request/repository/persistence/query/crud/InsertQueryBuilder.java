@@ -1,38 +1,37 @@
-package crm.core.repository.persistence.query.crud;
+package crm.service_request.repository.persistence.query.crud;
 
 import java.util.List;
 
 import crm.core.config.RepositoryConfig;
-import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
-public class InsertBuilder<E> extends AbstractQueryBuilder {
+public class InsertQueryBuilder<E> extends AbstractQueryBuilder {
 
     private List<String> columns;
 
-    public InsertBuilder(String tableName) {
+    public InsertQueryBuilder(String tableName) {
         super(tableName);
     }
 
-    public static <E> InsertBuilder<E> builder(String tableName) {
-        return new InsertBuilder<E>(tableName);
+    public static <E> InsertQueryBuilder<E> builder(String tableName) {
+        return new InsertQueryBuilder<E>(tableName);
     }
 
-    public InsertBuilder<E> columns(List<String> columns) {
+    public InsertQueryBuilder<E> columns(List<String> columns) {
         this.columns = columns;
         return this;
     }
 
-    public InsertBuilder<E> columns(String... columns) {
+    public InsertQueryBuilder<E> columns(String... columns) {
         this.columns = List.of(columns);
         return this;
     }
 
-    public InsertBuilder<E> values(List<Object> values) {
+    public InsertQueryBuilder<E> values(List<Object> values) {
         this.getParameters().addAll(values);
         return this;
     }
 
-    public InsertBuilder<E> values(Object... values) {
+    public InsertQueryBuilder<E> values(Object... values) {
         if (values == null || values.length == 0) {
             return this; // nothing to add
         }

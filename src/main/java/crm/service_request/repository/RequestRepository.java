@@ -1,16 +1,13 @@
 package crm.service_request.repository;
 
-import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 import crm.common.model.Contract;
-import crm.common.model.Customer;
 import crm.common.model.Request;
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
-import crm.core.repository.persistence.query.common.Page;
-import crm.core.repository.persistence.query.common.PageRequest;
-import crm.core.repository.persistence.repository.AbstractRepository;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.Page;
+import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.service_request.repository.persistence.repository.AbstractRepository;
 
 public class RequestRepository extends AbstractRepository<Request, Integer> {
     public RequestRepository() {
