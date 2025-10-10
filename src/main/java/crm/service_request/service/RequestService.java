@@ -16,6 +16,8 @@ import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.repository.persistence.query.common.Sort;
 
 public class RequestService {
+    RequestRepository requestRepository = new RequestRepository();
+
     public Request createServiceRequest(String description, int contractId) throws SQLException {
         LocalDateTime currentTimestamp = LocalDateTime.now();
         Contract contract = new Contract();
@@ -26,7 +28,6 @@ public class RequestService {
         request.setRequestStatus(RequestStatus.Pending);
         request.setStartDate(currentTimestamp);
         request.setContract(contract);
-        RequestRepository requestRepository = new RequestRepository();
         try {
             TransactionManager.beginTransaction();
             requestRepository.save(request);
@@ -43,7 +44,6 @@ public class RequestService {
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
             String status, int contractId,
             int page, int recordsPerPage) {
-        RequestRepository requestRepository = new RequestRepository();
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -78,7 +78,6 @@ public class RequestService {
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
             String status, int contractId,
             int page, int recordsPerPage) {
-        RequestRepository requestRepository = new RequestRepository();
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -110,6 +109,11 @@ public class RequestService {
         }
 
         return requestRepository.findByUsernameAndCondition(username, builder, request);
+    }
+
+    public Request getRequestById(int requestId) {
+
+        return requestRepository.findById(requestId);
     }
 
 }

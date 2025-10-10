@@ -7,33 +7,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
-<%
-    // Mock Customer
-    Map<String, Object> customer = new java.util.HashMap<>();
-    customer.put("customerName", "Nguyen Van A");
-    customer.put("address", "123 Tran Hung Dao, District 1, Ho Chi Minh City");
-    customer.put("phone", "0909-123-456");
-    customer.put("email", "nguyenvana@example.com");
-
-    // Mock Contract
-    Map<String, Object> contract = new java.util.HashMap<>();
-    contract.put("contractID", "CT2025-001");
-    contract.put("customer", customer);
-
-    // Mock Request
-    Map<String, Object> requestDetail = new java.util.HashMap<>();
-    requestDetail.put("contract", contract);
-    requestDetail.put("requestDescription", "Customer reports unstable internet connection and slow download speed.");
-    requestDetail.put("requestStatus", "Pending");
-    requestDetail.put("note", "Customer mentioned issue occurs mostly during rainy evenings.");
-    requestDetail.put("startDate", "2025-09-29");
-    requestDetail.put("finishedDate", "—");
-
-    // Gán vào request attribute để EL (${}) có thể dùng
-    request.setAttribute("request", requestDetail);
-%>
-
 <html>
 <head>
     <title>View Request Detail</title>

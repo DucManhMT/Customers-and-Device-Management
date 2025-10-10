@@ -2,11 +2,11 @@ package crm.common.repository.staff;
 
 import crm.common.model.Staff;
 import crm.core.config.TransactionManager;
+import crm.service_request.repository.persistence.AbstractRepository;
 import crm.service_request.repository.persistence.query.common.Order;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.repository.persistence.query.common.Sort;
-import crm.service_request.repository.persistence.repository.AbstractRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

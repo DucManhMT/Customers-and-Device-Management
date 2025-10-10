@@ -1,4 +1,4 @@
-package crm.service_request.repository.persistence.repository;
+package crm.service_request.repository.persistence;
 
 import java.sql.SQLException;
 import java.util.List;
