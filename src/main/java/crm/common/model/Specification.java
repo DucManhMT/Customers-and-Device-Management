@@ -20,7 +20,7 @@ public class Specification {
     @ManyToOne(joinColumn = "SpecificationTypeID")
     private LazyReference<SpecificationType> specificationType;
 
-    @OneToMany(mappedBy = "specificationID", joinColumn = "SpecificationID")
+    @OneToMany(mappedBy = "specificationID", joinColumn = "SpecificationID", targetEntity = ProductSpecification.class)
     private List<ProductSpecification> productSpecifications;
 
     public Integer getSpecificationID() {
@@ -47,13 +47,13 @@ public class Specification {
         this.specificationValue = specificationValue;
     }
 
-
     public SpecificationType getSpecificationType() {
         return specificationType.get();
     }
 
     public void setSpecificationType(SpecificationType specificationType) {
-        this.specificationType = new LazyReference<>(SpecificationType.class ,specificationType.getSpecificationTypeID());
+        this.specificationType = new LazyReference<>(SpecificationType.class,
+                specificationType.getSpecificationTypeID());
     }
 
     public List<ProductSpecification> getProductSpecifications() {

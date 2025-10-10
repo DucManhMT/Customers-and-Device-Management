@@ -11,7 +11,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -36,7 +35,7 @@ public class viewAssignedTask extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String statusFilter = request.getParameter("statusFilter");
         String sortBy = request.getParameter("sortBy");
         String pageStr = request.getParameter("page");
@@ -73,12 +72,12 @@ public class viewAssignedTask extends HttpServlet {
 
         String successMessage = (String) request.getSession().getAttribute("successMessage");
         String errorMessage = (String) request.getSession().getAttribute("errorMessage");
-        
+
         if (successMessage != null) {
             request.setAttribute("successMessage", successMessage);
             request.getSession().removeAttribute("successMessage");
         }
-        
+
         if (errorMessage != null) {
             request.setAttribute("errorMessage", errorMessage);
             request.getSession().removeAttribute("errorMessage");
@@ -91,14 +90,15 @@ public class viewAssignedTask extends HttpServlet {
 
             // HttpSession session = request.getSession(false);
             // if (session == null) {
-            //     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No active session");
-            //     return;
+            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No active session");
+            // return;
             // }
-            
+
             // String username = (String) session.getAttribute("username");
             // if (username == null || username.trim().isEmpty()) {
-            //     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in");
-            //     return;
+            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged
+            // in");
+            // return;
             // }
             String username = "technician01";
             String statusFilter = (String) request.getAttribute("statusFilter");
@@ -114,7 +114,7 @@ public class viewAssignedTask extends HttpServlet {
                 pageSize = 6;
 
             List<AccountRequest> allAccountRequests = entityManager.findAll(AccountRequest.class);
-            
+
             List<AccountRequest> accountRequests = allAccountRequests.stream()
                     .filter(ar -> ar.getAccount() != null && username.equals(ar.getAccount().getUsername()))
                     .collect(Collectors.toList());
@@ -134,21 +134,21 @@ public class viewAssignedTask extends HttpServlet {
                 request.setAttribute("totalPages", 1);
                 request.setAttribute("startItem", 0);
                 request.setAttribute("endItem", 0);
-                
+
                 request.setAttribute("totalTasks", 0);
                 request.setAttribute("approvedTasks", 0);
                 request.setAttribute("finishedTasks", 0);
-                
+
                 request.getRequestDispatcher("/task/techemployee/viewAssignedTasks.jsp").forward(request, response);
                 return;
             }
 
             List<Request> allAssignedRequests = entityManager.findAll(Request.class);
-            
+
             List<Request> filteredByAssignment = allAssignedRequests.stream()
                     .filter(req -> assignedRequestIds.contains(req.getRequestID()))
                     .collect(Collectors.toList());
-            
+
             List<Request> filteredRequests = filteredByAssignment;
             if (statusFilter != null && !statusFilter.isEmpty() && !"all status".equalsIgnoreCase(statusFilter)) {
                 if ("approved".equals(statusFilter)) {
@@ -165,22 +165,24 @@ public class viewAssignedTask extends HttpServlet {
             if ((fromDate != null && !fromDate.isEmpty()) || (toDate != null && !toDate.isEmpty())) {
                 filteredRequests = filteredRequests.stream()
                         .filter(req -> {
-                            if (req.getStartDate() == null) return false;
-                            
+                            if (req.getStartDate() == null)
+                                return false;
+
                             LocalDateTime requestDateTime = req.getStartDate();
                             LocalDate requestDate = requestDateTime.toLocalDate();
                             boolean passFromDate = true;
                             boolean passToDate = true;
-                            
+
                             if (fromDate != null && !fromDate.isEmpty()) {
                                 try {
-                                    LocalDate from = LocalDate.parse(fromDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                                    LocalDate from = LocalDate.parse(fromDate,
+                                            DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                                     passFromDate = !requestDate.isBefore(from);
                                 } catch (DateTimeParseException e) {
                                     passFromDate = true;
                                 }
                             }
-                            
+
                             if (toDate != null && !toDate.isEmpty()) {
                                 try {
                                     LocalDate to = LocalDate.parse(toDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -189,7 +191,7 @@ public class viewAssignedTask extends HttpServlet {
                                     passToDate = true;
                                 }
                             }
-                            
+
                             return passFromDate && passToDate;
                         })
                         .collect(Collectors.toList());
@@ -197,13 +199,13 @@ public class viewAssignedTask extends HttpServlet {
 
             if (sortBy != null && !sortBy.isEmpty()) {
                 if ("newest".equals(sortBy)) {
-                    filteredRequests.sort((r1, r2) -> 
-                        r2.getStartDate() != null && r1.getStartDate() != null ? 
-                        r2.getStartDate().compareTo(r1.getStartDate()) : 0);
+                    filteredRequests.sort((r1, r2) -> r2.getStartDate() != null && r1.getStartDate() != null
+                            ? r2.getStartDate().compareTo(r1.getStartDate())
+                            : 0);
                 } else if ("oldest".equals(sortBy)) {
-                    filteredRequests.sort((r1, r2) -> 
-                        r1.getStartDate() != null && r2.getStartDate() != null ? 
-                        r1.getStartDate().compareTo(r2.getStartDate()) : 0);
+                    filteredRequests.sort((r1, r2) -> r1.getStartDate() != null && r2.getStartDate() != null
+                            ? r1.getStartDate().compareTo(r2.getStartDate())
+                            : 0);
                 }
             }
 
@@ -224,7 +226,7 @@ public class viewAssignedTask extends HttpServlet {
             int finishedTasks = (int) filteredByAssignment.stream()
                     .filter(req -> RequestStatus.Finished.equals(req.getRequestStatus()))
                     .count();
-            
+
             String statsNote = "";
             if (statusFilter != null && !statusFilter.isEmpty() && !"all status".equalsIgnoreCase(statusFilter)) {
                 statsNote = " (Filtered: " + filteredRequests.size() + " tasks)";
@@ -237,17 +239,17 @@ public class viewAssignedTask extends HttpServlet {
             request.setAttribute("startItem", startItem);
             request.setAttribute("endItem", endItem);
             request.setAttribute("assignedRequests", paginatedRequests);
-            
+
             request.setAttribute("totalTasks", totalTasks);
             request.setAttribute("approvedTasks", approvedTasks);
             request.setAttribute("finishedTasks", finishedTasks);
             request.setAttribute("statsNote", statsNote);
-            
+
             request.setAttribute("statusFilter", statusFilter);
             request.setAttribute("sortBy", sortBy);
             request.setAttribute("fromDate", fromDate);
             request.setAttribute("toDate", toDate);
-            
+
             request.getRequestDispatcher("/task/techemployee/viewAssignedTasks.jsp").forward(request, response);
 
         } catch (Exception e) {

@@ -23,7 +23,7 @@ public class Product {
     @ManyToOne(joinColumn = "TypeID")
     private LazyReference<Type> type;
 
-    @OneToMany(mappedBy = "productID", joinColumn = "ProductID")
+    @OneToMany(mappedBy = "productID", joinColumn = "ProductID", targetEntity = ProductSpecification.class)
     private List<ProductSpecification> productSpecifications;
 
     public Integer getProductID() {
@@ -64,7 +64,7 @@ public class Product {
 
     public void setType(Type type) {
 
-        this.type = new LazyReference<>(Type.class,type.getTypeID());
+        this.type = new LazyReference<>(Type.class, type.getTypeID());
     }
 
     public List<ProductSpecification> getProductSpecifications() {
@@ -73,5 +73,18 @@ public class Product {
 
     public void setProductSpecifications(List<ProductSpecification> productSpecifications) {
         this.productSpecifications = productSpecifications;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Product)) return false;
+        Product product = (Product) obj;
+        return productID == product.productID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(productID);
     }
 }

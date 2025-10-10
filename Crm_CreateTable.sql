@@ -108,7 +108,7 @@ CREATE TABLE ProductSpecification (
 -- WAREHOUSE & INVENTORY
 -- ======================
 CREATE TABLE InventoryItem (
-    Item_ID INT PRIMARY KEY,
+    ItemID INT PRIMARY KEY,
     SerialNumber NVARCHAR(255) UNIQUE NOT NULL,
     ProductID INT NOT NULL,
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
@@ -128,7 +128,7 @@ CREATE TABLE ProductWarehouse (
     WarehouseID INT NOT NULL,
     ItemID INT NOT NULL,
     FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
-    FOREIGN KEY (ItemID) REFERENCES InventoryItem(Item_ID)
+    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID)
 );
 
 CREATE TABLE ProductTransaction (
@@ -241,5 +241,5 @@ CREATE TABLE ProductContract (
     ContractID INT NOT NULL,
     ItemID INT NOT NULL,
     FOREIGN KEY (ContractID) REFERENCES Contract(ContractID),
-    FOREIGN KEY (ItemID) REFERENCES InventoryItem(Item_ID)
+    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID)
 );

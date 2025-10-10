@@ -54,7 +54,6 @@ public class EntityFieldMapper {
             OneToOne ann = field.getAnnotation(OneToOne.class);
             return ann.joinColumn(); // có attribute joinColumn trong annotation
         }
-        System.out.println(field.getName());
         return null;
     }
 
@@ -155,7 +154,6 @@ public class EntityFieldMapper {
                     field.set(entity, value);
                 }
                 if (isOneToMany(field)) {
-                    // OneToMany không lấy từ ResultSet,
                     List<?> list = new EntityFieldMapper().getOneToManyList(entity);
                     field.set(entity, list);
                 }

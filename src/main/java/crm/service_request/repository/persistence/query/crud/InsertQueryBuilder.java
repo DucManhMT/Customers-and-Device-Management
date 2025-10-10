@@ -1,0 +1,99 @@
+package crm.service_request.repository.persistence.query.crud;
+
+import java.util.List;
+
+import crm.core.config.RepositoryConfig;
+
+public class InsertQueryBuilder<E> extends AbstractQueryBuilder {
+
+    private List<String> columns;
+
+    public InsertQueryBuilder(String tableName) {
+        super(tableName);
+    }
+
+    public static <E> InsertQueryBuilder<E> builder(String tableName) {
+        return new InsertQueryBuilder<E>(tableName);
+    }
+
+    public InsertQueryBuilder<E> columns(List<String> columns) {
+        this.columns = columns;
+        return this;
+    }
+
+    public InsertQueryBuilder<E> columns(String... columns) {
+        this.columns = List.of(columns);
+        return this;
+    }
+
+    public InsertQueryBuilder<E> values(List<Object> values) {
+        this.getParameters().addAll(values);
+        return this;
+    }
+
+    public InsertQueryBuilder<E> values(Object... values) {
+        if (values == null || values.length == 0) {
+            return this; // nothing to add
+        }
+        this.getParameters().addAll(List.of(values));
+        return this;
+    }
+
+    @Override
+    public String createQuery() {
+        if (tableName == null || tableName.isEmpty()) {
+            throw new IllegalStateException("Table name is required for INSERT query");
+        }
+        if (columns == null || columns.isEmpty()) {
+            throw new IllegalStateException("At least one column is required for INSERT query");
+        }
+        if (this.getParameters() == null || this.getParameters().isEmpty()) {
+            throw new IllegalStateException("Values must be provided for INSERT query");
+        }
+        int columnCount = columns.size();
+        if (columnCount == 0) {
+            throw new IllegalStateException("Column count must be greater than zero");
+        }
+        if (this.getParameters().size() % columnCount != 0) {
+            throw new IllegalStateException(
+                    "Values count (" + this.getParameters().size() + ") must be a multiple of columns count ("
+                            + columnCount + ") for batch INSERT");
+        }
+        int rowCount = this.getParameters().size() / columnCount;
+
+        // Build placeholder for a single row e.g. "?, ?, ?"
+        String singleRowPlaceholders = String.join(", ", columns.stream().map(c -> "?").toList());
+
+        StringBuilder query = new StringBuilder("INSERT INTO ");
+        query.append(tableName).append(" (");
+        query.append(String.join(", ", columns));
+        query.append(") VALUES ");
+
+        for (int i = 0; i < rowCount; i++) {
+            if (i > 0) {
+                query.append(", ");
+            }
+            query.append("(").append(singleRowPlaceholders).append(")");
+        }
+        return query.toString();
+    }
+
+    @Override
+    public String build(boolean isPrintSql) {
+        String query = createQuery();
+        if (isPrintSql) {
+            System.out.println("Generated Query: " + query);
+        }
+        return query;
+    }
+
+    @Override
+    public String build() {
+        String query = createQuery();
+        if (RepositoryConfig.PRINT_SQL) {
+            System.out.println("Generated Query: " + query);
+        }
+        return query;
+    }
+
+}
