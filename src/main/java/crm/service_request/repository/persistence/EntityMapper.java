@@ -1,11 +1,10 @@
-package crm.core.repository.persistence.repository;
+package crm.service_request.repository.persistence;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import crm.core.repository.hibernate.annotation.ManyToOne;
-import crm.core.repository.hibernate.annotation.OneToMany;
 import crm.core.repository.hibernate.annotation.OneToOne;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
 import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;

@@ -14,7 +14,8 @@ import java.util.Map;
 @WebServlet(urlPatterns = "/ViewContractHistory")
 public class ViewContractHistoryServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         String contractIdParam = request.getParameter("contractId");
         String startDateParam = request.getParameter("startDate");
@@ -66,7 +67,8 @@ public class ViewContractHistoryServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         doGet(request, response);
     }
 }

@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.query;
+package crm.service_request.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;

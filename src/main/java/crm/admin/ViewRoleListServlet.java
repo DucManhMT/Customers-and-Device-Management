@@ -2,6 +2,7 @@ package crm.admin;
 
 import crm.common.model.Role;
 import crm.common.model.Account;
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -15,7 +16,8 @@ import java.util.Map;
 @WebServlet(urlPatterns = "/ViewRoleList")
 public class ViewRoleListServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
         String searchParam = request.getParameter("search");
@@ -37,7 +39,6 @@ public class ViewRoleListServlet extends HttpServlet {
             conditions.put("roleName", searchParam);
         }
 
-
         List<Role> roles;
         int totalRecords;
         if (!conditions.isEmpty()) {
@@ -49,26 +50,25 @@ public class ViewRoleListServlet extends HttpServlet {
         }
         int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
 
-        Map<Integer,Integer> userCountPerRole = new HashMap<>();
+        Map<Integer, Integer> userCountPerRole = new HashMap<>();
         for (Role role : roles) {
             Map<String, Object> roleCondition = new HashMap<>();
             roleCondition.put("role", role.getRoleID());
-            int count = em.findWithConditions(Account.class,roleCondition).size();
+            int count = em.findWithConditions(Account.class, roleCondition).size();
             userCountPerRole.put(role.getRoleID(), count);
         }
 
         int totalRoles = em.count(Role.class);
-        List<Account> allAccounts=em.findAll(Account.class);
-        int totalUsers =0;
-        for(Account acc: allAccounts){
-            if(acc.getRole()!=null){
+        List<Account> allAccounts = em.findAll(Account.class);
+        int totalUsers = 0;
+        for (Account acc : allAccounts) {
+            if (acc.getRole() != null) {
                 totalUsers++;
             }
         }
         request.setAttribute("totalRoles", totalRoles);
         request.setAttribute("totalUsers", totalUsers);
         request.setAttribute("userCountPerRole", userCountPerRole);
-
 
         request.setAttribute("roles", roles);
         request.setAttribute("count", totalRecords);
@@ -77,12 +77,12 @@ public class ViewRoleListServlet extends HttpServlet {
         request.setAttribute("itemsPerPage", recordsPerPage);
         request.setAttribute("search", searchParam);
 
-
         request.getRequestDispatcher("/admin/ViewRoleList.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         doGet(request, response);
     }
 }

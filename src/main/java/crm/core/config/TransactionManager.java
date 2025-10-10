@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.config;
+package crm.core.config;
 
 import crm.core.config.DBcontext;
 
@@ -11,12 +11,6 @@ public class TransactionManager {
     // To keep track of transaction depth for nested transactions
     private static ThreadLocal<Integer> transactionDepthHolder = ThreadLocal.withInitial(() -> 0);
 
-    /**
-     * Begins a new transaction by setting auto-commit to false on the current
-     * connection.
-     * 
-     * @throws SQLException if a database access error occurs
-     */
     public static void beginTransaction() throws SQLException {
 
         if (transactionDepthHolder.get() < 1 || connectionHolder.get() == null) {
@@ -28,11 +22,6 @@ public class TransactionManager {
         transactionDepthHolder.set(transactionDepthHolder.get() + 1);
     }
 
-    /**
-     * Commits the current transaction and closes the connection.
-     * 
-     * @throws SQLException
-     */
     public static void commit() throws SQLException {
         int depth = transactionDepthHolder.get() - 1;
         transactionDepthHolder.set(depth);
@@ -49,11 +38,6 @@ public class TransactionManager {
 
     }
 
-    /**
-     * Rolls back the current transaction and closes the connection.
-     * 
-     * @throws SQLException if a database access error occurs
-     */
     public static void rollback() throws SQLException {
         int depth = transactionDepthHolder.get() - 1;
         transactionDepthHolder.set(depth);
@@ -70,12 +54,6 @@ public class TransactionManager {
 
     }
 
-    /**
-     * Retrieves the current connection associated with the thread.
-     * If no connection exists, a new one is created.
-     * 
-     * @return the current Connection object
-     */
     public static Connection getConnection() {
         Connection connection = connectionHolder.get();
         if (connection == null) {

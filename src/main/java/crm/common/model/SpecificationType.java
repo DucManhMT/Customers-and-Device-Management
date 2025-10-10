@@ -17,7 +17,7 @@ public class SpecificationType {
     @ManyToOne(joinColumn = "TypeID")
     private LazyReference<Type> type;
 
-    @OneToMany(mappedBy = "specificationTypeID", joinColumn = "SpecificationTypeID")
+    @OneToMany(mappedBy = "specificationTypeID", joinColumn = "SpecificationTypeID", targetEntity = Specification.class)
     private List<Specification> specifications;
 
     public Integer getSpecificationTypeID() {
@@ -35,7 +35,6 @@ public class SpecificationType {
     public void setSpecificationTypeName(String specificationTypeName) {
         this.specificationTypeName = specificationTypeName;
     }
-
 
     public Type getType() {
         return type.get();

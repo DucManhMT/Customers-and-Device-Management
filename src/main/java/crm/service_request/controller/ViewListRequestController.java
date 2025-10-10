@@ -1,10 +1,9 @@
 package crm.service_request.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import crm.common.model.Request;
-import crm.core.repository.persistence.query.common.Page;
+import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "ViewListRequestController", urlPatterns = { "/requests/list" })
+@WebServlet(name = "ViewListRequestController", urlPatterns = { "/supporter/requests/list" })
 public class ViewListRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,13 +28,11 @@ public class ViewListRequestController extends HttpServlet {
             String sort = req.getParameter("sort");
 
             String status = req.getParameter("status");
-            // String usernameString = req.getParameter("username");
+            String customerName = req.getParameter("customerName");
             String description = req.getParameter("description");
 
-            System.out.println(sort + " - " + field + " - " + status + " - " + description);
-
-            Page<Request> requestPage = requestService.getRequests(page, recordsPerPage,
-                    field, sort, status, description);
+            Page<Request> requestPage = requestService.getRequests(customerName, field, sort, description, status, 0,
+                    page, recordsPerPage);
 
             req.setAttribute("currentPage", page);
             req.setAttribute("recordsPerPage", recordsPerPage);
@@ -44,7 +41,7 @@ public class ViewListRequestController extends HttpServlet {
             req.setAttribute("field", field);
             req.setAttribute("sort", sort);
             req.setAttribute("status", status);
-            req.setAttribute("requests", (List<Request>) requestPage.getContent());
+            req.setAttribute("requests", requestPage.getContent());
             req.setAttribute("isFirstPage", requestPage.isFirst());
             req.setAttribute("isLastPage", requestPage.isLast());
 
@@ -52,6 +49,6 @@ public class ViewListRequestController extends HttpServlet {
             req.setAttribute("error", "Something went wrong while displaying requests!");
         }
 
-        req.getRequestDispatcher("/service-request/view-request-list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/service_request/view-request-list.jsp").forward(req, resp);
     }
 }

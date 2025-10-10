@@ -4,6 +4,8 @@ package crm.core.repository.hibernate.entitymanager;
 import crm.core.config.DBcontext;
 
 
+import crm.core.config.DBcontext;
+
 public class LazyReference<T> {
 
     private final Class<T> targetType;
@@ -11,7 +13,6 @@ public class LazyReference<T> {
     private final EntityManager em;
     private T loadedValue;
     private boolean loaded = false;
-
 
     public LazyReference(Class<T> targetType, Object foreignKeyValue) {
         this.targetType = targetType;
@@ -22,7 +23,6 @@ public class LazyReference<T> {
     public Object getForeignKeyValue() {
         return foreignKeyValue;
     }
-
 
     public T get() {
         if (!loaded) {

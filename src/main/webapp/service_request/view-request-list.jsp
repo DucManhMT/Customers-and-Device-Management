@@ -15,29 +15,16 @@
 <html>
 <head>
     <title>View Service Request</title>
-    <link href="../css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
 </head>
 <body>
 
 <div class="container-fluid">
-    <!-- Requests -->
-    <c:set var="requests" value="${[
-    {'requestID': 1001, 'contractID': 'C001', 'username': 'john_doe', 'requestStatus': 'Pending', 'startDate': '2025-09-10', 'finishedDate': null},
-    {'requestID': 1002, 'contractID': 'C002', 'username': 'mary_smith', 'requestStatus': 'Approved', 'startDate': '2025-09-12', 'finishedDate': '2025-09-15'},
-    {'requestID': 1003, 'contractID': 'C003', 'username': 'kevin_lee', 'requestStatus': 'Rejected', 'startDate': '2025-09-14', 'finishedDate': null},
-    {'requestID': 1004, 'contractID': 'C004', 'username': 'alice_nguyen', 'requestStatus': 'Finished', 'startDate': '2025-09-10', 'finishedDate': '2025-09-20'},
-    {'requestID': 1005, 'contractID': 'C005', 'username': 'tuanpham', 'requestStatus': 'Pending', 'startDate': '2025-09-22', 'finishedDate': null}
-]}"/>
-
-    <!-- Pagination Variables -->
-        <%
-        request.setAttribute("currentPage", 3);
-        request.setAttribute("totalPages", 10);
-    %>
 
     <div class="container-fluid">
         <h2 class="mt-1">Service Request List</h2>
-        <form method="get" action="../requests/list">
+        <form method="get" action="../requests/list" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
             <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
 
                 <jsp:include page="../components/sort.jsp"/>
@@ -45,7 +32,7 @@
                 <jsp:include page="../components/request-status-select.jsp"/>
 
                 <div class="m-auto d-flex align-items-center gap-3">
-                    <input class="form-control" type="text" name="username" placeholder="Search by username"
+                    <input class="form-control" type="text" name="customerName" placeholder="Search by Customer Name"
                            value="${search}" style="width: 300px; display: inline-block; margin-left: 10px;">
                 </div>
                 <div class="m-auto d-flex align-items-center gap-3">
@@ -60,7 +47,7 @@
                 <tr>
                     <th>No</th>
                     <th>Contract ID</th>
-                    <th>Username</th>
+                    <th>Customer Name</th>
                     <th>Status</th>
                     <th>Creation Date</th>
                     <th>Finish Date</th>
@@ -71,8 +58,8 @@
                 <c:forEach items="${requests}" var="request" varStatus="status">
                     <tr>
                         <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                        <td><a href="./list">${request.contractID}</a></td>
-                        <td><a href="./list">${request.username}</a></td>
+                        <td><a href="./list">${request.contract.contractID}</a></td>
+                        <td><a href="./list">${request.contract.customer.customerName}</a></td>
                         <td>${request.requestStatus}</td>
                         <td>${request.startDate}</td>
                         <td><c:out value="${empty request.finishedDate ? '-' : request.finishedDate}"/></td>
@@ -80,7 +67,7 @@
                             <a href="/requests/view?requestId=${request.requestID}" class="btn btn-info btn-sm">View</a>
                             <c:if test="${request.requestStatus == 'Pending'}">
                                 <a href="/requests/edit?requestId=${request.requestID}"
-                                   class="btn btn-warning btn-sm">Edit</a>
+                                   class="btn btn-warning btn-sm">Process</a>
                             </c:if>
                         </td>
                     </tr>

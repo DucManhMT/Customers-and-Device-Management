@@ -1,30 +1,30 @@
-package crm.core.repository.persistence.query.crud;
+package crm.service_request.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;
 import crm.core.config.RepositoryConfig;
 import crm.core.repository.persistence.query.AbstractQueryBuilder;
 
-public class UpdateBuilder<E> extends AbstractQueryBuilder {
+public class UpdateQueryBuilder<E> extends AbstractQueryBuilder {
     private List<String> setClauses;
     private String whereClause;
 
-    public UpdateBuilder(String tableName) {
+    public UpdateQueryBuilder(String tableName) {
         super(tableName);
         setClauses = new ArrayList<>();
     }
 
-    public static <E> UpdateBuilder<E> builder(String tableName) {
-        return new UpdateBuilder<E>(tableName);
+    public static <E> UpdateQueryBuilder<E> builder(String tableName) {
+        return new UpdateQueryBuilder<E>(tableName);
     }
 
-    public UpdateBuilder<E> set(String column, Object value) {
+    public UpdateQueryBuilder<E> set(String column, Object value) {
         this.getParameters().add(value);
         this.setClauses.add(column);
         return this;
     }
 
-    public UpdateBuilder<E> where(String whereClause, Object... params) {
+    public UpdateQueryBuilder<E> where(String whereClause, Object... params) {
         if (params == null || params.length == 0) {
             throw new IllegalArgumentException("where params empty or null");
         }

@@ -19,7 +19,7 @@ public class Category {
     @Column(name = "CategoryImage", length = 255)
     private String categoryImage;
 
-    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID")
+    @OneToMany(mappedBy = "categoryID", joinColumn = "CategoryID", targetEntity = Type.class)
     private List<Type> types;
 
     public Integer getCategoryID() {

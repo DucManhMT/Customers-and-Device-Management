@@ -6,11 +6,11 @@ import java.util.List;
 
 import crm.common.model.Feedback;
 import crm.common.repository.feedback.FeedbackDAO;
-import crm.core.repository.persistence.config.TransactionManager;
-import crm.core.repository.persistence.query.common.Order;
-import crm.core.repository.persistence.query.common.Page;
-import crm.core.repository.persistence.query.common.PageRequest;
-import crm.core.repository.persistence.query.common.Sort;
+import crm.core.config.TransactionManager;
+import crm.service_request.repository.persistence.query.common.Order;
+import crm.service_request.repository.persistence.query.common.Page;
+import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.service_request.repository.persistence.query.common.Sort;
 
 public class FeedbackService {
 
@@ -133,7 +133,8 @@ public class FeedbackService {
         }
     }
 
-    public Page<Feedback> getFeedbackByUsernamePaginated(String username, int page, int recordsPerPage) throws SQLException {
+    public Page<Feedback> getFeedbackByUsernamePaginated(String username, int page, int recordsPerPage)
+            throws SQLException {
         FeedbackDAO feedbackRepository = new FeedbackDAO();
         Sort sort = Sort.by(Order.desc("FeedbackDate"));
         PageRequest pageRequest = new PageRequest(page, recordsPerPage, sort);

@@ -31,7 +31,7 @@ public class Request {
     @ManyToOne(joinColumn = "ContractID")
     private LazyReference<Contract> contract;
 
-    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID")
+    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID", targetEntity = RequestLog.class)
     private List<RequestLog> logs;
 
     public Integer getRequestID() {

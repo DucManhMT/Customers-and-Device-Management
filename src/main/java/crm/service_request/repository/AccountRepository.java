@@ -1,7 +1,7 @@
 package crm.service_request.repository;
 
 import crm.common.model.Account;
-import crm.core.repository.persistence.repository.AbstractRepository;
+import crm.service_request.repository.persistence.AbstractRepository;
 
 public class AccountRepository extends AbstractRepository<Account, String> {
     public AccountRepository() {

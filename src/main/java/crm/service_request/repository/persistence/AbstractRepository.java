@@ -1,4 +1,4 @@
-package crm.core.repository.persistence.repository;
+package crm.service_request.repository.persistence;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -8,15 +8,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import crm.core.config.TransactionManager;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
-import crm.core.repository.persistence.config.TransactionManager;
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
-import crm.core.repository.persistence.query.common.Page;
-import crm.core.repository.persistence.query.common.PageRequest;
-import crm.core.repository.persistence.query.crud.DeleteBuilder;
-import crm.core.repository.persistence.query.crud.InsertBuilder;
-import crm.core.repository.persistence.query.crud.SelectBuilder;
-import crm.core.repository.persistence.query.crud.UpdateBuilder;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.service_request.repository.persistence.query.common.Page;
+import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.service_request.repository.persistence.query.crud.DeleteQueryBuilder;
+import crm.service_request.repository.persistence.query.crud.InsertQueryBuilder;
+import crm.service_request.repository.persistence.query.crud.SelectQueryBuilder;
+import crm.service_request.repository.persistence.query.crud.UpdateQueryBuilder;
 
 public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
@@ -70,7 +70,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
     @Override
     public void deleteById(K key) throws SQLException {
-        DeleteBuilder deleteBuilder = DeleteBuilder.builder(tableName)
+        DeleteQueryBuilder deleteBuilder = DeleteQueryBuilder.builder(tableName)
                 .where(EntityFieldMapper.getColumnName(keyField) + " = ?", key);
         Connection connection = TransactionManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(deleteBuilder.build())) {
@@ -84,7 +84,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
     @Override
     public void deleteWithCondition(ClauseBuilder clause) throws SQLException {
-        DeleteBuilder deleteBuilder = DeleteBuilder.builder(tableName).where(clause.build(),
+        DeleteQueryBuilder deleteBuilder = DeleteQueryBuilder.builder(tableName).where(clause.build(),
                 clause.getParameters());
         Connection connection = TransactionManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(deleteBuilder.build())) {
@@ -97,9 +97,9 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     @Override
-    public Iterable<E> findAll() {
-        Iterable<E> results = null;
-        SelectBuilder selectBuilder = SelectBuilder.builder(tableName).columns(columns);
+    public List<E> findAll() {
+        List<E> results = null;
+        SelectQueryBuilder selectBuilder = SelectQueryBuilder.builder(tableName).columns(columns);
         Connection connection = TransactionManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(selectBuilder.build())) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -114,13 +114,13 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     public Page<E> findAll(PageRequest pageRequest) {
-        Iterable<E> results = null;
+        List<E> results = null;
         int total = 0;
         try {
             TransactionManager.beginTransaction();
             Connection connection = TransactionManager.getConnection();
             // Build the base select query
-            SelectBuilder builder = SelectBuilder.builder(tableName)
+            SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName)
                     .columns(columns);
             // Count total records
             total = countRecord(builder, connection);
@@ -153,7 +153,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public E findById(K key) {
         E entity = null;
-        SelectBuilder builder = SelectBuilder.builder(tableName)
+        SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName)
                 .where(EntityFieldMapper.getColumnName(keyField) + " = ?", key);
         Connection connection = TransactionManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(builder.build())) {
@@ -172,9 +172,9 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     @Override
-    public Iterable<E> findWithCondition(ClauseBuilder clause) {
-        Iterable<E> results = null;
-        SelectBuilder builder = SelectBuilder.builder(tableName).columns(columns).where(clause);
+    public List<E> findWithCondition(ClauseBuilder clause) {
+        List<E> results = null;
+        SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName).columns(columns).where(clause);
         try {
             TransactionManager.beginTransaction();
             Connection connection = TransactionManager.getConnection();
@@ -199,8 +199,8 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
     public Page<E> findWithCondtion(ClauseBuilder clause, PageRequest pageRequest) {
         int total = 0;
-        Iterable<E> results = null;
-        SelectBuilder builder = SelectBuilder.builder(tableName).columns(columns).where(clause);
+        List<E> results = null;
+        SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName).columns(columns).where(clause);
 
         try {
             TransactionManager.beginTransaction();
@@ -260,7 +260,8 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public E save(E entity) throws SQLException {
         Connection connection = TransactionManager.getConnection();
-        InsertBuilder insertBuilder = InsertBuilder.builder(tableName).columns(columns).values(getFieldValues(entity));
+        InsertQueryBuilder insertBuilder = InsertQueryBuilder.builder(tableName).columns(columns)
+                .values(getFieldValues(entity));
         System.out.println(insertBuilder.getParameters());
         try (PreparedStatement statement = connection.prepareStatement(insertBuilder.build())) {
             setStatementParameters(statement, insertBuilder.getParameters());
@@ -273,9 +274,9 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     }
 
     @Override
-    public Iterable<E> saveAll(Iterable<E> entities) throws SQLException {
+    public List<E> saveAll(List<E> entities) throws SQLException {
         Connection connection = TransactionManager.getConnection();
-        InsertBuilder insertBuilder = InsertBuilder.builder(tableName).columns(columns);
+        InsertQueryBuilder insertBuilder = InsertQueryBuilder.builder(tableName).columns(columns);
         for (E entity : entities) {
             insertBuilder.values(getFieldValues(entity));
         }
@@ -292,7 +293,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public E update(E entity) throws SQLException {
         Connection connection = TransactionManager.getConnection();
-        UpdateBuilder builder = UpdateBuilder.builder(tableName);
+        UpdateQueryBuilder builder = UpdateQueryBuilder.builder(tableName);
         List<Object> values = EntityFieldMapper.mapToColumnsAndValues(entity).getValues();
         String keyColumnName = EntityFieldMapper.getColumnName(keyField);
         Object keyValue = null;
@@ -317,7 +318,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         return entity;
     }
 
-    protected int countRecord(SelectBuilder selectBuilder, Connection connection) {
+    protected int countRecord(SelectQueryBuilder selectBuilder, Connection connection) {
         int count = 0;
         String countQuery = "SELECT COUNT(*) AS total FROM (" + selectBuilder.build(false) + ") AS count_table";
         try (PreparedStatement statement = connection.prepareStatement(countQuery)) {

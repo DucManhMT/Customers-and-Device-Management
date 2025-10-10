@@ -1,10 +1,10 @@
 package crm.common.repository.feedback;
 
 import crm.common.model.Feedback;
-import crm.core.repository.persistence.repository.SimpleRepository;
+import crm.service_request.repository.persistence.AbstractRepository;
 
-public class FeedbackDAO extends SimpleRepository<Feedback, Integer> {
-    
+public class FeedbackDAO extends AbstractRepository<Feedback, Integer> {
+
     public FeedbackDAO() {
         super(Feedback.class);
     }
