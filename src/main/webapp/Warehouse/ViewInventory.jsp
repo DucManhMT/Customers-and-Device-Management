@@ -38,6 +38,33 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-2">View Product In Warehouse</h1>
     </div>
 
+    <!-- Function Buttons -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Actions</h2>
+        <div class="flex flex-wrap gap-4">
+            <a href=""
+               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                          clip-rule="evenodd"/>
+                </svg>
+                Add Product
+            </a>
+
+            <a href=""
+               class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition duration-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
+                          clip-rule="evenodd"/>
+                </svg>
+                Create Export Request
+            </a>
+        </div>
+    </div>
+
+
     <!-- Filters -->
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Filter</h2>
