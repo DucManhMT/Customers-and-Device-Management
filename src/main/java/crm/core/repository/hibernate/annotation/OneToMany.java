@@ -40,9 +40,10 @@ public @interface OneToMany {
     String joinColumn();
 
     /**
-     * Fetch strategy for the collection; defaults to lazy to avoid loading
-     * large graphs eagerly.
-     * 
-     * @return fetch mode
+     * Target entity class of the collection. Defaults to the generic type of the
+     * collection field.
+     *
+     * @return target entity class
      */
+    Class<?> targetEntity() default void.class;
 }

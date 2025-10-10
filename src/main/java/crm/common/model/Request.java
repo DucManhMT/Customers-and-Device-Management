@@ -3,8 +3,7 @@ package crm.common.model;
 import crm.common.model.enums.RequestStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
-
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(tableName = "Request")
@@ -21,10 +20,10 @@ public class Request {
     private RequestStatus requestStatus;
 
     @Column(name = "StartDate", type = "DATETIME", nullable = false)
-    private Timestamp startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "FinishedDate", type = "DATETIME")
-    private Timestamp finishedDate;
+    private LocalDateTime finishedDate;
 
     @Column(name = "Note", length = 255)
     private String note;
@@ -32,7 +31,7 @@ public class Request {
     @ManyToOne(joinColumn = "ContractID")
     private LazyReference<Contract> contract;
 
-    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID")
+    @OneToMany(mappedBy = "requestID", joinColumn = "RequestID", targetEntity = RequestLog.class)
     private List<RequestLog> logs;
 
     public Integer getRequestID() {
@@ -59,20 +58,24 @@ public class Request {
         this.requestStatus = requestStatus;
     }
 
-    public Timestamp getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    public Timestamp getFinishedDate() {
+    public LocalDateTime getFinishedDate() {
         return finishedDate;
     }
 
-    public void setFinishedDate(Timestamp finishedDate) {
+    public void setFinishedDate(LocalDateTime finishedDate) {
         this.finishedDate = finishedDate;
+    }
+
+    public void setContract(LazyReference<Contract> contract) {
+        this.contract = contract;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
     public String getNote() {

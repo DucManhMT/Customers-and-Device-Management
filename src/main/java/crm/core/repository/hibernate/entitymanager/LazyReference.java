@@ -1,33 +1,31 @@
 package crm.core.repository.hibernate.entitymanager;
 
 
-import crm.core.repository.persistence.config.DBcontext;
+import crm.core.config.DBcontext;
 
-import java.sql.Connection;
-import java.util.function.Function;
+
+import crm.core.config.DBcontext;
 
 public class LazyReference<T> {
 
     private final Class<T> targetType;
     private final Object foreignKeyValue;
-
+    private final EntityManager em;
     private T loadedValue;
     private boolean loaded = false;
-
 
     public LazyReference(Class<T> targetType, Object foreignKeyValue) {
         this.targetType = targetType;
         this.foreignKeyValue = foreignKeyValue;
+        this.em = new EntityManager(DBcontext.getConnection()); ;
     }
 
     public Object getForeignKeyValue() {
         return foreignKeyValue;
     }
 
-
     public T get() {
         if (!loaded) {
-            EntityManager em = new EntityManager(DBcontext.getConnection());
             loadedValue = em.find(targetType, foreignKeyValue);
             loaded = true;
         }

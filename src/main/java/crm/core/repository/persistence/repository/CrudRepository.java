@@ -1,8 +1,8 @@
 package crm.core.repository.persistence.repository;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 
 import java.sql.SQLException;
 
-import crm.core.repository.persistence.query.clause.ClauseBuilder;
 
 /**
  * Generic CRUD repository interface for managing entities in a database.
@@ -38,7 +38,7 @@ public interface CrudRepository<E, K> {
 
     void deleteWithCondition(ClauseBuilder clause) throws SQLException;
 
-    int count();
+    int count() throws SQLException;
 
     Iterable<E> findAll();
 

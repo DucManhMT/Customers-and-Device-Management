@@ -3,10 +3,7 @@ package crm.common.model;
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.ManyToOne;
-import crm.core.repository.hibernate.entitymanager.LazyReference;
-
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "Feedback")
 public class Feedback {
@@ -24,11 +21,10 @@ public class Feedback {
     private String response;
 
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
-    private Timestamp feedbackDate;
+    private LocalDateTime feedbackDate;
 
-
-    @ManyToOne(joinColumn = "Username")
-    private LazyReference<Account> account;
+    @Column(name = "CustomerID")
+    private String customerID;
 
     public Integer getFeedbackID() {
         return feedbackID;
@@ -62,19 +58,18 @@ public class Feedback {
         this.response = response;
     }
 
-    public Timestamp getFeedbackDate() {
+    public LocalDateTime getFeedbackDate() {
         return feedbackDate;
     }
 
-    public void setFeedbackDate(Timestamp feedbackDate) {
+    public void setFeedbackDate(LocalDateTime feedbackDate) {
         this.feedbackDate = feedbackDate;
     }
 
-    public Account getAccount() {
-        return account.get();
+    public String getCustomerID() {
+        return customerID;
     }
-
-    public void setAccount(Account account) {
-        this.account = new LazyReference<>(Account.class, account.getUsername());
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
     }
 }

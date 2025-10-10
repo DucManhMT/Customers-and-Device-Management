@@ -40,20 +40,6 @@ public interface IEntityManager {
      */
     <T> void remove(T entity, Class<T> entityClass);
 
-    /***
-     * Create a query to fetch entities based on a SQL string.
-     * @param sql  SQL query string
-     * @param resultClass Class of the entity
-     * @param <T> Type of the entity
-     * @return List of entities
-     */
-    <T> List<T> createQuery(String sql, Class<T> resultClass);
-
-    // Transaction handling
-    void beginTransaction();
-    void commit();
-    void rollback();
-    // Query execution
 
 }
 

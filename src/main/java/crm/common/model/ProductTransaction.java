@@ -4,7 +4,7 @@ import crm.common.model.enums.TransactionStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "ProductTransaction")
 public class ProductTransaction {
@@ -13,7 +13,7 @@ public class ProductTransaction {
     private Integer transactionID;
 
     @Column(name = "TransactionDate", type = "DATETIME", nullable = false)
-    private Timestamp transactionDate;
+    private LocalDateTime transactionDate;
 
     @Enumerated
     @Column(name = "TransactionStatus", length = 20, nullable = false)
@@ -39,11 +39,11 @@ public class ProductTransaction {
         this.transactionID = transactionID;
     }
 
-    public Timestamp getTransactionDate() {
+    public LocalDateTime getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Timestamp transactionDate) {
+    public void setTransactionDate(LocalDateTime transactionDate) {
         this.transactionDate = transactionDate;
     }
 
