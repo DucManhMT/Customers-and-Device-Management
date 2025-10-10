@@ -21,7 +21,6 @@ public class EntityManager implements IEntityManager,AutoCloseable {
     private final Connection connection;
     private final QueryUtils queryUtils = new QueryUtils();
 
-    private boolean inTransaction = false;
 
      public EntityManager(Connection connection) {
         this.connection = connection;

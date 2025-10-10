@@ -30,7 +30,7 @@
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" autocomplete="true" required>
                 <h6 class="text-danger">
-                    ${requestScope.error != null ? requestScope.error : ""}
+                    ${sessionScope.error != null ? sessionScope.error : ""}
             </div>
 
             <div class="mb-3">

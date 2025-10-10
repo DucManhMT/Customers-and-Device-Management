@@ -250,3 +250,12 @@ CREATE TABLE UserOTP (
     OTPCode VARCHAR(10) NOT NULL,
     ExpiredTime DATETIME NOT NULL
 );
+
+
+INSERT INTO Role (RoleID, RoleName) VALUES
+(1, 'Admin'),
+(2, 'Customer'),
+(3, 'CustomerSupporter'),
+(4, 'WarehouseKeeper'),
+(5, 'TechnicianLeader'),
+(6, 'TechnicianEmployee');
