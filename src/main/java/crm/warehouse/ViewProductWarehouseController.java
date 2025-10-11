@@ -1,9 +1,6 @@
 package crm.warehouse;
 
-import crm.common.model.Product;
-import crm.common.model.ProductWarehouse;
-import crm.common.model.Type;
-import crm.common.model.Warehouse;
+import crm.common.model.*;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
@@ -22,11 +19,15 @@ import java.util.stream.Collectors;
 @WebServlet(urlPatterns = "/warehouse/viewProductWarehouse")
 public class ViewProductWarehouseController extends HttpServlet {
 
+    private final String ERROR_MESSAGE = "You currently do not have a warehouse assigned. Please contact the administrator.";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Filter parameters
         String productNameFilter = req.getParameter("productName");
         String productTypeFilter = req.getParameter("productType");
+
+        Account account = (Account) req.getSession().getAttribute("account");
 
         // Pagination parameters
         int pageSize = 10; // Default items per page
@@ -57,14 +58,24 @@ public class ViewProductWarehouseController extends HttpServlet {
         //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
-        Warehouse warehouse = warehouseDAO.find(1);
+
+        Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
+
+        if (warehouse == null) {
+            req.setAttribute("warehouseError", warehouse);
+            req.setAttribute("errorMessage", ERROR_MESSAGE);
+            req.getRequestDispatcher("/Warehouse/ViewProduct.jsp").forward(req, resp);
+            return;
+        }
+
+        final int warehouseID = warehouse.getWarehouseID();
 
         List<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
 
         List<ProductWarehouse> pw = productWarehouseDAO.findAll();
 
         Map<Integer, Long> productCounts = pw.stream()
-                .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == 1)
+                .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == warehouseID)
                 .collect(Collectors.groupingBy(
                         pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
                         Collectors.counting()

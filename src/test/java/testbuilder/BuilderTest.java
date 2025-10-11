@@ -2,14 +2,11 @@ package testbuilder;
 
 import crm.auth.service.Hasher;
 import crm.auth.service.LoginService;
-import crm.common.model.Account;
-import crm.common.model.Contract;
-import crm.common.model.Feedback;
-import crm.common.model.Request;
-import crm.common.model.Role;
+import crm.common.model.*;
 import crm.common.model.enums.AccountStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.common.repository.account.AccountDAO;
+import crm.common.repository.staff.TechEmployeeDAO;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.*;
 import crm.core.config.DBcontext;
@@ -24,18 +21,18 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-      EntityManager em  = new EntityManager(DBcontext.getConnection());
-//        Role r = em.find(Role.class, 3);
-//        Account a = new Account();
-//        a.setUsername("user1");
-//        a.setPasswordHash("pass1");
-//        a.setRole(r);
-//        a.setAccountStatus(AccountStatus.Active);
-//        em.persist(a,Account.class);
-        AccountDAO accountDAO = new AccountDAO();
+        EntityManager em = new EntityManager(DBcontext.getConnection());
 
-        Account newAcc = accountDAO.find("user1");
+
+        Account account = new Account();
+
+        account.setUsername("warehouse2");
+        account.setPasswordHash("123");
+        account.setAccountStatus(AccountStatus.Active);
+
+
+        em.persist(account, Account.class);
 
 
     }
- }
+}

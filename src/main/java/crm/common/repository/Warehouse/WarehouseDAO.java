@@ -110,5 +110,17 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
         return inventorySummary;
     }
 
+    public Warehouse getWarehouseByUsername(String username) {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+
+        List<Warehouse> warehouse = em.findAll(Warehouse.class);
+        for (Warehouse wh : warehouse) {
+            if (wh.getManagerAccount().getUsername().equals(username)) {
+                return wh;
+            }
+        }
+        return null;
+    }
+
 
 }
