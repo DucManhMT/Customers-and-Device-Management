@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
 
 public class OTPProvider {
@@ -57,6 +58,7 @@ public class OTPProvider {
             // Save OTP to database with 1 minute expiration
             deleteExpiredOtp(em);
             UserOTP userOTP = new UserOTP();
+            userOTP.setUserOTPID(IDGeneratorService.generateID(UserOTP.class));
             userOTP.setEmail(toEmail);
             userOTP.setOtpCode(otp);
             userOTP.setExpiredTime(LocalDateTime.now().plusMinutes(1));
