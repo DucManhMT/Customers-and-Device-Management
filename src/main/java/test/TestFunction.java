@@ -3,6 +3,8 @@ package test;
 import crm.common.model.*;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,21 +14,17 @@ import java.util.Map;
 public class TestFunction {
     public static void main(String[] args) {
 
-        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
 
-        List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
-        for (Map<String, Object> entry : inventorySummary) {
-            Warehouse warehouse = (Warehouse) entry.get("warehouse");
-            Product product = (Product) entry.get("product");
-            Long count = (Long) entry.get("count");
+        List<ProductWarehouse> productWarehouseList = productWarehouseDAO.getAvailableProductsByWarehouse(2);
 
-            System.out.println("Warehouse: " + warehouse.getWarehouseName() +
-                    ", Product: " + product.getProductName() +
-                    ", Count: " + count);
-            for(ProductSpecification spec : product.getProductSpecifications()) {
-                System.out.println("   Spec: " + spec.getSpecification().getSpecificationName() + " = " + spec.getSpecification().getSpecificationValue());
-            }
+        for (ProductWarehouse pw : productWarehouseList) {
+            System.out.println("Product ID: " + pw.getInventoryItem().getProduct().getProductID());
+            System.out.println("Product Name: " + pw.getInventoryItem().getProduct().getProductName());
+            System.out.println("Status: " + pw.getProductStatus());
+            System.out.println("---------------------------");
         }
+
 
     }
 }

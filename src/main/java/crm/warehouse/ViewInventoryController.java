@@ -127,7 +127,7 @@ public class ViewInventoryController extends HttpServlet {
         req.setAttribute("productType", productTypeFilter);
         req.setAttribute("warehouse", warehouseFilter);
 
-        req.getRequestDispatcher("/Warehouse/ViewInventory.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouseKeeper/viewInventory.jsp").forward(req, resp);
     }
 
 

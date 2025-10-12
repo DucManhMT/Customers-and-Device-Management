@@ -64,7 +64,7 @@ public class ViewProductWarehouseController extends HttpServlet {
         if (warehouse == null) {
             req.setAttribute("warehouseError", warehouse);
             req.setAttribute("errorMessage", ERROR_MESSAGE);
-            req.getRequestDispatcher("/Warehouse/ViewProduct.jsp").forward(req, resp);
+            req.getRequestDispatcher("/Warehouse/viewProduct.jsp").forward(req, resp);
             return;
         }
 
@@ -130,7 +130,7 @@ public class ViewProductWarehouseController extends HttpServlet {
         req.setAttribute("productName", productNameFilter);
         req.setAttribute("productType", productTypeFilter);
 
-        req.getRequestDispatcher("/Warehouse/ViewProduct.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouseKeeper/viewProduct.jsp").forward(req, resp);
     }
 
 }
