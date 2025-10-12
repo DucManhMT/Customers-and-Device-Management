@@ -17,101 +17,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/customer_register.css">
     <script>
         let contextPath = "${pageContext.request.contextPath}";
     </script>
-    <style>
-        .validation-text {
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        .valid-text {
-            color: #28a745;
-        }
-        .invalid-text {
-            color: #dc3545;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-        .form-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-        .step {
-            display: none;
-        }
-        .step.active {
-            display: block;
-        }
-        .progress-container {
-            margin-bottom: 30px;
-        }
-        .step-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .step-title {
-            color: #495057;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-        .step-description {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-        .navigation-buttons {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .btn-nav {
-            min-width: 120px;
-        }
-        .verification-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        .code-sent-message {
-            color: #28a745;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        .verification-code-container {
-            position: relative;
-        }
-        .countdown-timer {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-        .countdown-active {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        .input-group-verification {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-        .verification-code-input {
-            flex: 1;
-        }
-        .check-code-btn {
-            min-width: 80px;
-        }
-    </style>
 </head>
 <body>
 <%
