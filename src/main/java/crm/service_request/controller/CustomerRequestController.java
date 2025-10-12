@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import crm.common.model.Account;
 import crm.common.model.Request;
-import crm.common.validator.Validator;
+import crm.core.validator.Validator;
 import crm.service_request.repository.ContractRepository;
 import crm.service_request.repository.CustomerRepository;
 import crm.service_request.repository.persistence.query.common.Page;
@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CustomerRequestController", urlPatterns = { "/customer/requests" })
+@WebServlet(name = "CustomerRequestController", urlPatterns = {"/customer/requests"})
 public class CustomerRequestController extends HttpServlet {
 
     @Override

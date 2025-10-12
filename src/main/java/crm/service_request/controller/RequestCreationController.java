@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import crm.common.MessageConst;
 import crm.common.model.Account;
 import crm.common.model.Contract;
 import crm.service_request.repository.ContractRepository;
@@ -14,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "RequestCreationController", urlPatterns = { "/customer/requests/create" })
+@WebServlet(name = "RequestCreationController", urlPatterns = {"/customer/requests/create"})
 public class RequestCreationController extends HttpServlet {
 
     @Override
@@ -26,22 +27,22 @@ public class RequestCreationController extends HttpServlet {
             String description = req.getParameter("description");
             int contractId = Integer.parseInt(req.getParameter("contractId"));
             if (contractId <= 0) {
-                throw new IllegalArgumentException("Contract ID cannot be null !");
+                throw new IllegalArgumentException(MessageConst.MSG11);
             }
             if (description == null || description.trim().isEmpty()) {
-                throw new IllegalArgumentException("Description cannot be empty !");
+                throw new IllegalArgumentException(MessageConst.MSG12);
             }
 
             requestService.createServiceRequest(description, contractId);
-            req.setAttribute("success", "Request created successfully ");
+            req.setAttribute("success", MessageConst.MSG10);
         } catch (SQLException e) {
             req.setAttribute("description", req.getParameter("description"));
             req.setAttribute("contractId", req.getParameter("contractId"));
-            req.setAttribute("error", "Something went wrong while creating request !");
+            req.setAttribute("error", MessageConst.MSG13);
         } catch (NumberFormatException e) {
             req.setAttribute("description", req.getParameter("description"));
             req.setAttribute("contractId", req.getParameter("contractId"));
-            req.setAttribute("error", "Contract ID cannot be null !");
+            req.setAttribute("error", MessageConst.MSG11);
         } catch (IllegalArgumentException e) {
             req.setAttribute("description", req.getParameter("description"));
             req.setAttribute("contractId", req.getParameter("contractId"));

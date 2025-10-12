@@ -4,8 +4,10 @@ import java.sql.SQLException;
 
 import java.time.LocalDateTime;
 
+import crm.common.model.Account;
 import crm.common.model.Contract;
 import crm.common.model.Request;
+import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.TransactionManager;
 import crm.service_request.repository.RequestRepository;
@@ -17,6 +19,7 @@ import crm.service_request.repository.persistence.query.common.Sort;
 
 public class RequestService {
     RequestRepository requestRepository = new RequestRepository();
+    RequestLogService requestLogService = new RequestLogService();
 
     public Request createServiceRequest(String description, int contractId) throws SQLException {
         LocalDateTime currentTimestamp = LocalDateTime.now();
@@ -31,6 +34,7 @@ public class RequestService {
         try {
             TransactionManager.beginTransaction();
             requestRepository.save(request);
+            requestLogService.createLog(request, "Service request created", null, RequestStatus.Pending, contract.getCustomer().getAccount().getUsername());
             TransactionManager.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,8 +46,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
-            String status, int contractId,
-            int page, int recordsPerPage) {
+                                     String status, int contractId,
+                                     int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -76,8 +80,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
-            String status, int contractId,
-            int page, int recordsPerPage) {
+                                              String status, int contractId,
+                                              int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -112,8 +116,46 @@ public class RequestService {
     }
 
     public Request getRequestById(int requestId) {
-
         return requestRepository.findById(requestId);
+    }
+
+    public boolean isRequestOwner(Request request, String username) {
+        Account account = request.getContract().getCustomer().getAccount();
+        return account.getUsername().equals(username);
+    }
+
+    public void updateRequestStatus(int requestId, RequestStatus requestStatus, String note, String username) throws IllegalArgumentException {
+        Request request = getRequestById(requestId);
+        if (request == null) {
+            throw new IllegalArgumentException("Request not found");
+        }
+        OldRequestStatus oldStatus = Request.toOldStatus(request.getRequestStatus());
+        request.setRequestStatus(requestStatus);
+        if (note != null && !note.isEmpty()) {
+            request.setNote(note);
+        }
+
+        StringBuilder logNote = new StringBuilder();
+        logNote.append(username).append(" process request: changed status from ").append(oldStatus).append(" to ").append(requestStatus).append(".");
+        if (note != null && !note.isEmpty()) {
+            logNote.append(" Note: ").append(note);
+        }
+        if (requestStatus == RequestStatus.Finished) {
+            request.setFinishedDate(LocalDateTime.now());
+        }
+        try {
+            TransactionManager.beginTransaction();
+            requestRepository.update(request);
+            requestLogService.createLog(request, logNote.toString(), oldStatus, requestStatus, username);
+            TransactionManager.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
 }

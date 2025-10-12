@@ -4,5 +4,6 @@ package crm.common.model.enums;
 public enum OldRequestStatus {
     Pending,
     Approved,
-    Rejected
+    Rejected,
+    Processing
 }

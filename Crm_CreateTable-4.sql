@@ -193,6 +193,7 @@ CREATE TABLE RequestLog (
     ActionDate DATE,
     OldStatus ENUM('Pending', 'Approved', 'Rejected'),
     NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+    Description NVARCHAR(255),
     RequestID INT NOT NULL,
     Username NVARCHAR(100),
     FOREIGN KEY (RequestID) REFERENCES Request(RequestID),

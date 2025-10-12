@@ -1,5 +1,7 @@
-package crm.common.model;
+package crm.service_request.model;
 
+import crm.common.model.Account;
+import crm.common.model.Request;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.core.repository.hibernate.annotation.*;
@@ -23,7 +25,9 @@ public class RequestLog {
     @Enumerated
     @Column(name = "NewStatus", length = 20)
     private RequestStatus newStatus;
-
+    // add description field
+    @Column(name = "Description", length = 255)
+    private String description;
 
     @ManyToOne(joinColumn = "RequestID")
     private LazyReference<Request> request;
@@ -63,7 +67,6 @@ public class RequestLog {
         this.newStatus = newStatus;
     }
 
-
     public Request getRequest() {
         return request.get();
     }
@@ -80,5 +83,13 @@ public class RequestLog {
     public void setAccount(Account account) {
 
         this.account = new LazyReference<>(Account.class, account.getUsername());
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
