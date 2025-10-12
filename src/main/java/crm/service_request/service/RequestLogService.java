@@ -6,16 +6,18 @@ import crm.common.model.enums.RequestStatus;
 import crm.core.config.TransactionManager;
 import crm.service_request.model.RequestLog;
 import crm.service_request.repository.RequestLogRepository;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class RequestLogService {
     RequestLogRepository requestLogRepository = new RequestLogRepository();
 
     public void createLog(Request request, String description, OldRequestStatus oldStatus, RequestStatus newStatus,
-            String username) {
+                          String username) {
         RequestLog requestLog = new RequestLog();
         requestLog.setRequestLogID(requestLogRepository.getNewId());
         requestLog.setRequest(request);
@@ -36,6 +38,10 @@ public class RequestLogService {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    public List<RequestLog> getLogsByRequestId(int requestId) throws SQLException {
+        return requestLogRepository.findWithCondition(ClauseBuilder.builder().equal("RequestID", requestId));
     }
 
 }

@@ -11,5 +11,5 @@ public class MessageConst {
     public static final String MSG17 = "Request updated successfully!";
     public static final String MSG18 = "Something went wrong while updating the request!";
     public static final String MSG19 = "Status cannot be empty";
-    public static final String MSG20 = "Status code cannot be null";
+    public static final String MSG20 = "You do not have permission to view this request!";
 }

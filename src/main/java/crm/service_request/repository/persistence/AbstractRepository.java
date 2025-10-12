@@ -88,9 +88,13 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         List<E> results = null;
         SelectQueryBuilder selectBuilder = SelectQueryBuilder.builder(tableName).columns(columns);
         Connection connection = DBcontext.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(selectBuilder.build());
-                ResultSet resultSet = statement.executeQuery()) {
-            results = mapListResultSetToEntities(resultSet);
+        try (PreparedStatement statement = connection.prepareStatement(selectBuilder.build());) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                results = mapListResultSetToEntities(resultSet);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,10 +117,14 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) {
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
-            try (PreparedStatement statement = connection.prepareStatement(builder.build());
-                    ResultSet resultSet = statement.executeQuery()) {
+            try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
                 setStatementParameters(statement, builder.getParameters());
-                results = mapListResultSetToEntities(resultSet);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    results = mapListResultSetToEntities(resultSet);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 return new Page<E>(total, pageRequest, results);
             }
         } catch (Exception e) {
@@ -155,10 +163,14 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         List<E> results = null;
         SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName).columns(columns).where(clause);
         Connection connection = DBcontext.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(builder.build());
-                ResultSet resultSet = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
             setStatementParameters(statement, builder.getParameters());
-            results = mapListResultSetToEntities(resultSet);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                results = mapListResultSetToEntities(resultSet);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,10 +191,14 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) {
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
-            try (PreparedStatement statement = connection.prepareStatement(builder.build());
-                    ResultSet resultSet = statement.executeQuery()) {
+            try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
                 setStatementParameters(statement, builder.getParameters());
-                results = mapListResultSetToEntities(resultSet);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    results = mapListResultSetToEntities(resultSet);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 return new Page<E>(total, pageRequest, results);
             }
         } catch (Exception e) {
