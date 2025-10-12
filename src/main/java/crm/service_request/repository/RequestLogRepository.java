@@ -1,11 +1,13 @@
 package crm.service_request.repository;
 
 import crm.core.config.DBcontext;
+import crm.core.config.TransactionManager;
 import crm.service_request.model.RequestLog;
 import crm.service_request.repository.persistence.AbstractRepository;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class RequestLogRepository extends AbstractRepository<RequestLog, Integer> {
@@ -16,9 +18,10 @@ public class RequestLogRepository extends AbstractRepository<RequestLog, Integer
 
     public Integer getNewId() {
         String sql = "SELECT MAX(RequestLogID) AS MaxID FROM RequestLog";
+
         Connection connection = DBcontext.getConnection();
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+                ResultSet resultSet = statement.executeQuery(sql)) {
             if (resultSet.next()) {
                 int maxId = resultSet.getInt("MaxID");
                 return maxId + 1;
@@ -26,6 +29,7 @@ public class RequestLogRepository extends AbstractRepository<RequestLog, Integer
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return 1;
     }
 }

@@ -55,11 +55,12 @@ public class RequestCreationController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Account account = (Account) req.getSession().getAttribute("account");
         ContractRepository contractRepo = new ContractRepository();
-
+        
         if (account == null) {
-            resp.sendRedirect(req.getContextPath() + "/customer_login_controller");
+            resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
             return;
         }
+
         List<Contract> contracts = contractRepo.findByUsername(account.getUsername());
         req.setAttribute("contracts", contracts);
 

@@ -14,8 +14,10 @@ import java.time.LocalDate;
 public class RequestLogService {
     RequestLogRepository requestLogRepository = new RequestLogRepository();
 
-    public void createLog(Request request, String description, OldRequestStatus oldStatus, RequestStatus newStatus, String username) {
+    public void createLog(Request request, String description, OldRequestStatus oldStatus, RequestStatus newStatus,
+            String username) {
         RequestLog requestLog = new RequestLog();
+        requestLog.setRequestLogID(requestLogRepository.getNewId());
         requestLog.setRequest(request);
         requestLog.setDescription(description);
         requestLog.setOldStatus(oldStatus);
@@ -35,6 +37,5 @@ public class RequestLogService {
             }
         }
     }
-
 
 }

@@ -1,5 +1,6 @@
 package crm.service_request.controller;
 
+import crm.common.MessageConst;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.service_request.service.RequestService;
@@ -31,6 +32,8 @@ public class CustomerRequestDetail extends HttpServlet {
             } else {
                 throw new IllegalArgumentException("You do not have permission to view this request");
             }
+        } catch (NumberFormatException e) {
+            req.setAttribute("error", MessageConst.MSG16);
         } catch (IllegalArgumentException e) {
             req.setAttribute("error", e.getMessage());
         }

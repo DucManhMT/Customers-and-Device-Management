@@ -185,7 +185,7 @@ public class EntityFieldMapper {
                 return field;
             }
         }
-        throw new RuntimeException("No @Key field found in class " + clazz.getName());
+        return null;
     }
 
     public List<?> getOneToManyList(Object entity) {

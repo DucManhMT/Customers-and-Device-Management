@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import crm.core.config.TransactionManager;
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;
@@ -31,38 +32,24 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         this.keyField = EntityFieldMapper.findKeyField(entityClass);
         fields = List.of(entityClass.getDeclaredFields());
         tableName = EntityFieldMapper.getTableName(entityClass);
-        columns = fields.stream().filter((f) -> !EntityFieldMapper.isOneToMany(f))
+        columns = fields.stream()
+                .filter(f -> !EntityFieldMapper.isOneToMany(f))
                 .map(EntityFieldMapper::getColumnName)
+                .filter(col -> col != null && !col.isBlank())
                 .toList();
     }
 
     @Override
     public int count() {
         int count = 0;
-        try {
-            TransactionManager.beginTransaction();
-            Connection connection = TransactionManager.getConnection();
-            String query = "Slect count(*) from " + tableName;
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        count = resultSet.getInt(1);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+        String query = "SELECT count(*) FROM " + tableName;
+        Connection connection = DBcontext.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
             }
-            TransactionManager.commit();
-        } catch (SQLException e) {
-            try {
-                TransactionManager.rollback();
-            } catch (SQLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return count;
@@ -100,13 +87,10 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     public List<E> findAll() {
         List<E> results = null;
         SelectQueryBuilder selectBuilder = SelectQueryBuilder.builder(tableName).columns(columns);
-        Connection connection = TransactionManager.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(selectBuilder.build())) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                results = mapListResultSetToEntities(resultSet);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        Connection connection = DBcontext.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(selectBuilder.build());
+                ResultSet resultSet = statement.executeQuery()) {
+            results = mapListResultSetToEntities(resultSet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,8 +101,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         List<E> results = null;
         int total = 0;
         try {
-            TransactionManager.beginTransaction();
-            Connection connection = TransactionManager.getConnection();
+            Connection connection = DBcontext.getConnection();
             // Build the base select query
             SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName)
                     .columns(columns);
@@ -130,20 +113,13 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) {
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
-            try (PreparedStatement statement = connection.prepareStatement(builder.build())) {
+            try (PreparedStatement statement = connection.prepareStatement(builder.build());
+                    ResultSet resultSet = statement.executeQuery()) {
                 setStatementParameters(statement, builder.getParameters());
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    results = mapListResultSetToEntities(resultSet);
-                    return new Page<E>(total, pageRequest, results);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                results = mapListResultSetToEntities(resultSet);
+                return new Page<E>(total, pageRequest, results);
             }
-            TransactionManager.commit();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -155,15 +131,18 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         E entity = null;
         SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName)
                 .where(EntityFieldMapper.getColumnName(keyField) + " = ?", key);
-        Connection connection = TransactionManager.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(builder.build())) {
+        Connection connection = DBcontext.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
             setStatementParameters(statement, builder.getParameters());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     entity = EntityFieldMapper.mapEntity(resultSet, entityClass);
                     return entity;
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,21 +154,11 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     public List<E> findWithCondition(ClauseBuilder clause) {
         List<E> results = null;
         SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName).columns(columns).where(clause);
-        try {
-            TransactionManager.beginTransaction();
-            Connection connection = TransactionManager.getConnection();
-            try (PreparedStatement statement = connection.prepareStatement(builder.build())) {
-                setStatementParameters(statement, builder.getParameters());
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    results = mapListResultSetToEntities(resultSet);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            TransactionManager.commit();
+        Connection connection = DBcontext.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(builder.build());
+                ResultSet resultSet = statement.executeQuery()) {
+            setStatementParameters(statement, builder.getParameters());
+            results = mapListResultSetToEntities(resultSet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,25 +172,18 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName).columns(columns).where(clause);
 
         try {
-            TransactionManager.beginTransaction();
-            Connection connection = TransactionManager.getConnection();
+            Connection connection = DBcontext.getConnection();
             total = countRecord(builder, connection);
             int offset = (pageRequest.getPageNumber() - 1) * pageRequest.getPageSize();
             builder.limit(pageRequest.getPageSize()).offset(offset);
             if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) {
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
-            try (PreparedStatement statement = connection.prepareStatement(builder.build())) {
+            try (PreparedStatement statement = connection.prepareStatement(builder.build());
+                    ResultSet resultSet = statement.executeQuery()) {
                 setStatementParameters(statement, builder.getParameters());
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    results = mapListResultSetToEntities(resultSet);
-                    return new Page<E>(total, pageRequest, results);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                results = mapListResultSetToEntities(resultSet);
+                return new Page<E>(total, pageRequest, results);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,25 +194,16 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
     @Override
     public boolean isExist(K key) {
-        try {
-            TransactionManager.beginTransaction();
-            Connection connection = TransactionManager.getConnection();
-            String query = "SELECT 1 FROM " + tableName + " WHERE "
-                    + EntityFieldMapper.getColumnName(keyField) + " = ? LIMIT 1";
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setObject(1, key);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return true;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        String query = "SELECT 1 FROM " + tableName + " WHERE "
+                + EntityFieldMapper.getColumnName(keyField) + " = ? LIMIT 1";
+        Connection connection = DBcontext.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setObject(1, key);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return true;
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            TransactionManager.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -262,7 +215,6 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         Connection connection = TransactionManager.getConnection();
         InsertQueryBuilder insertBuilder = InsertQueryBuilder.builder(tableName).columns(columns)
                 .values(getFieldValues(entity));
-        System.out.println(insertBuilder.getParameters());
         try (PreparedStatement statement = connection.prepareStatement(insertBuilder.build())) {
             setStatementParameters(statement, insertBuilder.getParameters());
             statement.executeUpdate();

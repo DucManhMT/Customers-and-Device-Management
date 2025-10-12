@@ -10,6 +10,7 @@ import crm.common.model.Request;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.TransactionManager;
+import crm.service_request.repository.ContractRepository;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Order;
@@ -20,13 +21,13 @@ import crm.service_request.repository.persistence.query.common.Sort;
 public class RequestService {
     RequestRepository requestRepository = new RequestRepository();
     RequestLogService requestLogService = new RequestLogService();
+    ContractRepository contractRepository = new ContractRepository();
 
     public Request createServiceRequest(String description, int contractId) throws SQLException {
         LocalDateTime currentTimestamp = LocalDateTime.now();
-        Contract contract = new Contract();
-        contract.setContractID(contractId);
+        Contract contract = contractRepository.findById(contractId);
         Request request = new Request();
-        request.setRequestID(10);
+        request.setRequestID(requestRepository.getNewId());
         request.setRequestDescription(description);
         request.setRequestStatus(RequestStatus.Pending);
         request.setStartDate(currentTimestamp);
@@ -124,6 +125,10 @@ public class RequestService {
         return account.getUsername().equals(username);
     }
 
+    public boolean isExist(int requestId) {
+        return requestRepository.isExist(requestId);
+    }
+
     public void updateRequestStatus(int requestId, RequestStatus requestStatus, String note, String username) throws IllegalArgumentException {
         Request request = getRequestById(requestId);
         if (request == null) {
@@ -136,7 +141,7 @@ public class RequestService {
         }
 
         StringBuilder logNote = new StringBuilder();
-        logNote.append(username).append(" process request: changed status from ").append(oldStatus).append(" to ").append(requestStatus).append(".");
+        logNote.append("Process request: changed status from ").append(oldStatus).append(" to ").append(requestStatus).append(".");
         if (note != null && !note.isEmpty()) {
             logNote.append(" Note: ").append(note);
         }
@@ -153,6 +158,7 @@ public class RequestService {
             try {
                 TransactionManager.rollback();
             } catch (SQLException ex) {
+                ex.printStackTrace();
                 throw new RuntimeException(ex);
             }
         }

@@ -14,7 +14,7 @@ public class TransactionManager {
     public static void beginTransaction() throws SQLException {
 
         if (transactionDepthHolder.get() < 1 || connectionHolder.get() == null) {
-            Connection connection = getConnection();
+            Connection connection = DBcontext.createConnection();
             connection.setAutoCommit(false);
             connectionHolder.set(connection);
         }
@@ -33,6 +33,7 @@ public class TransactionManager {
             throw new SQLException("No transaction to commit");
         } else if (depth == 0) {
             connection.commit();
+            connection.close();
             connectionHolder.remove();
         }
 
@@ -49,6 +50,7 @@ public class TransactionManager {
             throw new SQLException("No transaction to rollback");
         } else if (depth == 0) {
             connection.rollback();
+            connection.close();
             connectionHolder.remove();
         }
 
@@ -57,9 +59,7 @@ public class TransactionManager {
     public static Connection getConnection() {
         Connection connection = connectionHolder.get();
         if (connection == null) {
-            connection = DBcontext.getConnection();
-            connectionHolder.set(connection);
-
+            throw new IllegalStateException("No active transaction. Please start a transaction first.");
         }
         return connection;
     }

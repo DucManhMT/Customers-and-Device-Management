@@ -1,6 +1,7 @@
 package crm.service_request.repository;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.List;
 import crm.common.model.Contract;
 import crm.common.model.Request;
 import crm.core.config.DBcontext;
-import crm.core.config.TransactionManager;
 import crm.service_request.repository.persistence.AbstractRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;
@@ -23,7 +23,7 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
         String sql = "SELECT MAX(RequestID) AS MaxID FROM Request";
         Connection connection = DBcontext.getConnection();
         try (Statement statement = connection.createStatement();
-             var resultSet = statement.executeQuery(sql)) {
+             ResultSet resultSet = statement.executeQuery(sql)) {
             if (resultSet.next()) {
                 int maxId = resultSet.getInt("MaxID");
                 return maxId + 1;
@@ -31,9 +31,9 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return 1;
     }
-
 
     public Page<Request> findByUsername(String username, PageRequest pageRequest) {
         if (username == null || username.isEmpty()) {

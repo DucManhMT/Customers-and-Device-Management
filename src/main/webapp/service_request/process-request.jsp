@@ -20,13 +20,12 @@
         </div>
         <div class="card-body">
 
-            <form action="submitRequest" method="post" class="needs-validation" novalidate>
-
-                <!-- Note -->
+            <form action="./process" method="post" class="needs-validation" novalidate>
+                <input type="hidden" name="requestId" value="${request.requestID}"/>
                 <div class="mb-3">
                     <label for="note" class="form-label fw-semibold">Note</label>
                     <textarea id="note" name="note" class="form-control" rows="3"
-                              placeholder="Enter processing note or update here..." required></textarea>
+                              placeholder="Enter processing note or update here..."></textarea>
                     <div class="invalid-feedback">
                         Please provide a note before submitting.
                     </div>
@@ -35,12 +34,21 @@
                 <div class="mb-3">
                     <label for="action" class="form-label fw-semibold">Status</label>
                     <select id="status" name="status" class="form-select" style="width: 200px; display: inline-block;">
+                        <option value="">Select Status</option>
                         <option value="Approved" ${status == 'Approved' ? 'selected' : ''}>Approved</option>
                         <option value="Rejected" ${status == 'Rejected' ? 'selected' : ''}>Rejected</option>
                         <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
+                        <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
                     </select>
                 </div>
 
+                <!-- Messages -->
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger mt-3">${error}</div>
+                </c:if>
+                <c:if test="${not empty success}">
+                    <div class="alert alert-success mt-3">${success}</div>
+                </c:if>
 
                 <div class="d-flex justify-content-end gap-2">
                     <button type="submit" class="btn btn-success">Submit</button>
