@@ -245,7 +245,7 @@ CREATE TABLE ProductContract (
 );
 
 CREATE TABLE UserOTP (
-    UserOTPID INT AUTO_INCREMENT PRIMARY KEY,
+    UserOTPID INT PRIMARY KEY,
     Email VARCHAR(255) NOT NULL,
     OTPCode VARCHAR(10) NOT NULL,
     ExpiredTime DATETIME NOT NULL
@@ -259,3 +259,17 @@ INSERT INTO Role (RoleID, RoleName) VALUES
 (4, 'WarehouseKeeper'),
 (5, 'TechnicianLeader'),
 (6, 'TechnicianEmployee');
+
+
+CREATE TABLE Province (
+	ProvinceID INT PRIMARY KEY NOT NULL,
+    ProvinceName NVARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Village (
+	VillageID INT PRIMARY KEY NOT NULL,
+    VillageName NVARCHAR(255) NOT NULL,
+    ProvinceID INT NOT NULL,
+    FOREIGN KEY (ProvinceID) REFERENCES Province(ProvinceID)
+)
+
