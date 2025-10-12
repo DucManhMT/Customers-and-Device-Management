@@ -2,5 +2,6 @@ package crm.common.model.enums;
 
 public enum TransactionStatus {
     Export,
-    Import
+    Import,
+    Request_Export
 }

@@ -5,11 +5,9 @@ import crm.common.model.enums.ProductStatus;
 import crm.common.repository.FuntionalityDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class ProductWarehouseDAO extends FuntionalityDAO {
+public class ProductWarehouseDAO extends FuntionalityDAO<ProductWarehouse> {
 
     public ProductWarehouseDAO() {
         super(ProductWarehouse.class);

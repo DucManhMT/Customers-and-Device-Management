@@ -1,10 +1,12 @@
 package crm.warehouse;
 
 import crm.common.model.*;
-import crm.common.model.enums.ProductStatus;
+import crm.common.model.enums.TransactionStatus;
+import crm.common.repository.Warehouse.ProductTransactionDAO;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
+import crm.core.repository.hibernate.querybuilder.QueryOperation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +26,7 @@ public class CreateExportRequest extends HttpServlet {
     //DAOs
     WarehouseDAO warehouseDAO = new WarehouseDAO();
     ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
+    ProductTransactionDAO productTransactionDAO = new ProductTransactionDAO();
     TypeDAO typeDAO = new TypeDAO();
 
     @Override
@@ -55,6 +60,40 @@ public class CreateExportRequest extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String[] selectedProductWarehouseIDs = req.getParameterValues("allSelectedItemIDs");
+        String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
+        int selectedWarehouseID = Integer.parseInt(selectedWarehouseIDStr);
+
+        Account account = (Account) req.getSession().getAttribute("account");
+
+        Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
+        Warehouse destinationWarehouse = warehouseDAO.find(selectedWarehouseID);
+
+        List<ProductWarehouse> productWarehouse = new ArrayList<>();
+        List<ProductTransaction> productTransactions;
+
+        for (String productWarehouseIDStr : selectedProductWarehouseIDs) {
+            int productWarehouseID = Integer.parseInt(productWarehouseIDStr);
+            ProductWarehouse pw1 = productWarehouseDAO.find(productWarehouseID);
+        }
+
+        for (ProductWarehouse pw : productWarehouse) {
+            LocalDateTime now = LocalDateTime.now();
+            productTransactions = productTransactionDAO.findAll();
+            ProductTransaction productTransaction = new ProductTransaction();
+
+            productTransaction.setTransactionID();
+            productTransaction.setInventoryItem(pw.getInventoryItem());
+            productTransaction.setTransactionDate(now);
+            productTransaction.setTransactionStatus(TransactionStatus.Request_Export);
+            productTransaction.setNote(req.getParameter("note"));
+            productTransaction.setSourceWarehouseEntity(destinationWarehouse);
+            productTransaction.setDestinationWarehouseEntity(managerWarehouse);
+
+            productTransactionDAO.persist(productTransaction);
+        }
+
 
         req.getRequestDispatcher("/warehouseKeeper/createExportInternal.jsp").forward(req, resp);
     }

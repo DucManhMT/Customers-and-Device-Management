@@ -81,7 +81,7 @@
 
                 <c:choose>
                     <c:when test="${not empty productsInSelectedWarehouse}">
-                        <form action="processInternalExport" method="post" id="exportForm">
+                        <form action="createExportRequest" method="post" id="exportForm">
                             <input type="hidden" name="sourceWarehouseID" value="${managerWarehouse.warehouseID}">
                             <input type="hidden" name="destinationWarehouseID" value="${selectedWarehouseID}">
                             <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs"
