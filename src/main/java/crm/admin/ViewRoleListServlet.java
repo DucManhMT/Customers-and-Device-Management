@@ -4,13 +4,14 @@ import crm.common.model.Role;
 import crm.common.model.Account;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import crm.core.config.DBcontext;
 import java.util.Map;
 
 @WebServlet(urlPatterns = "/ViewRoleList")
@@ -19,18 +20,51 @@ public class ViewRoleListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
+        HttpSession session = request.getSession();
 
+        // ItemsPerPage
+        String itemsPerPageParam = request.getParameter("itemsPerPage");
+        if (itemsPerPageParam == null || itemsPerPageParam.isEmpty()) {
+            itemsPerPageParam = (String) session.getAttribute("itemsPerPage");
+        } else {
+            session.setAttribute("itemsPerPage", itemsPerPageParam);
+        }
+        // Page
+        String pageParam = request.getParameter("page");
+        if (pageParam == null || pageParam.isEmpty()) {
+            pageParam = (String) session.getAttribute("page");
+        } else {
+            session.setAttribute("page", pageParam);
+        }
+        // Search
         String searchParam = request.getParameter("search");
+        if (searchParam == null || searchParam.isEmpty()) {
+            searchParam = (String) session.getAttribute("search");
+        } else {
+            session.setAttribute("search", searchParam);
+        }
+
+        String error = (String) session.getAttribute("error");
+        if (error != null) {
+            request.setAttribute("error", error);
+            session.removeAttribute("error");
+        }
 
         int page = 1;
-        String pageParam = request.getParameter("page");
         if (pageParam != null && !pageParam.isEmpty()) {
-            page = Integer.parseInt(pageParam);
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
         }
         int recordsPerPage = 5;
-        String itemsPerPageParam = request.getParameter("itemsPerPage");
         if (itemsPerPageParam != null && !itemsPerPageParam.isEmpty()) {
-            recordsPerPage = Integer.parseInt(itemsPerPageParam);
+            try {
+                recordsPerPage = Integer.parseInt(itemsPerPageParam);
+            } catch (NumberFormatException e) {
+                recordsPerPage = 5;
+            }
         }
         int offset = (page - 1) * recordsPerPage;
 
@@ -39,13 +73,19 @@ public class ViewRoleListServlet extends HttpServlet {
             conditions.put("roleName", searchParam);
         }
 
+        // Order by ID
+        Map<String, SortDirection> orderConditions = new HashMap<>();
+        orderConditions.put("roleID", SortDirection.ASC);
+
         List<Role> roles;
         int totalRecords;
         if (!conditions.isEmpty()) {
-            roles = em.findWithConditionsAndPagination(Role.class, conditions, recordsPerPage, offset);
+            // Having Search
+            roles = em.findWithConditionsOrderAndPagination(Role.class, conditions, orderConditions, recordsPerPage, offset);
             totalRecords = em.findWithConditions(Role.class, conditions).size();
         } else {
-            roles = em.findWithPagination(Role.class, recordsPerPage, offset);
+            // No search
+            roles = em.findWithOrderAndPagination(Role.class, orderConditions, recordsPerPage, offset);
             totalRecords = em.count(Role.class);
         }
         int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
@@ -94,7 +134,7 @@ public class ViewRoleListServlet extends HttpServlet {
                         em.remove(roleToDelete, Role.class);
                     }
                 } catch (Exception e) {
-                    request.setAttribute("deleteError", "Không thể xóa role này!");
+                    request.getSession().setAttribute("error", "This role can't be delete because have assigned to one or more account.");
                 }
             }
             response.sendRedirect("ViewRoleList");

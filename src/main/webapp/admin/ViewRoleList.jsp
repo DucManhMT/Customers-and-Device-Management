@@ -15,7 +15,9 @@
             <h2 class="fw-bold text-dark mb-2">Role Management</h2>
         </div>
     </div>
-
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-6">
@@ -65,7 +67,7 @@
                     </a>
                 </div>
                 <div class="col-12 col-md-3">
-                    <a href="AddRole" class="btn btn-primary w-100">
+                    <a href="${pageContext.request.contextPath}/CreateRole" class="btn btn-primary w-100">
                         <i class="bi bi-plus-lg"></i> Add New Role
                     </a>
                 </div>

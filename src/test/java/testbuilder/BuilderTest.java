@@ -25,17 +25,12 @@ import java.util.Map;
 public class BuilderTest {
     public static void main(String[] args) {
       EntityManager em  = new EntityManager(DBcontext.getConnection());
-//        Role r = em.find(Role.class, 3);
-//        Account a = new Account();
-//        a.setUsername("user1");
-//        a.setPasswordHash("pass1");
-//        a.setRole(r);
-//        a.setAccountStatus(AccountStatus.Active);
-//        em.persist(a,Account.class);
-        AccountDAO accountDAO = new AccountDAO();
+      Role role = new Role();
+        role.setRoleID(4);
+        role.setRoleName("Warehouse Keeper");
+//        em.persist(role,Role.class);
 
-        Account newAcc = accountDAO.find("user1");
-
+        em.remove(role,Role.class);
 
     }
  }
