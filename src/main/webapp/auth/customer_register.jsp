@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: MasterLong
@@ -16,103 +17,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/customer_register.css">
     <script>
         let contextPath = "${pageContext.request.contextPath}";
     </script>
-    <style>
-        .validation-text {
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        .valid-text {
-            color: #28a745;
-        }
-        .invalid-text {
-            color: #dc3545;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-        .form-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-        .step {
-            display: none;
-        }
-        .step.active {
-            display: block;
-        }
-        .progress-container {
-            margin-bottom: 30px;
-        }
-        .step-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .step-title {
-            color: #495057;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-        .step-description {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-        .navigation-buttons {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .btn-nav {
-            min-width: 120px;
-        }
-        .verification-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        .code-sent-message {
-            color: #28a745;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        .verification-code-container {
-            position: relative;
-        }
-        .countdown-timer {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-        .countdown-active {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        .input-group-verification {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-        .verification-code-input {
-            flex: 1;
-        }
-        .check-code-btn {
-            min-width: 80px;
-        }
-    </style>
 </head>
 <body>
+<%
+    String registerMessage = (String) session.getAttribute("registerMessage");
+    String registerStatus = (String) session.getAttribute("registerStatus");
+
+    if (registerMessage != null) {
+%>
+<script>
+    <% if ("success".equals(registerStatus)) { %>
+    alert("<%= registerMessage.replace("\"", "\\\"") %>");
+    <% } else { %>
+    alert("<%= registerMessage.replace("\"", "\\\"") %>");
+    <% } %>
+</script>
+<%
+        // ✅ Clear the session attributes so the alert only shows once
+        session.removeAttribute("registerMessage");
+        session.removeAttribute("registerStatus");
+    }
+%>
+
 <div class="container">
     <div class="form-container">
         <h2 class="form-title">Create Your Account</h2>
@@ -128,7 +58,7 @@
             </div>
         </div>
 
-        <form id="registrationForm" novalidate>
+        <form id="registrationForm" action="${pageContext.request.contextPath}/auth/customer_register_controller" method="post" novalidate>
 
             <!-- Step 1: Personal Information -->
             <div class="step active" id="step1">
@@ -140,19 +70,19 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name" required>
                         <div id="firstNameValidation" class="validation-text"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
                         <div id="lastNameValidation" class="validation-text"></div>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number (e.g., +1234567890)" required>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number (e.g., 0123456789)" required>
                     <div id="phoneValidation" class="validation-text"></div>
                 </div>
 
@@ -173,19 +103,19 @@
 
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Choose a username (3-20 characters, alphanumeric)" required>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username (3-20 characters, alphanumeric)" required>
                     <div id="usernameValidation" class="validation-text"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Create a strong password" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
                     <div id="passwordValidation" class="validation-text"></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="confirmPassword" class="form-label">Re-enter Password</label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
                     <div id="confirmPasswordValidation" class="validation-text"></div>
                 </div>
 
@@ -207,40 +137,28 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="country" class="form-label">Country</label>
-                        <select class="form-select" id="country" required>
-                            <option value="">Select Country</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="UK">United Kingdom</option>
-                            <option value="AU">Australia</option>
-                            <option value="VN">Vietnam</option>
-                            <option value="JP">Japan</option>
-                            <option value="KR">South Korea</option>
-                            <option value="CN">China</option>
-                        </select>
-                        <div id="countryValidation" class="validation-text"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="province" class="form-label">Province/State</label>
-                        <select class="form-select" id="province" required>
-                            <option value="">Select Province/State</option>
+                    <div class="col-md-6">
+                        <label for="province" class="form-label">Province</label>
+                        <select class="form-select" id="province" name="province" required>
+                            <option value="">Select Province</option>
+                            <c:forEach var="province" items="${requestScope.provinces}">
+                                <option value="${province.provinceID}">${province.provinceName}</option>
+                            </c:forEach>
                         </select>
                         <div id="provinceValidation" class="validation-text"></div>
                     </div>
-                    <div class="col-md-4">
-                        <label for="district" class="form-label">District/City</label>
-                        <select class="form-select" id="district" required>
-                            <option value="">Select District/City</option>
+                    <div class="col-md-6">
+                        <label for="village" class="form-label">Village</label>
+                        <select class="form-select" id="village" name="village" required>
+                            <option value="">Select Village</option>
                         </select>
-                        <div id="districtValidation" class="validation-text"></div>
+                        <div id="villageValidation" class="validation-text"></div>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="address" class="form-label">Detailed Address</label>
-                    <textarea class="form-control" id="address" rows="3" placeholder="Enter your detailed address (street, building number, etc.)" required></textarea>
+                    <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter your detailed address (street, building number, etc.)" required></textarea>
                     <div id="addressValidation" class="validation-text"></div>
                 </div>
 
@@ -263,7 +181,7 @@
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter your email address" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
                     <div id="emailValidation" class="validation-text"></div>
                 </div>
 
@@ -283,7 +201,7 @@
                         <label for="verificationCode" class="form-label">Verification Code</label>
                         <div class="input-group-verification">
                             <div class="verification-code-input">
-                                <input type="text" class="form-control" id="verificationCode" placeholder="Enter the 6-digit code" maxlength="6">
+                                <input type="text" class="form-control" id="verificationCode" name="verificationCode" placeholder="Enter the 6-digit code" maxlength="6">
                             </div>
                             <button type="button" class="btn btn-outline-success check-code-btn" id="checkCodeBtn">
                                 <i class="bi bi-check-circle"></i> Check
@@ -305,7 +223,7 @@
 
             <!-- Back to Login Link -->
             <div class="text-center mt-4">
-                <a href="login.jsp" class="text-decoration-none">
+                <a href="${pageContext.request.contextPath}/auth/customer_login" class="text-decoration-none">
                     <i class="bi bi-arrow-left-circle"></i> Back to Login
                 </a>
             </div>
@@ -325,45 +243,67 @@
     let countdownSeconds = 0;
 
     // Location data (simplified)
-    const locationData = {
-        'US': ['California', 'New York', 'Texas', 'Florida'],
-        'CA': ['Ontario', 'Quebec', 'British Columbia', 'Alberta'],
-        'UK': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
-        'VN': ['Ho Chi Minh City', 'Hanoi', 'Da Nang', 'Can Tho'],
-        'JP': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama'],
-        'KR': ['Seoul', 'Busan', 'Incheon', 'Daegu'],
-        'CN': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen']
-    };
+    // const locationData = {
+    //     'US': ['California', 'New York', 'Texas', 'Florida'],
+    //     'CA': ['Ontario', 'Quebec', 'British Columbia', 'Alberta'],
+    //     'UK': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
+    //     'VN': ['Ho Chi Minh City', 'Hanoi', 'Da Nang', 'Can Tho'],
+    //     'JP': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama'],
+    //     'KR': ['Seoul', 'Busan', 'Incheon', 'Daegu'],
+    //     'CN': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen']
+    // };
 
-    const districtData = {
-        'California': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
-        'New York': ['New York City', 'Buffalo', 'Rochester', 'Albany'],
-        'Ho Chi Minh City': ['District 1', 'District 3', 'District 7', 'Binh Thanh'],
-        'Hanoi': ['Ba Dinh', 'Hoan Kiem', 'Hai Ba Trung', 'Dong Da']
-    };
 
     // Validation functions
     function validateName(name) {
-        return name.trim().length >= 2 && name.trim().length <= 30;
+        const nameRegex = /^[a-zA-Z\s]{2,30}$/;
+        return nameRegex.test(name.trim());
     }
 
     function validatePhone(phone) {
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        const phoneRegex = /^0\d{9}$/;
         return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
     }
 
     function validateUsername(username) {
         const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-        return usernameRegex.test(username);
+        let userNameExists;
+        fetch(contextPath + "/api/check_username?username=" + encodeURIComponent(username))
+            .then(response => response.json())
+            .then(data => {
+                userNameExists = data.exists;
+                if (userNameExists) {
+                    showValidation('usernameValidation', false, '', '✗ Username is already taken');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        return usernameRegex.test(username) && !userNameExists;
     }
 
     function validatePassword(password) {
-        return true; // Simplified for demo; implement actual strength check as needed
+        // Password must be at least 6 characters, contain letters, numbers, and special characters
+        const passwordRegex = /^[A-Za-z\d@$!%*#?&]{6,}$/;
+        return passwordRegex.test(password);
     }
 
     function validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        let emailExists;
+        fetch(contextPath + "/api/check_email?email=" + encodeURIComponent(email))
+            .then(response => response.json())
+            .then(data => {
+                emailExists = data.exists;
+                if (emailExists) {
+                    showValidation('emailValidation', false, '', '✗ Email is already registered');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        return emailRegex.test(email) && !emailExists;
     }
 
     function validateAddress(address) {
@@ -431,11 +371,10 @@
                 return validateUsername(username) && validatePassword(password) && password === confirmPassword;
 
             case 3:
-                const country = document.getElementById('country').value;
                 const province = document.getElementById('province').value;
-                const district = document.getElementById('district').value;
+                const village = document.getElementById('village').value;
                 const address = document.getElementById('address').value;
-                return country && province && district && validateAddress(address);
+                return province && village;
 
             case 4:
                 const email = document.getElementById('email').value;
@@ -520,14 +459,14 @@
         const isValid = validateName(this.value);
         showValidation('firstNameValidation', isValid,
             '✓ First name looks good!',
-            '✗ First name must be 2-30 characters long');
+            '✗ First name must be 2-30 characters long, letters only');
     });
 
     document.getElementById('lastName').addEventListener('input', function() {
         const isValid = validateName(this.value);
         showValidation('lastNameValidation', isValid,
             '✓ Last name looks good!',
-            '✗ Last name must be 2-30 characters long');
+            '✗ Last name must be 2-30 characters long, letters only');
     });
 
     document.getElementById('phone').addEventListener('input', function() {
@@ -549,7 +488,7 @@
         const isValid = validatePassword(this.value);
         showValidation('passwordValidation', isValid,
             '✓ Password is strong!',
-            '✗ Password must be 8+ characters with letters, numbers, and special characters');
+            '✗ Password must be 6+ characters, letters, numbers, special characters');
 
         // Also validate confirm password if it has a value
         const confirmPassword = document.getElementById('confirmPassword').value;
@@ -570,55 +509,42 @@
     document.getElementById('confirmPassword').addEventListener('input', validateConfirmPassword);
 
     // Real-time validation for Step 3
-    document.getElementById('country').addEventListener('change', function() {
-        const isValid = this.value !== '';
-        showValidation('countryValidation', isValid,
-            '✓ Country selected!',
-            '✗ Please select a country');
-
-        // Populate provinces
-        const provinceSelect = document.getElementById('province');
-        provinceSelect.innerHTML = '<option value="">Select Province/State</option>';
-
-        if (this.value && locationData[this.value]) {
-            locationData[this.value].forEach(province => {
-                const option = document.createElement('option');
-                option.value = province;
-                option.textContent = province;
-                provinceSelect.appendChild(option);
-            });
-        }
-
-        // Reset district
-        document.getElementById('district').innerHTML = '<option value="">Select District/City</option>';
-    });
-
     document.getElementById('province').addEventListener('change', function() {
         const isValid = this.value !== '';
         showValidation('provinceValidation', isValid,
-            '✓ Province/State selected!',
-            '✗ Please select a province/state');
+            '✓ Province selected!',
+            '✗ Please select a province');
 
-        // Populate districts
-        const districtSelect = document.getElementById('district');
-        districtSelect.innerHTML = '<option value="">Select District/City</option>';
+        // Populate villages
+        const villageSelect = document.getElementById('village');
+        villageSelect.innerHTML = '<option value="">Select Village</option>';
 
-        if (this.value && districtData[this.value]) {
-            districtData[this.value].forEach(district => {
-                const option = document.createElement('option');
-                option.value = district;
-                option.textContent = district;
-                districtSelect.appendChild(option);
-            });
+        if (this.value) {
+            fetch(contextPath + "/api/get_villages?provinceID=" + encodeURIComponent(this.value))
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(village => {
+                        const option = document.createElement('option');
+                        option.value = village.villageID;
+                        option.textContent = village.villageName;
+                        villageSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching villages:', error);
+                });
         }
+
     });
 
-    document.getElementById('district').addEventListener('change', function() {
+    document.getElementById('village').addEventListener('change', function() {
         const isValid = this.value !== '';
-        showValidation('districtValidation', isValid,
-            '✓ District/City selected!',
-            '✗ Please select a district/city');
+        showValidation('villageValidation', isValid,
+            '✓ Village selected!',
+            '✗ Please select a village/state');
+
     });
+
 
     document.getElementById('address').addEventListener('input', function() {
         const isValid = validateAddress(this.value);
@@ -790,15 +716,11 @@
 
     // Form submission
     document.getElementById('registrationForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        if (validateStep(4)) {
-            alert('Registration completed successfully! Welcome aboard!');
-            // Here you would normally submit the form data to your server
-            // window.location.href = 'login.jsp';
-        } else {
+        if (!validateStep(4)) {
+            e.preventDefault();
             alert('Please complete all verification steps before submitting.');
         }
+        // If validation passes, form submits normally to controller
     });
 
     // Initialize validation messages on page load
@@ -813,9 +735,8 @@
         showValidation('passwordValidation', false, '', 'Strong password is required (8+ chars, letters, numbers, symbols)');
         showValidation('confirmPasswordValidation', false, '', 'Please confirm your password');
 
-        showValidation('countryValidation', false, '', 'Please select your country');
-        showValidation('provinceValidation', false, '', 'Please select your province/state');
-        showValidation('districtValidation', false, '', 'Please select your district/city');
+        showValidation('provinceValidation', false, '', 'Please select your province');
+        showValidation('villageValidation', false, '', 'Please select your Village');
         showValidation('addressValidation', false, '', 'Detailed address is required (10-200 characters)');
 
         showValidation('emailValidation', false, '', 'Valid email address is required');
@@ -823,3 +744,4 @@
 </script>
 </body>
 </html>
+

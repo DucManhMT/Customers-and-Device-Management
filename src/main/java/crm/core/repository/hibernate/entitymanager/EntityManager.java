@@ -28,15 +28,17 @@ public class EntityManager implements IEntityManager,AutoCloseable {
 
     // ---------- PERSIST ----------
     @Override
-    public <T> void persist(T entity, Class<T> entityClass) {
+    public <T> boolean persist(T entity, Class<T> entityClass) {
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildInsert(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
                 setParams(ps, sqlParams.getParams());
                 ps.executeUpdate();
+                return true;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error persisting entity " + entityClass.getName(), e);
+            e.printStackTrace();
+            return false;
         }
     }
 
