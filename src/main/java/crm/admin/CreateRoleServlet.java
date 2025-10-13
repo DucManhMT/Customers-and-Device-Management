@@ -17,7 +17,7 @@ public class CreateRoleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        request.getRequestDispatcher("/admin/CreateRole.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/create_role.jsp").forward(request, response);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CreateRoleServlet extends HttpServlet {
             request.setAttribute("error", "Role name cannot be empty.");
             request.setAttribute("roleName", roleName);
             request.setAttribute("roleId", roleID);
-            request.getRequestDispatcher("/admin/CreateRole.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/create_role.jsp").forward(request, response);
             return;
         }
         // check if role name already exists
@@ -49,7 +49,7 @@ public class CreateRoleServlet extends HttpServlet {
         if (em.findWithConditions(Role.class, conditions).size() > 0) {
             request.setAttribute("error", "Role name already exists.");
             request.setAttribute("roleName", roleName);
-            request.getRequestDispatcher("/admin/CreateRole.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/create_role.jsp").forward(request, response);
             return;
         }
 
@@ -62,7 +62,7 @@ public class CreateRoleServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/ViewRoleList");
         } catch (Exception e) {
             request.setAttribute("error", "Error creating role: " + e.getMessage());
-            request.getRequestDispatcher("/admin/CreateRole.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/create_role.jsp").forward(request, response);
         }
     }
 }

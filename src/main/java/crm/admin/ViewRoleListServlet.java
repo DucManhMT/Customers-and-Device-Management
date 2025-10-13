@@ -37,12 +37,7 @@ public class ViewRoleListServlet extends HttpServlet {
             session.setAttribute("page", pageParam);
         }
         // Search
-        String searchParam = request.getParameter("search");
-        if (searchParam == null || searchParam.isEmpty()) {
-            searchParam = (String) session.getAttribute("search");
-        } else {
-            session.setAttribute("search", searchParam);
-        }
+
 
         String error = (String) session.getAttribute("error");
         if (error != null) {
@@ -67,6 +62,7 @@ public class ViewRoleListServlet extends HttpServlet {
             }
         }
         int offset = (page - 1) * recordsPerPage;
+        String searchParam = request.getParameter("search");
 
         Map<String, Object> conditions = new HashMap<>();
         if (searchParam != null && !searchParam.isEmpty()) {
@@ -117,7 +113,7 @@ public class ViewRoleListServlet extends HttpServlet {
         request.setAttribute("itemsPerPage", recordsPerPage);
         request.setAttribute("search", searchParam);
 
-        request.getRequestDispatcher("/admin/ViewRoleList.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/view_role_list.jsp").forward(request, response);
     }
 
     @Override

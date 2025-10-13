@@ -63,7 +63,7 @@ public class ViewContractHistoryServlet extends HttpServlet {
         request.setAttribute("contractIdSearch", contractIdParam);
         request.setAttribute("startDateSearch", startDateParam);
 
-        request.getRequestDispatcher("/contract/ViewContractHistory.jsp").forward(request, response);
+        request.getRequestDispatcher("/contract/view_contract_history.jsp").forward(request, response);
     }
 
     @Override
