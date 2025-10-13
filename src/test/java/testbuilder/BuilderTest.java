@@ -7,10 +7,12 @@ import crm.common.model.enums.AccountStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.common.repository.account.AccountDAO;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 import crm.core.repository.hibernate.querybuilder.*;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
+import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
 
 import java.time.LocalDateTime;
@@ -78,6 +80,7 @@ public class BuilderTest {
         }
 
 
+        
 
     }
 }
