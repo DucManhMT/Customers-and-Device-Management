@@ -3,6 +3,7 @@ package crm.admin;
 import crm.common.model.Role;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.service.IDGeneratorService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -25,13 +26,8 @@ public class CreateRoleServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         String roleName = request.getParameter("roleName");
         List<Role> allRoles = em.findAll(Role.class);
-        int maxId = 0;
-        for (Role role : allRoles) {
-            if (role.getRoleID() != null && role.getRoleID() > maxId) {
-                maxId = role.getRoleID();
-            }
-        }
-        int roleID = maxId + 1;
+
+        int roleID = IDGeneratorService.generateID(Role.class);
 
 
         if (roleName == null || roleName.trim().isEmpty()) {

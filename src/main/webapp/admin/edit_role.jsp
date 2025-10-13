@@ -17,12 +17,21 @@
 <div class="main-content">
     <div class="container">
         <!-- Header -->
+        <c:if test="${param.success == '1'}">
+            <div class="alert alert-success mt-3" role="alert">
+                Role updated successfully!
+            </div>
+        </c:if>
+        <c:if test="${param.remove == '1'}">
+            <div class="alert alert-warning mt-3" role="alert">
+                Role removed from account successfully!
+            </div>
+        </c:if>
         <div class="row mb-4">
             <div class="col-12">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Admin</a></li>
-                        <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Roles</a></li>
+                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/ViewRoleList" class="text-decoration-none">Role Management</a></li>
                         <li class="breadcrumb-item active">Edit Role</li>
                     </ol>
                 </nav>
@@ -113,6 +122,14 @@
                                         <div class="flex-grow-1">
                                             <h6 class="mb-1">${account.username}</h6>
                                         </div>
+<%--                                        <form method="post" action="RemoveAccountRole" style="margin:0;">--%>
+<%--                                            <input type="hidden" name="username" value="${account.username}" />--%>
+<%--                                            <input type="hidden" name="roleID" value="${role.roleID}" />--%>
+<%--                                            <button type="submit" class="btn btn-sm btn-outline-danger"--%>
+<%--                                                    onclick="return confirm('Remove role from this account?');">--%>
+<%--                                                <i class="bi bi-person-dash"></i>--%>
+<%--                                            </button>--%>
+<%--                                        </form>--%>
                                     </div>
                                 </div>
                             </c:forEach>
@@ -123,11 +140,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-light">
-                    <button class="btn btn-outline-primary btn-sm w-100" onclick="addAccountToRole()">
-                        <i class="bi bi-person-plus me-1"></i>Add Account to Role
-                    </button>
-                </div>
+<%--                <div class="card-footer bg-light">--%>
+<%--                    <button class="btn btn-outline-primary btn-sm w-100" onclick="addAccountToRole()">--%>
+<%--                        <i class="bi bi-person-plus me-1"></i>Add Account to Role--%>
+<%--                    </button>--%>
+<%--                </div>--%>
             </div>
         </div>
     </div>
@@ -147,5 +164,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>

@@ -15,6 +15,8 @@ import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -30,7 +32,6 @@ public class BuilderTest {
 
 
 //      cac feature cua role
-        int roleId = 3;
 //        Map<String, Object> conditions = new HashMap<>();
 //        conditions.put("role",roleId);
 //        List<RoleFeature> roleFeatures = em.findWithConditions(RoleFeature.class, conditions);
@@ -67,19 +68,26 @@ public class BuilderTest {
 //        Map<String, Object> cond = new HashMap<>();
 //        cond.put("role", roleId);
 //        List<Account> accounts = em.findWithConditions(Account.class, cond);
-        Role role = em.find(Role.class, roleId);
-        Map<String, Object> condAcc = new HashMap<>();
-        condAcc.put("role", roleId);
-        List<Account> accounts = em.findWithConditions(Account.class, condAcc);
-        int accountCount = accounts.size();
-        System.out.println("Các tài khoản có role: " + role.getRoleName());
-        for (Account acc : accounts) {
-            System.out.println("Username: " + acc.getUsername()
-                    + ", Status: " + acc.getAccountStatus()
-                    + ", Role: " + acc.getRole().getRoleName());
+//        Role role = em.find(Role.class, roleId);
+//        Map<String, Object> condAcc = new HashMap<>();
+//        condAcc.put("role", roleId);
+//        List<Account> accounts = em.findWithConditions(Account.class, condAcc);
+//        int accountCount = accounts.size();
+//        System.out.println("Các tài khoản có role: " + role.getRoleName());
+//        for (Account acc : accounts) {
+//            System.out.println("Username: " + acc.getUsername()
+//                    + ", Status: " + acc.getAccountStatus()
+//                    + ", Role: " + acc.getRole().getRoleName());
+//        }
+
+        try (Connection conn = DBcontext.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE Account SET RoleID = NULL WHERE Username = ?");
+            ps.setString(1, "cust03");
+            ps.executeUpdate();
+            System.out.println("Đã set RoleID về NULL thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
         
 
     }

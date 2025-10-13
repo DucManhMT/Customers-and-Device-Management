@@ -6,6 +6,7 @@ import crm.common.model.Role;
 import crm.common.model.RoleFeature;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.service.IDGeneratorService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -84,6 +85,7 @@ public class EditRoleServlet extends HttpServlet {
             Feature f = em.find(Feature.class, fid);
             if (f != null) {
                 RoleFeature newRF = new RoleFeature();
+                newRF.setRoleFeatureID(IDGeneratorService.generateID(RoleFeature.class));
                 newRF.setRole(role);
                 newRF.setFeature(f);
                 em.persist(newRF, RoleFeature.class);

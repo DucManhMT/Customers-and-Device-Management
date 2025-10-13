@@ -182,7 +182,7 @@
           </div>
       </div>
   </div>
-<script src="${pageContext.request.contextPath}/js/ViewContractHistory.js" ></script>
+<script src="${pageContext.request.contextPath}/js/view-contract-detail.js" ></script>
 </body>
 
 </html>
