@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import crm.common.model.Contract;
 import crm.common.model.Request;
+import crm.common.model.enums.RequestStatus;
 import crm.core.config.DBcontext;
 import crm.service_request.repository.persistence.AbstractRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
@@ -33,6 +35,41 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
         }
 
         return 1;
+    }
+
+    public Integer countRequestByStatus(RequestStatus requestStatus) {
+        String sql = "SELECT COUNT(*) AS Total " +
+                "FROM Request " +
+                "WHERE RequestStatus = '" + requestStatus.toString() + "'";
+        Connection connection = DBcontext.getConnection();
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                return resultSet.getInt("Total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public Integer countRequestByStatus(RequestStatus requestStatus, LocalDateTime from, LocalDateTime to) {
+        String sql = "SELECT COUNT(*) AS Total " +
+                "FROM Request " +
+                "WHERE RequestStatus = '" + requestStatus.toString() + "'" +
+                "+ StartDate BETWEEN '" + from.toString() + "' AND '" + to.toString() + "'";
+        Connection connection = DBcontext.getConnection();
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                return resultSet.getInt("Total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
     public Page<Request> findByUsername(String username, PageRequest pageRequest) {

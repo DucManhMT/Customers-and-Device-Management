@@ -7,17 +7,14 @@ import crm.service_request.service.RequestLogService;
 import crm.service_request.service.RequestService;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        RequestLogService requestLogService = new RequestLogService();
-        try {
-            requestLogService.getLogsByRequestId(1).forEach(log -> {
-                System.out.println(log.getRequestLogID() + " - " + log.getOldStatus() + " - " + log.getNewStatus());
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println(LocalDate.parse("2025-10-19").atStartOfDay());
+
     }
 
     public static void testUpdate() {

@@ -47,9 +47,10 @@
 
 
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-success">View Timeline</button>
-                        <button type="button" class="btn btn-info">Feedback</button>
-                        <a href="./list" class="btn btn-secondary">Back to List</a>
+                        <a href="../requests/timeline?requestId=${request.requestID}" class="btn btn-success">View
+                            Timeline</a>
+                        <a href="./list" class="btn btn-info">Feedback</a>
+                        <a href="../requests" class="btn btn-secondary">Back to List</a>
                     </div>
 
                 </div>

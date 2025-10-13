@@ -12,4 +12,7 @@ public class MessageConst {
     public static final String MSG18 = "Something went wrong while updating the request!";
     public static final String MSG19 = "Status cannot be empty";
     public static final String MSG20 = "You do not have permission to view this request!";
+    public static final String MSG21 = "Both start time and end time are required!";
+    public static final String MSG22 = "Start time cannot be after end time!";
+    public static final String MSG23 = "Invalid date format!";
 }

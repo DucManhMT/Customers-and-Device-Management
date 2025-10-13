@@ -3,6 +3,8 @@ package crm.service_request.service;
 import java.sql.SQLException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import crm.common.model.Account;
 import crm.common.model.Contract;
@@ -162,6 +164,27 @@ public class RequestService {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    public Map<String, Integer> statisticRequestsByStatus(LocalDateTime from, LocalDateTime to) {
+        Map<String, Integer> map = new HashMap<>();
+        int total = 0;
+        if (from == null || to == null) {
+            for (RequestStatus status : RequestStatus.values()) {
+                int tempCount = requestRepository.countRequestByStatus(status);
+                total += tempCount;
+                map.put(status.toString(), tempCount);
+            }
+        } else {
+            for (RequestStatus status : RequestStatus.values()) {
+                int tempCount = requestRepository.countRequestByStatus(status, from, to);
+                total += tempCount;
+                map.put(status.toString(), tempCount);
+            }
+        }
+        map.put("All", total);
+
+        return map;
     }
 
 }
