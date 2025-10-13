@@ -17,7 +17,8 @@
     </properties>
 
     <dependencies>
-<!-- Jakarta Mail implementation (Eclipse Angus) -->
+        <!--MailService-->
+        <!-- Jakarta Mail implementation (Eclipse Angus) -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>

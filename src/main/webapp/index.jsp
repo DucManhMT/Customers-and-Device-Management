@@ -13,7 +13,8 @@
 <body>
 <p>
     Hello World!
-    <a href="${pageContext.request.contextPath}/auth/customer_login">Login here</a>
+    <a href="${pageContext.request.contextPath}/auth/customer_login">Login here</a><br>
+    <a href="${pageContext.request.contextPath}/auth/staff_login">Login here</a>
 </p>
 </body>
 </html>

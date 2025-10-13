@@ -16,7 +16,7 @@ public class MailService {
     private static final String USERNAME = PropertyLoader.get("mail.username", "");
     private static final String PASSWORD = PropertyLoader.get("mail.password", "");
 
-    public void sendEmail(String to, String subject, String body, String from) {
+    public static void sendEmail(String to, String subject, String body) {
         Properties props = new Properties();
         props.put("mail.smtp.host", SMTP_HOST);
         props.put("mail.smtp.port", SMTP_PORT);
@@ -32,8 +32,8 @@ public class MailService {
 
         try {
             MimeMessage message = new MimeMessage(session);
-            String effectiveFrom = (from != null && !from.isBlank()) ? from : USERNAME;
-            message.setFrom(new InternetAddress(effectiveFrom));
+//            String effectiveFrom = (from != null && !from.isBlank()) ? from : USERNAME;
+//            message.setFrom(new InternetAddress(effectiveFrom));
             message.setRecipients(Message.RecipientType.TO, to);
             message.setSubject(subject);
             message.setText(body);

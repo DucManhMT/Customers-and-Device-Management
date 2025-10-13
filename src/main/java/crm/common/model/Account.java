@@ -1,5 +1,4 @@
 package crm.common.model;
-
 import crm.auth.service.Hasher;
 import crm.common.model.enums.AccountStatus;
 import crm.core.repository.hibernate.annotation.*;

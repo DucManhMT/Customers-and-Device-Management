@@ -3,7 +3,7 @@ package crm.core.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import crm.core.config.RepositoryConfig;
 /**
  * DBcontext class to manage database connections.
  */
@@ -43,7 +43,7 @@ public class DBcontext {
      * @throws SQLException if a database access error occurs
      */
     public static Connection createConnection() throws SQLException {
-        String url = RepositoryConfig.DB_URL;
+        String url =  RepositoryConfig.DB_URL;
         String user = RepositoryConfig.USER;
         String password = RepositoryConfig.PASSWORD;
         try {
@@ -55,3 +55,4 @@ public class DBcontext {
         return conn;
     }
 }
+

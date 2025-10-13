@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.util.List;
 
 import crm.core.repository.hibernate.querybuilder.QueryOperation;
-import crm.core.repository.hibernate.querybuilder.SelectBuilder;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
 import crm.core.repository.hibernate.querybuilder.QueryUtils;
@@ -17,28 +16,19 @@ import java.util.Map;
 /**
  * Lightweight EntityManager implementation
  */
-public class EntityManager implements IEntityManager {
+public class EntityManager implements IEntityManager,AutoCloseable {
 
     private final Connection connection;
     private final QueryUtils queryUtils = new QueryUtils();
 
-    private boolean inTransaction = false;
 
-    public EntityManager(Connection connection) {
+     public EntityManager(Connection connection) {
         this.connection = connection;
-    }
-
-    // Helper to enforce active transaction before any operation
-    private void ensureTransactionActive() {
-        if (!inTransaction) {
-            throw new IllegalStateException("No active transaction. Call beginTransaction() first.");
-        }
     }
 
     // ---------- PERSIST ----------
     @Override
     public <T> void persist(T entity, Class<T> entityClass) {
-        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildInsert(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -53,7 +43,6 @@ public class EntityManager implements IEntityManager {
     // ---------- MERGE (UPDATE) ----------
     @Override
     public <T> T merge(T entity, Class<T> entityClass) {
-        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildUpdate(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -69,7 +58,6 @@ public class EntityManager implements IEntityManager {
     // ---------- REMOVE ----------
     @Override
     public <T> void remove(T entity, Class<T> entityClass) {
-        ensureTransactionActive();
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildDelete(entity);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
@@ -291,7 +279,16 @@ public class EntityManager implements IEntityManager {
         return null;
     }
 
-    // ADVANCED QUERY WITH BUILDER
+    public void executeUpdate(SqlAndParamsDTO sqlAndParamsDTO) {
+        try (PreparedStatement ps = connection.prepareStatement(sqlAndParamsDTO.getSql())) {
+            setParams(ps, sqlAndParamsDTO.getParams());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Error executing update", e);
+        }
+    }
+
+    //ADVANCED QUERY WITH BUILDER
     public <T> List<T> executeCustomQuery(Class<T> resultClass, QueryOperation queryOperation) {
         try {
             SqlAndParamsDTO sqlParams = queryOperation.getSqlAndParamsDTO();
@@ -327,83 +324,20 @@ public class EntityManager implements IEntityManager {
         return 0;
     }
 
-    // ---------- TRANSACTION ----------
-    @Override
-    public void beginTransaction() {
-        try {
-            if (inTransaction) {
-                throw new IllegalStateException("A transaction is already active");
-            }
-            if (connection.getAutoCommit() == false) {
-                // Someone disabled auto-commit outside our API but we think no transaction
-                inTransaction = true; // adopt it
-            } else {
-                connection.setAutoCommit(false);
-                inTransaction = true;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to begin transaction", e);
-        }
-    }
 
-    @Override
-    public void commit() {
-        try {
-            if (!inTransaction) {
-                throw new IllegalStateException("No active transaction to commit");
-            }
-            if (connection.getAutoCommit()) {
-                throw new IllegalStateException(
-                        "Cannot commit: connection is in auto-commit mode. Did beginTransaction() fail or was autoCommit changed externally?");
-            }
-            connection.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to commit transaction", e);
-        } finally {
-            try {
-                if (!connection.getAutoCommit()) {
-                    connection.setAutoCommit(true);
-                }
-            } catch (SQLException ignore) {
-            }
-            inTransaction = false;
-        }
-    }
-
-    @Override
-    public void rollback() {
-        try {
-            if (!inTransaction) {
-                // Nothing to rollback but ensure autocommit is true
-                if (!connection.getAutoCommit()) {
-                    connection.setAutoCommit(true);
-                }
-                return;
-            }
-            if (connection.getAutoCommit()) {
-                // Unexpected state: can't rollback if auto-commit true, just reset flag
-                inTransaction = false;
-                return;
-            }
-            connection.rollback();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to rollback transaction", e);
-        } finally {
-            try {
-                if (!connection.getAutoCommit()) {
-                    connection.setAutoCommit(true);
-                }
-            } catch (SQLException ignore) {
-            }
-            inTransaction = false;
-        }
-    }
 
     // ---------- UTILITIES ----------
 
     private void setParams(PreparedStatement ps, List<Object> params) throws SQLException {
         for (int i = 0; i < params.size(); i++) {
             ps.setObject(i + 1, params.get(i));
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
         }
     }
 }

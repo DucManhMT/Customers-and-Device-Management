@@ -1,4 +1,4 @@
-
+use crm;
 -- ======================
 -- CATEGORY & TYPE
 -- ======================
@@ -139,8 +139,8 @@ CREATE TABLE ProductTransaction (
     TransactionStatus ENUM('Export', 'Import'),
     ItemID INT NOT NULL,
     Note NVARCHAR(255),
-    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ProductID),
-    FOREIGN KEY (SourseWarehouse) REFERENCES Warehouse(WarehouseID),
+    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID),
+    FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
 	FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
 );
 
@@ -172,12 +172,12 @@ CREATE TABLE Contract (
 CREATE TABLE Request (
     RequestID INT PRIMARY KEY,
     RequestDescription NVARCHAR(255),
-    RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+    RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing'),
     StartDate DATETIME NOT NULL,
     FinishedDate DATETIME,
     Note NVARCHAR(255),
     ContractID INT NOT NULL,
-    FOREIGN KEY (ContractID) REFERENCES Contract(CustomerID)
+    FOREIGN KEY (ContractID) REFERENCES Contract(ContractID)
 );
 
 CREATE TABLE AccountRequest(
@@ -238,8 +238,24 @@ CREATE TABLE ProductExported (
 -- DEVICE
 -- ======================
 CREATE TABLE ProductContract (
+    ItemID INT NOT NULL PRIMARY KEY,
     ContractID INT NOT NULL,
-    ItemID INT NOT NULL,
     FOREIGN KEY (ContractID) REFERENCES Contract(ContractID),
     FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID)
 );
+
+CREATE TABLE UserOTP (
+    UserOTPID INT AUTO_INCREMENT PRIMARY KEY,
+    Email VARCHAR(255) NOT NULL,
+    OTPCode VARCHAR(10) NOT NULL,
+    ExpiredTime DATETIME NOT NULL
+);
+
+
+INSERT INTO Role (RoleID, RoleName) VALUES
+(1, 'Admin'),
+(2, 'Customer'),
+(3, 'CustomerSupporter'),
+(4, 'WarehouseKeeper'),
+(5, 'TechnicianLeader'),
+(6, 'TechnicianEmployee');

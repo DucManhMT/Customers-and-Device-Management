@@ -2,7 +2,6 @@ package crm.service_request.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import crm.core.config.RepositoryConfig;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Order;

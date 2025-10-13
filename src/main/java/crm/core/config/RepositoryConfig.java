@@ -1,15 +1,6 @@
 package crm.core.config;
 
 
-/**
- * Repository configuration loaded from application.properties
- * Keys:
- * - repository.url
- * - repository.username
- * - repository.password
- * - repository.driver-class-name
- * - repository.show-sql
- */
 public class RepositoryConfig {
 
     public static final String DB_URL = PropertyLoader.get("repository.url", "");
