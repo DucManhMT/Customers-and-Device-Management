@@ -1,4 +1,4 @@
-package crm.warehouse;
+package crm.warehousekeeper.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

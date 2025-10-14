@@ -1,10 +1,7 @@
-package crm.warehouse;
+package crm.warehousekeeper.controller;
 
 import crm.common.model.Product;
-import crm.common.model.ProductWarehouse;
-import crm.common.model.Type;
 import crm.common.model.Warehouse;
-import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import jakarta.servlet.ServletException;
@@ -14,19 +11,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/warehouse/viewProductWarehouse")
-public class ViewProductWarehouseController extends HttpServlet {
+@WebServlet(urlPatterns = "/warehouse/viewInventory")
+public class ViewInventoryController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Filter parameters
         String productNameFilter = req.getParameter("productName");
         String productTypeFilter = req.getParameter("productType");
+        String warehouseFilter = req.getParameter("warehouse");
 
         // Pagination parameters
         int pageSize = 10; // Default items per page
@@ -53,43 +51,48 @@ public class ViewProductWarehouseController extends HttpServlet {
             }
         }
 
-
-        //Find products in warehouse
-        WarehouseDAO warehouseDAO = new WarehouseDAO();
-        ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
-        Warehouse warehouse = warehouseDAO.find(1);
-
-        List<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
-
-        List<ProductWarehouse> pw = productWarehouseDAO.findAll();
-
-        Map<Integer, Long> productCounts = pw.stream()
-                .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == 1)
-                .collect(Collectors.groupingBy(
-                        pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
-                        Collectors.counting()
-                ));
-
-        // Get unique product types for filter dropdown
+        // Get product types for filter dropdown
         TypeDAO typeDAO = new TypeDAO();
         List<Type> ProductTypes = typeDAO.findAll();
 
+        //Find products in warehouse
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
 
-        //Filter
+        //Get warehouse for filter dropdown
+        List<Warehouse> warehouses = warehouseDAO.findAll();
+
+
+        // Apply filters
         if (productNameFilter != null && !productNameFilter.isEmpty()) {
-            products = products.stream()
-                    .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
-                    .collect(Collectors.toCollection(LinkedList::new));
+            inventorySummary = inventorySummary.stream()
+                    .filter(item -> {
+                        Product product = (Product) item.get("product");
+                        return product.getProductName().toLowerCase().contains(productNameFilter.toLowerCase());
+                    })
+                    .collect(Collectors.toList());
         }
 
         if (productTypeFilter != null && !productTypeFilter.isEmpty()) {
-            products = products.stream()
-                    .filter(p -> p.getType().getTypeName().equalsIgnoreCase(productTypeFilter))
-                    .collect(Collectors.toCollection(LinkedList::new));
+            inventorySummary = inventorySummary.stream()
+                    .filter(item -> {
+                        Product product = (Product) item.get("product");
+                        return product.getType().getTypeName().equalsIgnoreCase(productTypeFilter);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        if(warehouseFilter != null && !warehouseFilter.isEmpty()) {
+            inventorySummary = inventorySummary.stream()
+                    .filter(item -> {
+                        Warehouse warehouse = (Warehouse) item.get("warehouse");
+                        return warehouse.getWarehouseName().equalsIgnoreCase(warehouseFilter);
+                    })
+                    .collect(Collectors.toList());
         }
 
         // Pagination logic
-        int totalProducts = products.size();
+        int totalProducts = inventorySummary.size();
         int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
 
         if (currentPage > totalPages && totalPages > 0) {
@@ -98,16 +101,17 @@ public class ViewProductWarehouseController extends HttpServlet {
 
         int offset = (currentPage - 1) * pageSize;
 
-        // Get products for current page
-        List<Product> pagedProducts = products.stream()
-                .skip((offset))
+
+        // Get inventory items for current page
+        List<Map<String, Object>> pagedInventory = inventorySummary.stream()
+                .skip(offset)
                 .limit(pageSize)
                 .collect(Collectors.toList());
 
         // Send paged products to view instead of all products
-        req.setAttribute("products", pagedProducts);
-        req.setAttribute("productCounts", productCounts);
+        req.setAttribute("inventorySummary", pagedInventory);
         req.setAttribute("uniqueProductTypes", ProductTypes);
+        req.setAttribute("warehouses", warehouses);
 
         // Pagination metadata
         req.setAttribute("currentPage", currentPage);
@@ -118,8 +122,10 @@ public class ViewProductWarehouseController extends HttpServlet {
         // Pass filter parameters for pagination links
         req.setAttribute("productName", productNameFilter);
         req.setAttribute("productType", productTypeFilter);
+        req.setAttribute("warehouse", warehouseFilter);
 
-        req.getRequestDispatcher("/Warehouse/ViewProduct.jsp").forward(req, resp);
+        req.getRequestDispatcher("/Warehouse/ViewInventory.jsp").forward(req, resp);
     }
+
 
 }

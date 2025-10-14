@@ -326,6 +326,28 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         return 0;
     }
 
+    public void beginTransaction() throws SQLException {
+        if (connection.getAutoCommit()) {
+            connection.setAutoCommit(false);
+        }
+    }
+    public void commit() throws SQLException {
+        if (!connection.getAutoCommit()) {
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+    }
+    public void rollback() {
+        try {
+            if (!connection.getAutoCommit()) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     // ---------- UTILITIES ----------
