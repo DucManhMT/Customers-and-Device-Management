@@ -2,6 +2,7 @@ package test;
 
 import crm.common.model.*;
 import crm.common.model.enums.WarehouseRequestStatus;
+import crm.common.repository.Warehouse.ProductDAO;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.common.repository.Warehouse.WarehouseRequestDAO;
@@ -17,21 +18,13 @@ import java.util.Map;
 public class TestFunction {
     public static void main(String[] args) {
 
-        WarehouseRequest warehouseRequest = new WarehouseRequest();
-        WarehouseRequestDAO warehouseRequestDAO = new WarehouseRequestDAO();
+        ProductDAO productDAO = new ProductDAO();
+        Product product = productDAO.findIncludeSpec(1);
 
-        WarehouseDAO warehouseDAO = new WarehouseDAO();
-
-        Warehouse warehouse = warehouseDAO.find(1);
-        Warehouse destinationWarehouse = warehouseDAO.find(2);
-
-        warehouseRequest.setWarehouseRequestID(1);
-        warehouseRequest.setSourceWarehouse(warehouse);
-        warehouseRequest.setDestinationWarehouse(destinationWarehouse);
-        warehouseRequest.setDate(LocalDateTime.now());
-        warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
-
-        warehouseRequestDAO.persist(warehouseRequest);
+        System.out.println(product.getProductName());
+        for (ProductSpecification ps : product.getProductSpecifications()) {
+            System.out.println(ps.getSpecification().getSpecificationName() + ": " + ps.getSpecification().getSpecificationValue());
+        }
 
 
     }

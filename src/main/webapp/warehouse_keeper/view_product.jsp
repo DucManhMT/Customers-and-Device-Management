@@ -172,7 +172,7 @@
                         </td>
                         <td class="fw-semibold">${productCounts[productWarehouse.productID]}</td>
                         <td>
-                            <a href="" class="btn btn-sm btn-info">View Detail</a>
+                            <a href="${pageContext.request.contextPath}/warehouse/viewProductDetail?productId=${productWarehouse.productID}" class="btn btn-sm btn-info">View Detail</a>
                         </td>
                     </tr>
                 </c:forEach>
