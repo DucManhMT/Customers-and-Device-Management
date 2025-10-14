@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = "/warehouse/viewProductWarehouse")
-public class ViewProductWarehouseController extends HttpServlet {
+public class ProductWarehouseController extends HttpServlet {
 
     private final String ERROR_MESSAGE = "You currently do not have a warehouse assigned. Please contact the administrator.";
 

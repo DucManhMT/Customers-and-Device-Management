@@ -1,7 +1,6 @@
 package crm.warehouse;
 
 import crm.common.model.*;
-import crm.common.model.enums.TransactionStatus;
 import crm.common.model.enums.WarehouseRequestStatus;
 import crm.common.repository.Warehouse.*;
 import crm.core.service.IDGeneratorService;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 
 
 @WebServlet(urlPatterns = "/warehouse/createExportRequest")
-public class CreateExportRequest extends HttpServlet {
+public class ExportRequestCreateController extends HttpServlet {
     //DAOs
     WarehouseDAO warehouseDAO = new WarehouseDAO();
     ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();

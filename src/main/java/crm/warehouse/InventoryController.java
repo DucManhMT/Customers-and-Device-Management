@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = "/warehouse/viewInventory")
-public class ViewInventoryController extends HttpServlet {
+public class InventoryController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
