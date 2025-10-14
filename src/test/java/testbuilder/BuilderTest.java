@@ -23,49 +23,6 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-<<<<<<< HEAD
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-
-
-        Account account = new Account();
-
-        account.setUsername("warehouse2");
-        account.setPasswordHash("123");
-        account.setAccountStatus(AccountStatus.Active);
-
-
-        em.persist(account, Account.class);
-=======
-      EntityManager em  = new EntityManager(DBcontext.getConnection());
-
-        Category category = new Category();
-//        category.setCategoryName("New Category");
-//        category.setCategoryID(IDGeneratorService.generateID(Category.class));
-//        em.persist(category, Category.class);
-        category = em.find(Category.class, 1);
->>>>>>> main
-
-        Type type = new Type();
-//        type.setTypeName("New Type");
-//        type.setCategory(category);
-//        type.setTypeID(IDGeneratorService.generateID(Type.class));
-//        em.persist(type, Type.class);
-        type = em.find(Type.class, 1);
-
-
-        for (int i = 2; i < 100; i++) {
-            Product product = new Product();
-            product.setProductName("New Product " + i);
-            product.setProductDescription("This is a new product " + i);
-            product.setType(type);
-            product.setProductID(IDGeneratorService.generateID(Product.class));
-            em.persist(product, Product.class);
-        }
 
     }
-<<<<<<< HEAD
 }
-=======
-
- }
->>>>>>> main

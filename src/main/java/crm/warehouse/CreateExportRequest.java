@@ -2,11 +2,9 @@ package crm.warehouse;
 
 import crm.common.model.*;
 import crm.common.model.enums.TransactionStatus;
-import crm.common.repository.Warehouse.ProductTransactionDAO;
-import crm.common.repository.Warehouse.ProductWarehouseDAO;
-import crm.common.repository.Warehouse.TypeDAO;
-import crm.common.repository.Warehouse.WarehouseDAO;
-import crm.core.repository.hibernate.querybuilder.QueryOperation;
+import crm.common.model.enums.WarehouseRequestStatus;
+import crm.common.repository.Warehouse.*;
+import crm.core.service.IDGeneratorService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -26,8 +25,11 @@ public class CreateExportRequest extends HttpServlet {
     //DAOs
     WarehouseDAO warehouseDAO = new WarehouseDAO();
     ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
-    ProductTransactionDAO productTransactionDAO = new ProductTransactionDAO();
     TypeDAO typeDAO = new TypeDAO();
+    ProductDAO productDAO = new ProductDAO();
+    WarehouseRequestDAO warehouseRequestDAO = new WarehouseRequestDAO();
+    WarehouseRequestProductDAO warehouseRequestProductDAO = new WarehouseRequestProductDAO();
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -55,47 +57,90 @@ public class CreateExportRequest extends HttpServlet {
         }
 
 
-        req.getRequestDispatcher("/warehouseKeeper/createExportInternal.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/create_export_internal.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String[] selectedProductWarehouseIDs = req.getParameterValues("allSelectedItemIDs");
+        String allSelectedItemIDs = req.getParameter("allSelectedItemIDs");
+        String allSelectedItemQuantities = req.getParameter("allSelectedItemQuantities");
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
+        String note = req.getParameter("note");
+
+        if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
+            // Handle the case where no products are selected
+            req.setAttribute("errorMessage", "Please select at least one product to export.");
+            // Forward back to the page, possibly reloading necessary data from doGet
+            doGet(req, resp);
+            return;
+        }
+
+        if (allSelectedItemQuantities == null || allSelectedItemQuantities.length() == 0) {
+            req.setAttribute("errorMessage", "Quantities for selected products are missing.");
+            doGet(req, resp);
+            return;
+        }
+
+        String[] selectedProductIDs = allSelectedItemIDs.split(",");
+        String[] selectedProductQuantitiesStr = allSelectedItemQuantities.split(",");
+
         int selectedWarehouseID = Integer.parseInt(selectedWarehouseIDStr);
 
         Account account = (Account) req.getSession().getAttribute("account");
 
         Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
-        Warehouse destinationWarehouse = warehouseDAO.find(selectedWarehouseID);
+        Warehouse sourceWarehouse = warehouseDAO.find(selectedWarehouseID);
 
-        List<ProductWarehouse> productWarehouse = new ArrayList<>();
-        List<ProductTransaction> productTransactions;
+        WarehouseRequest warehouseRequest = new WarehouseRequest();
 
-        for (String productWarehouseIDStr : selectedProductWarehouseIDs) {
-            int productWarehouseID = Integer.parseInt(productWarehouseIDStr);
-            ProductWarehouse pw1 = productWarehouseDAO.find(productWarehouseID);
+        warehouseRequest.setWarehouseRequestID(IDGeneratorService.generateID(WarehouseRequest.class));
+        warehouseRequest.setDate(LocalDateTime.now());
+        warehouseRequest.setNote(note);
+        warehouseRequest.setSourceWarehouse(sourceWarehouse);
+        warehouseRequest.setDestinationWarehouse(managerWarehouse);
+        warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
+
+        warehouseRequestDAO.persist(warehouseRequest);
+
+        try {
+            for (int i = 0; i < selectedProductIDs.length; i++) {
+                String productIdStr = selectedProductIDs[i];
+                String quantityStr = selectedProductQuantitiesStr[i];
+
+                if (quantityStr == null || quantityStr.trim().isEmpty()) {
+                    req.setAttribute("errorMessage", "Please enter a quantity for all selected products.");
+                    doGet(req, resp);
+                    return;
+                }
+
+                int productID = Integer.parseInt(productIdStr);
+                int quantity = Integer.parseInt(quantityStr);
+
+                Product product = productDAO.find(productID);
+
+                WarehouseRequestProduct warehouseRequestProduct = new WarehouseRequestProduct();
+
+                warehouseRequestProduct.setWarehouseRequestProductID(IDGeneratorService.generateID(WarehouseRequestProduct.class));
+                warehouseRequestProduct.setProduct(product);
+                warehouseRequestProduct.setQuantity(quantity);
+                warehouseRequestProduct.setWarehouseRequest(warehouseRequest);
+
+                boolean checking = warehouseRequestProductDAO.persist(warehouseRequestProduct);
+            }
+
+            resp.sendRedirect(req.getContextPath() + "/warehouse/createExportRequest"); // Redirect to a success or listing page
+
+        } catch (NumberFormatException e) {
+            req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
+            doGet(req, resp);
+        } catch (Exception e) {
+            // Log the exception
+            req.setAttribute("errorMessage", "An error occurred while creating the request.");
+            doGet(req, resp);
         }
 
-        for (ProductWarehouse pw : productWarehouse) {
-            LocalDateTime now = LocalDateTime.now();
-            productTransactions = productTransactionDAO.findAll();
-            ProductTransaction productTransaction = new ProductTransaction();
 
-            productTransaction.setTransactionID();
-            productTransaction.setInventoryItem(pw.getInventoryItem());
-            productTransaction.setTransactionDate(now);
-            productTransaction.setTransactionStatus(TransactionStatus.Request_Export);
-            productTransaction.setNote(req.getParameter("note"));
-            productTransaction.setSourceWarehouseEntity(destinationWarehouse);
-            productTransaction.setDestinationWarehouseEntity(managerWarehouse);
-
-            productTransactionDAO.persist(productTransaction);
-        }
-
-
-        req.getRequestDispatcher("/warehouseKeeper/createExportInternal.jsp").forward(req, resp);
     }
 
     private void processRequest(HttpServletRequest req, HttpServletResponse resp, String selectedWarehouseIDStr) throws ServletException, IOException {
@@ -137,20 +182,29 @@ public class CreateExportRequest extends HttpServlet {
         }
 
         //Product in selected Warehouse
-        List<ProductWarehouse> productsInSelectedWarehouse = productWarehouseDAO.getAvailableProductsByWarehouse(selectedWarehouseID);
+        List<Product> productsInSelectedWarehouse = warehouseDAO.getProductsInWarehouse(selectedWarehouseID);
+        List<ProductWarehouse> pw = productWarehouseDAO.findAll();
+
+        Map<Integer, Long> productCounts = pw.stream()
+                .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == selectedWarehouseID)
+                .collect(Collectors.groupingBy(
+                        pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
+                        Collectors.counting()
+                ));
+
 
         //filter by product type
         List<Type> ProductTypes = typeDAO.findAll();
 
         if (productNameFilter != null && !productNameFilter.isEmpty()) {
             productsInSelectedWarehouse = productsInSelectedWarehouse.stream()
-                    .filter(p -> p.getInventoryItem().getProduct().getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
+                    .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
                     .collect(Collectors.toCollection(LinkedList::new));
         }
 
         if (productTypeFilter != null && !productTypeFilter.isEmpty()) {
             productsInSelectedWarehouse = productsInSelectedWarehouse.stream()
-                    .filter(p -> p.getInventoryItem().getProduct().getType().getTypeID() == Integer.parseInt(productTypeFilter))
+                    .filter(p -> p.getType().getTypeID() == Integer.parseInt(productTypeFilter))
                     .collect(Collectors.toCollection(LinkedList::new));
         }
 
@@ -163,13 +217,14 @@ public class CreateExportRequest extends HttpServlet {
 
         int offset = (currentPage - 1) * pageSize;
 
-        List<ProductWarehouse> paginatedProducts = productsInSelectedWarehouse.stream()
+        List<Product> paginatedProducts = productsInSelectedWarehouse.stream()
                 .skip(offset)
                 .limit(pageSize)
                 .toList();
 
         //Warehouse attributes
         req.setAttribute("productsInSelectedWarehouse", paginatedProducts);
+        req.setAttribute("productCounts", productCounts);
         req.setAttribute("uniqueProductTypes", ProductTypes);
 
         //Pagination attributes

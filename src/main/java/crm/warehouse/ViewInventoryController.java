@@ -1,9 +1,8 @@
 package crm.warehouse;
 
 import crm.common.model.Product;
-import crm.common.model.ProductWarehouse;
+import crm.common.model.Type;
 import crm.common.model.Warehouse;
-import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import jakarta.servlet.ServletException;
@@ -13,8 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -127,7 +124,7 @@ public class ViewInventoryController extends HttpServlet {
         req.setAttribute("productType", productTypeFilter);
         req.setAttribute("warehouse", warehouseFilter);
 
-        req.getRequestDispatcher("/warehouseKeeper/viewInventory.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/view_inventory.jsp").forward(req, resp);
     }
 
 

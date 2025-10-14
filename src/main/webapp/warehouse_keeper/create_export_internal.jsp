@@ -83,9 +83,10 @@
                     <c:when test="${not empty productsInSelectedWarehouse}">
                         <form action="createExportRequest" method="post" id="exportForm">
                             <input type="hidden" name="sourceWarehouseID" value="${managerWarehouse.warehouseID}">
-                            <input type="hidden" name="destinationWarehouseID" value="${selectedWarehouseID}">
-                            <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs"
-                                   value="${param.selectedItemIDs}">
+                            <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
+                            <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs" value="${param.selectedItemIDs}">
+                            <input type="hidden" id="allSelectedItemQuantities" name="allSelectedItemQuantities" value="${param.allSelectedItemQuantities}">
+
 
                                 <%-- Product Table --%>
                             <div class="table-responsive">
@@ -93,38 +94,41 @@
                                     <thead class="table-light">
                                     <tr>
                                         <th>Select</th>
-                                        <th>Serial Number</th>
                                         <th>Product Name</th>
                                         <th>Description</th>
                                         <th>Type</th>
                                         <th>Specifications</th>
+                                        <th>Stock In warehouse</th>
+                                        <th>Quantity to Request</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:set var="selectedIDs" value="${','}${param.selectedItemIDs}${','}"/>
                                     <c:forEach var="p" items="${productsInSelectedWarehouse}">
-                                        <c:set var="itemId" value="${p.productWarehouseID}"/>
-                                        <c:set var="isItemSelected"
-                                               value="${selectedIDs.contains(','.concat(itemId).concat(','))}"/>
                                         <tr>
                                             <td>
-                                                <input type="checkbox" name="selectedItemIDs" value="${itemId}"
-                                                       class="form-check-input item-checkbox" ${isItemSelected ? 'checked' : ''}>
+                                                <input type="checkbox" name="selectedItemIDs" value="${p.productID}"
+                                                       class="form-check-input item-checkbox">
                                             </td>
-                                            <td><code>${p.inventoryItem.serialNumber}</code></td>
-                                            <td>${p.inventoryItem.product.productName}</td>
-                                            <td class="text-muted small">${p.inventoryItem.product.productDescription}</td>
+                                            <td>${p.productName}</td>
+                                            <td class="text-muted small">${p.productDescription}</td>
                                             <td><span
-                                                    class="badge bg-secondary">${p.inventoryItem.product.type.typeName}</span>
+                                                    class="badge bg-secondary">${p.type.typeName}</span>
                                             </td>
                                             <td>
                                                 <c:forEach var="spec"
-                                                           items="${p.inventoryItem.product.productSpecifications}">
+                                                           items="${p.productSpecifications}">
                                                     <div class="small">
                                                         <span class="fw-medium">${spec.specification.specificationName}:</span>
                                                         <span class="text-muted">${spec.specification.specificationValue}</span>
                                                     </div>
                                                 </c:forEach>
+                                            </td>
+                                            <td>${productCounts[p.productID]}</td>
+                                            <td>
+                                                <input type="number" name="quantity_${p.productID}" min="1"
+                                                       max="${productCounts[p.productID]}"
+                                                       class="form-control quantity-input" placeholder="Qty"
+                                                       style="width: 80px;" disabled>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -156,7 +160,7 @@
                             <%-- Page Size Selector --%>
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small">Display:</span>
-                            <form action="createExportRequest" method="GET" class="mb-0">
+                            <form action="createExportRequest" method="GET" id="pageSizeForm" class="mb-0">
                                 <input type="hidden" name="productName" value="${productName}">
                                 <input type="hidden" name="productType" value="${productType}">
                                 <input type="hidden" name="page" value="1">
@@ -230,73 +234,154 @@
 </div>
 
 <script>
-    // Your existing JavaScript for handling checkbox state across pages remains the same.
-    // It will work correctly with the new Bootstrap structure.
     document.addEventListener('DOMContentLoaded', function () {
         const allSelectedIDsInput = document.getElementById('allSelectedItemIDs');
+        const allSelectedQuantitiesInput = document.getElementById('allSelectedItemQuantities');
         const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
 
-        function updateAllSelectedIDs() {
-            const idSet = new Set(allSelectedIDsInput.value ? allSelectedIDsInput.value.split(',').filter(Boolean) : []);
-            itemCheckboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    idSet.add(checkbox.value);
-                } else {
-                    idSet.delete(checkbox.value);
+        // Map to store quantities: key = productID, value = quantity
+        const quantitiesMap = new Map();
+
+        // --- Initialize state from hidden inputs on page load ---
+        function initializeState() {
+            const initialIDs = allSelectedIDsInput.value ? allSelectedIDsInput.value.split(',') : [];
+            const initialQuantities = allSelectedQuantitiesInput.value ? allSelectedQuantitiesInput.value.split(',') : [];
+
+            initialIDs.forEach((id, index) => {
+                if (id) {
+                    quantitiesMap.set(id, initialQuantities[index] || '');
                 }
             });
-            allSelectedIDsInput.value = Array.from(idSet).join(',');
+
+            // Set values and states for inputs on the current page
+            document.querySelectorAll('#exportForm tbody tr').forEach(row => {
+                const checkbox = row.querySelector('.item-checkbox');
+                const quantityInput = row.querySelector('.quantity-input');
+                if (checkbox && quantityInput) {
+                    const productID = checkbox.value;
+                    if (quantitiesMap.has(productID)) {
+                        checkbox.checked = true;
+                        quantityInput.disabled = false;
+                        quantityInput.value = quantitiesMap.get(productID);
+                    }
+                }
+            });
         }
 
+        // --- Update map and hidden inputs based on user interaction ---
+        function updateSelections() {
+            // Update map from inputs on the current page
+            document.querySelectorAll('#exportForm tbody tr').forEach(row => {
+                const checkbox = row.querySelector('.item-checkbox');
+                const quantityInput = row.querySelector('.quantity-input');
+                if (checkbox && quantityInput) {
+                    const productID = checkbox.value;
+                    if (checkbox.checked) {
+                        quantitiesMap.set(productID, quantityInput.value);
+                    } else {
+                        quantitiesMap.delete(productID);
+                    }
+                }
+            });
+
+            // Update hidden inputs from the map
+            const ids = Array.from(quantitiesMap.keys());
+            const quantities = Array.from(quantitiesMap.values());
+            allSelectedIDsInput.value = ids.join(',');
+            allSelectedQuantitiesInput.value = quantities.join(',');
+        }
+
+        // --- Event Listeners ---
+
+        // Enable/disable quantity input when checkbox is toggled
         itemCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateAllSelectedIDs);
+            checkbox.addEventListener('change', function () {
+                const row = this.closest('tr');
+                const quantityInput = row.querySelector('.quantity-input');
+                quantityInput.disabled = !this.checked;
+                if (this.checked) {
+                    quantityInput.focus();
+                } else {
+                    quantityInput.value = ''; // Clear value when unchecked
+                }
+                updateSelections();
+            });
         });
 
-        function appendIDsToLinks(event) {
-            updateAllSelectedIDs();
-            const selectedIDs = allSelectedIDsInput.value;
-            if (selectedIDs) {
-                // For pagination links
-                document.querySelectorAll('.pagination a.page-link').forEach(link => {
-                    const url = new URL(link.href);
-                    url.searchParams.set('selectedItemIDs', selectedIDs);
-                    link.href = url.toString();
-                });
+        // Update selections when a quantity is changed
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', updateSelections);
+        });
 
-                // For filter form
-                const filterForm = document.getElementById('filterForm');
-                if (filterForm) {
-                    let hiddenInput = filterForm.querySelector('input[name="selectedItemIDs"]');
-                    if (!hiddenInput) {
-                        hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'selectedItemIDs';
-                        filterForm.appendChild(hiddenInput);
-                    }
-                    hiddenInput.value = selectedIDs;
+        // --- Preserve selections for navigation (pagination, filters) ---
+        function appendSelectionsToLinks(form) {
+            updateSelections(); // Ensure data is up-to-date before navigating
+
+            const selectedIDs = allSelectedIDsInput.value;
+            const selectedQuantities = allSelectedQuantitiesInput.value;
+
+            if (selectedIDs) {
+                // Add/update hidden input for IDs
+                let hiddenIDs = form.querySelector('input[name="selectedItemIDs"]');
+                if (!hiddenIDs) {
+                    hiddenIDs = document.createElement('input');
+                    hiddenIDs.type = 'hidden';
+                    hiddenIDs.name = 'selectedItemIDs';
+                    form.appendChild(hiddenIDs);
                 }
+                hiddenIDs.value = selectedIDs;
+
+                // Add/update hidden input for quantities
+                let hiddenQuantities = form.querySelector('input[name="allSelectedItemQuantities"]');
+                if (!hiddenQuantities) {
+                    hiddenQuantities = document.createElement('input');
+                    hiddenQuantities.type = 'hidden';
+                    hiddenQuantities.name = 'allSelectedItemQuantities';
+                    form.appendChild(hiddenQuantities);
+                }
+                hiddenQuantities.value = selectedQuantities;
             }
         }
 
         document.querySelectorAll('.pagination a.page-link').forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
-                appendIDsToLinks();
-                window.location.href = this.href;
+                updateSelections();
+                const selectedIDs = allSelectedIDsInput.value;
+                const selectedQuantities = allSelectedQuantitiesInput.value;
+                const url = new URL(link.href);
+                if (selectedIDs) {
+                    url.searchParams.set('selectedItemIDs', selectedIDs);
+                    url.searchParams.set('allSelectedItemQuantities', selectedQuantities);
+                }
+                window.location.href = url.toString();
             });
         });
 
+        const pageSizeForm = document.getElementById('pageSizeForm');
+        if(pageSizeForm) {
+            pageSizeForm.addEventListener('submit', function(e) {
+                appendSelectionsToLinks(this);
+            });
+        }
+
         const filterForm = document.getElementById('filterForm');
         if (filterForm) {
-            filterForm.addEventListener('submit', appendIDsToLinks);
+            filterForm.addEventListener('submit', function(e) {
+                appendSelectionsToLinks(this);
+            });
         }
 
         const exportForm = document.getElementById('exportForm');
         if (exportForm) {
             exportForm.addEventListener('submit', function () {
-                updateAllSelectedIDs();
+                updateSelections();
             });
         }
+
+        // --- Initial call to set up the page ---
+        initializeState();
     });
 </script>
 

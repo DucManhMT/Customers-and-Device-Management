@@ -55,7 +55,7 @@
                 </svg>
                 Add Product
             </a>
-            <a href="" class="btn btn-success d-flex align-items-center">
+            <a href="createExportRequest" class="btn btn-success d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-box-arrow-up me-2" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
