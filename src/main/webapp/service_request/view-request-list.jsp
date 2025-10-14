@@ -64,7 +64,10 @@
                         <td>${request.startDate}</td>
                         <td><c:out value="${empty request.finishedDate ? '-' : request.finishedDate}"/></td>
                         <td>
-                            <a href="/requests/view?requestId=${request.requestID}" class="btn btn-info btn-sm">View</a>
+                            <a href="../requests/detail?requestId=${request.requestID}"
+                               class="btn btn-info btn-sm">View</a>
+                            <a href="./requests/timeline?requestId=${request.requestID}"
+                               class="btn btn-primary btn-sm">Timeline</a>
                             <c:if test="${request.requestStatus == 'Pending'}">
                                 <a href="/requests/edit?requestId=${request.requestID}"
                                    class="btn btn-warning btn-sm">Process</a>

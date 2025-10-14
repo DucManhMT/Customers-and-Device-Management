@@ -1,8 +1,11 @@
 package crm.common.model;
 
+import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+import crm.service_request.model.RequestLog;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -101,4 +104,15 @@ public class Request {
     public void setLogs(List<RequestLog> logs) {
         this.logs = logs;
     }
+
+    public static OldRequestStatus toOldStatus(RequestStatus status) {
+        return switch (status) {
+            case Pending -> OldRequestStatus.Pending;
+            case Approved -> OldRequestStatus.Approved;
+            case Rejected -> OldRequestStatus.Rejected;
+            case Processing -> OldRequestStatus.Processing;
+            default -> throw new IllegalArgumentException("Unknown status: " + status);
+        };
+    }
+
 }
