@@ -37,7 +37,7 @@ public class RequestService {
         try {
             TransactionManager.beginTransaction();
             requestRepository.save(request);
-            requestLogService.createLog(request, "Service request created", null, RequestStatus.Pending, contract.getCustomer().getAccount().getUsername());
+            requestLogService.createLog(request, "Service request created", null, RequestStatus.Pending, contract.getCustomer().getAccount());
             TransactionManager.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,7 +131,7 @@ public class RequestService {
         return requestRepository.isExist(requestId);
     }
 
-    public void updateRequestStatus(int requestId, RequestStatus requestStatus, String note, String username) throws IllegalArgumentException {
+    public void updateRequestStatus(int requestId, RequestStatus requestStatus, String note, Account account) throws IllegalArgumentException {
         Request request = getRequestById(requestId);
         if (request == null) {
             throw new IllegalArgumentException("Request not found");
@@ -153,7 +153,7 @@ public class RequestService {
         try {
             TransactionManager.beginTransaction();
             requestRepository.update(request);
-            requestLogService.createLog(request, logNote.toString(), oldStatus, requestStatus, username);
+            requestLogService.createLog(request, logNote.toString(), oldStatus, requestStatus, account);
             TransactionManager.commit();
         } catch (SQLException e) {
             e.printStackTrace();

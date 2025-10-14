@@ -1,5 +1,6 @@
 package crm.service_request.service;
 
+import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
@@ -17,7 +18,7 @@ public class RequestLogService {
     RequestLogRepository requestLogRepository = new RequestLogRepository();
 
     public void createLog(Request request, String description, OldRequestStatus oldStatus, RequestStatus newStatus,
-                          String username) {
+                          Account account) {
         RequestLog requestLog = new RequestLog();
         requestLog.setRequestLogID(requestLogRepository.getNewId());
         requestLog.setRequest(request);
@@ -25,6 +26,7 @@ public class RequestLogService {
         requestLog.setOldStatus(oldStatus);
         requestLog.setNewStatus(newStatus);
         requestLog.setActionDate(Date.valueOf(LocalDate.now()));
+        requestLog.setAccount(account);
 
         try {
             TransactionManager.beginTransaction();
@@ -40,7 +42,7 @@ public class RequestLogService {
         }
     }
 
-    public List<RequestLog> getLogsByRequestId(int requestId) throws SQLException {
+    public List<RequestLog> getLogsByRequestId(int requestId) {
         return requestLogRepository.findWithCondition(ClauseBuilder.builder().equal("RequestID", requestId));
     }
 

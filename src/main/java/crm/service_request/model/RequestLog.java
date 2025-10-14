@@ -77,6 +77,9 @@ public class RequestLog {
     }
 
     public Account getAccount() {
+        if (account == null) {
+            return null;
+        }
         return account.get();
     }
 

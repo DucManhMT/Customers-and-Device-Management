@@ -52,7 +52,7 @@ public class RequestProcessController extends HttpServlet {
             if (status == null || status.isEmpty()) {
                 throw new IllegalArgumentException(MessageConst.MSG19);
             }
-            requestService.updateRequestStatus(requestId, RequestStatus.valueOf(status), note, username);
+            requestService.updateRequestStatus(requestId, RequestStatus.valueOf(status), note, account);
             req.setAttribute("message", MessageConst.MSG17);
             req.setAttribute("request", requestService.getRequestById(requestId));
         } catch (NumberFormatException e) {
