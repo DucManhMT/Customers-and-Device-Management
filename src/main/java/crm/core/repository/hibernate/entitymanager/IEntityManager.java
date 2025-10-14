@@ -12,7 +12,7 @@ public interface IEntityManager {
      * @param entityClass Class of the entity
      * @param <T> Type of the entity
      */
-    <T> void persist(T entity, Class<T> entityClass);
+    <T> boolean persist(T entity, Class<T> entityClass);
 
     /***
      * Read an entity from the database by its primary key.

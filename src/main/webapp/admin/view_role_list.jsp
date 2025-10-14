@@ -15,7 +15,9 @@
             <h2 class="fw-bold text-dark mb-2">Role Management</h2>
         </div>
     </div>
-
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-6">
@@ -65,7 +67,7 @@
                     </a>
                 </div>
                 <div class="col-12 col-md-3">
-                    <a href="AddRole" class="btn btn-primary w-100">
+                    <a href="${pageContext.request.contextPath}/CreateRole" class="btn btn-primary w-100">
                         <i class="bi bi-plus-lg"></i> Add New Role
                     </a>
                 </div>
@@ -96,10 +98,13 @@
                         <a href="EditRole?id=${role.roleID}" class="btn btn-sm btn-primary me-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <a href="DeleteRole?id=${role.roleID}" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this role?');">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
+                        <form action="ViewRoleList" method="post" style="display:inline;">
+                            <input type="hidden" name="action" value="delete"/>
+                            <input type="hidden" name="id" value="${role.roleID}"/>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this role?');">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </form>
                     </td>
                 </tr>
             </c:forEach>
@@ -110,7 +115,7 @@
     <!-- Pagination -->
     <form method="get" action="ViewRoleList">
         <input type="hidden" name="search" value="${search}" />
-        <div class="d-flex align-items-center">
+        <div class="mt-4 d-flex align-items-center">
             <span class="me-3">Show:</span>
             <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
                     onchange="this.form.submit()">
