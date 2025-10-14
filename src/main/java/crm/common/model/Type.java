@@ -21,8 +21,8 @@ public class Type {
     @Column(name = "TypeImage", length = 255)
     private String typeImage;
 
-    @ManyToOne(joinColumn = "CategoryID")
-    private LazyReference<Category> category;
+//    @ManyToOne(joinColumn = "CategoryID")
+//    private LazyReference<Category> category;
 
     @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", targetEntity = Product.class)
     private List<Product> products;
@@ -54,13 +54,13 @@ public class Type {
         this.typeImage = typeImage;
     }
 
-    public Category getCategory() {
-        return category.get();
-    }
-
-    public void setCategory(Category category) {
-        this.category = new LazyReference<>(Category.class, category.getCategoryID());
-    }
+//    public Category getCategory() {
+//        return category.get();
+//    }
+//
+//    public void setCategory(Category category) {
+//        this.category = new LazyReference<>(Category.class, category.getCategoryID());
+//    }
 
     public List<Product> getProducts() {
         return products;

@@ -15,7 +15,7 @@
     Hello World!
     <a href="${pageContext.request.contextPath}/auth/customer_login">Login here</a><br>
     <a href="${pageContext.request.contextPath}/auth/staff_login">Login here</a><br>
-    <a href="${pageContext.request.contextPath}/warehouse/import_product">Import product</a><br>
+    <a href="${pageContext.request.contextPath}/warehousekeeper/import_product">Import product</a><br>
 
 </p>
 </body>

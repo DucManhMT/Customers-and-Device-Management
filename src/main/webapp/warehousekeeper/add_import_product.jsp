@@ -86,7 +86,7 @@
                             <p class="mb-0 opacity-75">Select products from warehouse catalog to add to import list</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="import_product.jsp" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehousekeeper/import_product" class="btn btn-light btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>Back to Import
                             </a>
                         </div>
@@ -144,21 +144,15 @@
                                        placeholder="Product name, code..."
                                        autocomplete="off">
                             </div>
-                            <!-- Search Button -->
-                            <div class="d-grid mt-2">
-                                <button type="button" class="btn btn-primary btn-sm" id="searchBtn">
-                                    <i class="bi bi-search me-1"></i>Search Products
-                                </button>
-                            </div>
                         </div>
 
-                        <!-- Category Filter -->
+                        <!-- Type Filter -->
                         <div class="mb-3">
-                            <label class="form-label small fw-medium">Category</label>
-                            <select id="categoryFilter" class="form-select category-filter">
-                                <option value="">All Categories</option>
-                                <c:forEach items="${categories}" var="category">
-                                    <option value="${category}">${category}</option>
+                            <label class="form-label small fw-medium">Type</label>
+                            <select id="typeFilter" class="form-select category-filter">
+                                <option value="">All Types</option>
+                                <c:forEach items="${types}" var="type">
+                                    <option value="${type.typeName}">${type.typeName}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -172,6 +166,13 @@
                                     Hide already imported
                                 </label>
                             </div>
+                        </div>
+
+                        <!-- Search Button -->
+                        <div class="d-grid mt-2">
+                            <button type="button" class="btn btn-primary btn-sm" id="searchBtn">
+                                <i class="bi bi-search me-1"></i>Search Products
+                            </button>
                         </div>
 
                         <!-- Quick Actions -->
@@ -217,9 +218,12 @@
 
             <!--
               Expected request attributes:
-              - availableProducts: java.util.List<Product> with getters: id, code, name, description, category, price, stockQuantity, imageUrl
-              - importedProductIds: java.util.Set<String> - IDs of products already in import list
-              - categories: java.util.List<String> - available categories for filtering
+              - availableProducts: java.util.List<Product> with getters: productID, productName, productDescription, type.typeName
+              - types: java.util.List<Type> - available types for filtering
+              - importedProductIds: java.util.Set<Integer> - IDs of products already in import list
+
+              Session attributes used:
+              - importProductList: java.util.List<Product> - products already in import list (for count display only)
             -->
 
             <!-- Products Container -->
@@ -236,14 +240,18 @@
                         <!-- Grid View -->
                         <div id="gridViewContainer" class="row">
                             <c:forEach items="${availableProducts}" var="product">
+                                <!-- Check if product is already in import list using the set from request -->
+                                <c:set var="isAlreadyImported" value="${importedProductIds.contains(product.productID)}" />
+
                                 <div class="col-xl-3 col-lg-4 col-md-6 mb-4 product-item"
                                      data-product-id="${product.productID}"
                                      data-product-name="${product.productName}"
                                      data-product-description="${product.productDescription}"
-                                     data-category="${product.type.typeName}"
-                                     data-imported="${importedProductIds.contains(product.productID.toString())}">
+                                     data-type-id="${product.type.typeID}"
+                                     data-type-name="${product.type.typeName}"
+                                     data-imported="${isAlreadyImported}">
 
-                                    <div class="card product-card h-100 ${importedProductIds.contains(product.productID.toString()) ? 'already-imported' : ''}"
+                                    <div class="card product-card h-100 ${isAlreadyImported ? 'already-imported' : ''}"
                                          onclick="toggleProductSelection('${product.productID}')">
 
                                         <!-- Product Image -->
@@ -265,12 +273,12 @@
                                                     <input class="form-check-input product-checkbox"
                                                            type="checkbox"
                                                            id="product-${product.productID}"
-                                                        ${importedProductIds.contains(product.productID.toString()) ? 'disabled' : ''}>
+                                                        ${isAlreadyImported ? 'disabled' : ''}>
                                                 </div>
                                             </div>
 
                                             <!-- Already Imported Badge -->
-                                            <c:if test="${importedProductIds.contains(product.productID.toString())}">
+                                            <c:if test="${isAlreadyImported}">
                                                 <div class="position-absolute bottom-0 start-0 p-2">
                           <span class="badge bg-warning">
                             <i class="bi bi-check-circle me-1"></i>Already Added
@@ -327,19 +335,22 @@
                                             </th>
                                             <th>Code</th>
                                             <th>Product Name</th>
-                                            <th>Category</th>
-<%--                                            <th>Stock</th>--%>
+                                            <th>Type</th>
                                             <th>Status</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <c:forEach items="${availableProducts}" var="product">
-                                            <tr class="product-item-row ${importedProductIds.contains(product.productID.toString()) ? 'table-secondary' : ''}"
+                                            <!-- Check if product is already in import list using the set from request -->
+                                            <c:set var="isAlreadyImported" value="${importedProductIds.contains(product.productID)}" />
+
+                                            <tr class="product-item-row ${isAlreadyImported ? 'table-secondary' : ''}"
                                                 data-product-id="${product.productID}"
                                                 data-product-name="${fn:toLowerCase(product.productName)}"
                                                 data-product-description="${fn:toLowerCase(product.productDescription)}"
-                                                data-category="${product.type.typeName}"
-                                                data-imported="${importedProductIds.contains(product.productID.toString())}"
+                                                data-type-id="${product.type.typeID}"
+                                                data-type-name="${product.type.typeName}"
+                                                data-imported="${isAlreadyImported}"
                                                 onclick="toggleProductSelection('${product.productID}')"
                                                 style="cursor: pointer;">
 
@@ -348,7 +359,7 @@
                                                         <input class="form-check-input product-checkbox-list"
                                                                type="checkbox"
                                                                id="product-list-${product.productID}"
-                                                            ${importedProductIds.contains(product.productID.toString()) ? 'disabled' : ''}>
+                                                            ${isAlreadyImported ? 'disabled' : ''}>
                                                     </div>
                                                 </td>
                                                 <td><code class="small">${product.productDescription}</code></td>
@@ -363,16 +374,9 @@
                                                     </c:if>
                                                 </td>
                                                 <td><span class="badge bg-secondary">${product.type.typeName}</span></td>
-<%--                                                <td>${product.stockQuantity}</td>--%>
-<%--                                                <td>--%>
-<%--                                                    <c:choose>--%>
-<%--                                                        <c:when test="${not empty product.price}">$${product.price}</c:when>--%>
-<%--                                                        <c:otherwise>-</c:otherwise>--%>
-<%--                                                    </c:choose>--%>
-<%--                                                </td>--%>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${importedProductIds.contains(product.productID.toString())}">
+                                                        <c:when test="${isAlreadyImported}">
                               <span class="badge bg-warning">
                                 <i class="bi bi-check-circle me-1"></i>Added
                               </span>
@@ -453,12 +457,60 @@
         const visibleRows = document.querySelectorAll('.product-item-row:not(.d-none)').length;
         const total = Math.max(visibleItems, visibleRows);
         document.getElementById('visibleCount').textContent = total;
+
+        // Also update the selection summary with import status info
+        updateImportStatus();
+    }
+
+    function updateImportStatus() {
+        // Count already imported items that are visible
+        const visibleImported = document.querySelectorAll('.product-item:not(.d-none)[data-imported="true"]').length +
+                               document.querySelectorAll('.product-item-row:not(.d-none)[data-imported="true"]').length;
+
+        if (visibleImported > 0) {
+            // Show a small indicator of how many are already imported
+            const existingIndicator = document.getElementById('importedIndicator');
+            if (!existingIndicator) {
+                const indicator = document.createElement('div');
+                indicator.id = 'importedIndicator';
+                indicator.className = 'small text-muted mt-1';
+                indicator.innerHTML = '<i class="bi bi-info-circle me-1"></i>' + visibleImported + ' already in import list';
+                document.querySelector('.selection-summary .card-body').appendChild(indicator);
+            } else {
+                existingIndicator.innerHTML = '<i class="bi bi-info-circle me-1"></i>' + visibleImported + ' already in import list';
+            }
+        }
     }
 
     function toggleProductSelection(productId) {
         // Check if product is already imported
         const productElement = document.querySelector(`[data-product-id="${productId}"]`);
         if (productElement && productElement.dataset.imported === 'true') {
+            // Show a friendly message instead of doing nothing
+            const toast = document.createElement('div');
+            toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '1055';
+            toast.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <i class="bi bi-info-circle text-info me-2"></i>
+                        <strong class="me-auto">Already Added</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        This product is already in your import list.
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 3000);
+
             return; // Can't select already imported products
         }
 
@@ -511,14 +563,14 @@
 
     function applyFilters() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-        const selectedCategory = document.getElementById('categoryFilter').value;
+        const selectedType = document.getElementById('typeFilter').value;
         const hideImported = document.getElementById('hideImportedFilter').checked;
 
         // Filter grid view items
         document.querySelectorAll('.product-item').forEach(item => {
             const productName = item.dataset.productName || '';
             const productDescription = item.dataset.productDescription || '';
-            const category = item.dataset.category || '';
+            const typeName = item.dataset.typeName || '';
             const isImported = item.dataset.imported === 'true';
 
             let show = true;
@@ -528,8 +580,8 @@
                 show = false;
             }
 
-            // Category filter
-            if (selectedCategory && category !== selectedCategory) {
+            // Type filter
+            if (selectedType && typeName !== selectedType) {
                 show = false;
             }
 
@@ -545,7 +597,7 @@
         document.querySelectorAll('.product-item-row').forEach(row => {
             const productName = row.dataset.productName || '';
             const productDescription = row.dataset.productDescription || '';
-            const category = row.dataset.category || '';
+            const typeName = row.dataset.typeName || '';
             const isImported = row.dataset.imported === 'true';
 
             let show = true;
@@ -555,8 +607,8 @@
                 show = false;
             }
 
-            // Category filter
-            if (selectedCategory && category !== selectedCategory) {
+            // Type filter
+            if (selectedType && typeName !== selectedType) {
                 show = false;
             }
 
@@ -583,7 +635,7 @@
 
     function clearFilters() {
         document.getElementById('searchInput').value = '';
-        document.getElementById('categoryFilter').value = '';
+        document.getElementById('typeFilter').value = '';
         document.getElementById('hideImportedFilter').checked = true;
         applyFilters();
     }
@@ -617,22 +669,26 @@
             return;
         }
 
+        console.log('=== Adding Selected Products ===');
+        console.log('Selected product IDs:', Array.from(selectedProducts));
+
         // Create a form to submit selected product IDs
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = 'import-products.jsp';
+        form.action = '${pageContext.request.contextPath}/warehousekeeper/import_product';
         form.style.display = 'none';
 
-        // Add selected product IDs
+        // Add selected product IDs as an array
         selectedProducts.forEach(productId => {
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = 'selectedProductIds';
+            input.name = 'productIds';
             input.value = productId;
             form.appendChild(input);
+            console.log('Adding product ID to form:', productId);
         });
 
-        // Add action parameter
+        // Add action parameter - this is crucial
         const actionInput = document.createElement('input');
         actionInput.type = 'hidden';
         actionInput.name = 'action';
@@ -640,6 +696,19 @@
         form.appendChild(actionInput);
 
         document.body.appendChild(form);
+
+        // Show loading state
+        const confirmBtn = document.getElementById('confirmAddBtn');
+        if (confirmBtn) {
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Adding Products...';
+            confirmBtn.disabled = true;
+        }
+
+        console.log('Form action:', form.action);
+        console.log('Form method:', form.method);
+        console.log('Submitting form with action: addProducts');
+
         form.submit();
     }
 
@@ -672,8 +741,8 @@
 
         // Modal confirmation
         document.getElementById('confirmAddBtn').addEventListener('click', () => {
-            confirmationModalInstance.hide();
             addSelectedProducts();
+            // Don't hide modal immediately - let the form submission handle the redirect
         });
 
         // Checkbox event handlers for grid view
@@ -738,12 +807,32 @@
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', () => {
+        // Clear any cached selections when page loads
+        selectedProducts.clear();
+
         updateSelectionCount();
         updateVisibleCount();
         attachEventHandlers();
 
         // Set focus on search input
         document.getElementById('searchInput').focus();
+
+        // Show summary of import list status if any products are already imported
+        const importListCount = ${not empty sessionScope.importProductList ? fn:length(sessionScope.importProductList) : 0};
+        if (importListCount > 0) {
+            const summaryElement = document.createElement('div');
+            summaryElement.className = 'alert alert-info alert-dismissible fade show mb-3';
+            summaryElement.innerHTML = `
+                <i class="bi bi-info-circle me-2"></i>
+                You currently have <strong>${importListCount}</strong> products in your import list.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container-fluid').insertBefore(summaryElement, document.querySelector('.row'));
+        }
+
+        console.log('=== Add Import Product Page Loaded ===');
+        console.log('Import list count:', importListCount);
+        console.log('Selected products cleared on page load');
     });
 </script>
 </body>

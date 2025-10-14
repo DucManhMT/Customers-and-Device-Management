@@ -14,6 +14,7 @@ import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
+import crm.core.utils.HashInfo;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -24,28 +25,10 @@ public class BuilderTest {
     public static void main(String[] args) {
       EntityManager em  = new EntityManager(DBcontext.getConnection());
 
-        Category category = new Category();
-//        category.setCategoryName("New Category");
-//        category.setCategoryID(IDGeneratorService.generateID(Category.class));
-//        em.persist(category, Category.class);
-        category = em.find(Category.class, 1);
-
-        Type type = new Type();
-//        type.setTypeName("New Type");
-//        type.setCategory(category);
-//        type.setTypeID(IDGeneratorService.generateID(Type.class));
-//        em.persist(type, Type.class);
-        type = em.find(Type.class, 1);
-
-
-        for (int i = 2; i < 100; i++) {
-            Product product = new Product();
-            product.setProductName("New Product " + i);
-            product.setProductDescription("This is a new product " + i);
-            product.setType(type);
-            product.setProductID(IDGeneratorService.generateID(Product.class));
-            em.persist(product, Product.class);
-        }
+//      Hasher.hashPassword("admin");
+//        HashInfo.hash("admin");
+        System.out.println(Hasher.hashPassword("admin"));
+        System.out.println(HashInfo.hash("admin"));
 
     }
 
