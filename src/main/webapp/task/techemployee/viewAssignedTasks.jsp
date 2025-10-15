@@ -86,7 +86,7 @@
                             <label>Status</label>
                             <select class="form-control" name="statusFilter">
                                 <option value="">All Status</option>
-                                <option value="approved" <%= "approved".equals(request.getAttribute("statusFilter")) ? "selected" : "" %>>Approved</option>
+                                <option value="processing" <%= "processing".equals(request.getAttribute("statusFilter")) ? "selected" : "" %>>Processing</option>
                                 <option value="finished" <%= "finished".equals(request.getAttribute("statusFilter")) ? "selected" : "" %>>Finished</option>
                             </select>
                         </div>
@@ -132,9 +132,9 @@
             </div>
             <div class="stat-card">
                 <div class="stat-number">
-                    <%= request.getAttribute("approvedTasks") != null ? request.getAttribute("approvedTasks") : 0 %>
+                    <%= request.getAttribute("processingTasks") != null ? request.getAttribute("processingTasks") : 0 %>
                 </div>
-                <div class="stat-label">Approved</div>
+                <div class="stat-label">Processing</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">
@@ -178,7 +178,13 @@
                     </div>
                 </div>
                 <div class="task-footer">
-                    <a href="${pageContext.request.contextPath}/task/detail?id=<%=req.getRequestID()%>" class="link">View details</a>
+<form method="POST" action="${pageContext.request.contextPath}/task/detail" class="link">
+    <input type="hidden" name="id" value="<%= req.getRequestID() %>">
+    <button type="submit" class="btn-sm finish-btn">
+        View details
+    </button>
+</form>
+
                     <% if (RequestStatus.Finished.equals(req.getRequestStatus())) { %>
                         <button class="btn btn-secondary btn-sm finish-btn" disabled>
                             <i class="fas fa-check"></i> Finished

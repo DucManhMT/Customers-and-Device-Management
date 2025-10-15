@@ -111,7 +111,7 @@
           <h5 class="mb-3">
             <i class="bi bi-funnel"></i> Search & Filter Technicians
           </h5>
-          <form id="filterForm" method="GET" action="${pageContext.request.contextPath}/tech/employees">
+          <form id="filterForm" method="POST" action="${pageContext.request.contextPath}/tech/employees">
           <div class="row g-3">
             <div class="col-md-3">
               <label for="searchName" class="form-label"
@@ -180,12 +180,12 @@
             </h5>
             <div class="d-flex align-items-center gap-2">
               <label class="form-label mb-0 me-2">Show:</label>
-              <select class="form-select page-size-selector" id="pageSize">
-                <option value="5">5</option>
-                <option value="10" selected>10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-              </select>
+                <select id="recordsPerPageSelect" class="form-select" onchange="changeRecordsPerPage(this.value)">
+                  <option value="5" ${recordsPerPage == 5 ? 'selected' : ''}>5</option>
+                  <option value="10" ${recordsPerPage == 10 ? 'selected' : ''}>10</option>
+                  <option value="20" ${recordsPerPage == 20 ? 'selected' : ''}>20</option>
+                </select>
+
               <span class="text-muted ms-2">per page</span>
             </div>
           </div>
@@ -273,12 +273,12 @@
                         </td>
                         <td>
                           <div class="d-flex gap-2">
-                            <button
-                              class="btn btn-sm btn-outline-primary"
-                              onclick="viewEmployeeDetail('${employee.staffID}')"
-                            >
-                              <i class="bi bi-eye"></i> View
-                            </button>
+                            <form method="post" action="${pageContext.request.contextPath}/tech/employees/view" style="display:inline-block; margin:0;">
+                              <input type="hidden" name="id" value="${employee.staffID}" />
+                              <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                              </button>
+                            </form>
                             <button
                               class="btn btn-sm btn-outline-success"
                               id="assign-btn-${employee.staffID}"
@@ -315,34 +315,42 @@
                 <span id="showingTotal">${totalCount}</span> entries
               </div>
               <nav aria-label="Technician pagination">
-                <ul class="pagination mb-0">
-                  <li class="page-item ${currentPage == 1 ? 'disabled' : ''}" id="firstPageItem">
-                    <a class="page-link" href="${currentPage > 1 ? '?page=1' : '#'}">
-                      <i class="bi bi-chevron-double-left"></i>
-                    </a>
-                  </li>
-                  <li class="page-item ${currentPage == 1 ? 'disabled' : ''}" id="prevPageItem">
-                    <a class="page-link" href="${currentPage > 1 ? '?page='.concat(currentPage - 1) : '#'}">
-                      <i class="bi bi-chevron-left"></i>
-                    </a>
-                  </li>
-                  <li class="page-item active">
-                    <span class="page-link">
-                      Page <span id="currentPageNum">${currentPage}</span> of
-                      <span id="totalPages">${totalPages}</span>
-                    </span>
-                  </li>
-                  <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}" id="nextPageItem">
-                    <a class="page-link" href="${currentPage < totalPages ? '?page='.concat(currentPage + 1) : '#'}">
-                      <i class="bi bi-chevron-right"></i>
-                    </a>
-                  </li>
-                  <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}" id="lastPageItem">
-                    <a class="page-link" href="${currentPage < totalPages ? '?page='.concat(totalPages) : '#'}">
-                      <i class="bi bi-chevron-double-right"></i>
-                    </a>
-                  </li>
-                </ul>
+                <form id="paginationForm" method="POST" action="${pageContext.request.contextPath}/tech/employees" style="display: none;">
+                  <input type="hidden" name="page" id="pageInput" value="${currentPage}">
+                  <input type="hidden" name="searchName" value="${searchName}">
+                  <input type="hidden" name="location" value="${selectedLocation}">
+                  <input type="hidden" name="ageRange" value="${selectedAgeRange}">
+                  <input type="hidden" name="recordsPerPage" id="recordsPerPageInput" value="${recordsPerPage}">
+                </form>
+                  <ul class="pagination mb-0">
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                      <button type="button" class="page-link" onclick="goToPage(1)">
+                        <i class="bi bi-chevron-double-left"></i>
+                      </button>
+                    </li>
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                      <button type="button" class="page-link" onclick="goToPage(${currentPage - 1})">
+                        <i class="bi bi-chevron-left"></i>
+                      </button>
+                    </li>
+
+                    <li class="page-item active">
+                      <span class="page-link">
+                        Page ${currentPage} of ${totalPages}
+                      </span>
+                    </li>
+
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                      <button type="button" class="page-link" onclick="goToPage(${currentPage + 1})">
+                        <i class="bi bi-chevron-right"></i>
+                      </button>
+                    </li>
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                      <button type="button" class="page-link" onclick="goToPage(${totalPages})">
+                        <i class="bi bi-chevron-double-right"></i>
+                      </button>
+                    </li>
+                  </ul>
               </nav>
             </div>
           </div>
@@ -383,6 +391,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+      function goToPage(page) {
+        const form = document.getElementById('paginationForm');
+        const input = document.getElementById('pageInput');
+        input.value = page;
+        form.submit();
+      }
+
+      function changeRecordsPerPage(value) {
+        const form = document.getElementById('paginationForm');
+        document.getElementById('recordsPerPageInput').value = value;
+        document.getElementById('pageInput').value = 1; 
+        form.submit();
+      }
       function viewEmployeeDetail(staffID) {
         window.location.href = '${pageContext.request.contextPath}/tech/employees/view?id=' + staffID;
       }
@@ -452,7 +473,6 @@
       document.addEventListener('DOMContentLoaded', function() {
         console.log('Tech employees loaded: ${totalCount}');
         
-        // Remove automatic search input filtering - only filter when Apply Filter button is clicked
         document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
         document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
         
@@ -467,7 +487,6 @@
         
         updatePaginationLinks();
         
-        // Remove automatic filtering - only filter when Apply Filter button is clicked
         
         showFilterSummary();
       });
@@ -513,7 +532,6 @@
         document.getElementById('searchName').value = '';
         document.getElementById('filterLocation').value = '';
         document.getElementById('filterAge').value = '';
-        
         document.getElementById('filterForm').submit();
       }
     </script>
