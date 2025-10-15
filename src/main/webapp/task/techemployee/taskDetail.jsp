@@ -162,10 +162,6 @@
                 <% } %>
                 
                 <div class="action-buttons">
-                    <a href="${pageContext.request.contextPath}/task/viewAssignedTasks" class="btn btn-primary">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Tasks
-                    </a>
                     
                     <% if (RequestStatus.Approved.equals(task.getRequestStatus())) { %>
                         <form method="POST" action="${pageContext.request.contextPath}/task/updateStatus" style="display: inline;" 
@@ -190,10 +186,6 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <h3>Task Not Found</h3>
                     <p>The requested task could not be found or you don't have permission to view it.</p>
-                    <a href="${pageContext.request.contextPath}/task/viewAssignedTasks" class="btn btn-primary">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Tasks
-                    </a>
                 </div>
             <% } %>
         </div>
