@@ -100,7 +100,7 @@ public class viewAssignedTask extends HttpServlet {
             // in");
             // return;
             // }
-            String username = "technician01";
+            String username = "tech001";
             String statusFilter = (String) request.getAttribute("statusFilter");
             String sortBy = (String) request.getAttribute("sortBy");
             String fromDate = (String) request.getAttribute("fromDate");
@@ -136,7 +136,7 @@ public class viewAssignedTask extends HttpServlet {
                 request.setAttribute("endItem", 0);
 
                 request.setAttribute("totalTasks", 0);
-                request.setAttribute("approvedTasks", 0);
+                request.setAttribute("processingTasks", 0);
                 request.setAttribute("finishedTasks", 0);
 
                 request.getRequestDispatcher("/task/techemployee/viewAssignedTasks.jsp").forward(request, response);
@@ -151,9 +151,9 @@ public class viewAssignedTask extends HttpServlet {
 
             List<Request> filteredRequests = filteredByAssignment;
             if (statusFilter != null && !statusFilter.isEmpty() && !"all status".equalsIgnoreCase(statusFilter)) {
-                if ("approved".equals(statusFilter)) {
+                if ("processing".equals(statusFilter)) {
                     filteredRequests = filteredByAssignment.stream()
-                            .filter(req -> RequestStatus.Approved.equals(req.getRequestStatus()))
+                            .filter(req -> RequestStatus.Processing.equals(req.getRequestStatus()))
                             .collect(Collectors.toList());
                 } else if ("finished".equals(statusFilter)) {
                     filteredRequests = filteredByAssignment.stream()
@@ -220,8 +220,8 @@ public class viewAssignedTask extends HttpServlet {
                     .limit(pageSize)
                     .collect(Collectors.toList());
             int totalTasks = filteredByAssignment.size();
-            int approvedTasks = (int) filteredByAssignment.stream()
-                    .filter(req -> RequestStatus.Approved.equals(req.getRequestStatus()))
+            int processingTasks = (int) filteredByAssignment.stream()
+                    .filter(req -> RequestStatus.Processing.equals(req.getRequestStatus()))
                     .count();
             int finishedTasks = (int) filteredByAssignment.stream()
                     .filter(req -> RequestStatus.Finished.equals(req.getRequestStatus()))
@@ -241,7 +241,7 @@ public class viewAssignedTask extends HttpServlet {
             request.setAttribute("assignedRequests", paginatedRequests);
 
             request.setAttribute("totalTasks", totalTasks);
-            request.setAttribute("approvedTasks", approvedTasks);
+            request.setAttribute("processingTasks", processingTasks);
             request.setAttribute("finishedTasks", finishedTasks);
             request.setAttribute("statsNote", statsNote);
 
