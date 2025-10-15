@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CRM System - Home</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .container {
+                background: white;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                text-align: center;
+                max-width: 500px;
+                width: 90%;
+            }
+            
+            h1 {
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 2.5em;
+                font-weight: 300;
+            }
+            
+            .subtitle {
+                color: #666;
+                margin-bottom: 30px;
+                font-size: 1.1em;
+            }
+            
+            .btn {
+                display: inline-block;
+                padding: 15px 30px;
+                margin: 10px;
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                color: white;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 16px;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            }
+            
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+                background: linear-gradient(135deg, #0056b3, #004085);
+            }
+            
+            .btn:active {
+                transform: translateY(0);
+            }
+            
+            .btn-secondary {
+                background: linear-gradient(135deg, #6c757d, #545b62);
+                box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            }
+            
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #545b62, #383d41);
+                box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            }
+            
+            .icon {
+                margin-right: 8px;
+            }
+            
+            .links-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            @media (min-width: 600px) {
+                .links-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+            
+            @media (min-width: 900px) {
+                .links-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+                
+                .container {
+                    max-width: 900px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🏢 CRM System</h1>
+            <p class="subtitle">Customer & Device Management</p>
+            
+            <div class="links-grid">
+                <a href="task/viewAssignedTasks" class="btn">
+                    <span class="icon">📋</span>
+                    View Assigned Tasks
+                </a>
+                
+                <a href="service-request/view-service-request.jsp" class="btn">
+                    <span class="icon">🔧</span>
+                    View Service Requests
+                </a>
+                
+                <a href="task/techlead/assignTask.jsp" class="btn btn-secondary">
+                    <span class="icon">👥</span>
+                    Assign Task
+                </a>
+                
+                <a href="task/taskDetail.jsp" class="btn btn-secondary">
+                    <span class="icon">📄</span>
+                    Task Detail
+                </a>
+                
+                <a href="tech/employees" class="btn btn-secondary">
+                    <span class="icon">🔧</span>
+                    View Technician List
+                </a>
+                
+                <a href="feedback/create" class="btn">
+                    <span class="icon">⭐</span>
+                    Customer Feedback
+                </a>
+                
+                <form action="feedback/create" method="POST" style="display: inline-block; margin: 10px;">
+                    <button type="submit" class="btn" style="border: none; cursor: pointer;">
+                        <span class="icon">✍️</span>
+                        Write Feedback (POST)
+                    </button>
+                </form>
+                
+                <a href="feedback/test-login.jsp" class="btn btn-secondary">
+                    <span class="icon">🔑</span>
+                    Demo Login
+                </a>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666;">
+                <strong>🚀 Navigation Menu:</strong><br>
+                • <strong>View Assigned Tasks</strong> - Main servlet with filters and pagination<br>
+                • <strong>View Service Requests</strong> - Browse and manage service requests with feedback option<br>
+                • <strong>Assign Task</strong> - Tech lead interface for task assignment<br>
+                • <strong>View Technician List</strong> - List of available technicians<br>
+                • <strong>Customer Feedback</strong> - Session-based feedback form (GET method)<br>
+                • <strong>Write Feedback (POST)</strong> - Direct POST request to feedback controller<br>
+                • <strong>Demo Login</strong> - Test different users for feedback system
+            </div>
+        </div>
+    </body>
+</html>
