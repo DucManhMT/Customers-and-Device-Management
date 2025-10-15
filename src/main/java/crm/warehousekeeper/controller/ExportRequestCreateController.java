@@ -1,14 +1,4 @@
-package crm.warehouse;
-
-import crm.common.model.*;
-import crm.common.model.enums.WarehouseRequestStatus;
-import crm.common.repository.Warehouse.*;
-import crm.core.service.IDGeneratorService;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+package crm.warehousekeeper.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -16,6 +6,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import crm.common.model.Account;
+import crm.common.model.Product;
+import crm.common.model.ProductWarehouse;
+import crm.common.model.Type;
+import crm.common.model.Warehouse;
+import crm.common.model.WarehouseRequest;
+import crm.common.model.WarehouseRequestProduct;
+import crm.common.model.enums.WarehouseRequestStatus;
+import crm.common.repository.Warehouse.ProductDAO;
+import crm.common.repository.Warehouse.ProductWarehouseDAO;
+import crm.common.repository.Warehouse.TypeDAO;
+import crm.common.repository.Warehouse.WarehouseDAO;
+import crm.common.repository.Warehouse.WarehouseRequestDAO;
+import crm.common.repository.Warehouse.WarehouseRequestProductDAO;
+import crm.core.service.IDGeneratorService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @WebServlet(urlPatterns = "/warehouse/createExportRequest")

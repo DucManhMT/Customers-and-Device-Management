@@ -1,18 +1,14 @@
-package crm.warehouse;
+package crm.warehousekeeper.controller;
+
+import java.io.IOException;
 
 import crm.common.model.Product;
-import crm.common.model.ProductSpecification;
 import crm.common.repository.Warehouse.ProductDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @WebServlet(urlPatterns = "/warehouse/viewProductDetail")
 public class ProductDetailController extends HttpServlet {

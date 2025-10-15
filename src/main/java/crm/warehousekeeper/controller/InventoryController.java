@@ -1,10 +1,12 @@
 package crm.warehousekeeper.controller;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import crm.common.model.Product;
-<<<<<<<< HEAD:src/main/java/crm/warehousekeeper/controller/InventoryController.java
 import crm.common.model.Type;
-========
->>>>>>>> main:src/main/java/crm/warehousekeeper/controller/ViewInventoryController.java
 import crm.common.model.Warehouse;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
@@ -14,14 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-<<<<<<<< HEAD:src/main/java/crm/warehousekeeper/controller/InventoryController.java
-========
-import java.lang.reflect.Type;
->>>>>>>> main:src/main/java/crm/warehousekeeper/controller/ViewInventoryController.java
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @WebServlet(urlPatterns = "/warehouse/viewInventory")
 public class InventoryController extends HttpServlet {

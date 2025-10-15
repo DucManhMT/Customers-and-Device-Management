@@ -1,18 +1,8 @@
 package test;
 
-import crm.common.model.*;
-import crm.common.model.enums.WarehouseRequestStatus;
+import crm.common.model.Product;
+import crm.common.model.ProductSpecification;
 import crm.common.repository.Warehouse.ProductDAO;
-import crm.common.repository.Warehouse.ProductWarehouseDAO;
-import crm.common.repository.Warehouse.WarehouseDAO;
-import crm.common.repository.Warehouse.WarehouseRequestDAO;
-import crm.core.config.DBcontext;
-import crm.core.repository.hibernate.entitymanager.EntityManager;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 
 public class TestFunction {

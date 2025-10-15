@@ -1,4 +1,6 @@
-package crm.warehouse;
+package crm.warehousekeeper.controller;
+
+import java.io.IOException;
 
 import crm.common.model.Account;
 import crm.common.model.Warehouse;
@@ -8,8 +10,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
 
 @WebServlet(urlPatterns = "/warehouse/viewWarehouseDetail")
 public class WarehouseDetailController extends HttpServlet {
