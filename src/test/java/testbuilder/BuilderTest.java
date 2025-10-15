@@ -25,10 +25,20 @@ public class BuilderTest {
     public static void main(String[] args) {
       EntityManager em  = new EntityManager(DBcontext.getConnection());
 
-//      Hasher.hashPassword("admin");
-//        HashInfo.hash("admin");
-        System.out.println(Hasher.hashPassword("admin"));
-        System.out.println(HashInfo.hash("admin"));
+      Product product = new Product();
+      Type type = new Type();
+//      for ( int i=1; i<=10; i++){
+//          type.setTypeID(IDGeneratorService.generateID(Type.class));
+//          type.setTypeName("Type " + i);
+//          em.persist(type, Type.class);
+//      }
+      for ( int i =1 ; i<=100 ; i++){
+            product.setProductID(IDGeneratorService.generateID(Product.class));
+            product.setProductName("Product " + i);
+            product.setProductDescription("Description " + i);
+            product.setType(em.find(Type.class,(i%10 +1)));
+            em.persist(product, Product.class);
+      }
 
     }
 

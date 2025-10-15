@@ -1,19 +1,12 @@
 use crm;
 -- ======================
--- CATEGORY & TYPE
+-- TYPE
 -- ======================
-CREATE TABLE Category (
-    CategoryID INT PRIMARY KEY,
-    CategoryName NVARCHAR(100) NOT NULL,
-    CategoryImage NVARCHAR(255)
-);
 
 CREATE TABLE Type (
     TypeID INT PRIMARY KEY,
     TypeName NVARCHAR(100) NOT NULL,
-    TypeImage NVARCHAR(255),
-    CategoryID INT NOT NULL,
-    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
+    TypeImage NVARCHAR(255)
 );
 
 -- ======================
