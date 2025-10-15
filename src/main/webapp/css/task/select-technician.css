@@ -1,0 +1,213 @@
+/* Shared styles extracted from viewAprovedTask.jsp and selectTechnician.jsp */
+
+/* Global page tweaks */
+body {
+  background-color: #f8f9fa;
+}
+
+.header-section {
+  background: #2c3e50;
+  color: white;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+/* Task card styles (viewAprovedTask) */
+.task-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: white;
+}
+.task-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.task-card.selected {
+  border-color: #28a745;
+  background-color: #f8fff8;
+}
+
+.badge-pending {
+  background-color: #ffc107;
+  color: #212529;
+}
+.badge-progress {
+  background-color: #007bff;
+  color: white;
+}
+.badge-review {
+  background-color: #6f42c1;
+  color: white;
+}
+.badge-high {
+  background-color: #dc3545;
+  color: white;
+}
+.badge-medium {
+  background-color: #fd7e14;
+  color: white;
+}
+.badge-low {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Selected Tasks Styles (right panel) */
+.selected-task-item {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+.selected-task-item:hover {
+  background: #e9ecef;
+  border-color: #dee2e6;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#emptyState {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  border: 2px dashed #dee2e6;
+}
+
+#selectedTasksDisplay {
+  max-height: 400px;
+  overflow-y: auto;
+}
+#selectedTasksDisplay::-webkit-scrollbar {
+  width: 6px;
+}
+#selectedTasksDisplay::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+#selectedTasksDisplay::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+#selectedTasksDisplay::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+#selectedCountBadge {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+.alert-primary {
+  background: linear-gradient(135deg, #cce7ff 0%, #b3d9ff 100%);
+  border-color: #99ccff;
+}
+
+/* Quick Assign Button */
+#quickAssignBtn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+#quickAssignBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+#quickAssignBtn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+#quickAssignCount {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #28a745 !important;
+  font-weight: bold;
+  min-width: 24px;
+  border-radius: 12px;
+}
+
+.btn-outline-secondary.btn-lg {
+  border-width: 2px;
+  transition: all 0.3s ease;
+}
+.btn-outline-secondary.btn-lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+/* --- selectTechnician.jsp styles --- */
+.technician-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.technician-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+.form-check-input:checked + .form-check-label .technician-card,
+.technician-card.selected {
+  border: 2px solid #0d6efd !important;
+  background-color: #f8f9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2) !important;
+}
+.form-check-input:checked + .form-check-label .technician-card .card-body,
+.technician-card.selected .card-body {
+  background-color: #f8f9ff;
+}
+.technician-avatar {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #e9ecef;
+  transition: border-color 0.3s ease;
+}
+.form-check-input:checked + .form-check-label .technician-avatar {
+  border-color: #0d6efd;
+}
+.technician-info {
+  min-height: 120px;
+}
+.technician-list {
+  scrollbar-width: thin;
+  scrollbar-color: #dee2e6 #f8f9fa;
+}
+.technician-list::-webkit-scrollbar {
+  width: 6px;
+}
+.technician-list::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+.technician-list::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 3px;
+}
+.technician-list::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+.badge {
+  font-size: 0.75em;
+}
+.technician-card .card-body {
+  padding: 1.25rem;
+}
+.form-check-input {
+  margin-top: 0.5rem;
+}
+.form-check-label {
+  cursor: pointer;
+}
+
+/* selected tasks list used in selectTechnician.jsp */
+.selected-tasks-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* small utility */
+.text-muted.small {
+  font-size: 0.85rem;
+}
