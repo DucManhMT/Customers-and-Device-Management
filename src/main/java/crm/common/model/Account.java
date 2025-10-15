@@ -55,9 +55,7 @@ public class Account {
         this.accountStatus = accountStatus;
     }
 
-    public void setRole(Role role) {
-        this.role = new LazyReference<>(Role.class, role.getRoleID());
-    }
+    public void setRole(Role role) {this.role = new LazyReference<>(Role.class, role.getRoleID());}
 
     public Role getRole() {
         return role.get();

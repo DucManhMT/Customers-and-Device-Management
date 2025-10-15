@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: anhtu
-  Date: 10/8/2025
-  Time: 9:56 AM
+  Date: 10/13/2025
+  Time: 8:44 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -50,11 +50,12 @@
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">Request Timeline</h3>
         </div>
-        <c:choose><c:when test="${not empty error}">
-            <div class="alert alert-danger m-3" role="alert">
-                    ${error}
-            </div>
-        </c:when>
+        <c:choose>
+            <c:when test="${not empty error}">
+                <div class="alert alert-danger m-3" role="alert">
+                        ${error}
+                </div>
+            </c:when>
             <c:otherwise>
                 <div class="card-body">
 
@@ -63,13 +64,26 @@
                     </p>
 
                     <div class="timeline mt-4">
-                        <c:forEach items="${request.logs}" var="item" varStatus="status">
+                        <c:forEach items="${logs}" var="item" varStatus="status">
                             <div class="timeline-item">
                                 <div class="card">
                                     <div class="card-body py-2">
                                         <p class="mb-1 fw-semibold">
                                                 ${item.actionDate}
                                         </p>
+                                        <h5 class="card-title mb-1">
+
+                                            Actor:
+
+                                            <c:choose>
+                                                <c:when test="${not empty item.account}">
+                                                    <a href="./">${item.account.username}</a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    System
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </h5>
                                         <p class="mb-0 text-muted">${item.description}</p>
                                     </div>
                                 </div>
@@ -91,4 +105,3 @@
 </div>
 </body>
 </html>
-

@@ -191,8 +191,9 @@ CREATE TABLE AccountRequest(
 CREATE TABLE RequestLog (
     RequestLogID INT PRIMARY KEY,
     ActionDate DATE,
-    OldStatus ENUM('Pending', 'Approved', 'Rejected'),
-    NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+    OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing'),
+    NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing'),
+    Description NVARCHAR(255),
     RequestID INT NOT NULL,
     Username NVARCHAR(100),
     FOREIGN KEY (RequestID) REFERENCES Request(RequestID),
@@ -243,6 +244,7 @@ CREATE TABLE ProductContract (
     FOREIGN KEY (ContractID) REFERENCES Contract(ContractID),
     FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID)
 );
+
 
 CREATE TABLE UserOTP (
     UserOTPID INT PRIMARY KEY,

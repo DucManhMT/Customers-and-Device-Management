@@ -54,7 +54,10 @@
 
 
             <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-success">Process Request</button>
+                <c:if test="${request.requestStatus != 'Finished'}">
+                    <a href="./update?requestID=${request.requestID}" class="btn btn-warning">Process Request</a>
+                </c:if>
+                <a href="./list" class="btn btn-primary">Timeline</a>
                 <a href="./list" class="btn btn-secondary">Back to List</a>
             </div>
 

@@ -18,11 +18,10 @@
         <label for="recordsPerPage">Show: </label>
 
         <!-- Tính sẵn giá trị hiển thị và max theo quy tắc yêu cầu -->
-        <c:set var="safeRpp" value="${empty recordsPerPage or recordsPerPage <= 0 ? 15 : recordsPerPage}"/>
         <c:set var="computedRpp"
-               value="${empty totalRecords or totalRecords <= 0 ? 15 : (totalRecords > safeRpp ? totalRecords : safeRpp)}"/>
+               value="${empty totalRecords or totalRecords <= 0 ? 1 : (recordsPerPage>totalRecords?totalRecords:recordsPerPage)}"/>
         <c:set var="computedMax"
-               value="${empty totalRecords or totalRecords <= 0 ? 15 : (safeRpp > totalRecords ? safeRpp : totalRecords)}"/>
+               value="${empty totalRecords or totalRecords <= 0 ? 1 : totalRecords}"/>
 
 
         <input type="number"

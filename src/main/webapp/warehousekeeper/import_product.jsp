@@ -59,7 +59,7 @@
                             <p class="mb-0 opacity-75">Manage product imports and serial numbers</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="all-products.jsp" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehousekeeper/add_import_product" class="btn btn-light btn-sm">
                                 <i class="bi bi-plus-circle me-1"></i>Add Products
                             </a>
                             <button type="button" class="btn btn-outline-light btn-sm" onclick="clearAllImports()">
@@ -72,13 +72,30 @@
         </div>
     </div>
 
+    <!-- Success/Error Messages -->
+    <c:if test="${not empty sessionScope.successMessage}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>${sessionScope.successMessage}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+
+    <c:if test="${not empty sessionScope.errorMessage}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>${sessionScope.errorMessage}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
+
     <!--
-      Expected request attributes:
-      - importProducts: java.util.List<Product> with getters: id, code, name, description, category
+      Expected session attributes:
+      - importProductList: java.util.List<Product> with getters: productID, productName, productDescription, type.typeName
       - serialsMap (optional): java.util.Map<ID, java.util.List<String>> mapping product id -> list of serials
       On submit, this form will post per-product serials as multiple parameters named "serials-<productId>"
     -->
-    <form method="post" action="process-import.jsp" id="importForm">
+    <form method="post" action="${pageContext.request.contextPath}/warehousekeeper/process_import" id="importForm">
         <div class="row">
             <div class="col">
                 <div class="card shadow-sm">
@@ -86,8 +103,8 @@
                         <h5 class="mb-0">Products to Import</h5>
                         <span class="badge bg-primary" id="totalProductsCount">
               <c:choose>
-                  <c:when test="${not empty importProducts}">
-                      ${fn:length(importProducts)} products
+                  <c:when test="${not empty sessionScope.importProductList}">
+                      ${fn:length(sessionScope.importProductList)} products
                   </c:when>
                   <c:otherwise>
                       0 products
@@ -98,14 +115,14 @@
 
                     <div class="card-body p-0">
                         <c:choose>
-                            <c:when test="${empty importProducts}">
+                            <c:when test="${empty sessionScope.importProductList}">
                                 <div class="text-center py-5">
                                     <div class="mb-3">
                                         <i class="bi bi-inbox display-1 text-muted"></i>
                                     </div>
                                     <h5 class="text-muted">No products selected for import</h5>
                                     <p class="text-muted mb-3">Click "Add Products" to select products from the warehouse catalog</p>
-                                    <a href="${pageContext.request.contextPath}/warehouse/add_import_product" class="btn btn-primary">
+                                    <a href="${pageContext.request.contextPath}/warehousekeeper/add_import_product" class="btn btn-primary">
                                         <i class="bi bi-plus-circle me-2"></i>Add Products
                                     </a>
                                 </div>
@@ -115,50 +132,50 @@
                                     <table class="table table-hover mb-0">
                                         <thead class="table-light">
                                         <tr>
-                                            <th style="width: 12%;">Code</th>
+                                            <th style="width: 12%;">Product ID</th>
                                             <th style="width: 25%;">Product Name</th>
-                                            <th style="width: 20%;">Category</th>
+                                            <th style="width: 20%;">Type</th>
                                             <th style="width: 12%;">Quantity</th>
                                             <th style="width: 15%;">Actions</th>
                                             <th style="width: 16%;">Serials Preview</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <c:forEach items="${importProducts}" var="product" varStatus="status">
-                                            <tr data-product-id="${product.id}" class="import-row">
+                                        <c:forEach items="${sessionScope.importProductList}" var="product" varStatus="status">
+                                            <tr data-product-id="${product.productID}" class="import-row">
                                                 <td>
-                                                    <span class="fw-semibold text-primary">${product.code}</span>
+                                                    <span class="fw-semibold text-primary">${product.productID}</span>
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <div class="fw-medium">${product.name}</div>
-                                                        <c:if test="${not empty product.description}">
-                                                            <small class="text-muted">${fn:substring(product.description, 0, 50)}
-                                                                <c:if test="${fn:length(product.description) > 50}">...</c:if>
+                                                        <div class="fw-medium">${product.productName}</div>
+                                                        <c:if test="${not empty product.productDescription}">
+                                                            <small class="text-muted">${fn:substring(product.productDescription, 0, 50)}
+                                                                <c:if test="${fn:length(product.productDescription) > 50}">...</c:if>
                                                             </small>
                                                         </c:if>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-secondary">${product.category}</span>
+                                                    <span class="badge bg-secondary">${product.type.typeName}</span>
                                                 </td>
                                                 <td>
                                                     <span class="badge bg-success qty-badge qty-display">0</span>
                                                     <!-- Hidden inputs for form submission -->
-                                                    <input type="hidden" class="qty-hidden" name="quantity-${product.id}" value="0">
+                                                    <input type="hidden" class="qty-hidden" name="quantity-${product.productID}" value="0">
                                                 </td>
                                                 <td>
                                                     <div class="btn-group" role="group">
                                                         <button type="button"
                                                                 class="btn btn-sm btn-outline-primary js-open-serials-modal"
-                                                                data-product-id="${product.id}"
-                                                                data-product-name="${product.name}"
-                                                                data-product-code="${product.code}">
+                                                                data-product-id="${product.productID}"
+                                                                data-product-name="${product.productName}"
+                                                                data-product-code="${product.productID}">
                                                             <i class="bi bi-tags me-1"></i>Serials
                                                         </button>
                                                         <button type="button"
                                                                 class="btn btn-sm btn-outline-danger js-remove-product"
-                                                                data-product-id="${product.id}"
+                                                                data-product-id="${product.productID}"
                                                                 title="Remove from import list">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
@@ -172,14 +189,14 @@
 
                                                 <!-- Hidden inputs holder for this product's serials -->
                                                 <td class="d-none">
-                                                    <div id="hidden-serials-inputs-${product.id}" class="hidden-serials-inputs">
-                                                        <c:if test="${not empty serialsMap and not empty serialsMap[product.id]}">
-                                                            <c:forEach items="${serialsMap[product.id]}" var="serial">
-                                                                <input type="hidden" name="serials-${product.id}" value="${serial}">
+                                                    <div id="hidden-serials-inputs-${product.productID}" class="hidden-serials-inputs">
+                                                        <c:if test="${not empty sessionScope.serialsMap and not empty sessionScope.serialsMap[product.productID]}">
+                                                            <c:forEach items="${sessionScope.serialsMap[product.productID]}" var="serial">
+                                                                <input type="hidden" name="serials-${product.productID}" value="${serial}">
                                                             </c:forEach>
                                                         </c:if>
                                                     </div>
-                                                    <input type="hidden" name="productIds" value="${product.id}">
+                                                    <input type="hidden" name="productIds" value="${product.productID}">
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -190,15 +207,15 @@
                         </c:choose>
                     </div>
 
-                    <c:if test="${not empty importProducts}">
+                    <c:if test="${not empty sessionScope.importProductList}">
                         <div class="card-footer bg-light">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-muted">
                                     <small>Total items: <span id="totalItemsCount">0</span></small>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="warehouse-dashboard.jsp" class="btn btn-outline-secondary">
-                                        <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                                    <a href="${pageContext.request.contextPath}/warehousekeeper/add_import_product" class="btn btn-outline-primary">
+                                        <i class="bi bi-plus-circle me-1"></i>Add More Products
                                     </a>
                                     <button type="submit" class="btn btn-success" id="submitBtn">
                                         <i class="bi bi-download me-1"></i>Process Import
@@ -449,32 +466,60 @@
             return;
         }
 
-        // Validate serial format (optional - adjust as needed)
         if (!/^[A-Za-z0-9\-_.#]+$/.test(serial)) {
             showAlert('Serial number can only contain letters, numbers, hyphens, underscores, dots, and hash symbols.');
             return;
         }
 
         const existingSerials = serialsStore[currentProductId] || [];
-
-        // Check for duplicates (case-insensitive)
         if (existingSerials.some(s => s.toLowerCase() === serial.toLowerCase())) {
-            showAlert('This serial number already exists for this product.');
+            showAlert('This serial number already exists in the current import list.');
             return;
         }
 
+        // Disable input while checking
+        input.disabled = true;
         hideAlert();
-        existingSerials.push(serial);
-        serialsStore[currentProductId] = existingSerials;
 
-        input.value = '';
-        renderSerialsInModal();
-        syncHiddenInputs(currentProductId);
-        updateQuantityDisplay(currentProductId);
+        fetch(`${pageContext.request.contextPath}/warehousekeeper/check_serial_duplicate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'serial=' + encodeURIComponent(serial) + '&productId=' + encodeURIComponent(currentProductId)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server error while checking serial.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.exists) {
+                    showAlert('This serial number already exists in the database.');
+                } else {
+                    // Add the serial only if it does not exist
+                    const currentSerials = serialsStore[currentProductId] || [];
+                    currentSerials.push(serial);
+                    serialsStore[currentProductId] = currentSerials;
 
-        // Keep focus on input for rapid entry
-        input.focus();
+                    input.value = '';
+                    renderSerialsInModal();
+                    syncHiddenInputs(currentProductId);
+                    updateQuantityDisplay(currentProductId);
+                    input.focus(); // Keep focus for rapid entry
+                }
+            })
+            .catch(error => {
+                console.error('Error checking serial:', error);
+                showAlert('Could not verify serial number. Please try again.');
+            })
+            .finally(() => {
+                // Re-enable input after check is complete
+                input.disabled = false;
+            });
     }
+
 
     function removeSerial(index) {
         if (!currentProductId || !serialsStore[currentProductId]) return;
@@ -499,36 +544,135 @@
         if (!row) return;
 
         if (confirm('Are you sure you want to remove this product from the import list?')) {
-            // Remove from serials store
-            delete serialsStore[productId];
-
-            // Remove row from table
-            row.remove();
-
-            // Check if table is now empty
-            const remainingRows = document.querySelectorAll('.import-row');
-            if (remainingRows.length === 0) {
-                location.reload(); // Reload to show empty state
-            } else {
-                updateTotalCounts();
-                // Update product count badge
-                const countBadge = document.getElementById('totalProductsCount');
-                if (countBadge) {
-                    countBadge.textContent = remainingRows.length + ' products';
-                }
+            // Show loading state
+            const removeBtn = row.querySelector('.js-remove-product');
+            if (removeBtn) {
+                const originalHtml = removeBtn.innerHTML;
+                removeBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+                removeBtn.disabled = true;
             }
+
+            // Send AJAX request to remove product from session
+            fetch('${pageContext.request.contextPath}/warehousekeeper/manage_import_products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=removeProduct&productId=' + encodeURIComponent(productId)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove from serials store
+                    delete serialsStore[productId];
+
+                    // Show success message briefly then reload
+                    const toast = document.createElement('div');
+                    toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    toast.style.zIndex = '1055';
+                    toast.innerHTML = `
+                        <div class="toast show" role="alert">
+                            <div class="toast-header bg-success text-white">
+                                <i class="bi bi-check-circle text-white me-2"></i>
+                                <strong class="me-auto">Success</strong>
+                            </div>
+                            <div class="toast-body">
+                                Product removed successfully!
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+
+                    // Reload page after short delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    alert('Error removing product: ' + (data.message || 'Unknown error'));
+                    // Restore button state
+                    if (removeBtn) {
+                        removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
+                        removeBtn.disabled = false;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error removing product. Please try again.');
+                // Restore button state
+                if (removeBtn) {
+                    removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
+                    removeBtn.disabled = false;
+                }
+            });
         }
     }
 
     function clearAllImports() {
         if (confirm('Are you sure you want to clear all products from the import list? This will remove all products and their serial numbers.')) {
-            // Clear all data
-            Object.keys(serialsStore).forEach(productId => {
-                delete serialsStore[productId];
-            });
+            // Show loading state
+            const clearAllBtn = document.querySelector('button[onclick="clearAllImports()"]');
+            if (clearAllBtn) {
+                const originalHtml = clearAllBtn.innerHTML;
+                clearAllBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Clearing...';
+                clearAllBtn.disabled = true;
+            }
 
-            // Redirect to reload the page
-            window.location.href = window.location.pathname;
+            // Send AJAX request to clear all products from session
+            fetch('${pageContext.request.contextPath}/warehousekeeper/manage_import_products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=clearAll'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear all data and reload immediately
+                    Object.keys(serialsStore).forEach(productId => {
+                        delete serialsStore[productId];
+                    });
+
+                    // Show success message briefly then reload
+                    const toast = document.createElement('div');
+                    toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    toast.style.zIndex = '1055';
+                    toast.innerHTML = `
+                        <div class="toast show" role="alert">
+                            <div class="toast-header bg-success text-white">
+                                <i class="bi bi-check-circle text-white me-2"></i>
+                                <strong class="me-auto">Success</strong>
+                            </div>
+                            <div class="toast-body">
+                                All products cleared successfully!
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+
+                    // Reload page after short delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    alert('Error clearing products: ' + (data.message || 'Unknown error'));
+                    // Restore button state
+                    if (clearAllBtn) {
+                        clearAllBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Clear All';
+                        clearAllBtn.disabled = false;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error clearing products. Please try again.');
+                // Restore button state
+                if (clearAllBtn) {
+                    clearAllBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Clear All';
+                    clearAllBtn.disabled = false;
+                }
+            });
         }
     }
 

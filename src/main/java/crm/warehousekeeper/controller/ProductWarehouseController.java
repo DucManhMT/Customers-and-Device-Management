@@ -1,8 +1,7 @@
-package crm.warehouse;
+package crm.warehousekeeper.controller;
 
-import crm.common.model.Product;
-import crm.common.model.Type;
-import crm.common.model.Warehouse;
+import crm.common.model.*;
+import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import jakarta.servlet.ServletException;
@@ -12,19 +11,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/warehouse/viewInventory")
-public class InventoryController extends HttpServlet {
+@WebServlet(urlPatterns = "/warehouse/viewProductWarehouse")
+public class ProductWarehouseController extends HttpServlet {
+
+    private final String ERROR_MESSAGE = "You currently do not have a warehouse assigned. Please contact the administrator.";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Filter parameters
         String productNameFilter = req.getParameter("productName");
         String productTypeFilter = req.getParameter("productType");
-        String warehouseFilter = req.getParameter("warehouse");
+
+        Account account = (Account) req.getSession().getAttribute("account");
 
         // Pagination parameters
         int pageSize = 10; // Default items per page
@@ -51,48 +54,53 @@ public class InventoryController extends HttpServlet {
             }
         }
 
-        // Get product types for filter dropdown
-        TypeDAO typeDAO = new TypeDAO();
-        List<Type> ProductTypes = typeDAO.findAll();
 
         //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
-        List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
+        ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
 
-        //Get warehouse for filter dropdown
-        List<Warehouse> warehouses = warehouseDAO.findAll();
+        Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
+
+        if (warehouse == null) {
+            req.setAttribute("warehouseError", warehouse);
+            req.setAttribute("errorMessage", ERROR_MESSAGE);
+            req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
+            return;
+        }
+
+        final int warehouseID = warehouse.getWarehouseID();
+
+        List<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
+
+        List<ProductWarehouse> pw = productWarehouseDAO.findAll();
+
+        Map<Integer, Long> productCounts = pw.stream()
+                .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == warehouseID)
+                .collect(Collectors.groupingBy(
+                        pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
+                        Collectors.counting()
+                ));
+
+        // Get unique product types for filter dropdown
+        TypeDAO typeDAO = new TypeDAO();
+        List<Type> ProductTypes = typeDAO.findAll();
 
 
-        // Apply filters
+        //Filter
         if (productNameFilter != null && !productNameFilter.isEmpty()) {
-            inventorySummary = inventorySummary.stream()
-                    .filter(item -> {
-                        Product product = (Product) item.get("product");
-                        return product.getProductName().toLowerCase().contains(productNameFilter.toLowerCase());
-                    })
-                    .collect(Collectors.toList());
+            products = products.stream()
+                    .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
+                    .collect(Collectors.toCollection(LinkedList::new));
         }
 
         if (productTypeFilter != null && !productTypeFilter.isEmpty()) {
-            inventorySummary = inventorySummary.stream()
-                    .filter(item -> {
-                        Product product = (Product) item.get("product");
-                        return product.getType().getTypeName().equalsIgnoreCase(productTypeFilter);
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        if(warehouseFilter != null && !warehouseFilter.isEmpty()) {
-            inventorySummary = inventorySummary.stream()
-                    .filter(item -> {
-                        Warehouse warehouse = (Warehouse) item.get("warehouse");
-                        return warehouse.getWarehouseName().equalsIgnoreCase(warehouseFilter);
-                    })
-                    .collect(Collectors.toList());
+            products = products.stream()
+                    .filter(p -> p.getType().getTypeName().equalsIgnoreCase(productTypeFilter))
+                    .collect(Collectors.toCollection(LinkedList::new));
         }
 
         // Pagination logic
-        int totalProducts = inventorySummary.size();
+        int totalProducts = products.size();
         int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
 
         if (currentPage > totalPages && totalPages > 0) {
@@ -101,17 +109,16 @@ public class InventoryController extends HttpServlet {
 
         int offset = (currentPage - 1) * pageSize;
 
-
-        // Get inventory items for current page
-        List<Map<String, Object>> pagedInventory = inventorySummary.stream()
-                .skip(offset)
+        // Get products for current page
+        List<Product> pagedProducts = products.stream()
+                .skip((offset))
                 .limit(pageSize)
                 .collect(Collectors.toList());
 
         // Send paged products to view instead of all products
-        req.setAttribute("inventorySummary", pagedInventory);
+        req.setAttribute("products", pagedProducts);
+        req.setAttribute("productCounts", productCounts);
         req.setAttribute("uniqueProductTypes", ProductTypes);
-        req.setAttribute("warehouses", warehouses);
 
         // Pagination metadata
         req.setAttribute("currentPage", currentPage);
@@ -122,10 +129,8 @@ public class InventoryController extends HttpServlet {
         // Pass filter parameters for pagination links
         req.setAttribute("productName", productNameFilter);
         req.setAttribute("productType", productTypeFilter);
-        req.setAttribute("warehouse", warehouseFilter);
 
-        req.getRequestDispatcher("/warehouse_keeper/view_inventory.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
     }
-
 
 }
