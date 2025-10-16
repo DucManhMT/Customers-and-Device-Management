@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@WebServlet(name = "toAddImportProduct", value = "/warehousekeeper/add_import_product")
+@WebServlet(name = "toAddImportProduct", value = "/warehouse_keeper/add_import_product")
 public class toAddImportProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -68,6 +68,6 @@ public class toAddImportProduct extends HttpServlet {
             req.setAttribute("errorMessage", "Error loading products: " + e.getMessage());
         }
 
-        req.getRequestDispatcher("/warehousekeeper/add_import_product.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/add_import_product.jsp").forward(req, resp);
     }
 }

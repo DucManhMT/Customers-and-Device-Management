@@ -27,7 +27,7 @@
                 <h2 class="mt-1">Feedback Details</h2>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="../">Home</a></li>
+                        <li class="breadcrumb-item"><a href="..">Home</a></li>
                         <li class="breadcrumb-item"><a href="../feedback/list">Feedback List</a></li>
                         <li class="breadcrumb-item active">Feedback #${param.feedbackId}</li>
                     </ol>
@@ -240,7 +240,7 @@
                             <a href="../feedback/list" class="btn btn-primary btn-sm">
                                 <i class="bi bi-list"></i> All Feedbacks
                             </a>
-                            <a href="../" class="btn btn-outline-secondary btn-sm">
+                            <a href=".." class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-house"></i> Dashboard
                             </a>
                         </div>

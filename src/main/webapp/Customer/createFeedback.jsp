@@ -104,7 +104,7 @@
                     </div>
                     
                     <div class="d-flex justify-content-between">
-                        <a href="../" class="btn btn-outline-secondary">
+                        <a href=".." class="btn btn-outline-secondary">
                             Back to Home
                         </a>
                         
