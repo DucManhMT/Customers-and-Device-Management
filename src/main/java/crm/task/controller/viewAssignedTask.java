@@ -100,7 +100,7 @@ public class viewAssignedTask extends HttpServlet {
             // in");
             // return;
             // }
-            String username = "tech001";
+            String username = "staff1";
             String statusFilter = (String) request.getAttribute("statusFilter");
             String sortBy = (String) request.getAttribute("sortBy");
             String fromDate = (String) request.getAttribute("fromDate");
@@ -139,7 +139,7 @@ public class viewAssignedTask extends HttpServlet {
                 request.setAttribute("processingTasks", 0);
                 request.setAttribute("finishedTasks", 0);
 
-                request.getRequestDispatcher("/task/techemployee/viewAssignedTasks.jsp").forward(request, response);
+                request.getRequestDispatcher("/technician_employee/viewAssignedTasks.jsp").forward(request, response);
                 return;
             }
 
@@ -250,7 +250,7 @@ public class viewAssignedTask extends HttpServlet {
             request.setAttribute("fromDate", fromDate);
             request.setAttribute("toDate", toDate);
 
-            request.getRequestDispatcher("/task/techemployee/viewAssignedTasks.jsp").forward(request, response);
+            request.getRequestDispatcher("/technician_employee/viewAssignedTasks.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

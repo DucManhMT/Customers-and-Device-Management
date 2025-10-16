@@ -1,21 +1,23 @@
 package test;
 
-import crm.common.model.Product;
-import crm.common.model.ProductSpecification;
+import crm.auth.service.Hasher;
+import crm.common.model.*;
 import crm.common.repository.Warehouse.ProductDAO;
+import crm.common.repository.Warehouse.ProductRequestDAO;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
+
+import java.util.List;
 
 
 public class TestFunction {
     public static void main(String[] args) {
 
-        ProductDAO productDAO = new ProductDAO();
-        Product product = productDAO.findIncludeSpec(1);
-
-        System.out.println(product.getProductName());
-        for (ProductSpecification ps : product.getProductSpecifications()) {
-            System.out.println(ps.getSpecification().getSpecificationName() + ": " + ps.getSpecification().getSpecificationValue());
+        ProductRequestDAO productRequestDAO = new ProductRequestDAO();
+        List<ProductRequest> list = productRequestDAO.findAll();
+        for (ProductRequest pr : list) {
+            System.out.println(pr);
         }
-
 
     }
 }

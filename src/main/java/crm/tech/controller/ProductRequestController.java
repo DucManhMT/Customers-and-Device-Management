@@ -1,26 +1,9 @@
-package crm.warehousekeeper.controller;
+package crm.tech.controller;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import crm.common.model.Account;
-import crm.common.model.Product;
-import crm.common.model.ProductWarehouse;
-import crm.common.model.Type;
-import crm.common.model.Warehouse;
-import crm.common.model.WarehouseRequest;
-import crm.common.model.WarehouseRequestProduct;
-import crm.common.model.enums.WarehouseRequestStatus;
-import crm.common.repository.Warehouse.ProductDAO;
-import crm.common.repository.Warehouse.ProductWarehouseDAO;
-import crm.common.repository.Warehouse.TypeDAO;
-import crm.common.repository.Warehouse.WarehouseDAO;
-import crm.common.repository.Warehouse.WarehouseRequestDAO;
-import crm.common.repository.Warehouse.WarehouseRequestProductDAO;
+import crm.common.model.*;
+import crm.common.model.enums.ProductRequestStatus;
+import crm.common.repository.Request.RequestDAO;
+import crm.common.repository.Warehouse.*;
 import crm.core.service.IDGeneratorService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,45 +11,42 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/warehouse/createExportRequest")
-public class ExportRequestCreateController extends HttpServlet {
-    //DAOs
+@WebServlet(urlPatterns = "/tech/employees/createProductRequests")
+public class ProductRequestController extends HttpServlet {
+
     WarehouseDAO warehouseDAO = new WarehouseDAO();
     ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
     TypeDAO typeDAO = new TypeDAO();
     ProductDAO productDAO = new ProductDAO();
-    WarehouseRequestDAO warehouseRequestDAO = new WarehouseRequestDAO();
-    WarehouseRequestProductDAO warehouseRequestProductDAO = new WarehouseRequestProductDAO();
-
+    RequestDAO requestDAO = new RequestDAO();
+    ProductRequestDAO productRequestDAO = new ProductRequestDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        //Get warehouse keeper account
-        Account account = (Account) req.getSession().getAttribute("account");
-
-        //Get current login warehouseKeeper's warehouse
-        Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
-
         //Get list of warehouses for dropdown
         List<Warehouse> warehouses = warehouseDAO.findAll();
-        warehouses = warehouses.stream()
-                .filter(w -> !w.getWarehouseID().equals(managerWarehouse.getWarehouseID()))
-                .collect(Collectors.toList());
 
         req.setAttribute("warehouses", warehouses);
 
-        req.setAttribute("managerWarehouse", managerWarehouse);
-
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
+        String requestIDStr = req.getParameter("requestIDStr");
+        if (requestIDStr == null) {
+            requestIDStr = req.getParameter("requestID");
+        }
+        req.setAttribute("requestIDStr", requestIDStr);
 
         if (req.getParameter("selectedWarehouseID") != null) {
             processRequest(req, resp, selectedWarehouseIDStr);
         }
 
-
-        req.getRequestDispatcher("/warehouse_keeper/create_export_internal.jsp").forward(req, resp);
+        req.getRequestDispatcher("/technician_employee/create_product_request.jsp").forward(req, resp);
     }
 
     @Override
@@ -76,6 +56,7 @@ public class ExportRequestCreateController extends HttpServlet {
         String allSelectedItemQuantities = req.getParameter("allSelectedItemQuantities");
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
         String note = req.getParameter("note");
+        String requestIDStr = req.getParameter("requestIDStr");
 
         if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
             // Handle the case where no products are selected
@@ -91,26 +72,20 @@ public class ExportRequestCreateController extends HttpServlet {
             return;
         }
 
+        if (requestIDStr == null || requestIDStr.trim().isEmpty()) {
+            req.setAttribute("errorMessage", "Request ID is missing. Please start the process again.");
+            doGet(req, resp);
+            return;
+        }
+
         String[] selectedProductIDs = allSelectedItemIDs.split(",");
         String[] selectedProductQuantitiesStr = allSelectedItemQuantities.split(",");
 
+        int requestID = Integer.parseInt(requestIDStr);
+        Request request = requestDAO.find(requestID);
+
         int selectedWarehouseID = Integer.parseInt(selectedWarehouseIDStr);
-
-        Account account = (Account) req.getSession().getAttribute("account");
-
-        Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
-        Warehouse sourceWarehouse = warehouseDAO.find(selectedWarehouseID);
-
-        WarehouseRequest warehouseRequest = new WarehouseRequest();
-
-        warehouseRequest.setWarehouseRequestID(IDGeneratorService.generateID(WarehouseRequest.class));
-        warehouseRequest.setDate(LocalDateTime.now());
-        warehouseRequest.setNote(note);
-        warehouseRequest.setSourceWarehouse(sourceWarehouse);
-        warehouseRequest.setDestinationWarehouse(managerWarehouse);
-        warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
-
-        warehouseRequestDAO.persist(warehouseRequest);
+        Warehouse warehouse = warehouseDAO.find(selectedWarehouseID);
 
         try {
             for (int i = 0; i < selectedProductIDs.length; i++) {
@@ -128,17 +103,21 @@ public class ExportRequestCreateController extends HttpServlet {
 
                 Product product = productDAO.find(productID);
 
-                WarehouseRequestProduct warehouseRequestProduct = new WarehouseRequestProduct();
+                ProductRequest productRequest = new ProductRequest();
 
-                warehouseRequestProduct.setWarehouseRequestProductID(IDGeneratorService.generateID(WarehouseRequestProduct.class));
-                warehouseRequestProduct.setProduct(product);
-                warehouseRequestProduct.setQuantity(quantity);
-                warehouseRequestProduct.setWarehouseRequest(warehouseRequest);
+                productRequest.setProductRequestID(IDGeneratorService.generateID(ProductRequest.class));
+                productRequest.setRequest(request);
+                productRequest.setQuantity(quantity);
+                productRequest.setRequestDate(LocalDate.now());
+                productRequest.setDescription(note);
+                productRequest.setStatus(ProductRequestStatus.Pending);
+                productRequest.setProduct(product);
+                productRequest.setWarehouse(warehouse);
 
-                boolean checking = warehouseRequestProductDAO.persist(warehouseRequestProduct);
+                productRequestDAO.persist(productRequest);
             }
 
-            resp.sendRedirect(req.getContextPath() + "/warehouse/createExportRequest"); // Redirect to a success or listing page
+            resp.sendRedirect(req.getContextPath() + "/tech/employees/viewProductRequest");
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
@@ -149,10 +128,14 @@ public class ExportRequestCreateController extends HttpServlet {
         }
     }
 
-    private void processRequest(HttpServletRequest req, HttpServletResponse resp, String selectedWarehouseIDStr) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp, String selectedWarehouseIDStr) throws
+            ServletException, IOException {
         // Filter parameters
         String productNameFilter = req.getParameter("productName");
         String productTypeFilter = req.getParameter("productType");
+
+        //Take request ID
+        String requestIDStr = req.getParameter("requestIDStr");
 
         // Pagination parameters
         int pageSize = 10; // Default items per page
@@ -232,6 +215,9 @@ public class ExportRequestCreateController extends HttpServlet {
         req.setAttribute("productsInSelectedWarehouse", paginatedProducts);
         req.setAttribute("productCounts", productCounts);
         req.setAttribute("uniqueProductTypes", ProductTypes);
+
+        //Request ID attribute
+        req.setAttribute("requestIDStr", requestIDStr);
 
         //Pagination attributes
         req.setAttribute("currentPage", currentPage);

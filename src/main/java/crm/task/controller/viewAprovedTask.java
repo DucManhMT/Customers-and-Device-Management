@@ -169,11 +169,11 @@ public class viewAprovedTask extends HttpServlet {
 			req.setAttribute("startItem", startItem);
 			req.setAttribute("endItem", endItem);
 
-			req.getRequestDispatcher("/task/techlead/viewAprovedTask.jsp").forward(req, resp);
+			req.getRequestDispatcher("/technician_leader/viewAprovedTask.jsp").forward(req, resp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			req.setAttribute("errorMessage", "Failed to load data: " + e.getMessage());
-			req.getRequestDispatcher("/task/techlead/viewAprovedTask.jsp").forward(req, resp);
+			req.getRequestDispatcher("/technician_leader/viewAprovedTask.jsp").forward(req, resp);
 		}
 	}
 
