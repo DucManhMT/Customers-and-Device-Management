@@ -34,3 +34,8 @@ Replace the placeholder values with your actual email and database credentials.
 
 _Last updated: September 27, 2025_
 
+
+========================= Các thay đổi =========================
+- Contract giờ đã có thêm ContractCode
+- Cập nhật SQL script 
+- Cập nhật các DTO, Entity, Repository, Service, Controller tương ứng

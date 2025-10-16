@@ -40,7 +40,6 @@ public class BuilderTest {
 //            em.persist(product, Product.class);
 //      }
 
-        System.out.println("Hello world");
 
     }
 
