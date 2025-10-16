@@ -32,13 +32,15 @@ public class BuilderTest {
 //          type.setTypeName("Type " + i);
 //          em.persist(type, Type.class);
 //      }
-      for ( int i =1 ; i<=100 ; i++){
-            product.setProductID(IDGeneratorService.generateID(Product.class));
-            product.setProductName("Product " + i);
-            product.setProductDescription("Description " + i);
-            product.setType(em.find(Type.class,(i%10 +1)));
-            em.persist(product, Product.class);
-      }
+//      for ( int i =1 ; i<=100 ; i++){
+//            product.setProductID(IDGeneratorService.generateID(Product.class));
+//            product.setProductName("Product " + i);
+//            product.setProductDescription("Description " + i);
+//            product.setType(em.find(Type.class,(i%10 +1)));
+//            em.persist(product, Product.class);
+//      }
+
+        System.out.println("Hello world");
 
     }
 

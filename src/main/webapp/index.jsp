@@ -22,6 +22,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
 
   <div>
     <h1>CAC LINK MAN HINH DE CHAY LUONG CHINH</h1>
+    <a href="#">Tao hop dong</a>
     <a href="#">Customer tao request</a>
     <a href="#">Customer supporter xem request va forward cho techlead</a>
     <a href="#">TechLead giao viec cho tech enployee</a>
