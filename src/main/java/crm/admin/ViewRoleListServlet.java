@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/ViewRoleList")
+@WebServlet(urlPatterns = "ViewRoleList")
 public class ViewRoleListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -136,6 +136,5 @@ public class ViewRoleListServlet extends HttpServlet {
             response.sendRedirect("ViewRoleList");
             return;
         }
-        doGet(request, response);
     }
 }
