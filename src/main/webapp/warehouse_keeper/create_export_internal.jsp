@@ -25,7 +25,7 @@
         <div class="card-body">
             <form action="createExportRequest" method="get" class="row g-3 align-items-end">
                 <div class="col-md">
-                    <label for="warehouse" class="form-label fw-semibold">Select Destination Warehouse:</label>
+                    <label for="warehouse" class="form-label fw-semibold">Select Source Warehouse:</label>
                     <select name="selectedWarehouseID" id="warehouse" class="form-select">
                         <option value="">-- Choose a warehouse --</option>
                         <c:forEach var="w" items="${warehouses}">
