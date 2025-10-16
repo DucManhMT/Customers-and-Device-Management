@@ -3,6 +3,7 @@ package crm.warehousekeeper.controller;
 import crm.common.model.Account;
 import crm.common.model.ProductRequest;
 import crm.common.model.Warehouse;
+import crm.common.model.enums.ProductRequestStatus;
 import crm.common.repository.Warehouse.ProductRequestDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import jakarta.servlet.ServletException;
@@ -40,6 +41,16 @@ public class WarehouseProductRequestController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        String productRequestIDStr = req.getParameter("productRequestID");
+        String action = req.getParameter("action");
+        int productRequestID = Integer.parseInt(productRequestIDStr);
+
+        ProductRequest productRequest = productRequestDAO.findById(productRequestID);
+
+        productRequest.setStatus(action.equals("accept") ? ProductRequestStatus.Approved : ProductRequestStatus.Rejected);
+
+        productRequestDAO.merge(productRequest);
+
+        resp.sendRedirect(req.getContextPath() + "/warehouse/viewProductRequests");
     }
 }
