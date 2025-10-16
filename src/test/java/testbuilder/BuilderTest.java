@@ -25,8 +25,8 @@ public class BuilderTest {
     public static void main(String[] args) {
       EntityManager em  = new EntityManager(DBcontext.getConnection());
 
-      Product product = new Product();
-      Type type = new Type();
+//      Product product = new Product();
+//      Type type = new Type();
 //      for ( int i=1; i<=10; i++){
 //          type.setTypeID(IDGeneratorService.generateID(Type.class));
 //          type.setTypeName("Type " + i);
@@ -40,8 +40,34 @@ public class BuilderTest {
 //            em.persist(product, Product.class);
 //      }
 
-        System.out.println("Hello world");
+        List<Account> accounts = em.findAll(Account.class);
+        for (Account account : accounts) {
+            // Thêm kiểm tra role trước khi xử lý tiếp
+            if (account.getRole().getRoleID()==1) {
+                continue;
+            }
 
+            String username = account.getUsername();
+            String email = null;
+
+            // Tìm email trong Customer
+            Map<String, Object> condCustomer = new HashMap<>();
+            condCustomer.put("account", username);
+            List<Customer> customers = em.findWithConditions(Customer.class, condCustomer);
+            if (!customers.isEmpty()) {
+                email = customers.get(0).getEmail();
+            } else {
+                // Tìm email trong Staff
+                Map<String, Object> condStaff = new HashMap<>();
+                condStaff.put("account", username);
+                List<Staff> staffs = em.findWithConditions(Staff.class, condStaff);
+                if (!staffs.isEmpty()) {
+                    email = staffs.get(0).getEmail();
+                }
+            }
+
+            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
+        }
     }
 
  }

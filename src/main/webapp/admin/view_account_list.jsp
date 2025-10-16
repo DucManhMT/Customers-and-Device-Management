@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Account List</title>
@@ -16,204 +17,188 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-2 sidebar p-0">
-            <div class="p-4">
-                <h4 class="mb-4"><i class="bi bi-shield-check"></i> Admin Panel</h4>
-                <nav class="nav flex-column">
-                    <a class="nav-link active" href="#"><i class="bi bi-people me-2"></i> Accounts</a>
-                    <a class="nav-link" href="#"><i class="bi bi-graph-up me-2"></i> Analytics</a>
-                    <a class="nav-link" href="#"><i class="bi bi-gear me-2"></i> Settings</a>
-                    <a class="nav-link" href="#"><i class="bi bi-bell me-2"></i> Notifications</a>
-                    <a class="nav-link" href="#"><i class="bi bi-file-text me-2"></i> Reports</a>
-                </nav>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-md-10 main-content">
-            <!-- Header -->
+        <div class="col-md-12 main-content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2 class="mb-1">Account Management</h2>
-                    <p class="text-muted">Monitor and manage all user accounts</p>
                 </div>
                 <button class="btn btn-primary" onclick="showAddAccountModal()">
                     <i class="bi bi-plus-circle me-2"></i>Add New Account
                 </button>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h3 class="mb-0" id="totalAccounts">1,247</h3>
-                                <p class="text-muted mb-0">Total Accounts</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
-                                <i class="bi bi-check-circle"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h3 class="mb-0" id="activeAccounts">1,089</h3>
-                                <p class="text-muted mb-0">Active</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">
-                                <i class="bi bi-clock"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h3 class="mb-0" id="pendingAccounts">43</h3>
-                                <p class="text-muted mb-0">Pending</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon" style="background: linear-gradient(135deg, #fc466b, #3f5efb);">
-                                <i class="bi bi-x-circle"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h3 class="mb-0" id="inactiveAccounts">115</h3>
-                                <p class="text-muted mb-0">Inactive</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Search and Filters -->
-            <div class="accounts-table mb-4">
+            <form id="searchForm" method="get">
                 <div class="p-4 border-bottom">
                     <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0">
-                                        <i class="bi bi-search"></i>
-                                    </span>
+                        <div class="col-md-2">
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-person-badge"></i>
+                                </span>
                                 <input type="text" class="form-control border-start-0 search-box"
-                                       placeholder="Search by name, email, or ID..."
-                                       id="searchInput" onkeyup="filterAccounts()">
+                                       placeholder="Search by username..."
+                                       id="searchUsernameInput"
+                                       name="searchUsername"
+                                       value="${searchUsername}">
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="roleFilter" onchange="filterAccounts()">
+                        <div class="col-md-2">
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 search-box"
+                                       placeholder="Search by name..."
+                                       id="searchNameInput"
+                                       name="searchName"
+                                       value="${searchName}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 search-box"
+                                       placeholder="Search by email..."
+                                       id="searchEmailInput"
+                                       name="searchEmail"
+                                       value="${searchEmail}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="roleFilter" name="roleFilter">
                                 <option value="">All Roles</option>
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
-                                <option value="moderator">Moderator</option>
+                                <c:forEach var="role" items="${roleList}">
+                                    <option value="${role.roleID}"
+                                            <c:if test="${roleFilter == role.roleID}">selected</c:if>
+                                    >
+                                        <c:out value="${role.roleName}" />
+                                    </option>
+                                </c:forEach>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="statusFilter" onchange="filterAccounts()">
+                        <div class="col-md-2">
+                            <select class="form-select" id="statusFilter" name="statusFilter">
                                 <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="pending">Pending</option>
+                                <option value="Active" <c:if test="${statusFilter == 'Active'}">selected</c:if>>Active</option>
+                                <option value="Deactive" <c:if test="${statusFilter == 'Deactive'}">selected</c:if>>Deactive</option>
                             </select>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Accounts Table -->
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                        <tr>
-                            <th>Account ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Last Login</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody id="accountsTableBody">
-                        <!-- Table rows will be populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="p-4 border-top">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-muted">
-                            Showing <span id="showingStart">1</span> to <span id="showingEnd">10</span> of <span
-                                id="totalResults">1247</span> results
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            <button type="button" class="btn btn-secondary w-100"
+                                    onclick="window.location.href='${pageContext.request.contextPath}/admin/account_list'">
+                                <i class="bi bi-arrow-clockwise"></i> Reset
+                            </button>
                         </div>
-                        <nav>
-                            <ul class="pagination mb-0" id="pagination">
-                                <!-- Pagination will be populated by JavaScript -->
-                            </ul>
-                        </nav>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add Account Modal -->
-<div class="modal fade" id="addAccountModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form onsubmit="addAccount(event)">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="newAccountName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="newAccountEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Role</label>
-                        <select class="form-select" id="newAccountRole" required>
-                            <option value="">Select Role</option>
-                            <option value="user">User</option>
-                            <option value="moderator">Moderator</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" id="newAccountStatus" required>
-                            <option value="active">Active</option>
-                            <option value="pending">Pending</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Account</button>
                 </div>
             </form>
+
+            <!-- Accounts Table -->
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="accountsTableBody">
+                    <c:forEach var="account" items="${accountInfos}">
+                        <tr>
+                            <td><c:out value="${account.username}" /></td>
+                            <td><c:out value="${account.name}" /></td>
+                            <td><c:out value="${account.email}" /></td>
+                            <td><c:out value="${account.role.roleName}" /></td>
+                            <td><c:out value="${account.status}" /></td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-info me-2 text-white">
+                                    <i class="bi bi-eye"></i> View Detail
+                                </a>
+                                <a href="#" class="btn btn-sm btn-primary me-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+<%--                                <form action="${pageContext.request.contextPath}/admin/role_list" method="post" style="display:inline;">--%>
+<%--                                    <input type="hidden" name="action" value="delete"/>--%>
+<%--                                    <input type="hidden" name="id" value="${role.roleID}"/>--%>
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+<%--                                </form>--%>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <form method="get" action="${pageContext.request.contextPath}/admin/account_list">
+                <input type="hidden" name="searchUsername" value="${searchUsername}" />
+                <input type="hidden" name="searchName" value="${searchName}" />
+                <input type="hidden" name="searchEmail" value="${searchEmail}" />
+                <input type="hidden" name="roleFilter" value="${roleFilter}" />
+                <input type="hidden" name="statusFilter" value="${statusFilter}" />
+                <div class="mt-4 d-flex align-items-center">
+                    <span class="me-3">Show:</span>
+                    <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
+                            onchange="this.form.submit()">
+                        <option value="5" ${itemsPerPage==5 ? 'selected' : '' }>5</option>
+                        <option value="10" ${itemsPerPage==10 ? 'selected' : '' }>10</option>
+                        <option value="15" ${itemsPerPage==15 ? 'selected' : '' }>15</option>
+                        <option value="20" ${itemsPerPage==20 ? 'selected' : '' }>20</option>
+                    </select>
+                </div>
+            </form>
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous -->
+                    <c:if test="${currentPage > 1}">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/admin/account_list?page=${currentPage - 1}&itemsPerPage=${itemsPerPage}
+                               &searchUsername=${searchUsername}&searchName=${searchName}
+                               &searchEmail=${searchEmail}&roleFilter=${roleFilter}&statusFilter=${statusFilter}">
+                                Previous
+                            </a>
+                        </li>
+                    </c:if>
+                    <!-- Page numbers -->
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/admin/account_list?page=${i}&itemsPerPage=${itemsPerPage}
+                               &searchUsername=${searchUsername}&searchName=${searchName}
+                               &searchEmail=${searchEmail}&roleFilter=${roleFilter}&statusFilter=${statusFilter}">
+                                    ${i}
+                            </a>
+                        </li>
+                    </c:forEach>
+                    <!-- Next -->
+                    <c:if test="${currentPage < totalPages}">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/admin/account_list?page=${currentPage + 1}&itemsPerPage=${itemsPerPage}
+                               &searchUsername=${searchUsername}&searchName=${searchName}
+                               &searchEmail=${searchEmail}&roleFilter=${roleFilter}&statusFilter=${statusFilter}">
+                                Next
+                            </a>
+                        </li>
+                    </c:if>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
+
 </body>
 </html>
