@@ -60,7 +60,7 @@ public class ProductRequestController extends HttpServlet {
 
         if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
             // Handle the case where no products are selected
-            req.setAttribute("errorMessage", "Please select at least one product to export.");
+            req.setAttribute("errorMessage", "Please select at least one product to request.");
             // Forward back to the page, possibly reloading necessary data from doGet
             doGet(req, resp);
             return;
