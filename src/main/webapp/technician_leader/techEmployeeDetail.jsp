@@ -1,11 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
 <html>
 <head>
     <title>Tech Employee Details</title>
     <link href="../css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="../css/tech/techEmployeeDetail.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/css/tech/tech-employee-detail.css" rel="stylesheet">
 </head>
+
 <body>
 
 <div class="container mt-4">
@@ -25,11 +25,7 @@
                             <c:when test="${not empty techEmployee.image}">
                                 <img src="../assets/${techEmployee.image}" alt="${techEmployee.staffName}" class="employee-image-large">
                             </c:when>
-                            <c:otherwise>
-                                <div class="employee-image-large d-flex align-items-center justify-content-center bg-white text-secondary mx-auto">
-                                    <i class="bi bi-person-fill" style="font-size: 4rem;"></i>
-                                </div>
-                            </c:otherwise>
+
                         </c:choose>
                         
                         <div class="employee-name-large">${techEmployee.staffName}</div>
@@ -108,19 +104,19 @@
                 </div>
             </c:if>
             
-            <c:if test="${empty techEmployee}">
+            <!-- <c:if test="${empty techEmployee}">
                 <div class="alert alert-warning text-center">
                     <i class="bi bi-exclamation-triangle"></i>
                     <h4>Employee Not Found</h4>
                     <p>The requested tech employee could not be found or may have been removed from the system.</p>
                 </div>
-            </c:if>
+            </c:if> -->
             
             <div class="button-container">
                 <a href="../employees" class="btn back-button me-3">
                     <i class="bi bi-arrow-left"></i> Back to Employee List
                 </a>
-                <a href="../" class="btn home-button">
+                <a href=".." class="btn home-button">
                     <i class="bi bi-house"></i> Home
                 </a>
             </div>

@@ -348,6 +348,35 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         }
     }
 
+    // ---------- COUNT WITH CONDITIONS ----------
+    public <T> int countWithConditions(Class<T> entityClass, Map<String, Object> conditions) {
+        try {
+            SqlAndParamsDTO selectSqlParams = queryUtils.buildSelectWithConditions(entityClass, conditions);
+            String selectSql = selectSqlParams.getSql();
+            String upper = selectSql.toUpperCase();
+            int fromIdx = upper.indexOf(" FROM ");
+            String countSql;
+            if (fromIdx != -1) {
+                countSql = "SELECT COUNT(*) AS total" + selectSql.substring(fromIdx);
+            } else {
+                SqlAndParamsDTO cnt = queryUtils.buildCount(entityClass);
+                countSql = cnt.getSql();
+            }
+
+            try (PreparedStatement ps = connection.prepareStatement(countSql)) {
+                setParams(ps, selectSqlParams.getParams());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error counting entities of type " + entityClass.getName() + " with conditions", e);
+        }
+        return 0;
+    }
+
 
 
     // ---------- UTILITIES ----------

@@ -104,7 +104,7 @@
                     </div>
                     
                     <div class="d-flex justify-content-between">
-                        <a href="../" class="btn btn-outline-secondary">
+                        <a href=".." class="btn btn-outline-secondary">
                             Back to Home
                         </a>
                         
@@ -166,9 +166,12 @@
                                 </td>
                                 <td>${feedback.feedbackDate}</td>
                                 <td>
-                                    <button class="btn btn-info btn-sm btn-view btn-action" data-feedback-id="${feedback.feedbackID}">
-                                        View
-                                    </button>
+                                    <form method="get" action="../feedback/view" style="display: inline;">
+                                        <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
+                                        <button type="submit" class="btn btn-info btn-sm">
+                                            View
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -358,24 +361,11 @@
             toggleCustomInput();
         });
         
-        function viewFeedback(feedbackId) {
-            window.location.href = '../feedback/view?feedbackId=' + feedbackId;
-        }
-        
         function changePageSize() {
             const recordsPerPage = document.getElementById('recordsPerPage').value;
             const currentPage = 1;
             window.location.href = `?page=${currentPage}&recordsPerPage=${recordsPerPage}`;
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.btn-view').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    const feedbackId = this.getAttribute('data-feedback-id');
-                    viewFeedback(feedbackId);
-                });
-            });
-        });
     </script>
 
 </body>

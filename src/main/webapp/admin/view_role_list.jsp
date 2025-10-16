@@ -1,6 +1,6 @@
 <%-- Created by IntelliJ IDEA. User: FPT SHOP Date: 10/6/2025 Time: 4:30 PM --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <html>
 <head>
     <title>Role List</title>

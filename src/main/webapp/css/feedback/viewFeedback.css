@@ -1,0 +1,49 @@
+/* Feedback Details Page Styles */
+
+.rating-stars {
+    color: #ffc107;
+    font-size: 1.5rem;
+}
+
+.rating-empty {
+    color: #dee2e6;
+    font-size: 1.5rem;
+}
+
+.feedback-detail-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-item {
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 0;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    color: #212529;
+}
+
+.feedback-content {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid #007bff;
+}
+
+.response-section {
+    background: #e7f3ff;
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid #28a745;
+}
