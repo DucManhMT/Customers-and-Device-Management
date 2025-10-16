@@ -326,6 +326,57 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         return 0;
     }
 
+    public void beginTransaction() throws SQLException {
+        if (connection.getAutoCommit()) {
+            connection.setAutoCommit(false);
+        }
+    }
+    public void commit() throws SQLException {
+        if (!connection.getAutoCommit()) {
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+    }
+    public void rollback() {
+        try {
+            if (!connection.getAutoCommit()) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ---------- COUNT WITH CONDITIONS ----------
+    public <T> int countWithConditions(Class<T> entityClass, Map<String, Object> conditions) {
+        try {
+            SqlAndParamsDTO selectSqlParams = queryUtils.buildSelectWithConditions(entityClass, conditions);
+            String selectSql = selectSqlParams.getSql();
+            String upper = selectSql.toUpperCase();
+            int fromIdx = upper.indexOf(" FROM ");
+            String countSql;
+            if (fromIdx != -1) {
+                countSql = "SELECT COUNT(*) AS total" + selectSql.substring(fromIdx);
+            } else {
+                SqlAndParamsDTO cnt = queryUtils.buildCount(entityClass);
+                countSql = cnt.getSql();
+            }
+
+            try (PreparedStatement ps = connection.prepareStatement(countSql)) {
+                setParams(ps, selectSqlParams.getParams());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error counting entities of type " + entityClass.getName() + " with conditions", e);
+        }
+        return 0;
+    }
+
 
 
     // ---------- UTILITIES ----------

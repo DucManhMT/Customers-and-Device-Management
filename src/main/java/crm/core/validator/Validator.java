@@ -9,13 +9,24 @@ public class Validator {
     public static boolean isValidEmail(String email) {
         return email != null && email.matches(emailRegex);
     }
+
     public static boolean isValidPhone(String phone) {
         return phone != null && phone.matches(phoneRegex);
     }
+
     public static boolean isValidUsername(String username) {
         return username != null && username.matches(usernameRegex);
     }
+
     public static boolean isValidPassword(String password) {
         return password != null && password.matches(passwordRegex);
+    }
+
+    public static int parseInt(String str, int defaultValue) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 }

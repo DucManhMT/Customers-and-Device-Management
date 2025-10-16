@@ -20,8 +20,8 @@ public class FuntionalityDAO<T> {
     }
 
     //Insert
-    public void persist(T entity) {
-        entityManager.persist(entity, entityClass);
+    public boolean persist(T entity) {
+        return entityManager.persist(entity, entityClass);
     }
 
     //Select

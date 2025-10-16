@@ -2,7 +2,6 @@ package crm.core.service;
 
 import crm.core.config.PropertyLoader;
 import jakarta.mail.*;
-import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;

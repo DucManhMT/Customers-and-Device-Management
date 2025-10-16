@@ -5,6 +5,8 @@ import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+import crm.core.utils.HashInfo;
+import crm.warehousekeeper.service.SerialGenerator;
 
 @Entity(tableName = "InventoryItem")
 public class InventoryItem {
@@ -31,7 +33,8 @@ public class InventoryItem {
     }
 
     public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+
+        this.serialNumber = SerialGenerator.generateSerial(String.valueOf(this.product.get().getProductID()),serialNumber);
     }
 
     public Product getProduct() {

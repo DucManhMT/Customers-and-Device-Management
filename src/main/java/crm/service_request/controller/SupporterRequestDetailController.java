@@ -2,6 +2,7 @@ package crm.service_request.controller;
 
 import java.io.IOException;
 
+import crm.common.MessageConst;
 import crm.common.model.Request;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
@@ -21,7 +22,10 @@ public class SupporterRequestDetailController extends HttpServlet {
             int requestId = Integer.parseInt(req.getParameter("requestId"));
             Request request = requestService.getRequestById(requestId);
             req.setAttribute("request", request);
+        } catch (NumberFormatException e) {
+            req.setAttribute("error", MessageConst.MSG16);
         } catch (Exception e) {
+            req.setAttribute("error", MessageConst.MSG15);
         }
         req.getRequestDispatcher("/service_request/view-request-detail-suppoter.jsp").forward(req, resp);
     }

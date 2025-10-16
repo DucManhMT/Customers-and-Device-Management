@@ -94,7 +94,7 @@ public class EntityFieldMapper {
             } else if (isManyToOne(field)) {
                 // Lấy tên cột từ @ManyToOne/@JoinColumn
                 ManyToOne ann = field.getAnnotation(ManyToOne.class);
-                columnName = ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
+                columnName = ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation\
             } else if (isOneToOne(field)) {
                 // Lấy tên cột từ @OneToOne/@JoinColumn
                 OneToOne ann = field.getAnnotation(OneToOne.class);
@@ -185,7 +185,7 @@ public class EntityFieldMapper {
                 return field;
             }
         }
-        throw new RuntimeException("No @Key field found in class " + clazz.getName());
+        return null;
     }
 
     public List<?> getOneToManyList(Object entity) {

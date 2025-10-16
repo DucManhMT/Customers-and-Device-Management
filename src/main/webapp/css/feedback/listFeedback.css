@@ -1,0 +1,23 @@
+/* Feedback List Page Styles */
+
+.rating-stars {
+    color: #ffc107;
+}
+
+.rating-empty {
+    color: #dee2e6;
+}
+
+.feedback-content {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
