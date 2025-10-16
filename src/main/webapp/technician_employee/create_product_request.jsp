@@ -1,29 +1,28 @@
 <%--
   Created by IntelliJ IDEA.
   User: Admin
-  Date: 10/10/2025
-  Time: 5:35 AM
+  Date: 10/16/2025
+  Time: 8:32 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Internal Export</title>
+    <title>Create Product Request</title>
     <%-- Bootstrap 5 CSS --%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="container my-5">
-    <h1 class="mb-4">Create Internal Export Request</h1>
+    <h1 class="mb-4">Create Product Request</h1>
 
     <%-- Warehouse Selection --%>
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form action="createExportRequest" method="get" class="row g-3 align-items-end">
+            <form action="createProductRequests" method="get" class="row g-3 align-items-end">
+                <input type="hidden" name="requestIDStr" value="${requestIDStr}">
                 <div class="col-md">
                     <label for="warehouse" class="form-label fw-semibold">Select Source Warehouse:</label>
                     <select name="selectedWarehouseID" id="warehouse" class="form-select">
@@ -54,7 +53,8 @@
             </div>
             <div class="card-body">
                     <%-- Filter Form --%>
-                <form action="createExportRequest" method="GET" id="filterForm" class="mb-4 p-3 border rounded">
+                <form action="createProductRequests" method="GET" id="filterForm" class="mb-4 p-3 border rounded">
+                    <input type="hidden" name="requestIDStr" value="${requestIDStr}">
                     <input type="hidden" name="pageSize" value="${pageSize}">
                     <input type="hidden" name="page" value="1"> <%-- Reset to page 1 on new filter --%>
                     <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
@@ -81,11 +81,13 @@
 
                 <c:choose>
                     <c:when test="${not empty productsInSelectedWarehouse}">
-                        <form action="createExportRequest" method="post" id="exportForm">
-                            <input type="hidden" name="sourceWarehouseID" value="${managerWarehouse.warehouseID}">
+                        <form action="createProductRequests" method="post" id="exportForm">
+                            <input type="hidden" name="requestIDStr" value="${requestIDStr}">
                             <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
-                            <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs" value="${param.selectedItemIDs}">
-                            <input type="hidden" id="allSelectedItemQuantities" name="allSelectedItemQuantities" value="${param.allSelectedItemQuantities}">
+                            <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs"
+                                   value="${param.allSelectedItemIDs}">
+                            <input type="hidden" id="allSelectedItemQuantities" name="allSelectedItemQuantities"
+                                   value="${param.allSelectedItemQuantities}">
 
 
                                 <%-- Product Table --%>
@@ -106,7 +108,7 @@
                                     <c:forEach var="p" items="${productsInSelectedWarehouse}">
                                         <tr>
                                             <td>
-                                                <input type="checkbox" name="selectedItemIDs" value="${p.productID}"
+                                                <input type="checkbox" value="${p.productID}"
                                                        class="form-check-input item-checkbox">
                                             </td>
                                             <td>${p.productName}</td>
@@ -125,7 +127,7 @@
                                             </td>
                                             <td>${productCounts[p.productID]}</td>
                                             <td>
-                                                <input type="number" name="quantity_${p.productID}" min="1"
+                                                <input type="number" min="1"
                                                        max="${productCounts[p.productID]}"
                                                        class="form-control quantity-input" placeholder="Qty"
                                                        style="width: 80px;" disabled>
@@ -139,11 +141,11 @@
                                 <%-- Note and Submit --%>
                             <div class="mt-4">
                                 <div class="mb-3">
-                                    <label for="note" class="form-label">Note for Export:</label>
+                                    <label for="note" class="form-label">Note for Request:</label>
                                     <textarea id="note" name="note" rows="3" class="form-control"
-                                              placeholder="Add any relevant notes for this export...">${param.note}</textarea>
+                                              placeholder="Add any relevant notes for this request...">${param.note}</textarea>
                                 </div>
-                                <button type="submit" class="btn btn-success">Create Export Request</button>
+                                <button type="submit" class="btn btn-success">Create Product Request</button>
                             </div>
                         </form>
                     </c:when>
@@ -160,7 +162,8 @@
                             <%-- Page Size Selector --%>
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small">Display:</span>
-                            <form action="createExportRequest" method="GET" id="pageSizeForm" class="mb-0">
+                            <form action="createProductRequests" method="GET" id="pageSizeForm" class="mb-0">
+                                <input type="hidden" name="requestIDStr" value="${requestIDStr}">
                                 <input type="hidden" name="productName" value="${productName}">
                                 <input type="hidden" name="productType" value="${productType}">
                                 <input type="hidden" name="page" value="1">
@@ -180,7 +183,7 @@
                             <ul class="pagination pagination-sm mb-0">
                                 <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="createExportRequest?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Previous</a>
+                                       href="createProductRequests?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}&requestIDStr=${requestIDStr}">Previous</a>
                                 </li>
                                 <c:set var="maxVisiblePages" value="5"/>
                                 <c:set var="startPage" value="${currentPage - 2 > 1 ? currentPage - 2 : 1}"/>
@@ -192,7 +195,7 @@
 
                                 <c:if test="${startPage > 1}">
                                     <li class="page-item"><a class="page-link"
-                                                             href="createExportRequest?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">1</a>
+                                                             href="createProductRequests?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}&requestIDStr=${requestIDStr}">1</a>
                                     </li>
                                     <c:if test="${startPage > 2}">
                                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -202,7 +205,7 @@
                                 <c:forEach begin="${startPage}" end="${endPage}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
                                         <a class="page-link"
-                                           href="createExportRequest?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${i}</a>
+                                           href="createProductRequests?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}&requestIDStr=${requestIDStr}">${i}</a>
                                     </li>
                                 </c:forEach>
 
@@ -211,13 +214,13 @@
                                         <li class="page-item disabled"><span class="page-link">...</span></li>
                                     </c:if>
                                     <li class="page-item"><a class="page-link"
-                                                             href="createExportRequest?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${totalPages}</a>
+                                                             href="createProductRequests?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}&requestIDStr=${requestIDStr}">${totalPages}</a>
                                     </li>
                                 </c:if>
 
                                 <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="createExportRequest?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Next</a>
+                                       href="createProductRequests?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}&requestIDStr=${requestIDStr}">Next</a>
                                 </li>
                             </ul>
                         </nav>
@@ -237,8 +240,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const allSelectedIDsInput = document.getElementById('allSelectedItemIDs');
         const allSelectedQuantitiesInput = document.getElementById('allSelectedItemQuantities');
-        const itemCheckboxes = document.querySelectorAll('.item-checkbox');
-        const quantityInputs = document.querySelectorAll('.quantity-input');
+        const noteInput = document.getElementById('note');
 
         // Map to store quantities: key = productID, value = quantity
         const quantitiesMap = new Map();
@@ -293,9 +295,7 @@
         }
 
         // --- Event Listeners ---
-
-        // Enable/disable quantity input when checkbox is toggled
-        itemCheckboxes.forEach(checkbox => {
+        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function () {
                 const row = this.closest('tr');
                 const quantityInput = row.querySelector('.quantity-input');
@@ -309,38 +309,39 @@
             });
         });
 
-        // Update selections when a quantity is changed
-        quantityInputs.forEach(input => {
+        document.querySelectorAll('.quantity-input').forEach(input => {
             input.addEventListener('input', updateSelections);
         });
 
         // --- Preserve selections for navigation (pagination, filters) ---
-        function appendSelectionsToLinks(form) {
-            updateSelections(); // Ensure data is up-to-date before navigating
-
-            const selectedIDs = allSelectedIDsInput.value;
-            const selectedQuantities = allSelectedQuantitiesInput.value;
-
-            if (selectedIDs) {
-                // Add/update hidden input for IDs
-                let hiddenIDs = form.querySelector('input[name="selectedItemIDs"]');
-                if (!hiddenIDs) {
-                    hiddenIDs = document.createElement('input');
+        function addHiddenInputsToForm(form) {
+            updateSelections();
+            if (form.id !== 'exportForm') {
+                if (!form.querySelector('input[name="allSelectedItemIDs"]')) {
+                    const hiddenIDs = document.createElement('input');
                     hiddenIDs.type = 'hidden';
-                    hiddenIDs.name = 'selectedItemIDs';
+                    hiddenIDs.name = 'allSelectedItemIDs';
                     form.appendChild(hiddenIDs);
                 }
-                hiddenIDs.value = selectedIDs;
+                form.querySelector('input[name="allSelectedItemIDs"]').value = allSelectedIDsInput.value;
 
-                // Add/update hidden input for quantities
-                let hiddenQuantities = form.querySelector('input[name="allSelectedItemQuantities"]');
-                if (!hiddenQuantities) {
-                    hiddenQuantities = document.createElement('input');
+                if (!form.querySelector('input[name="allSelectedItemQuantities"]')) {
+                    const hiddenQuantities = document.createElement('input');
                     hiddenQuantities.type = 'hidden';
                     hiddenQuantities.name = 'allSelectedItemQuantities';
                     form.appendChild(hiddenQuantities);
                 }
-                hiddenQuantities.value = selectedQuantities;
+                form.querySelector('input[name="allSelectedItemQuantities"]').value = allSelectedQuantitiesInput.value;
+
+                if (noteInput && !form.querySelector('input[name="note"]')) {
+                    const hiddenNote = document.createElement('input');
+                    hiddenNote.type = 'hidden';
+                    hiddenNote.name = 'note';
+                    form.appendChild(hiddenNote);
+                }
+                if (noteInput) {
+                    form.querySelector('input[name="note"]').value = noteInput.value;
+                }
             }
         }
 
@@ -348,35 +349,34 @@
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 updateSelections();
-                const selectedIDs = allSelectedIDsInput.value;
-                const selectedQuantities = allSelectedQuantitiesInput.value;
                 const url = new URL(link.href);
-                if (selectedIDs) {
-                    url.searchParams.set('selectedItemIDs', selectedIDs);
-                    url.searchParams.set('allSelectedItemQuantities', selectedQuantities);
+                url.searchParams.set('allSelectedItemIDs', allSelectedIDsInput.value);
+                url.searchParams.set('allSelectedItemQuantities', allSelectedQuantitiesInput.value);
+                if (noteInput) {
+                    url.searchParams.set('note', noteInput.value);
                 }
                 window.location.href = url.toString();
             });
         });
 
         const pageSizeForm = document.getElementById('pageSizeForm');
-        if(pageSizeForm) {
-            pageSizeForm.addEventListener('submit', function(e) {
-                appendSelectionsToLinks(this);
+        if (pageSizeForm) {
+            pageSizeForm.addEventListener('submit', function (e) {
+                addHiddenInputsToForm(this);
             });
         }
 
         const filterForm = document.getElementById('filterForm');
         if (filterForm) {
-            filterForm.addEventListener('submit', function(e) {
-                appendSelectionsToLinks(this);
+            filterForm.addEventListener('submit', function (e) {
+                addHiddenInputsToForm(this);
             });
         }
 
         const exportForm = document.getElementById('exportForm');
         if (exportForm) {
             exportForm.addEventListener('submit', function () {
-                updateSelections();
+                updateSelections(); // Final update before submitting
             });
         }
 

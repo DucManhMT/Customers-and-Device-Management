@@ -114,7 +114,7 @@ public class SelectTechnicianServlet extends HttpServlet {
             request.setAttribute("selectedAgeRange", ageRange);
             
             System.out.println("SelectTechnicianServlet: Forwarding to JSP");
-            request.getRequestDispatcher("/task/selectTechnician.jsp").forward(request, response);
+            request.getRequestDispatcher("/technician_leader/selectTechnician.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();

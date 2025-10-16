@@ -70,7 +70,7 @@ public class TaskDetailServlet extends HttpServlet {
             request.setAttribute("contract", contract);
             request.setAttribute("assignedAccounts", assignedAccounts);
             
-            request.getRequestDispatcher("/task/techemployee/taskDetail.jsp").forward(request, response);
+            request.getRequestDispatcher("/technician_employee/taskDetail.jsp").forward(request, response);
             
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");

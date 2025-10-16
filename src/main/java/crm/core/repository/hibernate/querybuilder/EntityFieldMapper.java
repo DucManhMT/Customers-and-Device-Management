@@ -9,8 +9,8 @@ import crm.core.repository.hibernate.entitymanager.LazyReference;
 import crm.core.repository.hibernate.querybuilder.DTO.ColumnsAndValuesDTO;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 
+import java.sql.Date;
 import java.sql.ResultSet;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,6 +122,9 @@ public class EntityFieldMapper {
             if (isOneToOne(field) && value != null) {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
+            }
+            if(value instanceof Date){
+                return ((Date) value).toLocalDate();
             }
 
             // TODO: handle OneToMany nếu cần

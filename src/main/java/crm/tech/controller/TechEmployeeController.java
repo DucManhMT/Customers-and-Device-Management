@@ -41,7 +41,7 @@ public class TechEmployeeController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
-            req.getRequestDispatcher("/tech/viewTechnician List.jsp").forward(req, resp);
+            req.getRequestDispatcher("/technician_leader/viewTechnicianList.jsp").forward(req, resp);
         }
     }
 
@@ -65,7 +65,7 @@ public class TechEmployeeController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
-            req.getRequestDispatcher("/tech/viewTechnicianList.jsp").forward(req, resp);
+            req.getRequestDispatcher("/technician_leader/viewTechnicianList.jsp").forward(req, resp);
         }
     }
 
@@ -139,7 +139,7 @@ public class TechEmployeeController extends HttpServlet {
             req.setAttribute("searchName", searchName);
             req.setAttribute("selectedLocation", location);
             req.setAttribute("selectedAgeRange", ageRange);
-            req.getRequestDispatcher("/tech/viewTechnicianList.jsp").forward(req, resp);
+            req.getRequestDispatcher("/technician_leader/viewTechnicianList.jsp").forward(req, resp);
 
         } catch (SQLException e) {
             req.setAttribute("errorMessage", "Failed to load tech employees: " + e.getMessage());
@@ -189,7 +189,7 @@ public class TechEmployeeController extends HttpServlet {
             System.out.println("SQLException: " + e.getMessage());
             e.printStackTrace();
             req.setAttribute("errorMessage", "Failed to load tech employee details: " + e.getMessage());
-            req.getRequestDispatcher("/tech/viewTechnicianList.jsp").forward(req, resp);
+            req.getRequestDispatcher("/technician_leader/viewTechnicianList.jsp").forward(req, resp);
         }
         System.out.println("=== End TechEmployeeController Detail Debug ===");
     }
