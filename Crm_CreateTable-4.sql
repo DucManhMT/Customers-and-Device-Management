@@ -155,6 +155,7 @@ CREATE TABLE Feedback (
 -- ======================
 CREATE TABLE Contract (
     ContractID INT PRIMARY KEY,
+    ContractCode NVARCHAR(255) UNIQUE NOT NULL,
     ContractImage NVARCHAR(255) NOT NULL,
     StartDate Date NOT NULL,
     ExpiredDate DATE NOT NULL,
