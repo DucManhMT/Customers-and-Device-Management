@@ -34,7 +34,7 @@
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger">${error}</div>
                 </c:if>
-                <form id="roleForm" action="CreateRole" method="post">
+                <form id="roleForm" action="${pageContext.request.contextPath}/admin/role_list/create_role" method="post">
                     <!-- Role Name -->
 <%--                    <div class="mb-4">--%>
 <%--                        <label for="roleId" class="form-label fw-medium">Role ID</label>--%>
@@ -163,7 +163,7 @@
 
                     <!-- Submit Buttons -->
                     <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                        <a href="${pageContext.request.contextPath}/ViewRoleList" class="btn btn-outline-secondary">
+                        <a href="${pageContext.request.contextPath}/admin/role_list" class="btn btn-outline-secondary">
                             Cancel
                         </a>
                         <button type="submit" class="btn btn-primary">

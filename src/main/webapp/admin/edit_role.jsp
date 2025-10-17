@@ -31,14 +31,14 @@
             <div class="col-12">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/ViewRoleList" class="text-decoration-none">Role Management</a></li>
+                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/admin/role_list" class="text-decoration-none">Role Management</a></li>
                         <li class="breadcrumb-item active">Edit Role</li>
                     </ol>
                 </nav>
                 <div class="d-flex justify-content-between align-items-center">
                     <h1 class="h3 mb-0">Edit Role</h1>
                     <div>
-                        <a href="ViewRoleList" class="btn btn-outline-secondary me-2">
+                        <a href="${pageContext.request.contextPath}/admin/role_list" class="btn btn-outline-secondary me-2">
                             <i class="bi bi-x-lg me-1"></i>Cancel
                         </a>
                         <button form="roleForm" type="submit" class="btn btn-primary">

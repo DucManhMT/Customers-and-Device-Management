@@ -21,9 +21,6 @@ public class Type {
     @Column(name = "TypeImage", length = 255)
     private String typeImage;
 
-//    @ManyToOne(joinColumn = "CategoryID")
-//    private LazyReference<Category> category;
-
     @OneToMany(mappedBy = "typeID", joinColumn = "TypeID", targetEntity = Product.class)
     private List<Product> products;
 

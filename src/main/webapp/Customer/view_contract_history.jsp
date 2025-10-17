@@ -42,7 +42,7 @@
       <div class="p-4">
         <div class="search-section">
           <h5 class="mb-3"><i class="bi bi-search me-2"></i>Search Contracts</h5>
-            <form action="ViewContractHistory" method="get" class="row g-3">
+            <form action="${pageContext.request.contextPath}/customer/contract_history" method="get" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Contract ID</label>
                     <input type="text" class="form-control" name="contractId" placeholder="Enter contract ID...">
@@ -55,7 +55,7 @@
                     <button type="submit" class="btn btn-primary-custom w-50">
                         <i class="bi bi-search me-1"></i>Search
                     </button>
-                    <a href="ViewContractHistory" class="btn btn-secondary-custom w-50">
+                    <a href="${pageContext.request.contextPath}/customer/contract_history" class="btn btn-secondary-custom w-50">
                         <i class="bi bi-arrow-clockwise me-1"></i>Reset
                     </a>
                 </div>
@@ -112,7 +112,7 @@
       </div>
     </div>
     <!-- Pagination Controls -->
-      <form method="get" action="ViewContractHistory">
+      <form method="get" action="${pageContext.request.contextPath}/customer/contract_history">
           <div class="d-flex align-items-center">
               <span class="me-3">Show:</span>
               <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
@@ -132,7 +132,7 @@
               <c:if test="${currentPage > 1}">
                   <li class="page-item">
                       <a class="page-link"
-                         href="ViewContractHistory?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                         href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
                           Previous
                       </a>
                   </li>
@@ -142,7 +142,7 @@
               <c:forEach begin="1" end="${totalPages}" var="i">
                   <li class="page-item ${i == currentPage ? 'active' : ''}">
                       <a class="page-link"
-                         href="ViewContractHistory?page=${i}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                         href="${pageContext.request.contextPath}/customer/contract_history?page=${i}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
                               ${i}
                       </a>
                   </li>
@@ -152,7 +152,7 @@
               <c:if test="${currentPage < totalPages}">
                   <li class="page-item">
                       <a class="page-link"
-                         href="ViewContractHistory?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                         href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
                           Next
                       </a>
                   </li>
