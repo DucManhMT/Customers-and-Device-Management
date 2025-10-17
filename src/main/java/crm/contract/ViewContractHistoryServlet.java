@@ -1,5 +1,6 @@
 package crm.contract;
 
+import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/ViewContractHistory")
+@WebServlet(urlPatterns = URLConstants.CUSTOMER_VIEW_CONTRACT_HISTORY)
 public class ViewContractHistoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -63,7 +64,7 @@ public class ViewContractHistoryServlet extends HttpServlet {
         request.setAttribute("contractIdSearch", contractIdParam);
         request.setAttribute("startDateSearch", startDateParam);
 
-        request.getRequestDispatcher("/contract/view_contract_history.jsp").forward(request, response);
+        request.getRequestDispatcher("/Customer/view_contract_history.jsp").forward(request, response);
     }
 
     @Override

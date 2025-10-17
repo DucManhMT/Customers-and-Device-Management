@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.URLConstants;
 import crm.common.model.Role;
 import crm.common.model.Account;
 import crm.core.config.DBcontext;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/ViewRoleList")
+@WebServlet(urlPatterns = URLConstants.ADMIN_VIEW_ROLE_LIST)
 public class ViewRoleListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -133,9 +134,8 @@ public class ViewRoleListServlet extends HttpServlet {
                     request.getSession().setAttribute("error", "This role can't be delete because have assigned to one or more account.");
                 }
             }
-            response.sendRedirect("ViewRoleList");
+            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
             return;
         }
-        doGet(request, response);
     }
 }

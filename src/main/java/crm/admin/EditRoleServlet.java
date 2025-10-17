@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Feature;
 import crm.common.model.Role;
@@ -13,7 +14,7 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.util.*;
 
-@WebServlet(name = "EditRoleServlet", value = "/EditRole")
+@WebServlet(name = "EditRoleServlet", value = URLConstants.ADMIN_EDIT_ROLE)
 public class EditRoleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
