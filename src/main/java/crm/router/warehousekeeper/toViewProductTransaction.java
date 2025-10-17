@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "toWarehouseKeeperActionCenter", value = "/warehouse_keeper/warehousekeeper_actioncenter")
-public class toWarehouseKeeperActionCenter extends HttpServlet {
+@WebServlet(name = "toViewProductTransaction", value = "/warehouse_keeper/view_product_transaction")
+public class toViewProductTransaction extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/warehouse_keeper/warehousekeeper_actioncenter.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/view_product_transaction.jsp").forward(req, resp);
     }
 }
