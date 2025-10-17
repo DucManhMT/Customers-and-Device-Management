@@ -12,5 +12,8 @@
 </head>
 <body>
     <p>THIS IS WAREHOUSEKEEPER</p>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/export_product"></a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_request">View Product Request</a>
+
 </body>
 </html>

@@ -51,7 +51,7 @@
                                     <td class="text-muted small">${pr.description}</td>
                                     <td>
                                         <c:if test="${pr.status == 'Pending'}">
-                                            <form action="viewProductRequests" method="post"
+                                            <form action="${pageContext.request.contextPath}/warehouse/viewProductRequests" method="post"
                                                   class="d-flex justify-content-center gap-2">
                                                 <input type="hidden" name="productRequestID"
                                                        value="${pr.productRequestID}">
@@ -66,7 +66,7 @@
                                             </form>
                                         </c:if>
                                         <c:if test="${pr.status == 'Approved'}">
-                                            <a href="" class="btn btn-sm btn-primary">Export</a>
+                                            <a href="${pageContext.request.contextPath}/warehouse_keeper/export_product" class="btn btn-sm btn-primary">Export</a>
                                         </c:if>
                                     </td>
                                 </tr>

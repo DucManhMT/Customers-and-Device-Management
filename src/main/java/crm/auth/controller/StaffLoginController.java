@@ -25,16 +25,16 @@ public class StaffLoginController extends HttpServlet {
                 session.setAttribute("account", account);
                 switch (account.getRole().getRoleName()) {
                     case "TechnicianLeader":
-                        resp.sendRedirect(req.getContextPath() + "/techlead/techlead_actioncenter");
+                        resp.sendRedirect(req.getContextPath() + "/technician_leader/techlead_actioncenter");
                         return; // ✅ stop after redirect
                     case "TechnicianEmployee":
-                        resp.sendRedirect(req.getContextPath() + "/techemployee/techemployee_actioncenter");
+                        resp.sendRedirect(req.getContextPath() + "/technician_employee/techemployee_actioncenter");
                         return; // ✅ stop after redirect
                     case "CustomerSupporter":
-                        resp.sendRedirect(req.getContextPath() + "/customersupporter/customersupporter_actioncenter");
+                        resp.sendRedirect(req.getContextPath() + "/customer_supporter/customersupporter_actioncenter");
                         return; // ✅ stop after redirect
                     case "WarehouseKeeper":
-                        resp.sendRedirect(req.getContextPath() + "/warehousekeeper/warehousekeeper_actioncenter");
+                        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/warehousekeeper_actioncenter");
                         return; // ✅ stop after redirect
                     case "Admin":
                         resp.sendRedirect(req.getContextPath() + "/admin/admin_actioncenter");

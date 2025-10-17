@@ -1,4 +1,4 @@
-package crm.router.warehousekeeper;
+package crm.router.technicianemployee;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "toWarehouseKeeperActionCenter", value = "/warehouse_keeper/warehousekeeper_actioncenter")
-public class toWarehouseKeeperActionCenter extends HttpServlet {
+@WebServlet(name = "toRequestProduct", value = "/technician_employee/create_product_request")
+public class toRequestProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/warehouse_keeper/warehousekeeper_actioncenter.jsp").forward(req, resp);
+        req.getRequestDispatcher("/technician_employee/create_product_request.jsp").forward(req, resp);
     }
 }
