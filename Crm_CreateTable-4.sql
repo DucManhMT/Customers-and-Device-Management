@@ -253,8 +253,8 @@ INSERT INTO Role (RoleID, RoleName) VALUES
                                         (2, 'Customer'),
                                         (3, 'CustomerSupporter'),
                                         (4, 'WarehouseKeeper'),
-                                        (5, 'TechnicianEmployee'),
-                                        (6, 'TechnicianLeader');
+                                        (5, 'TechnicianLeader'),
+                                        (6, 'TechnicianEmployee');
 
 
 CREATE TABLE Province (

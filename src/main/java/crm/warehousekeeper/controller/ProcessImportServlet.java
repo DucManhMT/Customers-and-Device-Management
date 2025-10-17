@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "ProcessImportServlet", value = "/warehousekeeper/process_import")
+@WebServlet(name = "ProcessImportServlet", value = "/warehouse_keeper/process_import")
 public class ProcessImportServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

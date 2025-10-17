@@ -40,27 +40,27 @@ public class BuilderTest {
 //            em.persist(product, Product.class);
 //      }
 
-
-            String username = account.getUsername();
-            String email = null;
-
-            // Tìm email trong Customer
-            Map<String, Object> condCustomer = new HashMap<>();
-            condCustomer.put("account", username);
-            List<Customer> customers = em.findWithConditions(Customer.class, condCustomer);
-            if (!customers.isEmpty()) {
-                email = customers.get(0).getEmail();
-            } else {
-                // Tìm email trong Staff
-                Map<String, Object> condStaff = new HashMap<>();
-                condStaff.put("account", username);
-                List<Staff> staffs = em.findWithConditions(Staff.class, condStaff);
-                if (!staffs.isEmpty()) {
-                    email = staffs.get(0).getEmail();
-                }
-            }
-
-            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
+//
+//            String username = account.getUsername();
+//            String email = null;
+//
+//            // Tìm email trong Customer
+//            Map<String, Object> condCustomer = new HashMap<>();
+//            condCustomer.put("account", username);
+//            List<Customer> customers = em.findWithConditions(Customer.class, condCustomer);
+//            if (!customers.isEmpty()) {
+//                email = customers.get(0).getEmail();
+//            } else {
+//                // Tìm email trong Staff
+//                Map<String, Object> condStaff = new HashMap<>();
+//                condStaff.put("account", username);
+//                List<Staff> staffs = em.findWithConditions(Staff.class, condStaff);
+//                if (!staffs.isEmpty()) {
+//                    email = staffs.get(0).getEmail();
+//                }
+//            }
+//
+//            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
         }
     }
 
