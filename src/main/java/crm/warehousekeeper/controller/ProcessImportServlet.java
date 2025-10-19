@@ -81,11 +81,11 @@ public class ProcessImportServlet extends HttpServlet {
         // Redirect to a success page or back to the import page with a message.
         if (!importSuccess) {
             req.getSession().setAttribute("errorMessage", "There was an error processing the import.");
-            resp.sendRedirect(req.getContextPath() + "/warehousekeeper/import_product");
+            resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/import_product");
             return;
         }
         req.getSession().setAttribute("successMessage", "Import processed successfully!");
-        resp.sendRedirect(req.getContextPath() + "/warehousekeeper/import_product");
+        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/import_product");
     }
 }
 
