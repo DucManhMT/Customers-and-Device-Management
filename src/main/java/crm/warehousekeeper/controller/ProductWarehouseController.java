@@ -1,5 +1,6 @@
 package crm.warehousekeeper.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.*;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/warehouse/viewProductWarehouse")
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_PRODUCT_WAREHOUSE)
 public class ProductWarehouseController extends HttpServlet {
 
     private final String ERROR_MESSAGE = "You currently do not have a warehouse assigned. Please contact the administrator.";

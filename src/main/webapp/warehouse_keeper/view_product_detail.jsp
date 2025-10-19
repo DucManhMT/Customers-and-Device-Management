@@ -26,8 +26,8 @@
     <!-- Navigation breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-2">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse/products">Products</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">Products</a></li>
             <li class="breadcrumb-item active">${product.productName}</li>
         </ol>
     </nav>

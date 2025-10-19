@@ -21,7 +21,7 @@
                     </c:if>
                 </div>
                 <div class="card-body">
-                    <form action="addProduct" method="post" enctype="multipart/form-data">
+                    <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="post" enctype="multipart/form-data">
                         <%-- Product Name --%>
                         <div class="mb-3">
                             <label for="productName" class="form-label">Product Name</label>

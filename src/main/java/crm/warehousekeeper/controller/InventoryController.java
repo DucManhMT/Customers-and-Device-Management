@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import crm.common.URLConstants;
 import crm.common.model.Product;
 import crm.common.model.Type;
 import crm.common.model.Warehouse;
@@ -18,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 
-@WebServlet(urlPatterns = "/warehouse/viewInventory")
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_INVENTORY)
 public class InventoryController extends HttpServlet {
 
     @Override

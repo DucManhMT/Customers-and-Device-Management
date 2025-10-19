@@ -23,45 +23,8 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-      EntityManager em  = new EntityManager(DBcontext.getConnection());
 
-//      Product product = new Product();
-//      Type type = new Type();
-//      for ( int i=1; i<=10; i++){
-//          type.setTypeID(IDGeneratorService.generateID(Type.class));
-//          type.setTypeName("Type " + i);
-//          em.persist(type, Type.class);
-//      }
-//      for ( int i =1 ; i<=100 ; i++){
-//            product.setProductID(IDGeneratorService.generateID(Product.class));
-//            product.setProductName("Product " + i);
-//            product.setProductDescription("Description " + i);
-//            product.setType(em.find(Type.class,(i%10 +1)));
-//            em.persist(product, Product.class);
-//      }
-
-
-            String username = account.getUsername();
-            String email = null;
-
-            // Tìm email trong Customer
-            Map<String, Object> condCustomer = new HashMap<>();
-            condCustomer.put("account", username);
-            List<Customer> customers = em.findWithConditions(Customer.class, condCustomer);
-            if (!customers.isEmpty()) {
-                email = customers.get(0).getEmail();
-            } else {
-                // Tìm email trong Staff
-                Map<String, Object> condStaff = new HashMap<>();
-                condStaff.put("account", username);
-                List<Staff> staffs = em.findWithConditions(Staff.class, condStaff);
-                if (!staffs.isEmpty()) {
-                    email = staffs.get(0).getEmail();
-                }
-            }
-
-            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
-        }
     }
+}
 
 
