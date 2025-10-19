@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import crm.common.model.Account;
 import crm.common.model.Feedback;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -22,7 +23,8 @@ public class FeedbackService {
     public void showCreateFeedbackForm(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String username = (String) req.getSession().getAttribute("username");
+        Account account = (Account) req.getSession().getAttribute("account");
+        String username = account != null ? account.getUsername() : null;
         req.setAttribute("currentUsername", username);
 
         req.removeAttribute("errorMessage");
@@ -49,6 +51,7 @@ public class FeedbackService {
             req.setAttribute("totalPages", feedbackPage.getTotalPages());
             req.setAttribute("recordsPerPage", recordsPerPage);
             req.setAttribute("totalRecords", feedbackPage.getTotalElements());
+            req.setAttribute("currentUsername", username);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -234,7 +237,7 @@ public class FeedbackService {
             List<Feedback> userFeedbacks = new ArrayList<>();
 
             for (Feedback feedback : allFeedbacks) {
-                if (username == null || feedback.getCustomerID() == null || feedback.getCustomerID().equals(username)) {
+                if (username != null && feedback.getCustomerID() != null && feedback.getCustomerID().equals(username)) {
                     userFeedbacks.add(feedback);
                 }
             }
