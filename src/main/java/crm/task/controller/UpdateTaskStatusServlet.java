@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.DBcontext;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
-@WebServlet("/task/updateStatus")
+@WebServlet(name="UpdateTaskStatusServlet", urlPatterns = { URLConstants.TECHEM_UPDATE_TASK_STATUS})
 public class UpdateTaskStatusServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

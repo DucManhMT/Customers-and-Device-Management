@@ -1,10 +1,12 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.AccountRequest;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.task.service.SelectTechnicianService;
 import crm.core.config.DBcontext;
 
 import jakarta.servlet.ServletException;
@@ -18,9 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet("/task/processAssignment")
+@WebServlet(name="ProcessAssignmentServlet", urlPatterns = { URLConstants.TASK_PROCESS_ASSIGNMENT})
 public class ProcessAssignmentServlet extends HttpServlet {
-
+    SelectTechnicianService selectTechnicianService = new SelectTechnicianService();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -67,7 +69,7 @@ public class ProcessAssignmentServlet extends HttpServlet {
                         }
                         
                         AccountRequest accountRequest = new AccountRequest();
-                        Integer nextId = getNextAccountRequestId(entityManager);
+                        Integer nextId = selectTechnicianService.getNextAccountRequestId(entityManager);
                         accountRequest.setAccountRequestID(nextId);
                         accountRequest.setAccount(techAccount);
                         accountRequest.setRequest(taskRequest);
@@ -114,39 +116,5 @@ public class ProcessAssignmentServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
                 "Database connection error: " + e.getMessage());
         }
-    }
-    
-    private boolean checkIfAlreadyAssigned(EntityManager entityManager, String username, Integer requestId) throws Exception {
-        List<AccountRequest> allAssignments = entityManager.findAll(AccountRequest.class);
-        
-        return allAssignments.stream()
-            .anyMatch(assignment -> {
-                try {
-                    return assignment.getAccount() != null && 
-                           assignment.getAccount().getUsername() != null &&
-                           assignment.getAccount().getUsername().equals(username) &&
-                           assignment.getRequest() != null &&
-                           assignment.getRequest().getRequestID() != null &&
-                           assignment.getRequest().getRequestID().equals(requestId);
-                } catch (Exception e) {
-                    // Handle LazyReference loading errors gracefully
-                    return false;
-                }
-            });
-    }
-    
-    private Integer getNextAccountRequestId(EntityManager entityManager) throws Exception {
-        List<AccountRequest> allRequests = entityManager.findAll(AccountRequest.class);
-        if (allRequests.isEmpty()) {
-            return 1;
-        }
-        
-        Integer maxId = allRequests.stream()
-            .map(AccountRequest::getAccountRequestID)
-            .filter(id -> id != null)
-            .max(Integer::compareTo)
-            .orElse(0);
-            
-        return maxId + 1;
     }
 }
