@@ -601,11 +601,9 @@
         const statusEl = clone.querySelector('.selected-task-status');
         if (statusEl) statusEl.textContent = status || '';
 
-        // Wire buttons
         const viewBtn = clone.querySelector('.selected-task-view');
         if (viewBtn) {
           viewBtn.addEventListener('click', function() {
-            // create and submit small form to view request detail via POST
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '${pageContext.request.contextPath}/task/detail';

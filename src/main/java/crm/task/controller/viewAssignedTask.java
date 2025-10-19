@@ -1,6 +1,8 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Request;
+import crm.common.model.Account;
 import crm.common.model.AccountRequest;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.DBcontext;
@@ -21,7 +23,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@WebServlet("/task/viewAssignedTasks")
+@WebServlet(name = "viewAssignedTask", urlPatterns = { URLConstants.TECHEM_VIEW_ASSIGNED_TASK })
 public class viewAssignedTask extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -88,19 +90,17 @@ public class viewAssignedTask extends HttpServlet {
             connection = DBcontext.getConnection();
             EntityManager entityManager = new EntityManager(connection);
 
-            // HttpSession session = request.getSession(false);
-            // if (session == null) {
-            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No active session");
-            // return;
-            // }
+            Account account = (Account) request.getSession().getAttribute("account");
+            if (account == null) {
+                response.sendRedirect(request.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
+                return;
+            }
+            String username = account.getUsername();
+            if (username == null || username.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
+                return;
+            }
 
-            // String username = (String) session.getAttribute("username");
-            // if (username == null || username.trim().isEmpty()) {
-            // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged
-            // in");
-            // return;
-            // }
-            String username = "staff1";
             String statusFilter = (String) request.getAttribute("statusFilter");
             String sortBy = (String) request.getAttribute("sortBy");
             String fromDate = (String) request.getAttribute("fromDate");
@@ -139,7 +139,7 @@ public class viewAssignedTask extends HttpServlet {
                 request.setAttribute("processingTasks", 0);
                 request.setAttribute("finishedTasks", 0);
 
-                request.getRequestDispatcher("/technician_employee/viewAssignedTasks.jsp").forward(request, response);
+                request.getRequestDispatcher("/technician_employee/view_assigned_tasks.jsp").forward(request, response);
                 return;
             }
 
@@ -250,7 +250,7 @@ public class viewAssignedTask extends HttpServlet {
             request.setAttribute("fromDate", fromDate);
             request.setAttribute("toDate", toDate);
 
-            request.getRequestDispatcher("/technician_employee/viewAssignedTasks.jsp").forward(request, response);
+            request.getRequestDispatcher("/technician_employee/view_assigned_tasks.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
