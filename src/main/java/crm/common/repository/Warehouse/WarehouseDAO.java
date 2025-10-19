@@ -51,57 +51,49 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         List<Map<String, Object>> inventorySummary = new ArrayList<>();
 
-        // Get all in-stock product warehouse items
-        Map<String, Object> conditions = new HashMap<>();
-        conditions.put("productStatus", ProductStatus.In_Stock.name());
-        List<ProductWarehouse> productWarehouses = em.findWithConditions(ProductWarehouse.class, conditions);
+        // Get all products and all warehouses
+        List<Product> allProducts = em.findAll(Product.class);
+        List<Warehouse> allWarehouses = em.findAll(Warehouse.class);
 
-        // Group by warehouse ID and product ID
-        Map<Integer, Map<Integer, Long>> warehouseProductCountMap = new HashMap<>();
-        Map<Integer, Warehouse> warehouseMap = new HashMap<>();
-        Map<Integer, Product> productMap = new HashMap<>();
-
-        for (ProductWarehouse pw : productWarehouses) {
-            Warehouse warehouse = pw.getWarehouse();
-            Product product = pw.getInventoryItem().getProduct();
-
-            int warehouseId = warehouse.getWarehouseID();
-            int productId = product.getProductID();
-
-            // Store warehouse and product objects for later retrieval
-            warehouseMap.put(warehouseId, warehouse);
-            productMap.put(productId, product);
-
-            // Count items by warehouseId and productId
-            warehouseProductCountMap
-                    .computeIfAbsent(warehouseId, k -> new HashMap<>())
-                    .merge(productId, 1L, Long::sum);
-        }
-
-        // Load specifications for each product
+        // Load specifications for all products
         Map<String, Object> specConditions = new HashMap<>();
-        for (Map.Entry<Integer, Product> entry : productMap.entrySet()) {
-            Product product = entry.getValue();
+        for (Product product : allProducts) {
             specConditions.clear();
             specConditions.put("product", product.getProductID());
             List<ProductSpecification> specs = em.findWithConditions(ProductSpecification.class, specConditions);
             product.setProductSpecifications(specs);
         }
 
-        // Create result list
-        for (Map.Entry<Integer, Map<Integer, Long>> warehouseEntry : warehouseProductCountMap.entrySet()) {
-            int warehouseId = warehouseEntry.getKey();
-            Warehouse warehouse = warehouseMap.get(warehouseId);
-            Map<Integer, Long> productCountMap = warehouseEntry.getValue();
+        // Get all in-stock items to calculate counts
+        Map<String, Object> stockConditions = new HashMap<>();
+        stockConditions.put("productStatus", ProductStatus.In_Stock.name());
+        List<ProductWarehouse> inStockItems = em.findWithConditions(ProductWarehouse.class, stockConditions);
 
-            for (Map.Entry<Integer, Long> productEntry : productCountMap.entrySet()) {
-                int productId = productEntry.getKey();
-                Product product = productMap.get(productId);
-                Long count = productEntry.getValue();
+        // Create a map to track counts for each warehouse-product combination
+        Map<Integer, Map<Integer, Long>> warehouseProductCountMap = new HashMap<>();
 
+        // Populate the count map with in-stock items
+        for (ProductWarehouse pw : inStockItems) {
+            int warehouseId = pw.getWarehouse().getWarehouseID();
+            int productId = pw.getInventoryItem().getProduct().getProductID();
+
+            warehouseProductCountMap
+                    .computeIfAbsent(warehouseId, k -> new HashMap<>())
+                    .merge(productId, 1L, Long::sum);
+        }
+
+        // Create inventory summary for all warehouse-product combinations
+        for (Warehouse warehouse : allWarehouses) {
+            for (Product product : allProducts) {
                 Map<String, Object> item = new HashMap<>();
                 item.put("warehouse", warehouse);
                 item.put("product", product);
+
+                // Get count from map or default to 0 if not found (out of stock)
+                Long count = warehouseProductCountMap
+                        .getOrDefault(warehouse.getWarehouseID(), Collections.emptyMap())
+                        .getOrDefault(product.getProductID(), 0L);
+
                 item.put("count", count);
                 inventorySummary.add(item);
             }
@@ -109,6 +101,7 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
 
         return inventorySummary;
     }
+
 
     public Warehouse getWarehouseByUsername(String username) {
         EntityManager em = new EntityManager(DBcontext.getConnection());

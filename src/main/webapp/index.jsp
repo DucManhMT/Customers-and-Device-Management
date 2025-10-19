@@ -17,7 +17,11 @@ contentType="text/html;charset=UTF-8" language="java" %>
       <a
         href="${pageContext.request.contextPath}/warehousekeeper/import_product"
         >Import product</a
-      ><br />
+      >
+      <br />
+      <a
+        href="${pageContext.request.contextPath}/warehouse_keeper/view_product_transaction.jsp"
+        >Product transaction</a>
     </p>
 
   <div>

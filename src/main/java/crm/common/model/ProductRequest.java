@@ -3,8 +3,7 @@ package crm.common.model;
 import crm.common.model.enums.ProductRequestStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
-
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity(tableName = "ProductRequest")
 public class ProductRequest {
@@ -16,7 +15,7 @@ public class ProductRequest {
     private Integer quantity;
 
     @Column(name = "RequestDate", type = "DATE", nullable = false)
-    private Date requestDate;
+    private LocalDate requestDate;
 
     @Enumerated
     @Column(name = "Status", length = 20)
@@ -50,11 +49,11 @@ public class ProductRequest {
         this.quantity = quantity;
     }
 
-    public Date getRequestDate() {
+    public LocalDate getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(Date requestDate) {
+    public void setRequestDate(LocalDate requestDate) {
         this.requestDate = requestDate;
     }
 
@@ -88,7 +87,6 @@ public class ProductRequest {
     }
 
     public void setProduct(Product product) {
-
         this.product = new LazyReference<>(Product.class, product.getProductID());
     }
 
@@ -97,7 +95,6 @@ public class ProductRequest {
     }
 
     public void setWarehouse(Warehouse warehouse) {
-
         this.warehouse = new LazyReference<>(Warehouse.class, warehouse.getWarehouseID());
     }
 }

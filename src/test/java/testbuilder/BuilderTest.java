@@ -40,12 +40,6 @@ public class BuilderTest {
 //            em.persist(product, Product.class);
 //      }
 
-        List<Account> accounts = em.findAll(Account.class);
-        for (Account account : accounts) {
-            // Thêm kiểm tra role trước khi xử lý tiếp
-            if (account.getRole().getRoleID()==1) {
-                continue;
-            }
 
             String username = account.getUsername();
             String email = null;
@@ -70,4 +64,4 @@ public class BuilderTest {
         }
     }
 
- }
+

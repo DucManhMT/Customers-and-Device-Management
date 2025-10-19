@@ -9,6 +9,7 @@ target/
 .smarttomcat
 **/src/main/**/application.properties
 
+
 ### STS ###
 .apt_generated
 .classpath

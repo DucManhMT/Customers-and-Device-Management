@@ -10,7 +10,7 @@ import crm.core.repository.hibernate.entitymanager.LazyReference;
 public class WarehouseRequestProduct {
 
     @Key
-    @Column(name = "WarehouseRequestProductID", type = "INT")
+    @Column(name = "WarehouseRequestProductID")
     private Integer warehouseRequestProductID;
 
     @Column(name = "Quantity", type = "INT", nullable = false)

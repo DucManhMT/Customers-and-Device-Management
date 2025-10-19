@@ -25,8 +25,6 @@ public class ProductDetailController extends HttpServlet {
         req.setAttribute("product", product);
 
         req.getRequestDispatcher("/warehouse_keeper/view_product_detail.jsp").forward(req, resp);
-
-
     }
 
     @Override

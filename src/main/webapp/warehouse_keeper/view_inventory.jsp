@@ -47,7 +47,7 @@
     <div class="card shadow-sm p-3 mb-4">
         <h2 class="h5 fw-semibold text-dark mb-3">Actions</h2>
         <div class="d-flex flex-wrap gap-2">
-            <a href="" class="btn btn-primary d-flex align-items-center">
+            <a href="addProduct" class="btn btn-primary d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-plus-lg me-2" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -168,6 +168,8 @@
                         <td class="fw-semibold">${item.count}</td>
                         <td>
                             <a href="editProductWarehouse?productID=" class="btn btn-sm btn-secondary">Edit</a>
+                            <a href="${pageContext.request.contextPath}/warehouse/viewProductDetail?productId=${item.product.productID}"
+                               class="btn btn-sm btn-info">View Detail</a>
                         </td>
                     </tr>
                 </c:forEach>

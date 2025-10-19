@@ -7,10 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-@WebServlet(name = "toTechnicianEmployeeActionCenter", value = "/technicianemployee/technicianemployee_actioncenter")
+@WebServlet(name = "toTechnicianEmployeeActionCenter", value = "/technician_employee/techemployee_actioncenter")
 public class toTechnicianEmployeeActionCenter extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/customersupporter/customersupporter_actioncenter.jsp").forward(req, resp);
+        req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
     }
 }
