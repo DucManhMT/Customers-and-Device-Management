@@ -21,9 +21,6 @@ public class Contract {
     @Column(name = "ExpiredDate", type = "DATE", nullable = false)
     private Date expiredDate;
 
-    @Column(name = "CustomerID", type = "INT", nullable = false)
-    private Integer customerID;
-
     @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Customer> customer;
 
@@ -60,14 +57,6 @@ public class Contract {
 
     public void setExpiredDate(Date expiredDate) {
         this.expiredDate = expiredDate;
-    }
-
-    public Integer getCustomerID() {
-        return customerID;
-    }
-
-    public void setCustomerID(Integer customerID) {
-        this.customerID = customerID;
     }
 
     public Customer getCustomer() {
