@@ -45,13 +45,15 @@
                                             ${pr.status == 'Pending' ? 'bg-warning text-dark' : ''}
                                             ${pr.status == 'Approved' ? 'bg-success' : ''}
                                             ${pr.status == 'Rejected' ? 'bg-danger' : ''}">
+                                            ${pr.status == 'Finished' ? 'bg-success' : ''}
                                                 ${pr.status}
                                         </span>
                                     </td>
                                     <td class="text-muted small">${pr.description}</td>
                                     <td>
                                         <c:if test="${pr.status == 'Pending'}">
-                                            <form action="${pageContext.request.contextPath}/warehouse/viewProductRequests" method="post"
+                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
+                                                  method="post"
                                                   class="d-flex justify-content-center gap-2">
                                                 <input type="hidden" name="productRequestID"
                                                        value="${pr.productRequestID}">

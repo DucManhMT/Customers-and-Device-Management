@@ -67,7 +67,7 @@
                 </svg>
                 Transfer Items
             </a>
-            <a href="viewWarehouseDetail" class="btn btn-info d-flex align-items-center">
+            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail" class="btn btn-info d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-arrow-left-right me-2" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -81,7 +81,7 @@
     <!-- Filters -->
     <div class="card shadow-sm p-3 mb-4">
         <h2 class="h5 fw-semibold text-dark mb-3">Filter</h2>
-        <form action="viewProductWarehouse" method="GET" id="filterForm">
+        <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET" id="filterForm">
             <input type="hidden" name="pageSize" value="${pageSize}">
             <input type="hidden" name="page" value="${currentPage}">
             <div class="row g-3 align-items-end">
@@ -111,7 +111,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
                 <span class="text-muted small">Display:</span>
-                <form action="viewProductWarehouse" method="GET" class="mb-0">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET" class="mb-0">
                     <input type="hidden" name="productName" value="${productName}">
                     <input type="hidden" name="productType" value="${productType}">
                     <input type="hidden" name="page" value="${currentPage}">
@@ -130,7 +130,7 @@
         </div>
     </div>
 
-    <c:if test="${empty warehouseError}">
+    <c:if test="${not empty warehouseError}">
         <div class="alert alert-warning text-center" role="alert">
                 ${errorMessage}
         </div>
@@ -172,7 +172,7 @@
                         </td>
                         <td class="fw-semibold">${productCounts[productWarehouse.productID]}</td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/warehouse/viewProductDetail?productId=${productWarehouse.productID}" class="btn btn-sm btn-info">View Detail</a>
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${productWarehouse.productID}" class="btn btn-sm btn-info">View Detail</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -199,7 +199,7 @@
                         <!-- Previous -->
                         <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                             <a class="page-link"
-                               href="viewProductWarehouse?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">Previous</a>
+                               href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">Previous</a>
                         </li>
 
                         <!-- Page Numbers Logic -->
@@ -215,7 +215,7 @@
 
                         <c:if test="${startPage > 1}">
                             <li class="page-item"><a class="page-link"
-                                                     href="viewProductWarehouse?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}">1</a>
+                                                     href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}">1</a>
                             </li>
                             <c:if test="${startPage > 2}">
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -225,7 +225,7 @@
                         <c:forEach begin="${startPage}" end="${endPage}" var="i">
                             <li class="page-item ${i == currentPage ? 'active' : ''}">
                                 <a class="page-link"
-                                   href="viewProductWarehouse?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">${i}</a>
+                                   href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">${i}</a>
                             </li>
                         </c:forEach>
 
@@ -234,20 +234,20 @@
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
                             </c:if>
                             <li class="page-item"><a class="page-link"
-                                                     href="viewProductWarehouse?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">${totalPages}</a>
+                                                     href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">${totalPages}</a>
                             </li>
                         </c:if>
 
                         <!-- Next -->
                         <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                             <a class="page-link"
-                               href="viewProductWarehouse?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">Next</a>
+                               href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}">Next</a>
                         </li>
                     </ul>
                 </nav>
 
                 <!-- Go to Page -->
-                <form action="viewProductWarehouse" method="GET" class="d-flex align-items-center gap-1 mb-0">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET" class="d-flex align-items-center gap-1 mb-0">
                     <input type="hidden" name="pageSize" value="${pageSize}">
                     <input type="hidden" name="productName" value="${productName}">
                     <input type="hidden" name="productType" value="${productType}">

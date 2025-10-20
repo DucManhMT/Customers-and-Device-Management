@@ -23,7 +23,6 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-      EntityManager em  = new EntityManager(DBcontext.getConnection());
 
 //      Product product = new Product();
 //      Type type = new Type();
@@ -63,5 +62,6 @@ public class BuilderTest {
 //            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
         }
     }
+}
 
 
