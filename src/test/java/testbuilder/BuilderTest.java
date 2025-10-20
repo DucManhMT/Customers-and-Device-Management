@@ -15,6 +15,8 @@ import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
 import crm.core.utils.HashInfo;
+import crm.core.validator.Validator;
+import org.glassfish.json.JsonUtil;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -59,9 +61,7 @@ public class BuilderTest {
 //                }
 //            }
 //
-//            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
         }
     }
-}
 
 

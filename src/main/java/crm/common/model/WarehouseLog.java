@@ -6,7 +6,7 @@ import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity(tableName = "WarehouseLog")
 public class WarehouseLog {
@@ -15,7 +15,7 @@ public class WarehouseLog {
     private Integer warehouseLogID;
 
     @Column(name = "LogDate", type = "DATE", nullable = false)
-    private Date logDate;
+    private LocalDate logDate;
 
     @Column(name = "Description", length = 255)
     private String description;
@@ -34,11 +34,11 @@ public class WarehouseLog {
         this.warehouseLogID = warehouseLogID;
     }
 
-    public Date getLogDate() {
+    public LocalDate getLogDate() {
         return logDate;
     }
 
-    public void setLogDate(Date logDate) {
+    public void setLogDate(LocalDate logDate) {
         this.logDate = logDate;
     }
 
