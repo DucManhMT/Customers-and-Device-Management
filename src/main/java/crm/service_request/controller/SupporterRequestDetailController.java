@@ -3,6 +3,7 @@ package crm.service_request.controller;
 import java.io.IOException;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Request;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
@@ -11,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "SupporterRequestDetailController", urlPatterns = {"/supporter/requests/detail"})
+@WebServlet(name = "SupporterRequestDetailController", urlPatterns = { URLConstants.CUSTOMER_SUPPORTER_REQUEST_DETAIL })
 public class SupporterRequestDetailController extends HttpServlet {
 
     @Override

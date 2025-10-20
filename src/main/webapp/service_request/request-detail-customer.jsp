@@ -49,7 +49,7 @@
                     <div class="d-flex justify-content-end gap-2">
                         <a href="../requests/timeline?requestId=${request.requestID}" class="btn btn-success">View
                             Timeline</a>
-                        <a href="./list" class="btn btn-info">Feedback</a>
+                        <a href="../../feedback/create" class="btn btn-info">Feedback</a>
                         <a href="../requests" class="btn btn-secondary">Back to List</a>
                     </div>
 

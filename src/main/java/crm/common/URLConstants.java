@@ -23,6 +23,10 @@ public class URLConstants {
     public static final String CUSTOMER_REQUEST_DETAIL = "/customer/requests/detail";
     public static final String CUSTOMER_CREATE_REQUEST = "/customer/requests/create";
     public static final String CUSTOMER_REQUEST_TIMELINE = "/customer/requests/timeline";
+    // fix add customer path
+    public static final String CUSTOMER_CREATE_FEEDBACK = "/feedback/create";
+    public static final String CUSTOMER_VIEW_FEEDBACK = "/feedback/view";
+    public static final String CUSTOMER_VIEW_FEEDBACK_LIST = "/feedback/list";
 
     // CUSTOMER SUPPORTER
     public static final String CUSTOMER_SUPPORTER_CREATE_CONTRACT = "/customer_supporter/create_contract";
@@ -30,9 +34,6 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_PROCESS_REQUEST = "/supporter/requests/process";
     public static final String CUSTOMER_SUPPORTER_REQUEST_DETAIL = "/supporter/requests/detail";
     public static final String CUSTOMER_SUPPORTER_REQUEST_LIST = "/supporter/requests/list";
-    public static final String CUSTOMER_CREATE_FEEDBACK = "/feedback/create";
-    public static final String CUSTOMER_VIEW_FEEDBACK = "/feedback/view";
-    public static final String CUSTOMER_VIEW_FEEDBACK_LIST = "/feedback/list";
 
     // TECHNICAL LEADER
     public static final String TECHLEAD_SELECT_TECHNICIAN = "/task/selectTechnician";

@@ -11,7 +11,8 @@ import java.io.IOException;
 @WebServlet(name = "toCustomerActionCenter", value = "/customer/customer_actioncenter")
 public class toCustomerActionCenter extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("/Customer/customer_actioncenter.jsp").forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        request.getRequestDispatcher("/customer/customer_actioncenter.jsp").forward(request, response);
     }
 }
