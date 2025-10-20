@@ -6,7 +6,7 @@ import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity(tableName = "Staff")
 public class Staff {
@@ -30,7 +30,7 @@ public class Staff {
     private String image;
 
     @Column(name = "DateOfBirth", type = "DATE")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
 
     @ManyToOne(joinColumn = "Username")
@@ -84,11 +84,11 @@ public class Staff {
         this.image = image;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -100,5 +100,5 @@ public class Staff {
 
         this.account = new LazyReference<>(Account.class, account.getUsername());
     }
-
+    
 }
