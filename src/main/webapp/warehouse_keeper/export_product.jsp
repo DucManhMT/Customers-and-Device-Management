@@ -19,35 +19,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .warehouse-item {
-            transition: all 0.3s ease;
-        }
-
-        .warehouse-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .status-badge {
-            font-size: 0.85rem;
-            padding: 0.35rem 0.65rem;
-        }
-
-        .export-count-badge {
-            font-size: 1.2rem;
-            padding: 0.5rem 1rem;
-        }
-
-        .row-added {
-            background-color: #d1e7dd !important;
-            opacity: 0.6;
-        }
-
-        .back-button {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/warehouse_keeper/export_product.css">
 </head>
 <body>
 <div class="container-fluid py-4">
