@@ -11,6 +11,7 @@ import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +124,7 @@ public class EntityFieldMapper {
                 Class<?> targetType = getGenericType(field);
                 return new LazyReference<>(targetType, value);
             }
-            if(value instanceof Date){
+            if (value instanceof Date && field.getType().equals(LocalDate.class)) {
                 return ((Date) value).toLocalDate();
             }
 

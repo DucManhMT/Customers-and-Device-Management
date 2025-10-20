@@ -30,6 +30,7 @@
                class="form-control"
                step="1"
                value="${computedRpp}"
+               min="1"
                max="${computedMax}"
                style="width: 70px; display: inline-block; text-align: center;"
         >
@@ -39,18 +40,32 @@
     </div>
 
     <!-- Paging -->
-    <div class="d-flex justify-content-center align-items-center gap-3">
-        <c:if test="${currentPage gt 1}">
-            <a href="./list?page=${currentPage - 1}&sort=${sort}&status=${status}&search=${search}&recordsPerPage=${computedRpp}"
-               class="btn btn-primary">Previous</a>
-        </c:if>
+    <form method="get" class="d-flex justify-content-center align-items-center gap-3">
 
-        <span>Page ${currentPage} of ${totalPages}</span>
+        <!-- Hold all current query params -->
+        <input type="hidden" name="sort" value="${sort}">
+        <input type="hidden" name="status" value="${status}">
+        <input type="hidden" name="search" value="${search}">
+        <input type="hidden" name="recordsPerPage" value="${computedRpp}">
+        <div class="d-flex justify-content-center align-items-center gap-3">
+            <!-- Previous -->
+            <c:if test="${currentPage gt 1}">
+                <button type="submit" name="page" value="${currentPage - 1}" class="btn btn-primary">
+                    Previous
+                </button>
+            </c:if>
 
-        <c:if test="${currentPage lt totalPages}">
-            <a href="./list?page=${currentPage + 1}&sort=${sort}&status=${status}&search=${search}&recordsPerPage=${computedRpp}"
-               class="btn btn-primary">Next</a>
-        </c:if>
-    </div>
+            <span>Page ${currentPage} of ${totalPages}</span>
+
+            <!-- Next -->
+            <c:if test="${currentPage lt totalPages}">
+                <button type="submit" name="page" value="${currentPage + 1}" class="btn btn-primary">
+                    Next
+                </button>
+            </c:if>
+        </div>
+
+    </form>
+
 
 </div>

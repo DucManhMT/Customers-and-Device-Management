@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CustomerRequestController", urlPatterns = {"/customer/requests"})
+@WebServlet(name = "CustomerRequestController", urlPatterns = { "/customer/requests" })
 public class CustomerRequestController extends HttpServlet {
 
     @Override
@@ -36,6 +36,7 @@ public class CustomerRequestController extends HttpServlet {
             String field = req.getParameter("field");
             String sort = req.getParameter("sort");
             int contractId = Validator.parseInt(req.getParameter("contractId"), 0);
+            System.out.println("Contract ID: " + contractId);
             String status = req.getParameter("status");
 
             req.setAttribute("contracts", contractRepository.findByUsername(account.getUsername()));

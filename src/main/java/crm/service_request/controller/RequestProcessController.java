@@ -15,7 +15,6 @@ import java.io.IOException;
 @WebServlet(name = "RequestProcessController", value = "/supporter/requests/process")
 public class RequestProcessController extends HttpServlet {
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestService requestService = new RequestService();
@@ -62,6 +61,6 @@ public class RequestProcessController extends HttpServlet {
         } catch (Exception e) {
             req.setAttribute("error", MessageConst.MSG18);
         }
-        doGet(req, resp);
+        resp.sendRedirect("./list");
     }
 }

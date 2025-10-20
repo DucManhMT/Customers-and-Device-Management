@@ -26,7 +26,7 @@
             <jsp:include page="../components/request-status-select.jsp"/>
 
             <div class="d-flex align-items-center gap-3"><label for="status">Select Contract:</label>
-                <select id="status" name="status" class="form-select" style="width: 200px; display: inline-block;">
+                <select id="status" name="contractId" class="form-select" style="width: 200px; display: inline-block;">
                     <option value="">All</option>
                     <c:forEach var="contract" items="${contracts}">
                         <option value="${contract.contractID}"
