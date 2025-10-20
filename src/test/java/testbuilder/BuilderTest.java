@@ -62,6 +62,5 @@ public class BuilderTest {
 //            System.out.println("account: " + username + " | email: " + (email != null ? email : "Không có email"));
         }
     }
-}
 
 

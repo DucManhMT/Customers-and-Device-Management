@@ -30,8 +30,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 
-@WebServlet(urlPatterns = URLConstants.WAREHOUSE_CREATE_EXPORT_REQUEST)
-public class ExportRequestCreateController extends HttpServlet {
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST)
+public class TransferRequestCreateController extends HttpServlet {
     //DAOs
     WarehouseDAO warehouseDAO = new WarehouseDAO();
     ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
@@ -67,7 +67,7 @@ public class ExportRequestCreateController extends HttpServlet {
         }
 
 
-        req.getRequestDispatcher("/warehouse_keeper/create_export_internal.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ExportRequestCreateController extends HttpServlet {
                 boolean checking = warehouseRequestProductDAO.persist(warehouseRequestProduct);
             }
 
-            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_EXPORT_REQUEST); // Redirect to a success or listing page
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST); // Redirect to a success or listing page
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
