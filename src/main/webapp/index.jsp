@@ -15,7 +15,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
         >Login here</a
       ><br />
       <a
-        href="${pageContext.request.contextPath}/warehousekeeper/import_product"
+        href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
         >Import product</a
       >
       <br />

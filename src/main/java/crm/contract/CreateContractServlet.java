@@ -52,7 +52,6 @@ public class CreateContractServlet extends HttpServlet {
         contract.setStartDate(Date.valueOf(LocalDate.now()));
         contract.setExpiredDate(Date.valueOf(LocalDate.now().plusYears(1)));
 
-        contract.setCustomerID(customer.getCustomerID());
         contract.setCustomer(customer);
         System.out.println("contract.getContractID(): " + contract.getContractID());
         System.out.println("contract.getContractImage(): " + contract.getContractImage());

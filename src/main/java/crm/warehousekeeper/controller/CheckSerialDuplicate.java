@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CheckSerialDuplicate", value = "/warehousekeeper/check_serial_duplicate")
+@WebServlet(name = "CheckSerialDuplicate", value = "/warehouse_keeper/check_serial_duplicate")
 public class CheckSerialDuplicate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

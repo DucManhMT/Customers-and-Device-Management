@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Product;
 import crm.common.model.ProductWarehouse;
@@ -29,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 
-@WebServlet(urlPatterns = "/warehouse/createExportRequest")
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_CREATE_EXPORT_REQUEST)
 public class ExportRequestCreateController extends HttpServlet {
     //DAOs
     WarehouseDAO warehouseDAO = new WarehouseDAO();
@@ -138,7 +139,7 @@ public class ExportRequestCreateController extends HttpServlet {
                 boolean checking = warehouseRequestProductDAO.persist(warehouseRequestProduct);
             }
 
-            resp.sendRedirect(req.getContextPath() + "/warehouse/createExportRequest"); // Redirect to a success or listing page
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_EXPORT_REQUEST); // Redirect to a success or listing page
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");

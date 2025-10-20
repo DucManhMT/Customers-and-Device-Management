@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-@WebServlet(name = "ManageImportProductsServlet", value = "/warehousekeeper/manage_import_products")
+@WebServlet(name = "ManageImportProductsServlet", value = "/warehouse_keeper/manage_import_products")
 public class ManageImportProductsServlet extends HttpServlet {
 
     @Override

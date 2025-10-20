@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Request;
 import crm.common.model.AccountRequest;
 import crm.common.model.Customer;
@@ -19,7 +20,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet("/task/detail")
+@WebServlet(name="TaskDetailServlet", urlPatterns = { URLConstants.TASK_DETAIL})
 public class TaskDetailServlet extends HttpServlet {
     
     private static final long serialVersionUID = 1L;
@@ -70,7 +71,9 @@ public class TaskDetailServlet extends HttpServlet {
             request.setAttribute("contract", contract);
             request.setAttribute("assignedAccounts", assignedAccounts);
             
-            request.getRequestDispatcher("/technician_employee/taskDetail.jsp").forward(request, response);
+            entityManager.close();
+
+            request.getRequestDispatcher("/technician_employee/task_detail.jsp").forward(request, response);
             
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");

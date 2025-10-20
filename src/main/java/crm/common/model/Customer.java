@@ -11,7 +11,6 @@ public class Customer {
     @Key
     @Column(name = "CustomerID", type = "INT")
     private Integer customerID;
-        
 
     @Column(name = "CustomerName", length = 150, nullable = false)
     private String customerName;

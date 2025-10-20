@@ -15,14 +15,14 @@ public class Contract {
     @Column(name = "ContractImage", length = 255, nullable = false)
     private String contractImage;
 
+    @Column(name="ContractCode")
+    private String contractCode;
+
     @Column(name = "StartDate", type = "DATE", nullable = false)
     private Date startDate;
 
     @Column(name = "ExpiredDate", type = "DATE", nullable = false)
     private Date expiredDate;
-
-    @Column(name = "CustomerID", type = "INT", nullable = false)
-    private Integer customerID;
 
     @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Customer> customer;
@@ -62,14 +62,6 @@ public class Contract {
         this.expiredDate = expiredDate;
     }
 
-    public Integer getCustomerID() {
-        return customerID;
-    }
-
-    public void setCustomerID(Integer customerID) {
-        this.customerID = customerID;
-    }
-
     public Customer getCustomer() {
         return this.customer.get();
     }
@@ -77,6 +69,15 @@ public class Contract {
     public void setCustomer(Customer customer) {
         this.customer = new LazyReference<>(Customer.class, customer.getCustomerID());
     }
+
+    public String getContractCode() {
+        return contractCode;
+    }
+
+    public void setContractCode(String contractCode) {
+        this.contractCode = contractCode;
+    }
+
 
     public List<Request> getRequests() {
         return requests;

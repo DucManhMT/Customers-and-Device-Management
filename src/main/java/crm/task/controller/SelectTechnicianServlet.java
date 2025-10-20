@@ -1,12 +1,12 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Staff;
 import crm.common.model.Request;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.config.DBcontext;
 import crm.service_request.repository.persistence.query.common.Page;
-import crm.service_request.repository.persistence.query.common.PageRequest;
-
+import crm.task.service.SelectTechnicianService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,16 +14,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet("/task/selectTechnician")
+@WebServlet(name="SelectTechnician", urlPatterns = { URLConstants.TECHLEAD_SELECT_TECHNICIAN})
 public class SelectTechnicianServlet extends HttpServlet {
 
-    private static final int TECH_ROLE_ID = 6;
+    SelectTechnicianService selectTechnicianService = new SelectTechnicianService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -89,14 +87,14 @@ public class SelectTechnicianServlet extends HttpServlet {
                     (ageRange != null && !ageRange.trim().isEmpty());
 
             if (hasFilters) {
-                technicianPage = getTechniciansWithFilters(entityManager, searchName, location, ageRange, page, recordsPerPage);
+                technicianPage = selectTechnicianService.getTechniciansWithFilters(entityManager, searchName, location, ageRange, page, recordsPerPage);
                 totalCount = (int) technicianPage.getTotalElements();
             } else {
-                technicianPage = getTechniciansPaginated(entityManager, page, recordsPerPage);
-                totalCount = getTechnicianCount(entityManager);
+                technicianPage = selectTechnicianService.getTechniciansPaginated(entityManager, page, recordsPerPage);
+                totalCount = selectTechnicianService.getTechnicianCount(entityManager);
             }
 
-            List<String> availableLocations = getAvailableLocations(entityManager);
+            List<String> availableLocations = selectTechnicianService.getAvailableLocations(entityManager);
             
             System.out.println("SelectTechnicianServlet: Found " + technicianPage.getContent().size() + " technicians");
             System.out.println("SelectTechnicianServlet: Found " + selectedRequests.size() + " requests");
@@ -113,8 +111,7 @@ public class SelectTechnicianServlet extends HttpServlet {
             request.setAttribute("selectedLocation", location);
             request.setAttribute("selectedAgeRange", ageRange);
             
-            System.out.println("SelectTechnicianServlet: Forwarding to JSP");
-            request.getRequestDispatcher("/technician_leader/selectTechnician.jsp").forward(request, response);
+            request.getRequestDispatcher("/technician_leader/select_technician.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,161 +120,6 @@ public class SelectTechnicianServlet extends HttpServlet {
         }
     }
 
-    private List<Staff> getAllTechnicians(EntityManager entityManager) throws SQLException {
-        try {
-            String sql = "SELECT s.* FROM Staff s " +
-                        "INNER JOIN Account a ON s.Username = a.Username " +
-                        "WHERE a.RoleID = ?";
-            
-            List<Object> params = new ArrayList<>();
-            params.add(TECH_ROLE_ID);
-            
-            crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO sqlParams = 
-                new crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO(sql, params);
-            
-            List<Staff> allStaff = entityManager.executeQuery(sqlParams, Staff.class);
-            System.out.println("[DEBUG] getAllTechnicians: Found " + (allStaff != null ? allStaff.size() : 0) + " technicians with roleId=" + TECH_ROLE_ID);
-            return allStaff;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve technicians", e);
-        }
-    }
 
-    private Page<Staff> getTechniciansPaginated(EntityManager entityManager, int page, int size) throws SQLException {
-        try {
-            int offset = (page - 1) * size;
-            
-            List<Staff> allTechnicians = getAllTechnicians(entityManager);
-            int totalCount = allTechnicians.size();
-            
-            List<Staff> paginatedList = new ArrayList<>();
-            int startIndex = offset;
-            int endIndex = Math.min(startIndex + size, totalCount);
-            
-            for (int i = startIndex; i < endIndex; i++) {
-                paginatedList.add(allTechnicians.get(i));
-            }
-            
-            PageRequest pageRequest = new PageRequest(page, size);
-            Page<Staff> pageResult = new Page<>(totalCount, pageRequest, paginatedList);
-            
-            System.out.println("[DEBUG] getTechniciansPaginated: Page " + page + ", Size " + size + ", Found " + paginatedList.size() + " technicians");
-            return pageResult;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve paginated technicians", e);
-        }
-    }
 
-    private int getTechnicianCount(EntityManager entityManager) throws SQLException {
-        try {
-            List<Staff> allTechnicians = getAllTechnicians(entityManager);
-            return allTechnicians.size();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to count technicians", e);
-        }
-    }
-
-    private Page<Staff> getTechniciansWithFilters(EntityManager entityManager, String searchName, String location, String ageRange, int page, int size) throws SQLException {
-        try {
-            List<Staff> allTechnicians = getAllTechnicians(entityManager);
-            List<Staff> filteredTechnicians = new ArrayList<>();
-            
-            for (Staff staff : allTechnicians) {
-                boolean matches = true;
-                
-                if (searchName != null && !searchName.trim().isEmpty()) {
-                    if (staff.getStaffName() == null || !staff.getStaffName().toLowerCase().contains(searchName.toLowerCase())) {
-                        matches = false;
-                    }
-                }
-                
-                if (location != null && !location.trim().isEmpty()) {
-                    if (staff.getAddress() == null || !staff.getAddress().toLowerCase().contains(location.toLowerCase())) {
-                        matches = false;
-                    }
-                }
-                
-                if (ageRange != null && !ageRange.trim().isEmpty() && staff.getDateOfBirth() != null) {
-                    int age = calculateAge(staff.getDateOfBirth());
-                    if (!matchesAgeRange(age, ageRange)) {
-                        matches = false;
-                    }
-                }
-                
-                if (matches) {
-                    filteredTechnicians.add(staff);
-                }
-            }
-            
-            int totalCount = filteredTechnicians.size();
-            int offset = (page - 1) * size;
-            int startIndex = offset;
-            int endIndex = Math.min(startIndex + size, totalCount);
-            
-            List<Staff> paginatedList = new ArrayList<>();
-            for (int i = startIndex; i < endIndex; i++) {
-                paginatedList.add(filteredTechnicians.get(i));
-            }
-            
-            PageRequest pageRequest = new PageRequest(page, size);
-            Page<Staff> pageResult = new Page<>(totalCount, pageRequest, paginatedList);
-            
-            System.out.println("[DEBUG] getTechniciansWithFilters: searchName='" + searchName + "', location='" + location + "', ageRange='" + ageRange + "', Page " + page + ", Size " + size + ", Found " + paginatedList.size() + " technicians");
-            return pageResult;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve filtered technicians", e);
-        }
-    }
-
-    private List<String> getAvailableLocations(EntityManager entityManager) throws SQLException {
-        try {
-            List<Staff> allTechnicians = getAllTechnicians(entityManager);
-            List<String> locations = new ArrayList<>();
-            
-            for (Staff staff : allTechnicians) {
-                if (staff.getAddress() != null && !staff.getAddress().trim().isEmpty()) {
-                    String location = staff.getAddress().trim();
-                    if (!locations.contains(location)) {
-                        locations.add(location);
-                    }
-                }
-            }
-            
-            return locations;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve available locations", e);
-        }
-    }
-
-    private int calculateAge(java.sql.Date dateOfBirth) {
-        if (dateOfBirth == null) return 0;
-        
-        java.util.Date currentDate = new java.util.Date();
-        long timeDiff = currentDate.getTime() - dateOfBirth.getTime();
-        return (int) (timeDiff / (365.25 * 24 * 60 * 60 * 1000));
-    }
-
-    private boolean matchesAgeRange(int age, String ageRange) {
-        if (ageRange == null || ageRange.trim().isEmpty()) return true;
-        
-        switch (ageRange) {
-            case "18-25":
-                return age >= 18 && age <= 25;
-            case "26-35":
-                return age >= 26 && age <= 35;
-            case "36-45":
-                return age >= 36 && age <= 45;
-            case "46-55":
-                return age >= 46 && age <= 55;
-            case "56+":
-                return age >= 56;
-            default:
-                return true;
-        }
-    }
 }

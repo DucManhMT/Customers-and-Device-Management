@@ -41,7 +41,6 @@
         </div>
 
         <div class="row">
-            <!-- Main Feedback Details -->
             <div class="col-lg-8">
                 <div class="card feedback-detail-card mb-4">
                     <div class="card-header bg-primary text-white">
@@ -51,7 +50,6 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <!-- Basic Information -->
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="info-item">
@@ -107,7 +105,6 @@
                             </div>
                         </div>
 
-                        <!-- Feedback Content -->
                         <div class="info-item">
                             <div class="info-label">Customer Feedback</div>
                             <div class="feedback-content">
@@ -116,7 +113,6 @@
                             </div>
                         </div>
 
-                        <!-- Response Section -->
                         <c:if test="${not empty feedback.response}">
                             <div class="info-item">
                                 <div class="info-label">Our Response</div>
@@ -132,7 +128,6 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="card">
                     <div class="card-body">
                         <h6 class="card-title">Actions</h6>
@@ -177,9 +172,7 @@
                 </div>
             </div>
 
-            <!-- Sidebar -->
             <div class="col-lg-4">
-                <!-- Quick Stats -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h6 class="mb-0">Quick Information</h6>
@@ -204,7 +197,6 @@
                     </div>
                 </div>
 
-                <!-- Related Information -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h6 class="mb-0">Related Links</h6>
@@ -227,7 +219,6 @@
                     </div>
                 </div>
 
-                <!-- Navigation -->
                 <div class="card">
                     <div class="card-header bg-light">
                         <h6 class="mb-0">Navigation</h6>
@@ -251,7 +242,6 @@
     </div>
 
 
-    <!-- Add print styles -->
     <style media="print">
         .btn, .breadcrumb, .card:last-child { 
             display: none !important; 

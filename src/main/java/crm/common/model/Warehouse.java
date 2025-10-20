@@ -1,10 +1,9 @@
 package crm.common.model;
 
-import crm.core.repository.hibernate.annotation.Column;
-import crm.core.repository.hibernate.annotation.Entity;
-import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.ManyToOne;
+import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
+
+import java.util.List;
 
 @Entity(tableName = "Warehouse")
 public class Warehouse {
@@ -53,4 +52,6 @@ public class Warehouse {
     public void setManagerAccount(Account managerAccount) {
         this.managerAccount = new LazyReference<>(Account.class, managerAccount.getUsername());
     }
+
+
 }

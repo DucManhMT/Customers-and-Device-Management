@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,7 +18,7 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import java.util.Map;
 
-@WebServlet("/task/viewAprovedTask")
+@WebServlet(name="viewAprovedTask", urlPatterns = { URLConstants.TECHLEAD_VIEW_APROVED_TASK})
 public class viewAprovedTask extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +26,32 @@ public class viewAprovedTask extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		loadApprovedTasks(req, resp, null, null, null, null);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String action = req.getParameter("action");
+		
+		if ("filter".equals(action)) {
+			String phoneFilter = req.getParameter("phoneFilter");
+			String customerFilter = req.getParameter("customerFilter");
+			String fromDateStr = req.getParameter("fromDate");
+			String toDateStr = req.getParameter("toDate");
+			
+			loadApprovedTasks(req, resp, phoneFilter, customerFilter, fromDateStr, toDateStr);
+		} else if ("assign".equals(action)) {
+			String[] selected = req.getParameterValues("selectedTasks");
+			if (selected == null || selected.length == 0) {
+				req.setAttribute("errorMessage", "No tasks selected");
+				loadApprovedTasks(req, resp, null, null, null, null);
+				return;
+			}
+
+			req.getSession().setAttribute("selectedTaskIds", selected);
+			resp.sendRedirect(req.getContextPath() + "/task/selectTechnician");
+		} else {
+			loadApprovedTasks(req, resp, null, null, null, null);
+		}
 	}
 
 	private void loadApprovedTasks(HttpServletRequest req, HttpServletResponse resp, 
@@ -120,7 +147,7 @@ public class viewAprovedTask extends HttpServlet {
 					});
 				}
 
-				List<Request> filtered = stream.collect(java.util.stream.Collectors.toList());
+				List<Request> filtered = stream.collect(Collectors.toList());
 				approvedCount = filtered.size();
 				totalPages = (int) Math.ceil((double) approvedCount / pageSize);
 				if (totalPages < 1) totalPages = 1;
@@ -154,7 +181,6 @@ public class viewAprovedTask extends HttpServlet {
 					})
 					.collect(Collectors.toList());
 
-			// Set filter values back to the form
 			req.setAttribute("phoneFilter", phoneFilter);
 			req.setAttribute("customerFilter", customerFilter);
 			req.setAttribute("fromDate", fromDateStr);
@@ -169,43 +195,11 @@ public class viewAprovedTask extends HttpServlet {
 			req.setAttribute("startItem", startItem);
 			req.setAttribute("endItem", endItem);
 
-			req.getRequestDispatcher("/technician_leader/viewAprovedTask.jsp").forward(req, resp);
+			req.getRequestDispatcher("/technician_leader/view_aproved_task.jsp").forward(req, resp);
 		} catch (Exception e) {
 			e.printStackTrace();
 			req.setAttribute("errorMessage", "Failed to load data: " + e.getMessage());
-			req.getRequestDispatcher("/technician_leader/viewAprovedTask.jsp").forward(req, resp);
+			req.getRequestDispatcher("/technician_leader/view_aproved_task.jsp").forward(req, resp);
 		}
 	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String action = req.getParameter("action");
-		
-		if ("filter".equals(action)) {
-			// Handle filter form submission
-			String phoneFilter = req.getParameter("phoneFilter");
-			String customerFilter = req.getParameter("customerFilter");
-			String fromDateStr = req.getParameter("fromDate");
-			String toDateStr = req.getParameter("toDate");
-			
-			// Load tasks with filters applied
-			loadApprovedTasks(req, resp, phoneFilter, customerFilter, fromDateStr, toDateStr);
-		} else if ("assign".equals(action)) {
-			// Handle task assignment
-			String[] selected = req.getParameterValues("selectedTasks");
-			if (selected == null || selected.length == 0) {
-				req.setAttribute("errorMessage", "No tasks selected");
-				loadApprovedTasks(req, resp, null, null, null, null);
-				return;
-			}
-
-			// Store selected task IDs in session and redirect to technician selection
-			req.getSession().setAttribute("selectedTaskIds", selected);
-			resp.sendRedirect(req.getContextPath() + "/task/selectTechnician");
-		} else {
-			// Default action - load without filters
-			loadApprovedTasks(req, resp, null, null, null, null);
-		}
-	}
-
 }

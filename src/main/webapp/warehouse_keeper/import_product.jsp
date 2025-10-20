@@ -59,7 +59,7 @@
                             <p class="mb-0 opacity-75">Manage product imports and serial numbers</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/warehousekeeper/add_import_product" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product" class="btn btn-light btn-sm">
                                 <i class="bi bi-plus-circle me-1"></i>Add Products
                             </a>
                             <button type="button" class="btn btn-outline-light btn-sm" onclick="clearAllImports()">
@@ -95,7 +95,7 @@
       - serialsMap (optional): java.util.Map<ID, java.util.List<String>> mapping product id -> list of serials
       On submit, this form will post per-product serials as multiple parameters named "serials-<productId>"
     -->
-    <form method="post" action="${pageContext.request.contextPath}/warehousekeeper/process_import" id="importForm">
+    <form method="post" action="${pageContext.request.contextPath}/warehouse_keeper/process_import" id="importForm">
         <div class="row">
             <div class="col">
                 <div class="card shadow-sm">
@@ -122,7 +122,7 @@
                                     </div>
                                     <h5 class="text-muted">No products selected for import</h5>
                                     <p class="text-muted mb-3">Click "Add Products" to select products from the warehouse catalog</p>
-                                    <a href="${pageContext.request.contextPath}/warehousekeeper/add_import_product" class="btn btn-primary">
+                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product" class="btn btn-primary">
                                         <i class="bi bi-plus-circle me-2"></i>Add Products
                                     </a>
                                 </div>
@@ -214,7 +214,7 @@
                                     <small>Total items: <span id="totalItemsCount">0</span></small>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="${pageContext.request.contextPath}/warehousekeeper/add_import_product" class="btn btn-outline-primary">
+                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product" class="btn btn-outline-primary">
                                         <i class="bi bi-plus-circle me-1"></i>Add More Products
                                     </a>
                                     <button type="submit" class="btn btn-success" id="submitBtn">
@@ -481,7 +481,7 @@
         input.disabled = true;
         hideAlert();
 
-        fetch(`${pageContext.request.contextPath}/warehousekeeper/check_serial_duplicate`, {
+        fetch(`${pageContext.request.contextPath}/warehouse_keeper/check_serial_duplicate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -553,7 +553,7 @@
             }
 
             // Send AJAX request to remove product from session
-            fetch('${pageContext.request.contextPath}/warehousekeeper/manage_import_products', {
+            fetch('${pageContext.request.contextPath}/warehouse_keeper/manage_import_products', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -619,7 +619,7 @@
             }
 
             // Send AJAX request to clear all products from session
-            fetch('${pageContext.request.contextPath}/warehousekeeper/manage_import_products', {
+            fetch('${pageContext.request.contextPath}/warehouse_keeper/manage_import_products', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
