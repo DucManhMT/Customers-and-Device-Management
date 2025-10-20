@@ -86,7 +86,7 @@
                             <p class="mb-0 opacity-75">Select products from warehouse catalog to add to import list</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/warehousekeeper/import_product" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/import_product" class="btn btn-light btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>Back to Import
                             </a>
                         </div>
@@ -258,7 +258,7 @@
                                         <div class="position-relative">
                                             <c:choose>
                                                 <c:when test="${not empty product.productImage}">
-                                                    <img src="${product.imageUrl}" class="card-img-top product-image" alt="${product.productName}">
+                                                    <img src="${product.productImage}" class="card-img-top product-image" alt="${product.productName}">
                                                 </c:when>
                                                 <c:otherwise>
                                                     <div class="card-img-top product-image bg-light d-flex align-items-center justify-content-center">
@@ -675,7 +675,7 @@
         // Create a form to submit selected product IDs
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '${pageContext.request.contextPath}/warehousekeeper/import_product';
+        form.action = '${pageContext.request.contextPath}/warehouse_keeper/import_product';
         form.style.display = 'none';
 
         // Add selected product IDs as an array

@@ -68,8 +68,11 @@
                                             </form>
                                         </c:if>
                                         <c:if test="${pr.status == 'Approved'}">
-                                            <a href="${pageContext.request.contextPath}/warehouse_keeper/export_product"
-                                               class="btn btn-sm btn-primary">Export</a>
+                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product" method="post" class="d-inline">
+                                                <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
+                                                <input type="hidden" name="requestID" value="${pr.request.requestID}">
+                                                <button type="submit" class="btn btn-sm btn-primary">Export</button>
+                                            </form>
                                         </c:if>
                                     </td>
                                 </tr>
