@@ -11,10 +11,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @WebServlet(name = "CreateFeedback", urlPatterns = { URLConstants.CUSTOMER_CREATE_FEEDBACK })
-public class CreateFeedback extends HttpServlet{
+public class CreateFeedback extends HttpServlet {
     private FeedbackService fedsv = new FeedbackService();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -29,7 +29,6 @@ public class CreateFeedback extends HttpServlet{
             return;
         }
 
-        
         try {
 
             fedsv.showCreateFeedbackForm(req, resp);
@@ -37,7 +36,7 @@ public class CreateFeedback extends HttpServlet{
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
-            req.getRequestDispatcher("/customer/create_feedback.jsp").forward(req, resp);
+            req.getRequestDispatcher("/Customer/create_feedback.jsp").forward(req, resp);
         }
     }
 

@@ -66,10 +66,10 @@
                         <td>
                             <a href="../requests/detail?requestId=${request.requestID}"
                                class="btn btn-info btn-sm">View</a>
-                            <a href="./requests/timeline?requestId=${request.requestID}"
+                            <a href="../../staff/requests/timeline?requestId=${request.requestID}"
                                class="btn btn-primary btn-sm">Timeline</a>
                             <c:if test="${request.requestStatus == 'Pending'}">
-                                <a href="/requests/edit?requestId=${request.requestID}"
+                                <a href="./process?requestId=${request.requestID}"
                                    class="btn btn-warning btn-sm">Process</a>
                             </c:if>
                         </td>

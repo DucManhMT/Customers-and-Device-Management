@@ -78,7 +78,8 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
-                        <a href="./list" class="btn btn-secondary">Back to Detail</a>
+                        <a href="./detail?requestId=${param.requestId}" class="btn btn-secondary">Back to Detail</a>
+                        <a href="../requests" class="btn btn-primary ms-2">Back to List</a>
                     </div>
 
                 </div>

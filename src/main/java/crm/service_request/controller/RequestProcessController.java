@@ -1,6 +1,7 @@
 package crm.service_request.controller;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.enums.RequestStatus;
 import crm.service_request.service.RequestService;
@@ -12,9 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "RequestProcessController", value = "/supporter/requests/process")
+@WebServlet(name = "RequestProcessController", value = URLConstants.CUSTOMER_SUPPORTER_PROCESS_REQUEST)
 public class RequestProcessController extends HttpServlet {
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -62,6 +62,6 @@ public class RequestProcessController extends HttpServlet {
         } catch (Exception e) {
             req.setAttribute("error", MessageConst.MSG18);
         }
-        doGet(req, resp);
+        resp.sendRedirect("./list");
     }
 }

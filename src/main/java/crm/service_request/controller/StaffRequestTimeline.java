@@ -1,6 +1,7 @@
 package crm.service_request.controller;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.service_request.model.RequestLog;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "StaffRequestTimeline", urlPatterns = {"/staff/requests/timeline"})
+@WebServlet(name = "StaffRequestTimeline", urlPatterns = { URLConstants.STAFF_REQUEST_TIMELINE })
 public class StaffRequestTimeline extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
