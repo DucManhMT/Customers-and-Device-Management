@@ -95,8 +95,8 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="response" class="form-label">Your Detailed Review</label>
-                        <textarea class="form-control" id="response" name="response" rows="4" 
+                        <label for="description" class="form-label">Your Detailed Review</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" 
                                   placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..." 
                                   maxlength="500"></textarea>
                         <div class="form-text">
@@ -136,6 +136,7 @@
                             <th>Service Type</th>
                             <th>Rating</th>
                             <th>Detailed Review</th>
+                            <th>Response</th>
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
@@ -155,13 +156,25 @@
                                 </td>
                                 <td class="feedback-response">
                                     <c:choose>
+                                        <c:when test="${not empty feedback.description}">
+                                            <div class="text-truncate" title="${feedback.description}">
+                                                ${feedback.description}
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <em class="text-muted">No detailed review</em>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="feedback-response">
+                                    <c:choose>
                                         <c:when test="${not empty feedback.response}">
                                             <div class="text-truncate" title="${feedback.response}">
                                                 ${feedback.response}
                                             </div>
                                         </c:when>
                                         <c:otherwise>
-                                            <em class="text-muted">No detailed review</em>
+                                            <em class="text-muted">No response</em>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

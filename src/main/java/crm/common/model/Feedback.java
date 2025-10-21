@@ -20,6 +20,9 @@ public class Feedback {
     @Column(name = "Response", length = 255)
     private String response;
 
+    @Column(name = "Description", length = 255)
+    private String description;
+
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
     private LocalDateTime feedbackDate;
 
@@ -49,6 +52,9 @@ public class Feedback {
     public void setRating(Integer rating) {
         this.rating = rating;
     }
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
 
     public String getResponse() {
         return response;
@@ -71,5 +77,18 @@ public class Feedback {
     }
     public void setCustomerID(String customerID) {
         this.customerID = customerID;
+    }
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "feedbackID=" + feedbackID +
+                ", content='" + content + '\'' +
+                ", rating=" + rating +
+                ", response='" + response + '\'' +
+                ", description='" + description + '\'' +
+                ", feedbackDate=" + feedbackDate +
+                ", customerID='" + customerID + '\'' +
+                '}';
     }
 }

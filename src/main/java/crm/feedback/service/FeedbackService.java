@@ -71,7 +71,7 @@ public class FeedbackService {
         String feedbackType = req.getParameter("feedbackType");
         String customContent = req.getParameter("customContent");
         String ratingStr = req.getParameter("rating");
-        String response = req.getParameter("response");
+        String description = req.getParameter("description");
 
         String content = "";
 
@@ -119,7 +119,7 @@ public class FeedbackService {
                     feedback.setFeedbackID(IDGeneratorService.generateID(Feedback.class));
                     feedback.setContent(content);
                     feedback.setRating(rating);
-                    feedback.setResponse(response != null ? response.trim() : null);
+                    feedback.setDescription(description != null ? description.trim() : null);
                     feedback.setFeedbackDate(currentTimestamp);
                     feedback.setCustomerID(username);
 
