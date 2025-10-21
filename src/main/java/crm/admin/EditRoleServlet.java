@@ -94,6 +94,6 @@ public class EditRoleServlet extends HttpServlet {
         }
 
         // Sau khi cập nhật, chuyển hướng về lại trang edit với thông báo
-        response.sendRedirect(request.getContextPath() + "/EditRole?id=" + roleId + "&success=1");
+        response.sendRedirect(request.getContextPath() + "/admin/role_list/edit_role?id=" + roleId + "&success=1");
     }
 }

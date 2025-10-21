@@ -1,8 +1,9 @@
-package crm.contract;
+package crm.contract.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
+import crm.contract.service.ContractCodeGenerator;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
@@ -13,8 +14,10 @@ import jakarta.servlet.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "CreateContract", value = URLConstants.CUSTOMER_SUPPORTER_CREATE_CONTRACT)
 @MultipartConfig(
@@ -46,18 +49,37 @@ public class CreateContractServlet extends HttpServlet {
         filePart.write(filePath);
 
         Contract contract = new Contract();
-        Customer customer = em.find(Customer.class,1);
-        contract.setContractID(IDGeneratorService.generateID(Contract.class));
+        String customerUsername = request.getParameter("userName");
+        System.out.println("customerUsername: " + customerUsername);
+        Customer customer = null;
+        if (customerUsername != null && !customerUsername.isEmpty()) {
+            Map<String, Object> cond = new HashMap<>();
+            // Lưu ý: key "username" phải khớp với tên field trong Customer.java (tên property)
+            cond.put("account", customerUsername);
+            List<Customer> found = em.findWithConditions(Customer.class, cond);
+            if (found != null && !found.isEmpty()) {
+                customer = found.get(0);
+            }
+        }
+        if (customer == null) {
+            request.setAttribute("error", "Customer not found for username: " + (customerUsername == null ? "" : customerUsername));
+            request.setAttribute("userName", customerUsername); // giữ lại giá trị đã nhập
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
+        int contractId = IDGeneratorService.generateID(Contract.class);
+        contract.setContractID(contractId);
         contract.setContractImage(fileName);
-        contract.setStartDate(Date.valueOf(LocalDate.now()));
-        contract.setExpiredDate(Date.valueOf(LocalDate.now().plusYears(1)));
+        contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR","contractId"));
+        contract.setStartDate(LocalDate.now());
+        contract.setExpiredDate(LocalDate.now().plusYears(1));
 
         contract.setCustomer(customer);
-        System.out.println("contract.getContractID(): " + contract.getContractID());
-        System.out.println("contract.getContractImage(): " + contract.getContractImage());
-        System.out.println("contract.getStartDate(): " + contract.getStartDate());
-        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
-        System.out.println(contract.getCustomer().getCustomerID());
+//        System.out.println("contract.getContractID(): " + contract.getContractID());
+//        System.out.println("contract.getContractImage(): " + contract.getContractImage());
+//        System.out.println("contract.getStartDate(): " + contract.getStartDate());
+//        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
+//        System.out.println(contract.getCustomer().getCustomerID());
         em.persist(contract,Contract.class);
 
         // Gửi phản hồi hiển thị ảnh đã upload

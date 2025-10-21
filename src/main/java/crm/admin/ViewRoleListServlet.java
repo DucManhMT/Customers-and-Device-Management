@@ -23,15 +23,21 @@ public class ViewRoleListServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         HttpSession session = request.getSession();
 
+
         // ItemsPerPage
         String itemsPerPageParam = request.getParameter("itemsPerPage");
-        if (itemsPerPageParam == null || itemsPerPageParam.isEmpty()) {
+
+// Lấy từ session nếu không có param
+        if (itemsPerPageParam == null || itemsPerPageParam.trim().isEmpty()) {
             itemsPerPageParam = (String) session.getAttribute("itemsPerPage");
         } else {
+            // Trim trước khi lưu vào session
+            itemsPerPageParam = itemsPerPageParam.trim();
             session.setAttribute("itemsPerPage", itemsPerPageParam);
         }
         // Page
         String pageParam = request.getParameter("page");
+
         if (pageParam == null || pageParam.isEmpty()) {
             pageParam = (String) session.getAttribute("page");
         } else {
@@ -103,6 +109,7 @@ public class ViewRoleListServlet extends HttpServlet {
                 totalUsers++;
             }
         }
+
         request.setAttribute("totalRoles", totalRoles);
         request.setAttribute("totalUsers", totalUsers);
         request.setAttribute("userCountPerRole", userCountPerRole);
@@ -113,6 +120,8 @@ public class ViewRoleListServlet extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("itemsPerPage", recordsPerPage);
         request.setAttribute("search", searchParam);
+        System.out.println(recordsPerPage);
+
 
         request.getRequestDispatcher("/admin/view_role_list.jsp").forward(request, response);
     }

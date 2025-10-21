@@ -11,11 +11,17 @@
 <body>
 <div class="container-fluid py-4">
     <!-- Page Header -->
+    <div class="col-auto">
+        <a href="${pageContext.request.contextPath}/admin/admin_actioncenter" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Back to Menu
+        </a>
+    </div>
     <div class="row mb-4">
         <div class="col">
             <h2 class="fw-bold text-dark mb-2">Role Management</h2>
         </div>
     </div>
+
     <c:if test="${not empty error}">
         <div class="alert alert-danger">${error}</div>
     </c:if>
@@ -127,10 +133,10 @@
             <span class="me-3">Show:</span>
             <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
                     onchange="this.form.submit()">
-                <option value="5" ${recordsPerPage==5 ? 'selected' : '' }>5</option>
-                <option value="10" ${recordsPerPage==10 ? 'selected' : '' }>10</option>
-                <option value="15" ${recordsPerPage==15 ? 'selected' : '' }>15</option>
-                <option value="20" ${recordsPerPage==20 ? 'selected' : '' }>20</option>
+                <option value="5" ${itemsPerPage==5 ? 'selected' : '' }>5</option>
+                <option value="10" ${itemsPerPage==10 ? 'selected' : '' }>10</option>
+                <option value="15" ${itemsPerPage==15 ? 'selected' : '' }>15</option>
+                <option value="20" ${itemsPerPage==20 ? 'selected' : '' }>20</option>
             </select>
         </div>
     </form>

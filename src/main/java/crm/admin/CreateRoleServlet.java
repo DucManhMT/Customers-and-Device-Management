@@ -11,7 +11,6 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "CreateRoleServlet", value = URLConstants.ADMIN_CREATE_ROLE)
