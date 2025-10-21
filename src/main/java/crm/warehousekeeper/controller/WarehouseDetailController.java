@@ -24,6 +24,12 @@ public class WarehouseDetailController extends HttpServlet {
 
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
+        if (warehouse == null) {
+            req.setAttribute("errorMessage", "You may not be assigned to a warehouse yet, please contact admin.");
+            req.getRequestDispatcher("/warehouse_keeper/view_warehouse_detail.jsp").forward(req, resp);
+            return;
+        }
+
         req.setAttribute("warehouse", warehouse);
 
         req.getRequestDispatcher("/warehouse_keeper/view_warehouse_detail.jsp").forward(req, resp);

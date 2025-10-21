@@ -25,6 +25,7 @@ import crm.common.repository.Warehouse.WarehouseRequestProductDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -42,7 +43,6 @@ public class TransferRequestCreateController extends HttpServlet {
     WarehouseRequestDAO warehouseRequestDAO = new WarehouseRequestDAO();
     WarehouseRequestProductDAO warehouseRequestProductDAO = new WarehouseRequestProductDAO();
     EntityManager entityManager = new EntityManager(DBcontext.getConnection());
-
 
 
     @Override
@@ -92,6 +92,12 @@ public class TransferRequestCreateController extends HttpServlet {
         String allSelectedItemQuantities = req.getParameter("allSelectedItemQuantities");
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
         String note = req.getParameter("note");
+
+        if (!Validator.isValidText(note)) {
+            req.setAttribute("errorMessage", "Note contains invalid characters or exceed limit.");
+            doGet(req, resp);
+            return;
+        }
 
         if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
             req.setAttribute("errorMessage", "Please select at least one product to export.");
@@ -166,12 +172,6 @@ public class TransferRequestCreateController extends HttpServlet {
             req.setAttribute("errorMessage", "An error occurred while creating the request.");
             entityManager.rollback();
             doGet(req, resp);
-        } finally {
-            try {
-                entityManager.close();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 

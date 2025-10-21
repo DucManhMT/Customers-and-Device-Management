@@ -8,6 +8,7 @@ import crm.common.model.Type;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,7 +20,6 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +39,12 @@ public class AddProductController extends HttpServlet {
         List<Type> types = em.findAll(Type.class);
         List<Specification> specifications = em.findAll(Specification.class);
 
+        if (types.isEmpty() || specifications.isEmpty()) {
+            req.setAttribute("errorMessage", "Please ensure that at least one product type and one specification exist before adding a product.");
+            req.getRequestDispatcher("/warehouse_keeper/add_product.jsp").forward(req, resp);
+            return;
+        }
+
         req.setAttribute("types", types);
         req.setAttribute("specifications", specifications);
 
@@ -50,27 +56,46 @@ public class AddProductController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
+            em.beginTransaction();
+
+            Product product = new Product();
+
             String productName = req.getParameter("productName");
+
+            if (!Validator.isValidName(productName)) {
+                req.setAttribute("errorMessage", "Invalid product name.");
+                doGet(req, resp);
+                return;
+            }
+
             String productDescription = req.getParameter("productDescription");
+
+            if (!Validator.isValidText(productDescription)) {
+                req.setAttribute("errorMessage", "Invalid product description.");
+                doGet(req, resp);
+                return;
+            }
+
             String typeIDStr = req.getParameter("typeID");
             int typeID = Integer.parseInt(typeIDStr);
             String[] specIDs = req.getParameterValues("specIDs");
 
             Part filePart = req.getPart("productImage");
-            String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
+            if (filePart != null && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
+                String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
 
-            String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdir();
+                String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdir();
 
-            String filePath = uploadPath + File.separator + fileName;
-            filePart.write(filePath);
+                String filePath = uploadPath + File.separator + fileName;
+                filePart.write(filePath);
+                product.setProductImage("../assets/" + fileName);
+            }
 
-            Product product = new Product();
             product.setProductID(IDGeneratorService.generateID(Product.class));
             product.setProductName(productName);
             product.setProductDescription(productDescription);
-            product.setProductImage("../assets/"+fileName);
 
 
             Type productType = em.find(Type.class, typeID);
@@ -100,13 +125,18 @@ public class AddProductController extends HttpServlet {
                 em.merge(product, Product.class);
             }
 
+            em.commit();
+
             resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_INVENTORY);
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check type or specification.");
+            em.rollback();
             doGet(req, resp);
         } catch (Exception e) {
+            e.printStackTrace();
             req.setAttribute("errorMessage", "An error occurred while creating the request.");
+            em.rollback();
             doGet(req, resp);
         }
     }
