@@ -2,6 +2,7 @@ package crm.service_request.repository.persistence.query.common;
 
 import java.util.List;
 
+@Deprecated
 public class Sort {
     // List of Order objects representing sorting criteria
     private List<Order> orders;

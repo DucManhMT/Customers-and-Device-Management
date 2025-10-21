@@ -92,7 +92,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
-                        <a href="./list" class="btn btn-secondary">Back to Detail</a>
+                        <button type="button" class="btn btn-secondary" onclick="history.back()">Back</button>
                     </div>
 
                 </div>

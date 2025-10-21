@@ -2,6 +2,7 @@ package crm.service_request.controller;
 
 import java.io.IOException;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.core.validator.Validator;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CustomerRequestController", urlPatterns = {"/customer/requests"})
+@WebServlet(name = "CustomerRequestController", urlPatterns = { URLConstants.CUSTOMER_VIEW_REQUEST })
 public class CustomerRequestController extends HttpServlet {
 
     @Override
@@ -36,6 +37,7 @@ public class CustomerRequestController extends HttpServlet {
             String field = req.getParameter("field");
             String sort = req.getParameter("sort");
             int contractId = Validator.parseInt(req.getParameter("contractId"), 0);
+            System.out.println("Contract ID: " + contractId);
             String status = req.getParameter("status");
 
             req.setAttribute("contracts", contractRepository.findByUsername(account.getUsername()));

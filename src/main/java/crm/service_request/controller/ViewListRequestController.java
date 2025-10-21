@@ -2,6 +2,7 @@ package crm.service_request.controller;
 
 import java.io.IOException;
 
+import crm.common.URLConstants;
 import crm.common.model.Request;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
@@ -11,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "ViewListRequestController", urlPatterns = { "/supporter/requests/list" })
+@WebServlet(name = "ViewListRequestController", urlPatterns = { URLConstants.CUSTOMER_SUPPORTER_REQUEST_LIST })
 public class ViewListRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

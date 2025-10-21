@@ -1,5 +1,6 @@
 package crm.warehousekeeper.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Product;
 import crm.common.model.ProductSpecification;
 import crm.common.model.Specification;
@@ -17,12 +18,17 @@ import jakarta.servlet.http.Part;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/warehouse/addProduct")
-@MultipartConfig
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_ADD_PRODUCT)
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,  // 1MB
+        maxFileSize = 1024 * 1024 * 10,   // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 public class AddProductController extends HttpServlet {
 
     EntityManager em = new EntityManager(DBcontext.getConnection());
@@ -51,23 +57,20 @@ public class AddProductController extends HttpServlet {
             String[] specIDs = req.getParameterValues("specIDs");
 
             Part filePart = req.getPart("productImage");
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String uploadPath = getServletContext().getRealPath("") + File.separator + "assets" + File.separator + "product";
+            String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
+
+            String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
             File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-            filePart.write(uploadPath + File.separator + fileName);
+            if (!uploadDir.exists()) uploadDir.mkdir();
 
-            System.out.println(uploadPath + File.separator + fileName);
-
-            String imageUrl = "assets/product/" + fileName;
+            String filePath = uploadPath + File.separator + fileName;
+            filePart.write(filePath);
 
             Product product = new Product();
             product.setProductID(IDGeneratorService.generateID(Product.class));
             product.setProductName(productName);
             product.setProductDescription(productDescription);
-            product.setProductImage(imageUrl);
+            product.setProductImage("../assets/"+fileName);
 
 
             Type productType = em.find(Type.class, typeID);
@@ -97,7 +100,7 @@ public class AddProductController extends HttpServlet {
                 em.merge(product, Product.class);
             }
 
-            resp.sendRedirect(req.getContextPath() + "/warehouse/viewInventory");
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_INVENTORY);
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check type or specification.");

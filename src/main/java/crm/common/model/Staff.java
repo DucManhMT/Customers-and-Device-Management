@@ -100,5 +100,5 @@ public class Staff {
 
         this.account = new LazyReference<>(Account.class, account.getUsername());
     }
-
+    
 }

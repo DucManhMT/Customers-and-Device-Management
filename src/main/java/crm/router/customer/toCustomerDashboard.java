@@ -11,7 +11,8 @@ import java.io.IOException;
 @WebServlet(name = "toCustomerDashboard", value = "/customer/customer_dashboard")
 public class toCustomerDashboard extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("/Customer/customer_dashboard.jsp").forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        request.getRequestDispatcher("/customer/customer_dashboard.jsp").forward(request, response);
     }
 }

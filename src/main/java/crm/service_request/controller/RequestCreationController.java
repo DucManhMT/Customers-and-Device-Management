@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Contract;
 import crm.service_request.repository.ContractRepository;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "RequestCreationController", urlPatterns = {"/customer/requests/create"})
+@WebServlet(name = "RequestCreationController", urlPatterns = { URLConstants.CUSTOMER_CREATE_REQUEST })
 public class RequestCreationController extends HttpServlet {
 
     @Override
@@ -55,7 +56,7 @@ public class RequestCreationController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Account account = (Account) req.getSession().getAttribute("account");
         ContractRepository contractRepo = new ContractRepository();
-        
+
         if (account == null) {
             resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
             return;
