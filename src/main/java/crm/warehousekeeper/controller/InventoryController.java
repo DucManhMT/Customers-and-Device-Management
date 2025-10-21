@@ -62,6 +62,12 @@ public class InventoryController extends HttpServlet {
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
 
+        if(inventorySummary.isEmpty()){
+            req.setAttribute("errorMessage", "No inventory data available.");
+            req.getRequestDispatcher("/warehouse_keeper/view_inventory.jsp").forward(req, resp);
+            return;
+        }
+
         //Get warehouse for filter dropdown
         List<Warehouse> warehouses = warehouseDAO.findAll();
 

@@ -130,15 +130,9 @@
         </div>
     </div>
 
-    <c:if test="${not empty warehouseError}">
+    <c:if test="${not empty errorMessage}">
         <div class="alert alert-warning text-center" role="alert">
                 ${errorMessage}
-        </div>
-    </c:if>
-
-    <c:if test="${empty products}">
-        <div class="alert alert-danger text-center" role="alert">
-            No products found in the warehouse.
         </div>
     </c:if>
 

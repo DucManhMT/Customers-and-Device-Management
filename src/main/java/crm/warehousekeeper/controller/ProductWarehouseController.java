@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_PRODUCT_WAREHOUSE)
 public class ProductWarehouseController extends HttpServlet {
 
-    private final String ERROR_MESSAGE = "You currently do not have a warehouse assigned. Please contact the administrator.";
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Filter parameters
@@ -63,8 +61,7 @@ public class ProductWarehouseController extends HttpServlet {
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
         if (warehouse == null) {
-            req.setAttribute("warehouseError", warehouse);
-            req.setAttribute("errorMessage", ERROR_MESSAGE);
+            req.setAttribute("errorMessage", "You currently do not have a warehouse assigned. Please contact the administrator");
             req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
             return;
         }
@@ -72,6 +69,12 @@ public class ProductWarehouseController extends HttpServlet {
         final int warehouseID = warehouse.getWarehouseID();
 
         List<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
+
+        if(products.isEmpty()){
+            req.setAttribute("errorMessage", "No products found in your warehouse.");
+            req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
+            return;
+        }
 
         List<ProductWarehouse> pw = productWarehouseDAO.findAll();
 

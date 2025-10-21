@@ -131,7 +131,7 @@
 
     <c:if test="${empty inventorySummary}">
         <div class="alert alert-info text-center" role="alert">
-            No products found in the inventory.
+            ${errorMessage}
         </div>
     </c:if>
 
