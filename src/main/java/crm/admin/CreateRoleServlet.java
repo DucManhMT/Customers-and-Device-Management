@@ -64,11 +64,13 @@ public class CreateRoleServlet extends HttpServlet {
             return;
         }
 
-        if(!Validator.isValidUsername(roleName) || !Validator.isValidText(roleName)){
+        if(!Validator.isValidName(roleName)){
             session.setAttribute("error", "Role name contains invalid characters.");
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
             return;
         }
+
+
 
         // Tạo mới Role
         try {

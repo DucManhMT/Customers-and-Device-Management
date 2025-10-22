@@ -242,6 +242,23 @@
     </div>
 </div>
 
+<script>
+    function validateName(name) {
+        const nameRegex = /^[a-zA-Z\s]{2,30}$/;
+        return nameRegex.test(name.trim());
+    }
+    document.getElementById("roleForm").addEventListener("submit", function (event) {
+        const nameInput = document.getElementById("roleName");
+        const name = nameInput.value.trim();
+
+        // Nếu không hợp lệ => chặn gửi form
+        if (!validateName(name)) {
+            event.preventDefault(); // chặn gửi
+            alert("Role name must contain only letters and spaces (2–30 characters).");
+            nameInput.focus();
+        }
+    });
+</script>
 
 </body>
 </html>

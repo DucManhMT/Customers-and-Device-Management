@@ -40,14 +40,5 @@ public class Validator {
         }
     }
 
-    public static boolean containsEmoji(String text) {
-        if (text == null) return false;
-        for (int i = 0; i < text.length(); i++) {
-            int codePoint = text.codePointAt(i);
-            if (Character.isSupplementaryCodePoint(codePoint)) {
-                return true; // Emoji thường nằm ở vùng Unicode bổ sung (Supplementary)
-            }
-        }
-        return false;
-    }
+
 }
