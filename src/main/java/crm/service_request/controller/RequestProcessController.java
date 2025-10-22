@@ -1,6 +1,7 @@
 package crm.service_request.controller;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.enums.RequestStatus;
 import crm.service_request.service.RequestService;
@@ -12,9 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "RequestProcessController", value = "/supporter/requests/process")
+@WebServlet(name = "RequestProcessController", value = URLConstants.CUSTOMER_SUPPORTER_PROCESS_REQUEST)
 public class RequestProcessController extends HttpServlet {
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,6 +45,9 @@ public class RequestProcessController extends HttpServlet {
             int requestId = Integer.parseInt(req.getParameter("requestId"));
             String status = req.getParameter("status");
             String note = req.getParameter("note");
+            if (note.length() > 255) {
+                throw new IllegalArgumentException("Note cannot exceed 255 characters.");
+            }
             String username = account.getUsername();
             if (!requestService.isExist(requestId)) {
                 throw new IllegalArgumentException(MessageConst.MSG14);
@@ -55,6 +58,8 @@ public class RequestProcessController extends HttpServlet {
             requestService.updateRequestStatus(requestId, RequestStatus.valueOf(status), note, account);
             req.setAttribute("message", MessageConst.MSG17);
             req.setAttribute("request", requestService.getRequestById(requestId));
+            resp.sendRedirect("./list");
+            return;
         } catch (NumberFormatException e) {
             req.setAttribute("error", MessageConst.MSG16);
         } catch (IllegalArgumentException e) {

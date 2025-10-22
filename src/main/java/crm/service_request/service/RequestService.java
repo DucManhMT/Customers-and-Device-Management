@@ -37,7 +37,8 @@ public class RequestService {
         try {
             TransactionManager.beginTransaction();
             requestRepository.save(request);
-            requestLogService.createLog(request, "Service request created", null, RequestStatus.Pending, contract.getCustomer().getAccount());
+            requestLogService.createLog(request, "Service request created", null, RequestStatus.Pending,
+                    contract.getCustomer().getAccount());
             TransactionManager.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,8 +50,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
-                                     String status, int contractId,
-                                     int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -83,8 +84,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
-                                              String status, int contractId,
-                                              int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -104,7 +105,7 @@ public class RequestService {
         }
 
         if (contractId > 0) {
-            builder.equal("Contract.ContractID", contractId);
+            builder.equal("ContractID", contractId);
         }
 
         Order order = sort.equals("asc") ? Order.asc(field) : Order.desc(field);
@@ -131,7 +132,8 @@ public class RequestService {
         return requestRepository.isExist(requestId);
     }
 
-    public void updateRequestStatus(int requestId, RequestStatus requestStatus, String note, Account account) throws IllegalArgumentException {
+    public void updateRequestStatus(int requestId, RequestStatus requestStatus, String note, Account account)
+            throws IllegalArgumentException {
         Request request = getRequestById(requestId);
         if (request == null) {
             throw new IllegalArgumentException("Request not found");
@@ -143,7 +145,8 @@ public class RequestService {
         }
 
         StringBuilder logNote = new StringBuilder();
-        logNote.append("Process request: changed status from ").append(oldStatus).append(" to ").append(requestStatus).append(".");
+        logNote.append("Process request: changed status from ").append(oldStatus).append(" to ").append(requestStatus)
+                .append(".");
         if (note != null && !note.isEmpty()) {
             logNote.append(" Note: ").append(note);
         }

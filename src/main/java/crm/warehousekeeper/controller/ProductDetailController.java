@@ -2,6 +2,7 @@ package crm.warehousekeeper.controller;
 
 import java.io.IOException;
 
+import crm.common.URLConstants;
 import crm.common.model.Product;
 import crm.common.repository.Warehouse.ProductDAO;
 import jakarta.servlet.ServletException;
@@ -10,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/warehouse/viewProductDetail")
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_PRODUCT_DETAIL)
 public class ProductDetailController extends HttpServlet {
 
     ProductDAO productDAO = new ProductDAO();

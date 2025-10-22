@@ -1,5 +1,6 @@
 package crm.warehousekeeper.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.ProductRequest;
 import crm.common.model.Warehouse;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/warehouse/viewProductRequests")
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS)
 public class WarehouseProductRequestController extends HttpServlet {
 
     ProductRequestDAO productRequestDAO = new ProductRequestDAO();
@@ -27,6 +28,12 @@ public class WarehouseProductRequestController extends HttpServlet {
         Account account = (Account) req.getSession().getAttribute("account");
 
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
+
+        if(warehouse == null){
+            req.setAttribute("errorMessage","You must be assigned to a warehouse to view product requests.");
+            req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
+            return;
+        }
 
         List<ProductRequest> productRequests = productRequestDAO.findAll();
 
@@ -51,6 +58,6 @@ public class WarehouseProductRequestController extends HttpServlet {
 
         productRequestDAO.merge(productRequest);
 
-        resp.sendRedirect(req.getContextPath() + "/warehouse/viewProductRequests");
+        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/view_product_request.jsp");
     }
 }

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "toImportProduct", value = "/warehousekeeper/import_product")
+@WebServlet(name = "toImportProduct", value = "/warehouse_keeper/import_product")
 public class toImportProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -27,7 +27,7 @@ public class toImportProduct extends HttpServlet {
         }
 
         // Just forward to the JSP - it will read from session
-        req.getRequestDispatcher("/warehousekeeper/import_product.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/import_product.jsp").forward(req, resp);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +39,7 @@ public class toImportProduct extends HttpServlet {
             handleAddProducts(req, resp);
         }
         // Forward to JSP to display current state
-        resp.sendRedirect(req.getContextPath() + "/warehousekeeper/import_product");
+        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/import_product");
     }
 
     // Handle adding products to the import list

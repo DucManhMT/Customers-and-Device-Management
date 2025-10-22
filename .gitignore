@@ -9,6 +9,7 @@ target/
 .smarttomcat
 **/src/main/**/application.properties
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -36,3 +37,4 @@ build/
 
 ### VS Code ###
 .vscode/
+src/main/webapp/assets/Screenshot 2024-10-26 115919.png

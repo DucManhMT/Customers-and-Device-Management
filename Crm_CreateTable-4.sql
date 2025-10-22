@@ -111,7 +111,7 @@ CREATE TABLE Warehouse (
                            WarehouseID INT PRIMARY KEY,
                            WarehouseName NVARCHAR(100) NOT NULL,
                            Location NVARCHAR(255),
-                           WarehouseManager NVARCHAR(255) NOT NULL,
+                           WarehouseManager NVARCHAR(100),
                            FOREIGN KEY (WarehouseManager) REFERENCES Account(Username)
 );
 
@@ -254,8 +254,8 @@ INSERT INTO Role (RoleID, RoleName) VALUES
                                         (2, 'Customer'),
                                         (3, 'CustomerSupporter'),
                                         (4, 'WarehouseKeeper'),
-                                        (5, 'TechnicianEmployee'),
-                                        (6, 'TechnicianLeader');
+                                        (5, 'TechnicianLeader'),
+                                        (6, 'TechnicianEmployee');
 
 
 CREATE TABLE Province (

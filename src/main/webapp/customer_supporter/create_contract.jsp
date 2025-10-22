@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Create Contract</title>
@@ -15,6 +16,7 @@
 </head>
 <body>
 <header>
+
     <nav class="navbar navbar-expand-lg navbar-dark"
          style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
         <div class="container">
@@ -33,28 +35,41 @@
 </header>
 
 <main class="container">
+
     <div class="upload-container">
+
         <div class="text-center mb-4">
             <h2 class="fw-bold text-primary mb-3">
                 <i class="bi bi-file-earmark-text me-2"></i>
                 Contract Document Upload
             </h2>
+
             <p class="text-muted">Upload customer contract images for review and processing</p>
         </div>
 
-        <!-- User Name Input -->
-        <%--            <div class="mb-4">--%>
-        <%--                <label for="userName" class="form-label fw-semibold">--%>
-        <%--                    <i class="bi bi-person me-2"></i>--%>
-        <%--                    Customer Name--%>
-        <%--                </label>--%>
-        <%--                <input type="text" class="form-control" id="userName" name="userName"--%>
-        <%--                       placeholder="Enter customer name" required>--%>
-        <%--            </div>--%>
+        <!-- ✅ Nút Back to Menu -->
+        <div class="text-center mb-4">
+            <a href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left-circle"></i> Back to Menu
+            </a>
+        </div>
+
+
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
+
 
         <!-- ✅ FORM CHÍNH: chỉ thêm action, method, enctype -->
         <form id="uploadForm" action="${pageContext.request.contextPath}/customer_supporter/create_contract" method="post" enctype="multipart/form-data">
-
+            <div class="mb-4">
+                <label for="userName" class="form-label fw-semibold">
+                    <i class="bi bi-person me-2"></i>
+                    Customer Name
+                </label>
+                <input type="text" class="form-control" id="userName" name="userName"
+                       placeholder="Enter customer name" required>
+            </div>
             <!-- ✅ Khu vực chọn file -->
             <div class="upload-zone" id="uploadZone">
                 <div class="upload-icon">

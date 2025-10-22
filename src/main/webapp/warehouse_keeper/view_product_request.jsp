@@ -15,6 +15,11 @@
             <h2 class="h5 mb-0">Pending Requests</h2>
         </div>
         <div class="card-body">
+            <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger" role="alert">
+                    ${errorMessage}
+                </div>
+            </c:if>
             <c:choose>
                 <c:when test="${not empty productRequests}">
                     <div class="table-responsive">
@@ -45,13 +50,15 @@
                                             ${pr.status == 'Pending' ? 'bg-warning text-dark' : ''}
                                             ${pr.status == 'Approved' ? 'bg-success' : ''}
                                             ${pr.status == 'Rejected' ? 'bg-danger' : ''}">
+                                            ${pr.status == 'Finished' ? 'bg-success' : ''}
                                                 ${pr.status}
                                         </span>
                                     </td>
                                     <td class="text-muted small">${pr.description}</td>
                                     <td>
                                         <c:if test="${pr.status == 'Pending'}">
-                                            <form action="viewProductRequests" method="post"
+                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
+                                                  method="post"
                                                   class="d-flex justify-content-center gap-2">
                                                 <input type="hidden" name="productRequestID"
                                                        value="${pr.productRequestID}">
@@ -66,7 +73,11 @@
                                             </form>
                                         </c:if>
                                         <c:if test="${pr.status == 'Approved'}">
-                                            <a href="" class="btn btn-sm btn-primary">Export</a>
+                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product" method="post" class="d-inline">
+                                                <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
+                                                <input type="hidden" name="requestID" value="${pr.request.requestID}">
+                                                <button type="submit" class="btn btn-sm btn-primary">Export</button>
+                                            </form>
                                         </c:if>
                                     </td>
                                 </tr>

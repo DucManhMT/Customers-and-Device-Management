@@ -19,12 +19,18 @@
         <h1 class="mb-0">Warehouse Details</h1>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse/list">Warehouses</a>
-                </li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Details</li>
             </ol>
         </nav>
+    </div>
+    
+    <div class="error">
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger" role="alert">
+                ${errorMessage}
+            </div>
+        </c:if>
     </div>
 
     <!-- Main warehouse information -->
@@ -64,11 +70,11 @@
 
     <!-- Action buttons -->
     <div class="d-flex justify-content-between">
-        <a href="${pageContext.request.contextPath}/warehouse/viewProductWarehouse" class="btn btn-secondary">
+        <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i>Back to List
         </a>
         <div>
-            <a href="${pageContext.request.contextPath}/warehouse/inventory?id=${warehouse.warehouseID}"
+            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"
                class="btn btn-info me-2">
                 <i class="fas fa-boxes me-2"></i>View Inventory
             </a>

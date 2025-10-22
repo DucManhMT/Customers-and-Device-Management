@@ -13,5 +13,9 @@
 </head>
 <body>
     <p>${sessionScope.account.username}</p>
+    <h1>Customer Action Center</h1>
+    <p>Welcome to the Customer Action Center. Here you can manage your account and view
+        your activities.</p>
+<a href="${pageContext.request.contextPath}/customer/contract_history">Contract Histoy</a>
 </body>
 </html>

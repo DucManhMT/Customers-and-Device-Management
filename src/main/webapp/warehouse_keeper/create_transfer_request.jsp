@@ -18,12 +18,12 @@
 <body>
 
 <div class="container my-5">
-    <h1 class="mb-4">Create Internal Export Request</h1>
+    <h1 class="mb-4">Create Transfer Request</h1>
 
     <%-- Warehouse Selection --%>
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form action="createExportRequest" method="get" class="row g-3 align-items-end">
+            <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="get" class="row g-3 align-items-end">
                 <div class="col-md">
                     <label for="warehouse" class="form-label fw-semibold">Select Source Warehouse:</label>
                     <select name="selectedWarehouseID" id="warehouse" class="form-select">
@@ -54,7 +54,7 @@
             </div>
             <div class="card-body">
                     <%-- Filter Form --%>
-                <form action="createExportRequest" method="GET" id="filterForm" class="mb-4 p-3 border rounded">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="GET" id="filterForm" class="mb-4 p-3 border rounded">
                     <input type="hidden" name="pageSize" value="${pageSize}">
                     <input type="hidden" name="page" value="1"> <%-- Reset to page 1 on new filter --%>
                     <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
@@ -81,7 +81,7 @@
 
                 <c:choose>
                     <c:when test="${not empty productsInSelectedWarehouse}">
-                        <form action="createExportRequest" method="post" id="exportForm">
+                        <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="post" id="exportForm">
                             <input type="hidden" name="sourceWarehouseID" value="${managerWarehouse.warehouseID}">
                             <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
                             <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs" value="${param.selectedItemIDs}">
@@ -160,7 +160,7 @@
                             <%-- Page Size Selector --%>
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small">Display:</span>
-                            <form action="createExportRequest" method="GET" id="pageSizeForm" class="mb-0">
+                            <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="GET" id="pageSizeForm" class="mb-0">
                                 <input type="hidden" name="productName" value="${productName}">
                                 <input type="hidden" name="productType" value="${productType}">
                                 <input type="hidden" name="page" value="1">
@@ -180,7 +180,7 @@
                             <ul class="pagination pagination-sm mb-0">
                                 <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="createExportRequest?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Previous</a>
+                                       href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Previous</a>
                                 </li>
                                 <c:set var="maxVisiblePages" value="5"/>
                                 <c:set var="startPage" value="${currentPage - 2 > 1 ? currentPage - 2 : 1}"/>
@@ -192,7 +192,7 @@
 
                                 <c:if test="${startPage > 1}">
                                     <li class="page-item"><a class="page-link"
-                                                             href="createExportRequest?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">1</a>
+                                                             href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">1</a>
                                     </li>
                                     <c:if test="${startPage > 2}">
                                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -202,7 +202,7 @@
                                 <c:forEach begin="${startPage}" end="${endPage}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
                                         <a class="page-link"
-                                           href="createExportRequest?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${i}</a>
+                                           href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${i}</a>
                                     </li>
                                 </c:forEach>
 
@@ -211,13 +211,13 @@
                                         <li class="page-item disabled"><span class="page-link">...</span></li>
                                     </c:if>
                                     <li class="page-item"><a class="page-link"
-                                                             href="createExportRequest?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${totalPages}</a>
+                                                             href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${totalPages}</a>
                                     </li>
                                 </c:if>
 
                                 <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="createExportRequest?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Next</a>
+                                       href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Next</a>
                                 </li>
                             </ul>
                         </nav>

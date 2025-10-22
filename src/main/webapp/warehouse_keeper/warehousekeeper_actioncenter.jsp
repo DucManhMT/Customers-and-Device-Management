@@ -12,5 +12,12 @@
 </head>
 <body>
     <p>THIS IS WAREHOUSEKEEPER</p>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/export_product"></a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests">View Product Request</a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory">View Inventory</a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">View My Warehouse</a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests">View Product Request</a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_transaction">View all product transaction</a>
+
 </body>
 </html>

@@ -31,8 +31,6 @@ public class MailService {
 
         try {
             MimeMessage message = new MimeMessage(session);
-//            String effectiveFrom = (from != null && !from.isBlank()) ? from : USERNAME;
-//            message.setFrom(new InternetAddress(effectiveFrom));
             message.setRecipients(Message.RecipientType.TO, to);
             message.setSubject(subject);
             message.setText(body);

@@ -1,6 +1,7 @@
 package crm.service_request.controller;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.service_request.model.RequestLog;
@@ -15,12 +16,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "StaffRequestTimeline", urlPatterns = {"/staff/requests/timeline"})
+@WebServlet(name = "StaffRequestTimeline", urlPatterns = {URLConstants.STAFF_REQUEST_TIMELINE})
 public class StaffRequestTimeline extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestService requestService = new RequestService();
         RequestLogService requestLogService = new RequestLogService();
+        Account account = (Account) req.getSession().getAttribute("account");
+        if (account == null) {
+            resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
+            return;
+        }
         try {
             int requestId = Integer.parseInt(req.getParameter("requestId"));
             Request request = requestService.getRequestById(requestId);

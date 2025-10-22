@@ -38,8 +38,6 @@
                         <option value="">Select Status</option>
                         <option value="Approved" ${status == 'Approved' ? 'selected' : ''}>Approved</option>
                         <option value="Rejected" ${status == 'Rejected' ? 'selected' : ''}>Rejected</option>
-                        <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
-                        <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
                     </select>
                 </div>
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import crm.common.URLConstants;
 import crm.common.model.Product;
 import crm.common.model.Type;
 import crm.common.model.Warehouse;
@@ -18,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 
-@WebServlet(urlPatterns = "/warehouse/viewInventory")
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_INVENTORY)
 public class InventoryController extends HttpServlet {
 
     @Override
@@ -60,6 +61,12 @@ public class InventoryController extends HttpServlet {
         //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
+
+        if(inventorySummary.isEmpty()){
+            req.setAttribute("errorMessage", "No inventory data available.");
+            req.getRequestDispatcher("/warehouse_keeper/view_inventory.jsp").forward(req, resp);
+            return;
+        }
 
         //Get warehouse for filter dropdown
         List<Warehouse> warehouses = warehouseDAO.findAll();

@@ -1,5 +1,7 @@
 package crm.service_request.repository.persistence.query.common;
 
+import java.util.List;
+
 public class PageRequest {
     // 1-indexed page number
     private int pageNumber;
@@ -8,6 +10,13 @@ public class PageRequest {
     // Sorting criteria
     private Sort sort;
 
+    private List<Order> orders;
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    @Deprecated
     public Sort getSort() {
         return sort;
     }
@@ -20,10 +29,26 @@ public class PageRequest {
         return pageNumber;
     }
 
+    public PageRequest(int pageNumber, int size, List<Order> orders) {
+        this.pageNumber = pageNumber;
+        this.pageSize = size;
+        this.orders = orders;
+    }
+
+    @Deprecated
     public PageRequest(int pageNumber, int size, Sort sort) {
         this.pageNumber = pageNumber;
         this.pageSize = size;
         this.sort = sort;
+    }
+
+    @Deprecated
+    public static PageRequest of(int pageNumber, int size, Sort sort) {
+        validate(pageNumber, size);
+        if (sort == null) {
+            throw new IllegalArgumentException("sort must not be null");
+        }
+        return new PageRequest(pageNumber, size, sort);
     }
 
     public PageRequest(int pageNumber, int size) {
@@ -31,12 +56,12 @@ public class PageRequest {
         this.pageSize = size;
     }
 
-    public static PageRequest of(int pageNumber, int size, Sort sort) {
+    public static PageRequest of(int pageNumber, int size, List<Order> orders) {
         validate(pageNumber, size);
-        if (sort == null) {
-            throw new IllegalArgumentException("sort must not be null");
+        if (orders == null) {
+            throw new IllegalArgumentException("Orders must not be null");
         }
-        return new PageRequest(pageNumber, size, sort);
+        return new PageRequest(pageNumber, size, orders);
     }
 
     public static PageRequest of(int pageNumber, int size) {

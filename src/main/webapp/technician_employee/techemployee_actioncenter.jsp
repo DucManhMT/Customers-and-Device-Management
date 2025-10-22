@@ -12,5 +12,6 @@
 </head>
 <body>
     <p>THIS IS TECHEMPLOYEE</p>
+    <a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
 </body>
 </html>

@@ -9,7 +9,7 @@ import java.util.Properties;
  * accessors.
  */
 public final class PropertyLoader {
-    private static final String DEFAULT_LOCATION = "/META-INF/application.properties"; // on classpath
+    private static final String DEFAULT_LOCATION = "/META-INF/application.properties";
     private static final Properties PROPERTIES = new Properties();
     private static volatile boolean initialized = false;
 
@@ -49,7 +49,7 @@ public final class PropertyLoader {
         String val = get(key);
         if (val == null)
             return defaultValue;
-        return val.equalsIgnoreCase("true") || val.equalsIgnoreCase("yes") || val.equals("1");
+        return val.equalsIgnoreCase("true");
     }
 
     public static int getInt(String key, int defaultValue) {

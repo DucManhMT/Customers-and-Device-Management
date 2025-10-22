@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <html>
 <head>
     <title>View Request Detail</title>
@@ -54,10 +54,11 @@
 
 
             <div class="d-flex justify-content-end gap-2">
-                <c:if test="${request.requestStatus != 'Finished'}">
-                    <a href="./update?requestID=${request.requestID}" class="btn btn-warning">Process Request</a>
+                <c:if test="${request.requestStatus == 'Pending'}">
+                    <a href="./process?requestId=${request.requestID}" class="btn btn-warning">Process Request</a>
                 </c:if>
-                <a href="./list" class="btn btn-primary">Timeline</a>
+                <a href="../../staff/requests/timeline?requestId=${request.requestID}"
+                   class="btn btn-primary">Timeline</a>
                 <a href="./list" class="btn btn-secondary">Back to List</a>
             </div>
 

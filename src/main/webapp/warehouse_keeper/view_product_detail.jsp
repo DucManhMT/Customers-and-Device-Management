@@ -26,8 +26,8 @@
     <!-- Navigation breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-2">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse/products">Products</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">Products</a></li>
             <li class="breadcrumb-item active">${product.productName}</li>
         </ol>
     </nav>
@@ -60,11 +60,6 @@
                     <h2 class="h4 mb-3">${product.productName}</h2>
 
                     <div class="mb-3">
-                        <span class="badge bg-info me-2">Type: ${product.type.typeName}</span>
-                        <span class="badge bg-success">In Stock</span>
-                    </div>
-
-                    <div class="mb-3">
                         <h3 class="h6">Description:</h3>
                         <p>${product.productDescription}</p>
                     </div>
@@ -79,14 +74,8 @@
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="border rounded p-2 text-center">
-                                <div class="small text-muted">Category</div>
+                                <div class="small text-muted">Type</div>
                                 <div class="fw-bold">${product.type.typeName}</div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <div class="border rounded p-2 text-center">
-                                <div class="small text-muted">Status</div>
-                                <div class="fw-bold text-success">Available</div>
                             </div>
                         </div>
                     </div>
@@ -99,7 +88,7 @@
                         <a href="${pageContext.request.contextPath}/warehouse/productInventory?productId=${product.productID}" class="btn btn-info">
                             <i class="fas fa-boxes me-1"></i> View Inventory
                         </a>
-                        <a href="${pageContext.request.contextPath}/warehouse/products" class="btn btn-secondary">
+                        <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back
                         </a>
                     </div>
