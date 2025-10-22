@@ -29,6 +29,12 @@ public class WarehouseProductRequestController extends HttpServlet {
 
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
+        if(warehouse == null){
+            req.setAttribute("errorMessage","You must be assigned to a warehouse to view product requests.");
+            req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
+            return;
+        }
+
         List<ProductRequest> productRequests = productRequestDAO.findAll();
 
         productRequests = productRequests.stream()
@@ -52,6 +58,6 @@ public class WarehouseProductRequestController extends HttpServlet {
 
         productRequestDAO.merge(productRequest);
 
-        resp.sendRedirect(req.getContextPath() + "/warehouse/viewProductRequests");
+        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/view_product_request.jsp");
     }
 }

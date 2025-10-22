@@ -111,7 +111,7 @@ CREATE TABLE Warehouse (
                            WarehouseID INT PRIMARY KEY,
                            WarehouseName NVARCHAR(100) NOT NULL,
                            Location NVARCHAR(255),
-                           WarehouseManager NVARCHAR(255) NOT NULL,
+                           WarehouseManager NVARCHAR(100),
                            FOREIGN KEY (WarehouseManager) REFERENCES Account(Username)
 );
 

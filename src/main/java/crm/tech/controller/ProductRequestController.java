@@ -4,7 +4,10 @@ import crm.common.model.*;
 import crm.common.model.enums.ProductRequestStatus;
 import crm.common.repository.Request.RequestDAO;
 import crm.common.repository.Warehouse.*;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,6 +31,8 @@ public class ProductRequestController extends HttpServlet {
     RequestDAO requestDAO = new RequestDAO();
     ProductRequestDAO productRequestDAO = new ProductRequestDAO();
 
+    EntityManager em = new EntityManager(DBcontext.getConnection());
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Get list of warehouses for dropdown
@@ -37,9 +42,11 @@ public class ProductRequestController extends HttpServlet {
 
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
         String requestIDStr = req.getParameter("requestIDStr");
+
         if (requestIDStr == null) {
             requestIDStr = req.getParameter("requestID");
         }
+
         req.setAttribute("requestIDStr", requestIDStr);
 
         if (req.getParameter("selectedWarehouseID") != null) {
@@ -55,7 +62,15 @@ public class ProductRequestController extends HttpServlet {
         String allSelectedItemIDs = req.getParameter("allSelectedItemIDs");
         String allSelectedItemQuantities = req.getParameter("allSelectedItemQuantities");
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
+
         String note = req.getParameter("note");
+
+        if(!Validator.isValidText(note)) {
+            req.setAttribute("errorMessage", "Invalid note. Please check again.");
+            doGet(req, resp);
+            return;
+        }
+
         String requestIDStr = req.getParameter("requestIDStr");
 
         if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
@@ -88,6 +103,7 @@ public class ProductRequestController extends HttpServlet {
         Warehouse warehouse = warehouseDAO.find(selectedWarehouseID);
 
         try {
+            em.beginTransaction();
             for (int i = 0; i < selectedProductIDs.length; i++) {
                 String productIdStr = selectedProductIDs[i];
                 String quantityStr = selectedProductQuantitiesStr[i];
@@ -117,13 +133,17 @@ public class ProductRequestController extends HttpServlet {
                 productRequestDAO.persist(productRequest);
             }
 
+            em.commit();
+
             resp.sendRedirect(req.getContextPath() + "/tech/employees/viewProductRequest");
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
+            em.rollback();
             doGet(req, resp);
         } catch (Exception e) {
             req.setAttribute("errorMessage", "An error occurred while creating the request.");
+            em.rollback();
             doGet(req, resp);
         }
     }

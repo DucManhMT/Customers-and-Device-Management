@@ -15,6 +15,11 @@
             <h2 class="h5 mb-0">Pending Requests</h2>
         </div>
         <div class="card-body">
+            <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger" role="alert">
+                    ${errorMessage}
+                </div>
+            </c:if>
             <c:choose>
                 <c:when test="${not empty productRequests}">
                     <div class="table-responsive">

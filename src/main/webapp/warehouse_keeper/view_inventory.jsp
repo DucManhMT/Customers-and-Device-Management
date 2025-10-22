@@ -55,7 +55,7 @@
                 </svg>
                 Add Product
             </a>
-            <a href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request" class="btn btn-success d-flex align-items-center">
+            <a href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" class="btn btn-success d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-box-arrow-up me-2" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -63,7 +63,7 @@
                     <path fill-rule="evenodd"
                           d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3Z"/>
                 </svg>
-                Create Export Request
+                Create Transfer Request
             </a>
         </div>
     </div>
@@ -131,7 +131,7 @@
 
     <c:if test="${empty inventorySummary}">
         <div class="alert alert-info text-center" role="alert">
-            No products found in the inventory.
+            ${errorMessage}
         </div>
     </c:if>
 
