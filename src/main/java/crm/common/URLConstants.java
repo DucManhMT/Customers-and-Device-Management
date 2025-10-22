@@ -53,7 +53,7 @@ public class URLConstants {
     public static final String WAREHOUSE_VIEW_PRODUCT_DETAIL = "/warehouse_keeper/view_product_detail";
     public static final String WAREHOUSE_VIEW_INVENTORY = "/warehouse_keeper/view_inventory";
     public static final String WAREHOUSE_ADD_PRODUCT = "/warehouse_keeper/add_product";
-    public static final String WAREHOUSE_CREATE_EXPORT_REQUEST = "/warehouse_keeper/create_export_request";
+    public static final String WAREHOUSE_CREATE_TRANSFER_REQUEST = "/warehouse_keeper/create_transfer_request";
     public static final String WAREHOUSE_VIEW_WAREHOUSE_DETAIL = "/warehouse_keeper/view_warehouse_detail";
     public static final String WAREHOUSE_VIEW_PRODUCT_REQUESTS = "/warehouse_keeper/view_warehouse_product_requests";
 

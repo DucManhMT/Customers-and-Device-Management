@@ -22,7 +22,10 @@ import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.common.repository.Warehouse.WarehouseRequestDAO;
 import crm.common.repository.Warehouse.WarehouseRequestProductDAO;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,8 +33,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 
-@WebServlet(urlPatterns = URLConstants.WAREHOUSE_CREATE_EXPORT_REQUEST)
-public class ExportRequestCreateController extends HttpServlet {
+@WebServlet(urlPatterns = URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST)
+public class TransferRequestCreateController extends HttpServlet {
     //DAOs
     WarehouseDAO warehouseDAO = new WarehouseDAO();
     ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
@@ -39,6 +42,7 @@ public class ExportRequestCreateController extends HttpServlet {
     ProductDAO productDAO = new ProductDAO();
     WarehouseRequestDAO warehouseRequestDAO = new WarehouseRequestDAO();
     WarehouseRequestProductDAO warehouseRequestProductDAO = new WarehouseRequestProductDAO();
+    EntityManager entityManager = new EntityManager(DBcontext.getConnection());
 
 
     @Override
@@ -50,11 +54,23 @@ public class ExportRequestCreateController extends HttpServlet {
         //Get current login warehouseKeeper's warehouse
         Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
+        if (managerWarehouse == null) {
+            req.setAttribute("errorMessage", "No warehouse associated with this account.");
+            req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
+            return;
+        }
+
         //Get list of warehouses for dropdown
         List<Warehouse> warehouses = warehouseDAO.findAll();
         warehouses = warehouses.stream()
                 .filter(w -> !w.getWarehouseID().equals(managerWarehouse.getWarehouseID()))
                 .collect(Collectors.toList());
+
+        if (warehouses.isEmpty()) {
+            req.setAttribute("errorMessage", "No other warehouses available to transfer from.");
+            req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
+            return;
+        }
 
         req.setAttribute("warehouses", warehouses);
 
@@ -66,8 +82,7 @@ public class ExportRequestCreateController extends HttpServlet {
             processRequest(req, resp, selectedWarehouseIDStr);
         }
 
-
-        req.getRequestDispatcher("/warehouse_keeper/create_export_internal.jsp").forward(req, resp);
+        req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
     }
 
     @Override
@@ -78,10 +93,14 @@ public class ExportRequestCreateController extends HttpServlet {
         String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
         String note = req.getParameter("note");
 
+        if (!Validator.isValidText(note)) {
+            req.setAttribute("errorMessage", "Note contains invalid characters or exceed limit.");
+            doGet(req, resp);
+            return;
+        }
+
         if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
-            // Handle the case where no products are selected
             req.setAttribute("errorMessage", "Please select at least one product to export.");
-            // Forward back to the page, possibly reloading necessary data from doGet
             doGet(req, resp);
             return;
         }
@@ -101,25 +120,28 @@ public class ExportRequestCreateController extends HttpServlet {
 
         Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
         Warehouse sourceWarehouse = warehouseDAO.find(selectedWarehouseID);
-
-        WarehouseRequest warehouseRequest = new WarehouseRequest();
-
-        warehouseRequest.setWarehouseRequestID(IDGeneratorService.generateID(WarehouseRequest.class));
-        warehouseRequest.setDate(LocalDateTime.now());
-        warehouseRequest.setNote(note);
-        warehouseRequest.setSourceWarehouse(sourceWarehouse);
-        warehouseRequest.setDestinationWarehouse(managerWarehouse);
-        warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
-
-        warehouseRequestDAO.persist(warehouseRequest);
-
         try {
+            entityManager.beginTransaction();
+
+            WarehouseRequest warehouseRequest = new WarehouseRequest();
+
+            warehouseRequest.setWarehouseRequestID(IDGeneratorService.generateID(WarehouseRequest.class));
+            warehouseRequest.setDate(LocalDateTime.now());
+            warehouseRequest.setNote(note);
+            warehouseRequest.setSourceWarehouse(sourceWarehouse);
+            warehouseRequest.setDestinationWarehouse(managerWarehouse);
+            warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
+
+            warehouseRequestDAO.persist(warehouseRequest);
+
+
             for (int i = 0; i < selectedProductIDs.length; i++) {
                 String productIdStr = selectedProductIDs[i];
                 String quantityStr = selectedProductQuantitiesStr[i];
 
                 if (quantityStr == null || quantityStr.trim().isEmpty()) {
                     req.setAttribute("errorMessage", "Please enter a quantity for all selected products.");
+                    entityManager.rollback();
                     doGet(req, resp);
                     return;
                 }
@@ -136,16 +158,19 @@ public class ExportRequestCreateController extends HttpServlet {
                 warehouseRequestProduct.setQuantity(quantity);
                 warehouseRequestProduct.setWarehouseRequest(warehouseRequest);
 
-                boolean checking = warehouseRequestProductDAO.persist(warehouseRequestProduct);
+                warehouseRequestProductDAO.persist(warehouseRequestProduct);
             }
+            entityManager.commit();
 
-            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_EXPORT_REQUEST); // Redirect to a success or listing page
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST); // Redirect to a success or listing page
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
+            entityManager.rollback();
             doGet(req, resp);
         } catch (Exception e) {
             req.setAttribute("errorMessage", "An error occurred while creating the request.");
+            entityManager.rollback();
             doGet(req, resp);
         }
     }

@@ -24,6 +24,14 @@
             </ol>
         </nav>
     </div>
+    
+    <div class="error">
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger" role="alert">
+                ${errorMessage}
+            </div>
+        </c:if>
+    </div>
 
     <!-- Main warehouse information -->
     <div class="card shadow-sm mb-4">
