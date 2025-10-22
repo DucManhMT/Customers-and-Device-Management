@@ -47,8 +47,11 @@
     </div>
 
     <div class="container">
-      
-      <%-- Success Message --%>
+      <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+         class="btn btn-primary mb-2">
+                <span>Back to Action Center</span>
+            </a><br>
+
       <% 
         String successMessage = (String) session.getAttribute("successMessage");
         if (successMessage != null) {
@@ -59,8 +62,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
       <% } %>
-      
-      <%-- Warning Message --%>
+
       <% 
         String warningMessage = (String) session.getAttribute("warningMessage");
         if (warningMessage != null) {
@@ -71,8 +73,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
       <% } %>
-      
-      <%-- Error Message --%>
+
       <% 
         String errorMessage = (String) session.getAttribute("errorMessage");
         if (errorMessage != null) {

@@ -5,7 +5,7 @@
     <title>Customer Feedback</title>
     <link href="../css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="../css/feedback/feedback.css" rel="stylesheet"/>
-    <script src="${pageContext.request.contextPath}/js/feedback.js"></script>
+    
 </head>
 <body>
 
@@ -95,18 +95,18 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="response" class="form-label">Your Detailed Review</label>
-                        <textarea class="form-control" id="response" name="response" rows="4"
-                                  placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..."
-                                  maxlength="500"></textarea>
+                        <label for="description" class="form-label">Your Detailed Review</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" 
+                                  placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..." 
+                                  maxlength="255"></textarea>
                         <div class="form-text">
-                            <span id="charCount">0</span>/500 characters. Share your feelings and suggestions about the service.
+                            <span id="charCount">0 </span>/255 characters. Share your feelings and suggestions about the service.
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <a href=".." class="btn btn-outline-secondary">
-                            Back to Home
+                        <a href="${pageContext.request.contextPath}/customer/customer_actioncenter" class="btn btn-outline-secondary">
+                            Back to Customer Action Center
                         </a>
 
                         <div>
@@ -136,6 +136,7 @@
                             <th>Service Type</th>
                             <th>Rating</th>
                             <th>Detailed Review</th>
+                            <th>Response</th>
                             <th>Created Date</th>
                             <th>Actions</th>
                         </tr>
@@ -155,13 +156,25 @@
                                 </td>
                                 <td class="feedback-response">
                                     <c:choose>
+                                        <c:when test="${not empty feedback.description}">
+                                            <div class="text-truncate" title="${feedback.description}">
+                                                ${feedback.description}
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <em class="text-muted">No detailed review</em>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="feedback-response">
+                                    <c:choose>
                                         <c:when test="${not empty feedback.response}">
                                             <div class="text-truncate" title="${feedback.response}">
                                                 ${feedback.response}
                                             </div>
                                         </c:when>
                                         <c:otherwise>
-                                            <em class="text-muted">No detailed review</em>
+                                            <em class="text-muted">No response</em>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
@@ -300,7 +313,17 @@
             </div>
         </div>
     </div>
-
+    <script src="${pageContext.request.contextPath}/js/feedback.js"></script>
+    <script src="../css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelector("form").addEventListener("submit", function (e) {
+            const ratingChecked = document.querySelector('input[name="rating"]:checked');
+            if (!ratingChecked) {
+                e.preventDefault();
+                alert("Vui lòng chọn mức đánh giá dịch vụ trước khi gửi phản hồi!");
+            }
+        });
+    </script>
 
 </body>
 </html>

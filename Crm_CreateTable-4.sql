@@ -144,6 +144,7 @@ CREATE TABLE Feedback (
                           FeedbackID INT PRIMARY KEY,
                           Content NVARCHAR(255),
                           Rating INT,
+                          Description NVARCHAR(255),
                           Response NVARCHAR(255),
                           FeedbackDate DATETIME NOT NULL,
                           CustomerID NVARCHAR(100),

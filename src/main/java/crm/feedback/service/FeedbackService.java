@@ -28,6 +28,7 @@ public class FeedbackService {
         req.setAttribute("currentUsername", username);
 
         req.removeAttribute("errorMessage");
+        req.removeAttribute("successMessage");
 
         int page = 1;
         int recordsPerPage = 5;
@@ -71,7 +72,7 @@ public class FeedbackService {
         String feedbackType = req.getParameter("feedbackType");
         String customContent = req.getParameter("customContent");
         String ratingStr = req.getParameter("rating");
-        String response = req.getParameter("response");
+        String description = req.getParameter("description");
 
         String content = "";
 
@@ -119,18 +120,19 @@ public class FeedbackService {
                     feedback.setFeedbackID(IDGeneratorService.generateID(Feedback.class));
                     feedback.setContent(content);
                     feedback.setRating(rating);
-                    feedback.setResponse(response != null ? response.trim() : null);
+                    feedback.setDescription(description != null ? description.trim() : null);
                     feedback.setFeedbackDate(currentTimestamp);
                     feedback.setCustomerID(username);
 
                     entityManager.persist(feedback, Feedback.class);
+                    req.setAttribute("successMessage",
+                            "Feedback created successfully! Thank you " + username + " for your review.");
 
-                    entityManager.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    throw new SQLException("Failed to create feedback", e);
+                    req.setAttribute("errorMessage", "Failed to create feedback. Please try again later.");
                 }
-
+                entityManager.close();
                 req.setAttribute("successMessage",
                         "Feedback created successfully! Thank you " + username + " for your review.");
 
