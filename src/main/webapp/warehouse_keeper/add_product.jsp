@@ -8,6 +8,7 @@
 <body>
 <div class="container my-5">
     <div class="row justify-content-center">
+        <jsp:include page="../components/header.jsp"/>
         <div class="col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-light py-3">
@@ -21,7 +22,8 @@
                     </c:if>
                 </div>
                 <div class="card-body">
-                    <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="post" enctype="multipart/form-data">
+                    <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="post"
+                          enctype="multipart/form-data">
                         <%-- Product Name --%>
                         <div class="mb-3">
                             <label for="productName" class="form-label">Product Name</label>

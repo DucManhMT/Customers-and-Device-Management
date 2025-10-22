@@ -14,8 +14,9 @@
           rel="stylesheet"/>
 </head>
 <body>
-<div class=" container-fluid">
 
+<div class=" container-fluid">
+    <jsp:include page="../components/header.jsp"/>
 
     <h2 class="mt-1">Service Request</h2>
     <form action="">

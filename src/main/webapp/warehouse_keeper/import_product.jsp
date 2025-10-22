@@ -11,9 +11,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Import Products - Warehouse</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <!-- Bootstrap 5 CSS -->
     <link
@@ -24,7 +24,10 @@
     />
 
     <style>
-        .table td, .table th { vertical-align: middle; }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+
         .serial-pill {
             display: inline-flex;
             align-items: center;
@@ -36,10 +39,12 @@
             margin: .25rem .25rem .25rem 0;
             font-size: .875rem;
         }
+
         .import-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         .qty-badge {
             font-size: 1rem;
             padding: .5rem .75rem;
@@ -48,6 +53,7 @@
 </head>
 <body class="bg-light">
 <div class="container-fluid py-4">
+    <jsp:include page="../components/header.jsp"/>
     <!-- Header -->
     <div class="row mb-4">
         <div class="col">
@@ -59,7 +65,8 @@
                             <p class="mb-0 opacity-75">Manage product imports and serial numbers</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product"
+                               class="btn btn-light btn-sm">
                                 <i class="bi bi-plus-circle me-1"></i>Add Products
                             </a>
                             <button type="button" class="btn btn-outline-light btn-sm" onclick="clearAllImports()">
@@ -121,8 +128,10 @@
                                         <i class="bi bi-inbox display-1 text-muted"></i>
                                     </div>
                                     <h5 class="text-muted">No products selected for import</h5>
-                                    <p class="text-muted mb-3">Click "Add Products" to select products from the warehouse catalog</p>
-                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product" class="btn btn-primary">
+                                    <p class="text-muted mb-3">Click "Add Products" to select products from the
+                                        warehouse catalog</p>
+                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product"
+                                       class="btn btn-primary">
                                         <i class="bi bi-plus-circle me-2"></i>Add Products
                                     </a>
                                 </div>
@@ -141,7 +150,8 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <c:forEach items="${sessionScope.importProductList}" var="product" varStatus="status">
+                                        <c:forEach items="${sessionScope.importProductList}" var="product"
+                                                   varStatus="status">
                                             <tr data-product-id="${product.productID}" class="import-row">
                                                 <td>
                                                     <span class="fw-semibold text-primary">${product.productID}</span>
@@ -162,7 +172,8 @@
                                                 <td>
                                                     <span class="badge bg-success qty-badge qty-display">0</span>
                                                     <!-- Hidden inputs for form submission -->
-                                                    <input type="hidden" class="qty-hidden" name="quantity-${product.productID}" value="0">
+                                                    <input type="hidden" class="qty-hidden"
+                                                           name="quantity-${product.productID}" value="0">
                                                 </td>
                                                 <td>
                                                     <div class="btn-group" role="group">
@@ -189,10 +200,14 @@
 
                                                 <!-- Hidden inputs holder for this product's serials -->
                                                 <td class="d-none">
-                                                    <div id="hidden-serials-inputs-${product.productID}" class="hidden-serials-inputs">
+                                                    <div id="hidden-serials-inputs-${product.productID}"
+                                                         class="hidden-serials-inputs">
                                                         <c:if test="${not empty sessionScope.serialsMap and not empty sessionScope.serialsMap[product.productID]}">
-                                                            <c:forEach items="${sessionScope.serialsMap[product.productID]}" var="serial">
-                                                                <input type="hidden" name="serials-${product.productID}" value="${serial}">
+                                                            <c:forEach
+                                                                    items="${sessionScope.serialsMap[product.productID]}"
+                                                                    var="serial">
+                                                                <input type="hidden" name="serials-${product.productID}"
+                                                                       value="${serial}">
                                                             </c:forEach>
                                                         </c:if>
                                                     </div>
@@ -214,7 +229,8 @@
                                     <small>Total items: <span id="totalItemsCount">0</span></small>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product" class="btn btn-outline-primary">
+                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_import_product"
+                                       class="btn btn-outline-primary">
                                         <i class="bi bi-plus-circle me-1"></i>Add More Products
                                     </a>
                                     <button type="submit" class="btn btn-success" id="submitBtn">
@@ -238,7 +254,8 @@
                 <h5 class="modal-title" id="serialsModalLabel">
                     <i class="bi bi-tags me-2"></i>Manage Serial Numbers
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
@@ -264,7 +281,7 @@
                                    id="serialInput"
                                    class="form-control"
                                    placeholder="Enter serial number (e.g., SN123456)"
-                                   maxlength="50" />
+                                   maxlength="50"/>
                             <button type="button" id="addSerialBtn" class="btn btn-primary">
                                 <i class="bi bi-plus-lg"></i> Add
                             </button>
@@ -289,7 +306,8 @@
                 <div class="mt-3">
                     <small class="text-muted">
                         <i class="bi bi-info-circle me-1"></i>
-                        Each serial number must be unique. The quantity will automatically update based on the number of serials added.
+                        Each serial number must be unique. The quantity will automatically update based on the number of
+                        serials added.
                     </small>
                 </div>
             </div>
@@ -560,17 +578,17 @@
                 },
                 body: 'action=removeProduct&productId=' + encodeURIComponent(productId)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remove from serials store
-                    delete serialsStore[productId];
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove from serials store
+                        delete serialsStore[productId];
 
-                    // Show success message briefly then reload
-                    const toast = document.createElement('div');
-                    toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-                    toast.style.zIndex = '1055';
-                    toast.innerHTML = `
+                        // Show success message briefly then reload
+                        const toast = document.createElement('div');
+                        toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                        toast.style.zIndex = '1055';
+                        toast.innerHTML = `
                         <div class="toast show" role="alert">
                             <div class="toast-header bg-success text-white">
                                 <i class="bi bi-check-circle text-white me-2"></i>
@@ -581,30 +599,30 @@
                             </div>
                         </div>
                     `;
-                    document.body.appendChild(toast);
+                        document.body.appendChild(toast);
 
-                    // Reload page after short delay
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    alert('Error removing product: ' + (data.message || 'Unknown error'));
+                        // Reload page after short delay
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        alert('Error removing product: ' + (data.message || 'Unknown error'));
+                        // Restore button state
+                        if (removeBtn) {
+                            removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
+                            removeBtn.disabled = false;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error removing product. Please try again.');
                     // Restore button state
                     if (removeBtn) {
                         removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
                         removeBtn.disabled = false;
                     }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error removing product. Please try again.');
-                // Restore button state
-                if (removeBtn) {
-                    removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
-                    removeBtn.disabled = false;
-                }
-            });
+                });
         }
     }
 
@@ -626,19 +644,19 @@
                 },
                 body: 'action=clearAll'
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Clear all data and reload immediately
-                    Object.keys(serialsStore).forEach(productId => {
-                        delete serialsStore[productId];
-                    });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Clear all data and reload immediately
+                        Object.keys(serialsStore).forEach(productId => {
+                            delete serialsStore[productId];
+                        });
 
-                    // Show success message briefly then reload
-                    const toast = document.createElement('div');
-                    toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-                    toast.style.zIndex = '1055';
-                    toast.innerHTML = `
+                        // Show success message briefly then reload
+                        const toast = document.createElement('div');
+                        toast.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                        toast.style.zIndex = '1055';
+                        toast.innerHTML = `
                         <div class="toast show" role="alert">
                             <div class="toast-header bg-success text-white">
                                 <i class="bi bi-check-circle text-white me-2"></i>
@@ -649,30 +667,30 @@
                             </div>
                         </div>
                     `;
-                    document.body.appendChild(toast);
+                        document.body.appendChild(toast);
 
-                    // Reload page after short delay
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    alert('Error clearing products: ' + (data.message || 'Unknown error'));
+                        // Reload page after short delay
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        alert('Error clearing products: ' + (data.message || 'Unknown error'));
+                        // Restore button state
+                        if (clearAllBtn) {
+                            clearAllBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Clear All';
+                            clearAllBtn.disabled = false;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error clearing products. Please try again.');
                     // Restore button state
                     if (clearAllBtn) {
                         clearAllBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Clear All';
                         clearAllBtn.disabled = false;
                     }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error clearing products. Please try again.');
-                // Restore button state
-                if (clearAllBtn) {
-                    clearAllBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Clear All';
-                    clearAllBtn.disabled = false;
-                }
-            });
+                });
         }
     }
 

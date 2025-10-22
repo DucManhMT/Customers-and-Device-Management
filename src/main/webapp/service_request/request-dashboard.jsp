@@ -35,7 +35,7 @@
 <body>
 
 <div class="container py-4">
-
+    <jsp:include page="../components/header.jsp"/>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Request Dashboard</h1>
         <a href="./list" class="btn btn-info">View List</a>
