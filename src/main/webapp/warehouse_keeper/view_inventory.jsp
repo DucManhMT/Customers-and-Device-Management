@@ -47,6 +47,13 @@
     <div class="card shadow-sm p-3 mb-4">
         <h2 class="h5 fw-semibold text-dark mb-3">Actions</h2>
         <div class="d-flex flex-wrap gap-2">
+            <a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter" class="btn btn-secondary d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill me-2" viewBox="0 0 16 16">
+                    <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.505A.5.5 0 0 0 9.5 15h-3a.5.5 0 0 0-.5-.5z"/>
+                    <path d="M1.5 2.5a.5.5 0 0 0 0 1v12A1.5 1.5 0 0 0 3 17h10a1.5 1.5 0 0 0 1.5-1.5v-12a.5.5 0 0 0 0-1H1.5zM11 2h.5a.5.5 0 0 1 .5.5V4h-1V2.5a.5.5 0 0 1 .5-.5zM4.5 2H5v1.5H4V2.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                Home
+            </a>
             <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product" class="btn btn-primary d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-plus-lg me-2" viewBox="0 0 16 16">
