@@ -34,13 +34,14 @@
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger">${error}</div>
                 </c:if>
-                <form id="roleForm" action="${pageContext.request.contextPath}/admin/role_list/create_role" method="post">
+                <form id="roleForm" action="${pageContext.request.contextPath}/admin/role_list/create_role"
+                      method="post">
                     <!-- Role Name -->
-<%--                    <div class="mb-4">--%>
-<%--                        <label for="roleId" class="form-label fw-medium">Role ID</label>--%>
-<%--                        <input type="text" class="form-control form-control-lg" id="roleId" name="roleId" required--%>
-<%--                               placeholder="Enter ID..." value="${roleId != null ? roleId : ''}">--%>
-<%--                    </div>--%>
+                    <%--                    <div class="mb-4">--%>
+                    <%--                        <label for="roleId" class="form-label fw-medium">Role ID</label>--%>
+                    <%--                        <input type="text" class="form-control form-control-lg" id="roleId" name="roleId" required--%>
+                    <%--                               placeholder="Enter ID..." value="${roleId != null ? roleId : ''}">--%>
+                    <%--                    </div>--%>
 
                     <div class="mb-4">
                         <label for="roleName" class="form-label fw-medium">Role Name</label>
@@ -176,89 +177,72 @@
         </div>
 
         <!-- Sidebar -->
-<%--        <div class="col-lg-4">--%>
-<%--            <!-- Existing Roles -->--%>
-<%--            <div class="stats-card mb-4">--%>
-<%--                <h3 class="h5 fw-semibold mb-3">Existing Roles</h3>--%>
-<%--                <div id="rolesList">--%>
-<%--                    <!-- Sample existing roles -->--%>
-<%--                    <div class="role-card">--%>
-<%--                        <div class="d-flex justify-content-between align-items-start mb-2">--%>
-<%--                            <h4 class="h6 mb-0 fw-medium">Super Admin</h4>--%>
-<%--                            <span class="badge bg-danger badge-custom">All Access</span>--%>
-<%--                        </div>--%>
-<%--                        <p class="text-muted small mb-2">Full system access and control</p>--%>
-<%--                        <div class="d-flex gap-2">--%>
-<%--                            <button class="btn btn-link btn-sm p-0 text-primary">Edit</button>--%>
-<%--                            <button class="btn btn-link btn-sm p-0 text-muted">View</button>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
+        <%--        <div class="col-lg-4">--%>
+        <%--            <!-- Existing Roles -->--%>
+        <%--            <div class="stats-card mb-4">--%>
+        <%--                <h3 class="h5 fw-semibold mb-3">Existing Roles</h3>--%>
+        <%--                <div id="rolesList">--%>
+        <%--                    <!-- Sample existing roles -->--%>
+        <%--                    <div class="role-card">--%>
+        <%--                        <div class="d-flex justify-content-between align-items-start mb-2">--%>
+        <%--                            <h4 class="h6 mb-0 fw-medium">Super Admin</h4>--%>
+        <%--                            <span class="badge bg-danger badge-custom">All Access</span>--%>
+        <%--                        </div>--%>
+        <%--                        <p class="text-muted small mb-2">Full system access and control</p>--%>
+        <%--                        <div class="d-flex gap-2">--%>
+        <%--                            <button class="btn btn-link btn-sm p-0 text-primary">Edit</button>--%>
+        <%--                            <button class="btn btn-link btn-sm p-0 text-muted">View</button>--%>
+        <%--                        </div>--%>
+        <%--                    </div>--%>
 
-<%--                    <div class="role-card">--%>
-<%--                        <div class="d-flex justify-content-between align-items-start mb-2">--%>
-<%--                            <h4 class="h6 mb-0 fw-medium">Editor</h4>--%>
-<%--                            <span class="badge bg-success badge-custom">Content</span>--%>
-<%--                        </div>--%>
-<%--                        <p class="text-muted small mb-2">Can create and edit content</p>--%>
-<%--                        <div class="d-flex gap-2">--%>
-<%--                            <button class="btn btn-link btn-sm p-0 text-primary">Edit</button>--%>
-<%--                            <button class="btn btn-link btn-sm p-0 text-muted">View</button>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
+        <%--                    <div class="role-card">--%>
+        <%--                        <div class="d-flex justify-content-between align-items-start mb-2">--%>
+        <%--                            <h4 class="h6 mb-0 fw-medium">Editor</h4>--%>
+        <%--                            <span class="badge bg-success badge-custom">Content</span>--%>
+        <%--                        </div>--%>
+        <%--                        <p class="text-muted small mb-2">Can create and edit content</p>--%>
+        <%--                        <div class="d-flex gap-2">--%>
+        <%--                            <button class="btn btn-link btn-sm p-0 text-primary">Edit</button>--%>
+        <%--                            <button class="btn btn-link btn-sm p-0 text-muted">View</button>--%>
+        <%--                        </div>--%>
+        <%--                    </div>--%>
 
-<%--                    <div class="role-card">--%>
-<%--                        <div class="d-flex justify-content-between align-items-start mb-2">--%>
-<%--                            <h4 class="h6 mb-0 fw-medium">Viewer</h4>--%>
-<%--                            <span class="badge bg-secondary badge-custom">Read Only</span>--%>
-<%--                        </div>--%>
-<%--                        <p class="text-muted small mb-2">View-only access to content</p>--%>
-<%--                        <div class="d-flex gap-2">--%>
-<%--                            <button class="btn btn-link btn-sm p-0 text-primary">Edit</button>--%>
-<%--                            <button class="btn btn-link btn-sm p-0 text-muted">View</button>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
+        <%--                    <div class="role-card">--%>
+        <%--                        <div class="d-flex justify-content-between align-items-start mb-2">--%>
+        <%--                            <h4 class="h6 mb-0 fw-medium">Viewer</h4>--%>
+        <%--                            <span class="badge bg-secondary badge-custom">Read Only</span>--%>
+        <%--                        </div>--%>
+        <%--                        <p class="text-muted small mb-2">View-only access to content</p>--%>
+        <%--                        <div class="d-flex gap-2">--%>
+        <%--                            <button class="btn btn-link btn-sm p-0 text-primary">Edit</button>--%>
+        <%--                            <button class="btn btn-link btn-sm p-0 text-muted">View</button>--%>
+        <%--                        </div>--%>
+        <%--                    </div>--%>
+        <%--                </div>--%>
+        <%--            </div>--%>
 
-<%--            <!-- Quick Stats -->--%>
-<%--            <div class="stats-card">--%>
-<%--                <h3 class="h5 fw-semibold mb-3">Quick Stats</h3>--%>
-<%--                <div class="d-flex flex-column gap-2">--%>
-<%--                    <div class="d-flex justify-content-between">--%>
-<%--                        <span class="text-muted">Total Roles</span>--%>
-<%--                        <span class="fw-medium" id="totalRoles">${roleCount}</span>--%>
-<%--                    </div>--%>
-<%--                    <div class="d-flex justify-content-between">--%>
-<%--                        <span class="text-muted">Active Users</span>--%>
-<%--                        <span class="fw-medium">24</span>--%>
-<%--                    </div>--%>
-<%--                    <div class="d-flex justify-content-between">--%>
-<%--                        <span class="text-muted">Permissions</span>--%>
-<%--                        <span class="fw-medium">15</span>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
+        <%--            <!-- Quick Stats -->--%>
+        <%--            <div class="stats-card">--%>
+        <%--                <h3 class="h5 fw-semibold mb-3">Quick Stats</h3>--%>
+        <%--                <div class="d-flex flex-column gap-2">--%>
+        <%--                    <div class="d-flex justify-content-between">--%>
+        <%--                        <span class="text-muted">Total Roles</span>--%>
+        <%--                        <span class="fw-medium" id="totalRoles">${roleCount}</span>--%>
+        <%--                    </div>--%>
+        <%--                    <div class="d-flex justify-content-between">--%>
+        <%--                        <span class="text-muted">Active Users</span>--%>
+        <%--                        <span class="fw-medium">24</span>--%>
+        <%--                    </div>--%>
+        <%--                    <div class="d-flex justify-content-between">--%>
+        <%--                        <span class="text-muted">Permissions</span>--%>
+        <%--                        <span class="fw-medium">15</span>--%>
+        <%--                    </div>--%>
+        <%--                </div>--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
     </div>
 </div>
 
-<script>
-    function validateName(name) {
-        const nameRegex = /^[a-zA-Z\s]{2,30}$/;
-        return nameRegex.test(name.trim());
-    }
-    document.getElementById("roleForm").addEventListener("submit", function (event) {
-        const nameInput = document.getElementById("roleName");
-        const name = nameInput.value.trim();
-
-        // Nếu không hợp lệ => chặn gửi form
-        if (!validateName(name)) {
-            event.preventDefault(); // chặn gửi
-            alert("Role name must contain only letters and spaces (2–30 characters).");
-            nameInput.focus();
-        }
-    });
-</script>
 
 </body>
 </html>

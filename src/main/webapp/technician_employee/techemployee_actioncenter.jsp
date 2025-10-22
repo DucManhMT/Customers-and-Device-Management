@@ -11,7 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-    <p>THIS IS TECHEMPLOYEE</p>
-    <a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
+<p>THIS IS TECHEMPLOYEE</p>
+<a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
+<a href="${pageContext.request.contextPath}/task/viewAssignedTasks">View Assigned Task</a>
 </body>
 </html>

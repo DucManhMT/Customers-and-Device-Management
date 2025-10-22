@@ -11,7 +11,6 @@
 <body class="bg-light">
 
 <div class="container mt-5">
-    <jsp:include page="../components/header.jsp"/>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm rounded-3">

@@ -86,7 +86,7 @@ public class CreateContractServlet extends HttpServlet {
         int contractId = IDGeneratorService.generateID(Contract.class);
         contract.setContractID(contractId);
         contract.setContractImage(fileName);
-        contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR","contractId"));
+        contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR", "contractId"));
         contract.setStartDate(LocalDate.now());
         contract.setExpiredDate(LocalDate.now().plusYears(1));
 
@@ -96,13 +96,12 @@ public class CreateContractServlet extends HttpServlet {
 //        System.out.println("contract.getStartDate(): " + contract.getStartDate());
 //        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
 //        System.out.println(contract.getCustomer().getCustomerID());
-        em.persist(contract,Contract.class);
+        em.persist(contract, Contract.class);
 
         // Gửi phản hồi hiển thị ảnh đã upload
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().println("<html><body style='font-family:Arial;text-align:center;'>");
         response.getWriter().println("<h2>Upload Successful!</h2>");
-        response.getWriter().println("<img src='assets/" + fileName + "' style='max-width:400px;border-radius:8px;'><br><br>");
         response.getWriter().println("<a href='create_contract.jsp'>← Back to Upload</a>");
         response.getWriter().println("</body></html>");
     }

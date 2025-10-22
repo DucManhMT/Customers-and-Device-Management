@@ -17,7 +17,6 @@
 <div class="container py-5">
 
     <div class="card shadow-sm">
-        <jsp:include page="../components/header.jsp"/>
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">Process Request</h3>
         </div>

@@ -11,10 +11,12 @@
     <title>Title</title>
 </head>
 <body>
-    <p>THIS IS CUSTOMERSUPPORTER</p>
-    <h1>Customer Supporter Action Center</h1>
-    <p>Welcome to the Customer Supporter Action Center. Here you can manage customer requests
-        and assist customers.</p>
+<p>THIS IS CUSTOMERSUPPORTER</p>
+<h1>Customer Supporter Action Center</h1>
+<p>Welcome to the Customer Supporter Action Center. Here you can manage customer requests
+    and assist customers.</p>
 <a href="${pageContext.request.contextPath}/customer_supporter/create_contract">Create contract</a>
+<a href="../supporter/requests/list">Customer supporter request</a>
+<a href="../supporter/requests/list">Customer supporter request</a>
 </body>
 </html>
