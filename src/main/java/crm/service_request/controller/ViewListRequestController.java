@@ -3,6 +3,7 @@ package crm.service_request.controller;
 import java.io.IOException;
 
 import crm.common.URLConstants;
+import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
@@ -12,11 +13,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "ViewListRequestController", urlPatterns = { URLConstants.CUSTOMER_SUPPORTER_REQUEST_LIST })
+@WebServlet(name = "ViewListRequestController", urlPatterns = {URLConstants.CUSTOMER_SUPPORTER_REQUEST_LIST})
 public class ViewListRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestService requestService = new RequestService();
+        Account account = (Account) req.getSession().getAttribute("account");
+        if (account == null) {
+            resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
+            return;
+        }
         try {
             // Default values, magic numbers should be avoided in future
             int page = 1;

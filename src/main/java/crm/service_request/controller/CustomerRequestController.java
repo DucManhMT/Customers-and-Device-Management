@@ -2,6 +2,7 @@ package crm.service_request.controller;
 
 import java.io.IOException;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Request;
@@ -16,7 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CustomerRequestController", urlPatterns = { URLConstants.CUSTOMER_VIEW_REQUEST })
+@WebServlet(name = "CustomerRequestController", urlPatterns = {URLConstants.CUSTOMER_VIEW_REQUEST})
 public class CustomerRequestController extends HttpServlet {
 
     @Override
@@ -25,6 +26,10 @@ public class CustomerRequestController extends HttpServlet {
         Account account = (Account) req.getSession().getAttribute("account");
         CustomerRepository customerRepository = new CustomerRepository();
         RequestService requestService = new RequestService();
+        if (account == null) {
+            resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
+            return;
+        }
         try {
             // Default values, magic numbers should be avoided in future
             int page = 1;
@@ -57,7 +62,7 @@ public class CustomerRequestController extends HttpServlet {
             req.setAttribute("isFirstPage", requestPage.isFirst());
             req.setAttribute("isLastPage", requestPage.isLast());
         } catch (Exception e) {
-            req.setAttribute("error", "Something went wrong while displaying requests!");
+            req.setAttribute("error", MessageConst.MSG15);
         }
         req.getRequestDispatcher("/service_request/view-service-request.jsp").forward(req, resp);
     }
