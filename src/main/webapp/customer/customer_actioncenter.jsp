@@ -17,5 +17,9 @@
     <p>Welcome to the Customer Action Center. Here you can manage your account and view
         your activities.</p>
 <a href="${pageContext.request.contextPath}/customer/contract_history">Contract Histoy</a>
+<a href="${pageContext.request.contextPath}/feedback/create" >
+                    Customer Feedback
+                </a>
 </body>
 </html>
+  

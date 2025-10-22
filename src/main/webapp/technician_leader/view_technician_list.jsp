@@ -18,6 +18,8 @@
       href="${pageContext.request.contextPath}/css/viewTechnicianList.css"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/view_technician_list.js"></script>
   </head>
   <body>
     <div class="container-fluid">
@@ -25,13 +27,17 @@
         <div class="container">
           <div class="text-center">
             <h1 class="display-4 fw-bold mb-2">
-              <i class="bi bi-people-fill"></i> Technician Management
+              <i class="bi bi-people-fill"></i> Technician list
             </h1>
           </div>
         </div>
       </div>
 
       <div class="container">
+          <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+             class="btn btn-primary mb-3">
+              <span>Back to Action Center</span>
+          </a>
         <div
           class="alert alert-info mb-4"
           id="assignmentModeAlert"
@@ -388,152 +394,162 @@
           </c:otherwise>
         </c:choose>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-      function goToPage(page) {
-        const form = document.getElementById('paginationForm');
-        const input = document.getElementById('pageInput');
-        input.value = page;
-        form.submit();
-      }
+        <script>
+function goToPage(page) {
+  const form = document.getElementById("paginationForm");
+  const input = document.getElementById("pageInput");
+  input.value = page;
+  form.submit();
+}
 
-      function changeRecordsPerPage(value) {
-        const form = document.getElementById('paginationForm');
-        document.getElementById('recordsPerPageInput').value = value;
-        document.getElementById('pageInput').value = 1; 
-        form.submit();
-      }
-      function viewEmployeeDetail(staffID) {
-        window.location.href = '${pageContext.request.contextPath}/tech/employees/view?id=' + staffID;
-      }
-      
-      function clearFilters() {
-        document.getElementById('searchName').value = '';
-        document.getElementById('filterLocation').value = '';
-        document.getElementById('filterAge').value = '';
-        
-        document.getElementById('filterForm').submit();
-      }
-      
-      function applyFilters() {
-        document.getElementById('filterForm').submit();
-      }
-      
-      function updatePageSize() {
-        const pageSize = document.getElementById('pageSize').value;
-        const form = document.getElementById('filterForm');
-        
-        let pageSizeInput = document.querySelector('input[name="recordsPerPage"]');
-        if (!pageSizeInput) {
-          pageSizeInput = document.createElement('input');
-          pageSizeInput.type = 'hidden';
-          pageSizeInput.name = 'recordsPerPage';
-          form.appendChild(pageSizeInput);
-        }
-        pageSizeInput.value = pageSize;
-        
-        let pageInput = document.querySelector('input[name="page"]');
-        if (!pageInput) {
-          pageInput = document.createElement('input');
-          pageInput.type = 'hidden';
-          pageInput.name = 'page';
-          form.appendChild(pageInput);
-        }
-        pageInput.value = '1';
-        
-        form.submit();
-      }
-      
-      function updatePaginationLinks() {
-        const searchName = document.getElementById('searchName').value;
-        const location = document.getElementById('filterLocation').value;
-        const ageRange = document.getElementById('filterAge').value;
-        const recordsPerPage = document.getElementById('pageSize').value;
-        
-        let filterParams = '';
-        if (searchName) filterParams += '&searchName=' + encodeURIComponent(searchName);
-        if (location) filterParams += '&location=' + encodeURIComponent(location);
-        if (ageRange) filterParams += '&ageRange=' + encodeURIComponent(ageRange);
-        if (recordsPerPage) filterParams += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-        
-        const paginationLinks = document.querySelectorAll('.pagination .page-link');
-        paginationLinks.forEach(link => {
-          if (link.href && link.href.includes('?page=')) {
-            const url = new URL(link.href);
-            if (searchName) url.searchParams.set('searchName', searchName);
-            if (location) url.searchParams.set('location', location);
-            if (ageRange) url.searchParams.set('ageRange', ageRange);
-            if (recordsPerPage) url.searchParams.set('recordsPerPage', recordsPerPage);
-            link.href = url.toString();
-          }
-        });
-      }
-      
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Tech employees loaded: ${totalCount}');
-        
-        document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
-        document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
-        
-        const pageSizeSelector = document.getElementById('pageSize');
-        if (pageSizeSelector) {
-          pageSizeSelector.addEventListener('change', updatePageSize);
-          
-          <c:if test="${not empty recordsPerPage}">
-            pageSizeSelector.value = '${recordsPerPage}';
-          </c:if>
-        }
-        
-        updatePaginationLinks();
-        
-        
-        showFilterSummary();
-      });
-      
-      function showFilterSummary() {
-        const searchName = document.getElementById('searchName').value;
-        const location = document.getElementById('filterLocation').value;
-        const ageRange = document.getElementById('filterAge').value;
-        
-        if (searchName || location || ageRange) {
-          let summary = 'Active filters: ';
-          const filters = [];
-          
-          if (searchName) filters.push('Search: "' + searchName + '"');
-          if (location) filters.push('Location: "' + location + '"');
-          if (ageRange) {
-            const ageText = document.querySelector('#filterAge option[value="' + ageRange + '"]').textContent;
-            filters.push('Age: "' + ageText + '"');
-          }
-          
-          summary += filters.join(', ');
-          
-          let filterSummary = document.getElementById('filterSummary');
-          if (!filterSummary) {
-            filterSummary = document.createElement('div');
-            filterSummary.id = 'filterSummary';
-            filterSummary.className = 'alert alert-info alert-dismissible fade show mt-2';
-            filterSummary.innerHTML = '<i class="bi bi-info-circle me-2"></i><span id="filterSummaryText"></span>';
-            document.querySelector('.filter-section').appendChild(filterSummary);
-          }
-          
-          document.getElementById('filterSummaryText').textContent = summary;
-          filterSummary.style.display = 'block';
-        } else {
-          const filterSummary = document.getElementById('filterSummary');
-          if (filterSummary) {
-            filterSummary.style.display = 'none';
-          }
-        }
-      }
-      
-      function clearFilters() {
-        document.getElementById('searchName').value = '';
-        document.getElementById('filterLocation').value = '';
-        document.getElementById('filterAge').value = '';
-        document.getElementById('filterForm').submit();
-      }
-    </script>
+function changeRecordsPerPage(value) {
+  const form = document.getElementById("paginationForm");
+  document.getElementById("recordsPerPageInput").value = value;
+  document.getElementById("pageInput").value = 1;
+  form.submit();
+}
+function viewEmployeeDetail(staffID) {
+  window.location.href =
+    "${pageContext.request.contextPath}/tech/employees/view?id=" + staffID;
+}
+
+function clearFilters() {
+  document.getElementById("searchName").value = "";
+  document.getElementById("filterLocation").value = "";
+  document.getElementById("filterAge").value = "";
+
+  document.getElementById("filterForm").submit();
+}
+
+function applyFilters() {
+  document.getElementById("filterForm").submit();
+}
+
+function updatePageSize() {
+  const pageSize = document.getElementById("pageSize").value;
+  const form = document.getElementById("filterForm");
+
+  let pageSizeInput = document.querySelector('input[name="recordsPerPage"]');
+  if (!pageSizeInput) {
+    pageSizeInput = document.createElement("input");
+    pageSizeInput.type = "hidden";
+    pageSizeInput.name = "recordsPerPage";
+    form.appendChild(pageSizeInput);
+  }
+  pageSizeInput.value = pageSize;
+
+  let pageInput = document.querySelector('input[name="page"]');
+  if (!pageInput) {
+    pageInput = document.createElement("input");
+    pageInput.type = "hidden";
+    pageInput.name = "page";
+    form.appendChild(pageInput);
+  }
+  pageInput.value = "1";
+
+  form.submit();
+}
+
+function updatePaginationLinks() {
+  const searchName = document.getElementById("searchName").value;
+  const location = document.getElementById("filterLocation").value;
+  const ageRange = document.getElementById("filterAge").value;
+  const recordsPerPage = document.getElementById("pageSize").value;
+
+  let filterParams = "";
+  if (searchName)
+    filterParams += "&searchName=" + encodeURIComponent(searchName);
+  if (location) filterParams += "&location=" + encodeURIComponent(location);
+  if (ageRange) filterParams += "&ageRange=" + encodeURIComponent(ageRange);
+  if (recordsPerPage)
+    filterParams += "&recordsPerPage=" + encodeURIComponent(recordsPerPage);
+
+  const paginationLinks = document.querySelectorAll(".pagination .page-link");
+  paginationLinks.forEach((link) => {
+    if (link.href && link.href.includes("?page=")) {
+      const url = new URL(link.href);
+      if (searchName) url.searchParams.set("searchName", searchName);
+      if (location) url.searchParams.set("location", location);
+      if (ageRange) url.searchParams.set("ageRange", ageRange);
+      if (recordsPerPage)
+        url.searchParams.set("recordsPerPage", recordsPerPage);
+      link.href = url.toString();
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Tech employees loaded: ${totalCount}");
+
+  document
+    .getElementById("clearFilterBtn")
+    .addEventListener("click", clearFilters);
+  document
+    .getElementById("applyFilterBtn")
+    .addEventListener("click", applyFilters);
+
+  const pageSizeSelector = document.getElementById("pageSize");
+  if (pageSizeSelector) {
+    pageSizeSelector.addEventListener("change", updatePageSize);
+
+    <c:if test="${not empty recordsPerPage}">
+      pageSizeSelector.value = '${recordsPerPage}';
+    </c:if>;
+  }
+
+  updatePaginationLinks();
+
+  showFilterSummary();
+});
+
+function showFilterSummary() {
+  const searchName = document.getElementById("searchName").value;
+  const location = document.getElementById("filterLocation").value;
+  const ageRange = document.getElementById("filterAge").value;
+
+  if (searchName || location || ageRange) {
+    let summary = "Active filters: ";
+    const filters = [];
+
+    if (searchName) filters.push('Search: "' + searchName + '"');
+    if (location) filters.push('Location: "' + location + '"');
+    if (ageRange) {
+      const ageText = document.querySelector(
+        '#filterAge option[value="' + ageRange + '"]'
+      ).textContent;
+      filters.push('Age: "' + ageText + '"');
+    }
+
+    summary += filters.join(", ");
+
+    let filterSummary = document.getElementById("filterSummary");
+    if (!filterSummary) {
+      filterSummary = document.createElement("div");
+      filterSummary.id = "filterSummary";
+      filterSummary.className =
+        "alert alert-info alert-dismissible fade show mt-2";
+      filterSummary.innerHTML =
+        '<i class="bi bi-info-circle me-2"></i><span id="filterSummaryText"></span>';
+      document.querySelector(".filter-section").appendChild(filterSummary);
+    }
+
+    document.getElementById("filterSummaryText").textContent = summary;
+    filterSummary.style.display = "block";
+  } else {
+    const filterSummary = document.getElementById("filterSummary");
+    if (filterSummary) {
+      filterSummary.style.display = "none";
+    }
+  }
+}
+
+function clearFilters() {
+  document.getElementById("searchName").value = "";
+  document.getElementById("filterLocation").value = "";
+  document.getElementById("filterAge").value = "";
+  document.getElementById("filterForm").submit();
+}
+
+        </script>
   </body>
 </html>

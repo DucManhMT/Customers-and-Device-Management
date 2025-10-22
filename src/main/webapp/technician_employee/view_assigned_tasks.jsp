@@ -26,12 +26,6 @@
         <h3><i class="fas fa-tools"></i> Tech Dashboard</h3>
     </div>
     <ul class="sidebar-menu">
-        <li>
-            <a href="${pageContext.request.contextPath}/techemployee/dashboard.jsp">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
         <li class="active">
             <a href="${pageContext.request.contextPath}/techemployee/assignedTasks.jsp">
                 <i class="fas fa-list-check"></i>
@@ -39,15 +33,9 @@
             </a>
         </li>
         <li>
-            <a href="${pageContext.request.contextPath}/techemployee/equipment-request.jsp">
+            <a href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter">
                 <i class="fas fa-box"></i>
-                <span>Equipment Request</span>
-            </a>
-        </li>
-        <li class="logout">
-            <a href="#" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
+                <span>Back to Action Center</span>
             </a>
         </li>
     </ul>

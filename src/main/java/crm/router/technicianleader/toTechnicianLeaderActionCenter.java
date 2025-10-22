@@ -11,6 +11,6 @@ import java.io.IOException;
 public class toTechnicianLeaderActionCenter extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("/technicianleader/technicianleader_actioncenter.jsp").forward(request, response);
+        request.getRequestDispatcher("/technician_leader/techlead_actioncenter.jsp").forward(request, response);
     }
 }

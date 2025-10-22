@@ -179,6 +179,10 @@
                             Task Completed
                         </button>
                     <% } %>
+                    <a href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"
+                       class="btn home-button">
+                        <span>Back to Action Center</span>
+                    </a>
                 </div>
                 
             <% } else { %>

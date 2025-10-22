@@ -28,6 +28,7 @@ public class FeedbackService {
         req.setAttribute("currentUsername", username);
 
         req.removeAttribute("errorMessage");
+        req.removeAttribute("successMessage");
 
         int page = 1;
         int recordsPerPage = 5;
@@ -124,13 +125,14 @@ public class FeedbackService {
                     feedback.setCustomerID(username);
 
                     entityManager.persist(feedback, Feedback.class);
+                    req.setAttribute("successMessage",
+                            "Feedback created successfully! Thank you " + username + " for your review.");
 
-                    entityManager.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    throw new SQLException("Failed to create feedback", e);
+                    req.setAttribute("errorMessage", "Failed to create feedback. Please try again later.");
                 }
-
+                entityManager.close();
                 req.setAttribute("successMessage",
                         "Feedback created successfully! Thank you " + username + " for your review.");
 
