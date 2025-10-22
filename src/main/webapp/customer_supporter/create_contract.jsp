@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Create Contract</title>
@@ -54,7 +55,9 @@
         </div>
 
 
-        <!-- User Name Input -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
 
 
         <!-- ✅ FORM CHÍNH: chỉ thêm action, method, enctype -->

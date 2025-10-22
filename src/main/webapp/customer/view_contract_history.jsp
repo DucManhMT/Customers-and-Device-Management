@@ -50,7 +50,7 @@
           <h5 class="mb-3"><i class="bi bi-search me-2"></i>Search Contracts</h5>
             <form action="${pageContext.request.contextPath}/customer/contract_history" method="get" class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Contract ID</label>
+                    <label class="form-label">Contract Code</label>
                     <input type="text" class="form-control" name="contractCode" placeholder="Enter contract code...">
                 </div>
                 <div class="col-md-4">

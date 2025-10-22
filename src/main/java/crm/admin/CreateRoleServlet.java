@@ -5,6 +5,7 @@ import crm.common.model.Role;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -59,6 +60,12 @@ public class CreateRoleServlet extends HttpServlet {
 
         if (!em.findWithConditions(Role.class, conditions).isEmpty()) {
             session.setAttribute("error", "Role name already exists.");
+            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
+            return;
+        }
+
+        if(!Validator.isValidUsername(roleName) || !Validator.isValidText(roleName)){
+            session.setAttribute("error", "Role name contains invalid characters.");
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
             return;
         }

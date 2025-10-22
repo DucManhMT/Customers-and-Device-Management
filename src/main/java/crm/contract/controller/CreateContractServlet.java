@@ -29,7 +29,6 @@ import java.util.Map;
 public class CreateContractServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
     }
 
@@ -37,7 +36,24 @@ public class CreateContractServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Part filePart = request.getPart("contractImage");
+
         String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
+        String mimeType = getServletContext().getMimeType(fileName);
+        if (mimeType == null || !mimeType.startsWith("image/")) {
+            request.setAttribute("error", "Invalid file type. Please upload an image file.");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
+
+        // ✅ Kiểm tra đuôi file hợp lệ
+        String lowerName = fileName.toLowerCase();
+        if (!(lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg") ||
+                lowerName.endsWith(".png") || lowerName.endsWith(".gif") ||
+                lowerName.endsWith(".webp"))) {
+            request.setAttribute("error", "Invalid file extension. Allowed: .jpg, .jpeg, .png, .gif, .webp");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
 
         // Tạo thư mục lưu file nếu chưa có
         String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
