@@ -180,7 +180,7 @@
                             <ul class="pagination pagination-sm mb-0">
                                 <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Previous</a>
+                                       href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Previous</a>
                                 </li>
                                 <c:set var="maxVisiblePages" value="5"/>
                                 <c:set var="startPage" value="${currentPage - 2 > 1 ? currentPage - 2 : 1}"/>
@@ -192,7 +192,7 @@
 
                                 <c:if test="${startPage > 1}">
                                     <li class="page-item"><a class="page-link"
-                                                             href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">1</a>
+                                                             href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">1</a>
                                     </li>
                                     <c:if test="${startPage > 2}">
                                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -202,7 +202,7 @@
                                 <c:forEach begin="${startPage}" end="${endPage}" var="i">
                                     <li class="page-item ${i == currentPage ? 'active' : ''}">
                                         <a class="page-link"
-                                           href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${i}</a>
+                                           href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${i}</a>
                                     </li>
                                 </c:forEach>
 
@@ -211,13 +211,13 @@
                                         <li class="page-item disabled"><span class="page-link">...</span></li>
                                     </c:if>
                                     <li class="page-item"><a class="page-link"
-                                                             href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${totalPages}</a>
+                                                             href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">${totalPages}</a>
                                     </li>
                                 </c:if>
 
                                 <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/warehouse_keeper/create_export_request?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Next</a>
+                                       href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&selectedWarehouseID=${selectedWarehouseID}">Next</a>
                                 </li>
                             </ul>
                         </nav>
