@@ -162,7 +162,7 @@ public class TransferRequestCreateController extends HttpServlet {
             }
             entityManager.commit();
 
-            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST); // Redirect to a success or listing page
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_INVENTORY); // Redirect to a success or listing page
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
