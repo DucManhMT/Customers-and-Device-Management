@@ -26,7 +26,9 @@
 </head>
 
 <body>
+
   <div class="container-fluid">
+
     <div class="main-container">
       <div class="header-section">
         <div class="row align-items-center position-relative">
@@ -35,7 +37,11 @@
               Contract History
             </h1>
           </div>
-
+            <div class="col-md-4 text-end">
+                <a href="${pageContext.request.contextPath}/customer/customer_actioncenter" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left-circle"></i> Back to Menu
+                </a>
+            </div>
         </div>
       </div>
 
@@ -44,8 +50,8 @@
           <h5 class="mb-3"><i class="bi bi-search me-2"></i>Search Contracts</h5>
             <form action="${pageContext.request.contextPath}/customer/contract_history" method="get" class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Contract ID</label>
-                    <input type="text" class="form-control" name="contractId" placeholder="Enter contract ID...">
+                    <label class="form-label">Contract Code</label>
+                    <input type="text" class="form-control" name="contractCode" placeholder="Enter contract code...">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Start Date</label>
@@ -96,11 +102,11 @@
             <tbody id="contractsTableBody">
                 <c:forEach items="${contracts}" var="contract">
                     <tr class="align-middle">
-                        <td>${contract.contractID}</td>
+                        <td>${contract.contractCode}</td>
                         <td>${contract.startDate}</td>
                         <td>${contract.expiredDate}</td>
                         <td>
-                            <button class="btn btn-sm btn-info text-white me-2" onclick="viewDetails('${contract.contractID}')">
+                            <button class="btn btn-sm btn-info text-white me-2" onclick="viewDetails('${contract.contractCode}', '${contract.contractImage}')">
                                 <i class="bi bi-eye"></i> View
                             </button>
                         </td>
@@ -132,7 +138,7 @@
               <c:if test="${currentPage > 1}">
                   <li class="page-item">
                       <a class="page-link"
-                         href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                         href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">
                           Previous
                       </a>
                   </li>
@@ -142,7 +148,7 @@
               <c:forEach begin="1" end="${totalPages}" var="i">
                   <li class="page-item ${i == currentPage ? 'active' : ''}">
                       <a class="page-link"
-                         href="${pageContext.request.contextPath}/customer/contract_history?page=${i}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                         href="${pageContext.request.contextPath}/customer/contract_history?page=${i}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">
                               ${i}
                       </a>
                   </li>
@@ -152,7 +158,7 @@
               <c:if test="${currentPage < totalPages}">
                   <li class="page-item">
                       <a class="page-link"
-                         href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractId=${contractIdSearch}&startDate=${startDateSearch}">
+                         href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractCode=${contractCode}&startDate=${startDateSearch}">
                           Next
                       </a>
                   </li>
