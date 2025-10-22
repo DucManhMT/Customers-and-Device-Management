@@ -30,7 +30,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <!-- Back Button -->
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_request"
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
                                class="btn btn-light back-button">
                                 <i class="bi bi-arrow-left-circle"></i> Back
                             </a>
