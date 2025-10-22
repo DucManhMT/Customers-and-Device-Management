@@ -41,7 +41,7 @@
 // /// / }
 // //
 // package testbuilder;
-
+//
 // import crm.auth.service.Hasher;
 // import crm.auth.service.LoginService;
 // import crm.common.model.*;
@@ -59,15 +59,15 @@
 // import crm.core.utils.HashInfo;
 // import crm.core.validator.Validator;
 // import org.glassfish.json.JsonUtil;
-
+//
 // import java.time.LocalDateTime;
 // import java.util.HashMap;
 // import java.util.List;
 // import java.util.Map;
-
+//
 // public class BuilderTest {
 // public static void main(String[] args) {
-
+//
 // // Product product = new Product();
 // // Type type = new Type();
 // // for ( int i=1; i<=10; i++){
@@ -82,7 +82,7 @@
 // // product.setType(em.find(Type.class,(i%10 +1)));
 // // em.persist(product, Product.class);
 // // }
-
+//
 // //
 // // String username = account.getUsername();
 // // String email = null;
