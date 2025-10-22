@@ -3,7 +3,7 @@ package crm.common.model;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity(tableName = "Contract")
@@ -12,17 +12,21 @@ public class Contract {
     @Column(name = "ContractID", type = "INT")
     private Integer contractID;
 
+    @Column(name="ContractCode", length=255, nullable=false, unique=true)
+    private String contractCode;
+
+
+
     @Column(name = "ContractImage", length = 255, nullable = false)
     private String contractImage;
 
-    @Column(name="ContractCode")
-    private String contractCode;
+
 
     @Column(name = "StartDate", type = "DATE", nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "ExpiredDate", type = "DATE", nullable = false)
-    private Date expiredDate;
+    private LocalDate expiredDate;
 
     @ManyToOne(joinColumn = "CustomerID")
     private LazyReference<Customer> customer;
@@ -46,30 +50,30 @@ public class Contract {
         this.contractImage = contractImage;
     }
 
-    public Date getStartDate() {
+
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getExpiredDate() {
+    public void setCustomer(LazyReference<Customer> customer) {
+        this.customer = customer;
+    }
+
+    public LocalDate getExpiredDate() {
         return expiredDate;
     }
 
-    public void setExpiredDate(Date expiredDate) {
+    public void setExpiredDate(LocalDate expiredDate) {
         this.expiredDate = expiredDate;
     }
 
     public Customer getCustomer() {
         return this.customer.get();
     }
-
-    public void setCustomer(Customer customer) {
-        this.customer = new LazyReference<>(Customer.class, customer.getCustomerID());
-    }
-
     public String getContractCode() {
         return contractCode;
     }
@@ -77,6 +81,11 @@ public class Contract {
     public void setContractCode(String contractCode) {
         this.contractCode = contractCode;
     }
+
+    public void setCustomer(Customer customer) {
+        this.customer = new LazyReference<>(Customer.class, customer.getCustomerID());
+    }
+
 
 
     public List<Request> getRequests() {

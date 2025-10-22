@@ -17,11 +17,17 @@
 <body>
 <div class="container-fluid">
     <div class="row">
+        <div class="col-auto">
+            <a href="${pageContext.request.contextPath}/admin/admin_actioncenter" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Back to Menu
+            </a>
+        </div>
         <div class="col-md-12 main-content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2 class="mb-1">Account Management</h2>
                 </div>
+
                 <button class="btn btn-primary" onclick="showAddAccountModal()">
                     <i class="bi bi-plus-circle me-2"></i>Add New Account
                 </button>

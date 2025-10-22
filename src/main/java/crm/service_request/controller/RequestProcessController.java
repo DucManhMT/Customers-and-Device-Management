@@ -45,6 +45,9 @@ public class RequestProcessController extends HttpServlet {
             int requestId = Integer.parseInt(req.getParameter("requestId"));
             String status = req.getParameter("status");
             String note = req.getParameter("note");
+            if (note.length() > 255) {
+                throw new IllegalArgumentException("Note cannot exceed 255 characters.");
+            }
             String username = account.getUsername();
             if (!requestService.isExist(requestId)) {
                 throw new IllegalArgumentException(MessageConst.MSG14);
@@ -55,6 +58,8 @@ public class RequestProcessController extends HttpServlet {
             requestService.updateRequestStatus(requestId, RequestStatus.valueOf(status), note, account);
             req.setAttribute("message", MessageConst.MSG17);
             req.setAttribute("request", requestService.getRequestById(requestId));
+            resp.sendRedirect("./list");
+            return;
         } catch (NumberFormatException e) {
             req.setAttribute("error", MessageConst.MSG16);
         } catch (IllegalArgumentException e) {
@@ -62,6 +67,6 @@ public class RequestProcessController extends HttpServlet {
         } catch (Exception e) {
             req.setAttribute("error", MessageConst.MSG18);
         }
-        resp.sendRedirect("./list");
+        doGet(req, resp);
     }
 }

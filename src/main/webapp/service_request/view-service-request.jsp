@@ -38,6 +38,9 @@
             </div>
             <jsp:include page="../components/do-filter.jsp"/>
         </div>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger mt-3">${error}</div>
+        </c:if>
         <table class="table table-bordered">
             <thead class="table-light">
             <tr>

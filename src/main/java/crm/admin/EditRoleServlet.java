@@ -54,7 +54,6 @@ public class EditRoleServlet extends HttpServlet {
         int roleId = Integer.parseInt(request.getParameter("roleID"));
         String roleName = request.getParameter("roleName");
 
-        // Cập nhật tên role nếu thay đổi
 
         Role role = em.find(Role.class, roleId);
         System.out.println("role.getRoleName(): " + (role != null ? role.getRoleName() : "null"));
@@ -64,7 +63,6 @@ public class EditRoleServlet extends HttpServlet {
             em.merge(role, Role.class);
         }
 
-        // Lấy danh sách featureIds được chọn từ form
         String[] featureIdParams = request.getParameterValues("featureIds");
         Set<Integer> newFeatureIds = new HashSet<>();
         if (featureIdParams != null) {
@@ -73,7 +71,6 @@ public class EditRoleServlet extends HttpServlet {
             }
         }
 
-        // Xóa toàn bộ quyền cũ của role này
         Map<String, Object> cond = new HashMap<>();
         cond.put("role", roleId);
         List<RoleFeature> oldRoleFeatures = em.findWithConditions(RoleFeature.class, cond);
@@ -81,7 +78,6 @@ public class EditRoleServlet extends HttpServlet {
             em.remove(rf, RoleFeature.class);
         }
 
-        // Thêm quyền mới được chọn
         for (Integer fid : newFeatureIds) {
             Feature f = em.find(Feature.class, fid);
             if (f != null) {
@@ -93,7 +89,6 @@ public class EditRoleServlet extends HttpServlet {
             }
         }
 
-        // Sau khi cập nhật, chuyển hướng về lại trang edit với thông báo
-        response.sendRedirect(request.getContextPath() + "/EditRole?id=" + roleId + "&success=1");
+        response.sendRedirect(request.getContextPath() + "/admin/role_list/edit_role?id=" + roleId + "&success=1");
     }
 }

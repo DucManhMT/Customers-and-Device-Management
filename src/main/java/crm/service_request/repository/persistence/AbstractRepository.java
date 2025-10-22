@@ -11,13 +11,14 @@ import java.util.List;
 import crm.core.config.TransactionManager;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.querybuilder.EntityFieldMapper;
+import crm.core.repository.hibernate.querybuilder.QueryUtils;
+import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.repository.persistence.query.crud.DeleteQueryBuilder;
 import crm.service_request.repository.persistence.query.crud.InsertQueryBuilder;
 import crm.service_request.repository.persistence.query.crud.SelectQueryBuilder;
-import crm.service_request.repository.persistence.query.crud.UpdateQueryBuilder;
 
 public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
@@ -26,6 +27,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     private List<Field> fields;
     private String tableName;
     private final List<String> columns;
+    private final QueryUtils queryUtils = new QueryUtils();
 
     public AbstractRepository(Class<E> entityClass) {
         this.entityClass = entityClass;
@@ -59,20 +61,6 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     public void deleteById(K key) throws SQLException {
         DeleteQueryBuilder deleteBuilder = DeleteQueryBuilder.builder(tableName)
                 .where(EntityFieldMapper.getColumnName(keyField) + " = ?", key);
-        Connection connection = TransactionManager.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(deleteBuilder.build())) {
-            setStatementParameters(statement, deleteBuilder.getParameters());
-            statement.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void deleteWithCondition(ClauseBuilder clause) throws SQLException {
-        DeleteQueryBuilder deleteBuilder = DeleteQueryBuilder.builder(tableName).where(clause.build(),
-                clause.getParameters());
         Connection connection = TransactionManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(deleteBuilder.build())) {
             setStatementParameters(statement, deleteBuilder.getParameters());
@@ -229,6 +217,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public E save(E entity) throws SQLException {
         Connection connection = TransactionManager.getConnection();
+        SqlAndParamsDTO sqlParams = queryUtils.buildInsert(entity);
         InsertQueryBuilder insertBuilder = InsertQueryBuilder.builder(tableName).columns(columns)
                 .values(getFieldValues(entity));
         try (PreparedStatement statement = connection.prepareStatement(insertBuilder.build())) {
@@ -261,25 +250,12 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
     @Override
     public E update(E entity) throws SQLException {
         Connection connection = TransactionManager.getConnection();
-        UpdateQueryBuilder builder = UpdateQueryBuilder.builder(tableName);
-        List<Object> values = EntityFieldMapper.mapToColumnsAndValues(entity).getValues();
-        String keyColumnName = EntityFieldMapper.getColumnName(keyField);
-        Object keyValue = null;
-
-        for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).equals(keyColumnName)) {
-                keyValue = values.get(i);
-                continue;
+        try {
+            SqlAndParamsDTO sqlParams = queryUtils.buildUpdate(entity);
+            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
+                setStatementParameters(ps, sqlParams.getParams());
+                ps.executeUpdate();
             }
-            builder.set(columns.get(i), values.get(i));
-
-        }
-        builder.where(keyColumnName + " = ?", keyValue);
-
-        try (PreparedStatement statement = connection.prepareStatement(builder.build())) {
-            setStatementParameters(statement, builder.getParameters());
-            statement.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

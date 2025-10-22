@@ -5,13 +5,13 @@ import crm.common.model.Role;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "CreateRoleServlet", value = URLConstants.ADMIN_CREATE_ROLE)
@@ -63,6 +63,14 @@ public class CreateRoleServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
             return;
         }
+
+        if(!Validator.isValidName(roleName)){
+            session.setAttribute("error", "Role name contains invalid characters.");
+            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
+            return;
+        }
+
+
 
         // Tạo mới Role
         try {
