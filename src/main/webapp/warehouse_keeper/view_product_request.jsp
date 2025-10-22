@@ -58,8 +58,8 @@
                                         <span class="badge
                                             ${pr.status == 'Pending' ? 'bg-warning text-dark' : ''}
                                             ${pr.status == 'Approved' ? 'bg-success' : ''}
-                                            ${pr.status == 'Rejected' ? 'bg-danger' : ''}">
-                                            ${pr.status == 'Finished' ? 'bg-success' : ''}
+                                            ${pr.status == 'Rejected' ? 'bg-danger' : ''}
+                                            ${pr.status == 'Finished' ? 'bg-success' : ''}">
                                                 ${pr.status}
                                         </span>
                                     </td>
