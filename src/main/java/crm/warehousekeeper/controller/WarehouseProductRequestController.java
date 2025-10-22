@@ -58,6 +58,6 @@ public class WarehouseProductRequestController extends HttpServlet {
 
         productRequestDAO.merge(productRequest);
 
-        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/view_product_request.jsp");
+        resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS);
     }
 }

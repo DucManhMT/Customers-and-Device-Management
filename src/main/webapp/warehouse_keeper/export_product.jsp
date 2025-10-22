@@ -20,6 +20,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/warehouse_keeper/export_product.css">
+    <style>
+        .pagination-controls {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .page-size-selector {
+            max-width: 100px;
+        }
+        .page-input {
+            max-width: 80px;
+        }
+        .pagination .page-link {
+            color: #198754;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .pagination .page-link:hover {
+            color: #146c43;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid py-4">
@@ -30,7 +54,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <!-- Back Button -->
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_request"
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
                                class="btn btn-light back-button">
                                 <i class="bi bi-arrow-left-circle"></i> Back
                             </a>
@@ -169,21 +193,37 @@
             <!-- Warehouse Product List Section -->
             <div class="card shadow">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-database"></i> Available Warehouse Products
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-database"></i> Available Warehouse Products
+                        </h5>
+                        <!-- Filter Section -->
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="text-white mb-0 me-2">
+                                <i class="bi bi-funnel"></i> Filter by Status:
+                            </label>
+                            <select id="statusFilter" class="form-select form-select-sm" style="width: 150px;" onchange="filterByStatus()">
+                                <option value="all">All</option>
+                                <option value="In_Stock" selected>In Stock</option>
+                                <option value="Exported">Exported</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <p class="mb-1"><strong>Total Quantity in Warehouse:</strong>
-                            <span class="badge bg-info" id="totalWarehouseQty">
-                                    <c:choose>
-                                        <c:when test="${not empty warehouseProducts}">
-                                            ${warehouseProducts.size()}
-                                        </c:when>
-                                        <c:otherwise>0</c:otherwise>
-                                    </c:choose>
-                                </span>
+                            <span class="badge bg-info" id="totalWarehouseQty">${totalRecords}</span>
+                        </p>
+                        <p class="mb-0"><strong>Showing:</strong>
+                            <span class="badge bg-primary">
+                                <c:choose>
+                                    <c:when test="${not empty warehouseProducts}">
+                                        ${(currentPage - 1) * pageSize + 1} - ${(currentPage - 1) * pageSize + warehouseProducts.size()}
+                                    </c:when>
+                                    <c:otherwise>0 - 0</c:otherwise>
+                                </c:choose>
+                            </span> of ${totalRecords}
                         </p>
                     </div>
 
@@ -197,10 +237,10 @@
                                 <th style="width: 10%">Action</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="warehouseTableBody">
                             <c:choose>
                                 <c:when test="${empty warehouseProducts}">
-                                    <tr>
+                                    <tr class="no-products-row">
                                         <td colspan="4" class="text-center py-4">
                                             <i class="bi bi-archive" style="font-size: 3rem; color: #ccc;"></i>
                                             <p class="mt-2 text-muted">No products available in warehouse</p>
@@ -209,8 +249,10 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="product" items="${warehouseProducts}" varStatus="status">
-                                        <tr class="warehouse-item" id="warehouse-row-${product.productWarehouseID}">
-                                            <td class="text-center">${status.index + 1}</td>
+                                        <tr class="warehouse-item"
+                                            id="warehouse-row-${product.productWarehouseID}"
+                                            data-status="${product.productStatus}">
+                                            <td class="text-center item-number">${(currentPage - 1) * pageSize + status.index + 1}</td>
                                             <td>
                                                 <strong>${product.inventoryItem.serialNumber}</strong>
                                             </td>
@@ -258,6 +300,95 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination Controls -->
+                    <div class="pagination-controls mt-4">
+                        <div class="row align-items-center">
+                            <!-- Page Size Selector -->
+                            <div class="col-md-3 mb-3 mb-md-0">
+                                <label for="pageSize" class="form-label mb-1">
+                                    <i class="bi bi-list-ul"></i> Records per page:
+                                </label>
+                                <select id="pageSize" class="form-select page-size-selector" onchange="changePageSize()">
+                                    <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
+                                    <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                                    <option value="15" ${pageSize == 15 ? 'selected' : ''}>15</option>
+                                    <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
+                                </select>
+                            </div>
+
+                            <!-- Pagination Navigation -->
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center mb-0">
+                                        <!-- First Page -->
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" onclick="goToPage(1); return false;">
+                                                <i class="bi bi-chevron-double-left"></i>
+                                            </a>
+                                        </li>
+
+                                        <!-- Previous Page -->
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" onclick="goToPage(${currentPage - 1}); return false;">
+                                                <i class="bi bi-chevron-left"></i>
+                                            </a>
+                                        </li>
+
+                                        <!-- Page Numbers -->
+                                        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+                                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                                <a class="page-link" href="#" onclick="goToPage(${i}); return false;">${i}</a>
+                                            </li>
+                                        </c:forEach>
+
+                                        <!-- Next Page -->
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" onclick="goToPage(${currentPage + 1}); return false;">
+                                                <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                        </li>
+
+                                        <!-- Last Page -->
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" onclick="goToPage(${totalPages}); return false;">
+                                                <i class="bi bi-chevron-double-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                            <!-- Go to Page Input -->
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center justify-content-md-end">
+                                    <label for="pageInput" class="form-label mb-0 me-2 text-nowrap">
+                                        <i class="bi bi-arrow-right-circle"></i> Go to:
+                                    </label>
+                                    <input type="number"
+                                           id="pageInput"
+                                           class="form-control page-input me-2"
+                                           min="1"
+                                           max="${totalPages}"
+                                           value="${currentPage}"
+                                           onkeypress="handlePageInputEnter(event)">
+                                    <button class="btn btn-success btn-sm" onclick="goToInputPage()">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Page Info -->
+                        <div class="row mt-3">
+                            <div class="col-12 text-center">
+                                <small class="text-muted">
+                                    Page <strong>${currentPage}</strong> of <strong>${totalPages}</strong>
+                                    (Total: <strong>${totalRecords}</strong> records)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -286,6 +417,10 @@
     // Store objects with both productWarehouseID and itemId
     var exportedProducts = [];
 
+    // Get current URL parameters
+    var urlParams = new URLSearchParams(window.location.search);
+    var requestID = urlParams.get('productRequestID');
+
     // ========================================
     // INITIALIZE ON PAGE LOAD
     // ========================================
@@ -308,6 +443,63 @@
             });
         }, 5000);
     });
+
+    // ========================================
+    // PAGINATION FUNCTIONS
+    // ========================================
+    function goToPage(pageNumber) {
+        if (!requestID) {
+            alert('Request ID not found!');
+            return;
+        }
+
+        var pageSize = document.getElementById('pageSize').value;
+        var statusFilter = document.getElementById('statusFilter').value;
+
+        // Build URL with parameters
+        var url = '${pageContext.request.contextPath}/warehouse_keeper/export_product' +
+            '?productRequestID=' + requestID +
+            '&page=' + pageNumber +
+            '&pageSize=' + pageSize +
+            '&status=' + statusFilter;
+
+        window.location.href = url;
+    }
+
+    function changePageSize() {
+        goToPage(1); // Reset to first page when changing page size
+    }
+
+    function filterByStatus() {
+        goToPage(1); // Reset to first page when filtering
+    }
+
+    function goToInputPage() {
+        var pageInput = document.getElementById('pageInput');
+        var pageNumber = parseInt(pageInput.value);
+        var totalPages = ${totalPages};
+
+        if (isNaN(pageNumber) || pageNumber < 1) {
+            alert('Please enter a valid page number (minimum 1)');
+            pageInput.value = ${currentPage};
+            return;
+        }
+
+        if (pageNumber > totalPages) {
+            alert('Page number exceeds total pages (' + totalPages + ')');
+            pageInput.value = ${currentPage};
+            return;
+        }
+
+        goToPage(pageNumber);
+    }
+
+    function handlePageInputEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            goToInputPage();
+        }
+    }
 
     // ========================================
     // ADD PRODUCT TO EXPORT LIST
