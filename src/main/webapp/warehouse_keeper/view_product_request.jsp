@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Incoming Product Requests</h1>
 
@@ -17,7 +17,7 @@
         <div class="card-body">
             <c:if test="${not empty errorMessage}">
                 <div class="alert alert-danger" role="alert">
-                    ${errorMessage}
+                        ${errorMessage}
                 </div>
             </c:if>
             <c:choose>
@@ -73,8 +73,10 @@
                                             </form>
                                         </c:if>
                                         <c:if test="${pr.status == 'Approved'}">
-                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product" method="post" class="d-inline">
-                                                <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
+                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product"
+                                                  method="post" class="d-inline">
+                                                <input type="hidden" name="productRequestID"
+                                                       value="${pr.productRequestID}">
                                                 <input type="hidden" name="requestID" value="${pr.request.requestID}">
                                                 <button type="submit" class="btn btn-sm btn-primary">Export</button>
                                             </form>

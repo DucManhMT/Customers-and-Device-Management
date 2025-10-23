@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/task/viewAssignedTasks.css">
 </head>
 <body>
+<jsp:include page="../components/teach_employee_header.jsp"/>
 <button class="mobile-menu-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
 </button>
@@ -183,7 +184,8 @@
                         </button>
                     </form>
 
-                    <form method="GET" action="${pageContext.request.contextPath}/tech/employees/createProductRequests" class="link">
+                    <form method="GET" action="${pageContext.request.contextPath}/tech/employees/createProductRequests"
+                          class="link">
                         <input type="hidden" name="requestID" value="<%= req.getRequestID() %>">
                         <button type="submit" class="btn-sm finish-btn">
                             Create Product Request

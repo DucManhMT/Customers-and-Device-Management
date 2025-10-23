@@ -8,10 +8,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Action center</title>
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
 <body>
-    <p>THIS IS TECHEMPLOYEE</p>
-    <a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
+<jsp:include page="../components/teach_employee_header.jsp"/>
+<p>THIS IS TECHEMPLOYEE</p>
+<a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
 </body>
 </html>

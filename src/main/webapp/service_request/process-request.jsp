@@ -14,8 +14,8 @@
           rel="stylesheet"/>
 </head>
 <body>
+<jsp:include page="../components/supporter_header.jsp"/>
 <div class="container py-5">
-    <jsp:include page="../components/header.jsp"/>
     <div class="card shadow-sm">
 
         <div class="card-header bg-primary text-white">

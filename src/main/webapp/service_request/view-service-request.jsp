@@ -14,10 +14,9 @@
           rel="stylesheet"/>
 </head>
 <body>
+<jsp:include page="../components/customer_header.jsp"/>
 <div class=" container-fluid">
-
-
-    <h2 class="mt-1">Service Request</h2>
+    
     <form action="">
         <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
 

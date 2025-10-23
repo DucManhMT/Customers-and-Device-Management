@@ -19,7 +19,7 @@
           rel="stylesheet"/>
 </head>
 <body>
-
+<jsp:include page="../components/supporter_header.jsp"/>
 <div class="container-fluid">
 
     <div class="container-fluid">

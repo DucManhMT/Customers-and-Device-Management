@@ -16,6 +16,7 @@
           rel="stylesheet"/>
 </head>
 <body>
+<jsp:include page="../components/customer_header.jsp"/>
 <div class="container py-5">
 
     <div class="card shadow-sm">

@@ -7,9 +7,9 @@
     <link href="../css/feedback/viewFeedback.css" rel="stylesheet"/>
 </head>
 <body>
-
+<jsp:include page="../components/customer_header.jsp"/>
 <div class="container-fluid">
-    
+
     <c:set var="feedback" value="${{
         'feedbackID': 1,
         'requestID': 1001,
@@ -63,7 +63,8 @@
                                 <div class="info-item">
                                     <div class="info-label">Request ID</div>
                                     <div class="info-value">
-                                        <a href="../requests/view?requestId=${feedback.requestID}" class="text-decoration-none">
+                                        <a href="../requests/view?requestId=${feedback.requestID}"
+                                           class="text-decoration-none">
                                             <span class="badge bg-info fs-6">#${feedback.requestID}</span>
                                         </a>
                                     </div>
@@ -138,14 +139,14 @@
                                     <i class="bi bi-pencil"></i> Edit Feedback
                                 </button>
                             </form>
-                            
+
                             <form method="get" action="../feedback/delete" style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
                                 <button type="submit" class="btn btn-danger">
                                     <i class="bi bi-trash"></i> Delete Feedback
                                 </button>
                             </form>
-                            
+
                             <c:if test="${empty feedback.response}">
                                 <form method="get" action="../feedback/respond" style="display: inline;">
                                     <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
@@ -154,7 +155,7 @@
                                     </button>
                                 </form>
                             </c:if>
-                            
+
                             <c:if test="${not empty feedback.response}">
                                 <form method="get" action="../feedback/respond" style="display: inline;">
                                     <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
@@ -163,7 +164,7 @@
                                     </button>
                                 </form>
                             </c:if>
-                            
+
                             <button class="btn btn-info" onclick="window.print()">
                                 <i class="bi bi-printer"></i> Print
                             </button>
@@ -203,15 +204,18 @@
                     </div>
                     <div class="card-body">
                         <div class="list-group list-group-flush">
-                            <a href="../requests/view?requestId=${feedback.requestID}" class="list-group-item list-group-item-action">
+                            <a href="../requests/view?requestId=${feedback.requestID}"
+                               class="list-group-item list-group-item-action">
                                 <i class="bi bi-file-text me-2"></i>
                                 View Original Request
                             </a>
-                            <a href="../customer/profile?username=${feedback.username}" class="list-group-item list-group-item-action">
+                            <a href="../customer/profile?username=${feedback.username}"
+                               class="list-group-item list-group-item-action">
                                 <i class="bi bi-person me-2"></i>
                                 Customer Profile
                             </a>
-                            <a href="../feedback/list?username=${feedback.username}" class="list-group-item list-group-item-action">
+                            <a href="../feedback/list?username=${feedback.username}"
+                               class="list-group-item list-group-item-action">
                                 <i class="bi bi-chat-dots me-2"></i>
                                 All Feedbacks by ${feedback.username}
                             </a>
@@ -243,14 +247,16 @@
 
 
     <style media="print">
-        .btn, .breadcrumb, .card:last-child { 
-            display: none !important; 
+        .btn, .breadcrumb, .card:last-child {
+            display: none !important;
         }
-        .card { 
-            break-inside: avoid; 
+
+        .card {
+            break-inside: avoid;
         }
-        body { 
-            font-size: 12pt; 
+
+        body {
+            font-size: 12pt;
         }
     </style>
 

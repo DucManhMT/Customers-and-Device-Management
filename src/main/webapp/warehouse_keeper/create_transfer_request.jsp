@@ -16,14 +16,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Create Transfer Request</h1>
 
     <%-- Warehouse Selection --%>
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="get" class="row g-3 align-items-end">
+            <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="get"
+                  class="row g-3 align-items-end">
                 <div class="col-md">
                     <label for="warehouse" class="form-label fw-semibold">Select Source Warehouse:</label>
                     <select name="selectedWarehouseID" id="warehouse" class="form-select">
@@ -54,7 +55,8 @@
             </div>
             <div class="card-body">
                     <%-- Filter Form --%>
-                <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="GET" id="filterForm" class="mb-4 p-3 border rounded">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="GET"
+                      id="filterForm" class="mb-4 p-3 border rounded">
                     <input type="hidden" name="pageSize" value="${pageSize}">
                     <input type="hidden" name="page" value="1"> <%-- Reset to page 1 on new filter --%>
                     <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
@@ -81,11 +83,14 @@
 
                 <c:choose>
                     <c:when test="${not empty productsInSelectedWarehouse}">
-                        <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="post" id="exportForm">
+                        <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
+                              method="post" id="exportForm">
                             <input type="hidden" name="sourceWarehouseID" value="${managerWarehouse.warehouseID}">
                             <input type="hidden" name="selectedWarehouseID" value="${selectedWarehouseID}">
-                            <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs" value="${param.selectedItemIDs}">
-                            <input type="hidden" id="allSelectedItemQuantities" name="allSelectedItemQuantities" value="${param.allSelectedItemQuantities}">
+                            <input type="hidden" id="allSelectedItemIDs" name="allSelectedItemIDs"
+                                   value="${param.selectedItemIDs}">
+                            <input type="hidden" id="allSelectedItemQuantities" name="allSelectedItemQuantities"
+                                   value="${param.allSelectedItemQuantities}">
 
 
                                 <%-- Product Table --%>
@@ -160,7 +165,8 @@
                             <%-- Page Size Selector --%>
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small">Display:</span>
-                            <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request" method="GET" id="pageSizeForm" class="mb-0">
+                            <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
+                                  method="GET" id="pageSizeForm" class="mb-0">
                                 <input type="hidden" name="productName" value="${productName}">
                                 <input type="hidden" name="productType" value="${productType}">
                                 <input type="hidden" name="page" value="1">
@@ -360,15 +366,15 @@
         });
 
         const pageSizeForm = document.getElementById('pageSizeForm');
-        if(pageSizeForm) {
-            pageSizeForm.addEventListener('submit', function(e) {
+        if (pageSizeForm) {
+            pageSizeForm.addEventListener('submit', function (e) {
                 appendSelectionsToLinks(this);
             });
         }
 
         const filterForm = document.getElementById('filterForm');
         if (filterForm) {
-            filterForm.addEventListener('submit', function(e) {
+            filterForm.addEventListener('submit', function (e) {
                 appendSelectionsToLinks(this);
             });
         }

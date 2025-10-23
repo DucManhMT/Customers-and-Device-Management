@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/warehouse_keeper/export_product.css">
 </head>
 <body>
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -42,7 +43,8 @@
                         <!-- Export Counter -->
                         <div>
                                 <span class="badge bg-light text-dark export-count-badge">
-                                    <i class="bi bi-cart-check"></i> Exported: <span id="exportedCount">0</span> / <span id="requiredQty">${not empty productRequests ? productRequests.quantity : 0}</span>
+                                    <i class="bi bi-cart-check"></i> Exported: <span id="exportedCount">0</span> / <span
+                                        id="requiredQty">${not empty productRequests ? productRequests.quantity : 0}</span>
                                 </span>
                         </div>
                     </div>
@@ -91,7 +93,8 @@
                                         <td><strong>${request.request.requestID}</strong></td>
                                         <td>${request.product.productName}</td>
                                         <td class="text-center">
-                                            <span class="badge bg-secondary" id="requestedQtyBadge">${request.quantity}</span>
+                                            <span class="badge bg-secondary"
+                                                  id="requestedQtyBadge">${request.quantity}</span>
                                         </td>
                                         <td>${request.requestDate}</td>
                                         <td>
@@ -129,7 +132,8 @@
                             <h5 class="mb-0">
                                 <i class="bi bi-box-arrow-up"></i> Products to be Exported
                             </h5>
-                            <button type="button" class="btn btn-success" id="confirmExportBtn" style="display: none;" onclick="submitExport()">
+                            <button type="button" class="btn btn-success" id="confirmExportBtn" style="display: none;"
+                                    onclick="submitExport()">
                                 <i class="bi bi-check-circle"></i> Confirm Export
                             </button>
                         </div>
@@ -137,7 +141,8 @@
                         <!-- Quantity Warning Alert -->
                         <div id="quantityAlert" class="alert alert-warning d-none mb-3" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <strong>Limit Reached!</strong> You have added the maximum quantity required for this request.
+                            <strong>Limit Reached!</strong> You have added the maximum quantity required for this
+                            request.
                         </div>
 
                         <div id="exportedProductsList" class="border rounded p-3 bg-light">
@@ -265,7 +270,8 @@
 </div>
 
 <!-- Hidden Form for Submission -->
-<form id="exportForm" method="POST" action="${pageContext.request.contextPath}/warehouse_keeper/export_product_controller">
+<form id="exportForm" method="POST"
+      action="${pageContext.request.contextPath}/warehouse_keeper/export_product_controller">
     <c:if test="${not empty productRequests}">
         <input type="hidden" name="productRequestID" value="${productRequests.productRequestID}">
     </c:if>
@@ -289,7 +295,7 @@
     // ========================================
     // INITIALIZE ON PAGE LOAD
     // ========================================
-    window.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function () {
         // Get required quantity from page
         var qtyElement = document.getElementById('requiredQty');
         if (qtyElement) {
@@ -297,9 +303,9 @@
         }
 
         // Auto-dismiss alerts after 5 seconds
-        setTimeout(function() {
+        setTimeout(function () {
             var alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
+            alerts.forEach(function (alert) {
                 try {
                     new bootstrap.Alert(alert).close();
                 } catch (e) {
@@ -458,7 +464,7 @@
         if (!tbody) return;
 
         var rows = tbody.querySelectorAll('tr');
-        rows.forEach(function(row, index) {
+        rows.forEach(function (row, index) {
             var firstCell = row.querySelector('td:first-child');
             if (firstCell) {
                 firstCell.innerText = (index + 1);
@@ -505,7 +511,7 @@
     // ========================================
     function disableAllAddButtons() {
         var buttons = document.querySelectorAll('.add-btn:not(:disabled)');
-        buttons.forEach(function(button) {
+        buttons.forEach(function (button) {
             button.disabled = true;
             button.classList.remove('btn-primary');
             button.classList.add('btn-secondary');
@@ -518,7 +524,7 @@
     // ========================================
     function enableAllAddButtons() {
         var buttons = document.querySelectorAll('.add-btn');
-        buttons.forEach(function(button) {
+        buttons.forEach(function (button) {
             var warehouseID = button.getAttribute('data-warehouse-id');
 
             // Check if this product is in exported list

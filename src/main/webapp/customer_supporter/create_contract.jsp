@@ -49,7 +49,8 @@
 
         <!-- ✅ Nút Back to Menu -->
         <div class="text-center mb-4">
-            <a href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter" class="btn btn-outline-primary">
+            <a href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"
+               class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left-circle"></i> Back to Menu
             </a>
         </div>
@@ -61,7 +62,8 @@
 
 
         <!-- ✅ FORM CHÍNH: chỉ thêm action, method, enctype -->
-        <form id="uploadForm" action="${pageContext.request.contextPath}/customer_supporter/create_contract" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" action="${pageContext.request.contextPath}/customer_supporter/create_contract"
+              method="post" enctype="multipart/form-data">
             <div class="mb-4">
                 <label for="userName" class="form-label fw-semibold">
                     <i class="bi bi-person me-2"></i>
