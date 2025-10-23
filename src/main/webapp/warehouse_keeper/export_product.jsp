@@ -31,7 +31,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <!-- Back Button -->
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_request"
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
                                class="btn btn-light back-button">
                                 <i class="bi bi-arrow-left-circle"></i> Back
                             </a>
@@ -174,9 +174,23 @@
             <!-- Warehouse Product List Section -->
             <div class="card shadow">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-database"></i> Available Warehouse Products
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-database"></i> Available Warehouse Products
+                        </h5>
+                        <!-- Filter Section -->
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="text-white mb-0 me-2">
+                                <i class="bi bi-funnel"></i> Filter by Status:
+                            </label>
+                            <select id="statusFilter" class="form-select form-select-sm" style="width: 150px;"
+                                    onchange="filterByStatus()">
+                                <option value="all">All</option>
+                                <option value="In_Stock" selected>In Stock</option>
+                                <option value="Exported">Exported</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -190,6 +204,9 @@
                                     </c:choose>
                                 </span>
                         </p>
+                        <p class="mb-0"><strong>Filtered Results:</strong>
+                            <span class="badge bg-primary" id="filteredCount">0</span>
+                        </p>
                     </div>
 
                     <div class="table-responsive">
@@ -202,10 +219,10 @@
                                 <th style="width: 10%">Action</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="warehouseTableBody">
                             <c:choose>
                                 <c:when test="${empty warehouseProducts}">
-                                    <tr>
+                                    <tr class="no-products-row">
                                         <td colspan="4" class="text-center py-4">
                                             <i class="bi bi-archive" style="font-size: 3rem; color: #ccc;"></i>
                                             <p class="mt-2 text-muted">No products available in warehouse</p>
@@ -214,8 +231,10 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="product" items="${warehouseProducts}" varStatus="status">
-                                        <tr class="warehouse-item" id="warehouse-row-${product.productWarehouseID}">
-                                            <td class="text-center">${status.index + 1}</td>
+                                        <tr class="warehouse-item"
+                                            id="warehouse-row-${product.productWarehouseID}"
+                                            data-status="${product.productStatus}">
+                                            <td class="text-center item-number">${status.index + 1}</td>
                                             <td>
                                                 <strong>${product.inventoryItem.serialNumber}</strong>
                                             </td>
@@ -313,7 +332,89 @@
                 }
             });
         }, 5000);
+
+        // Apply initial filter (In Stock by default)
+        filterByStatus();
     });
+
+    // ========================================
+    // FILTER BY STATUS
+    // ========================================
+    function filterByStatus() {
+        var filterValue = document.getElementById('statusFilter').value;
+        var rows = document.querySelectorAll('.warehouse-item');
+        var visibleCount = 0;
+
+        rows.forEach(function (row) {
+            var rowStatus = row.getAttribute('data-status');
+
+            if (filterValue === 'all') {
+                row.style.display = '';
+                visibleCount++;
+            } else if (rowStatus === filterValue) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Renumber visible rows
+        renumberWarehouseRows();
+
+        // Update filtered count
+        var filteredCountElement = document.getElementById('filteredCount');
+        if (filteredCountElement) {
+            filteredCountElement.innerText = visibleCount;
+        }
+
+        // Show/hide no results message
+        showNoResultsMessage(visibleCount);
+    }
+
+    // ========================================
+    // RENUMBER WAREHOUSE ROWS
+    // ========================================
+    function renumberWarehouseRows() {
+        var rows = document.querySelectorAll('.warehouse-item');
+        var visibleIndex = 1;
+
+        rows.forEach(function (row) {
+            if (row.style.display !== 'none') {
+                var numberCell = row.querySelector('.item-number');
+                if (numberCell) {
+                    numberCell.innerText = visibleIndex;
+                    visibleIndex++;
+                }
+            }
+        });
+    }
+
+    // ========================================
+    // SHOW/HIDE NO RESULTS MESSAGE
+    // ========================================
+    function showNoResultsMessage(visibleCount) {
+        var tbody = document.getElementById('warehouseTableBody');
+        if (!tbody) return;
+
+        // Remove existing no-results row if any
+        var existingNoResults = tbody.querySelector('.no-results-row');
+        if (existingNoResults) {
+            existingNoResults.remove();
+        }
+
+        // Add no-results row if needed
+        if (visibleCount === 0) {
+            var noResultsRow = document.createElement('tr');
+            noResultsRow.className = 'no-results-row';
+            noResultsRow.innerHTML =
+                '<td colspan="4" class="text-center py-4">' +
+                '<i class="bi bi-search" style="font-size: 3rem; color: #ccc;"></i>' +
+                '<p class="mt-2 text-muted">No products found with selected status</p>' +
+                '</td>';
+            tbody.appendChild(noResultsRow);
+        }
+    }
 
     // ========================================
     // ADD PRODUCT TO EXPORT LIST

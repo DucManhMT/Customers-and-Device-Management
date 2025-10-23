@@ -19,6 +19,7 @@
 <jsp:include page="../components/customer_header.jsp"/>
 <div class="container py-5">
 
+<div class="container py-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">Request Detail</h3>

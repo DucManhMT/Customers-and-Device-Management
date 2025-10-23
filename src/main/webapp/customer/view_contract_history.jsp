@@ -23,7 +23,7 @@
         var contextPath = "${pageContext.request.contextPath}";
     </script>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ViewContractHistory.css">
+    <%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ViewContractHistory.css">--%>
 </head>
 
 <body>
@@ -37,6 +37,12 @@
                     <h1 class="mb-2">
                         Contract History
                     </h1>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="${pageContext.request.contextPath}/customer/customer_actioncenter"
+                       class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left-circle"></i> Back to Menu
+                    </a>
                 </div>
             </div>
         </div>
@@ -56,11 +62,11 @@
                         <input type="date" class="form-control" name="startDate">
                     </div>
                     <div class="col-md-4 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn btn-primary-custom w-50">
+                        <button type="submit" class="btn btn-primary w-50">
                             <i class="bi bi-search me-1"></i>Search
                         </button>
                         <a href="${pageContext.request.contextPath}/customer/contract_history"
-                           class="btn btn-secondary-custom w-50">
+                           class="btn btn-danger w-50">
                             <i class="bi bi-arrow-clockwise me-1"></i>Reset
                         </a>
                     </div>
