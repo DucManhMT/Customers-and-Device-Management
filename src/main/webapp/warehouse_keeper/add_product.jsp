@@ -9,7 +9,6 @@
 <jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container my-5">
     <div class="row justify-content-center">
-        <jsp:include page="../components/header.jsp"/>
         <div class="col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-light py-3">
