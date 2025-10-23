@@ -27,7 +27,6 @@ public class FeedbackService {
         String username = account != null ? account.getUsername() : null;
         req.setAttribute("currentUsername", username);
 
-
         int page = 1;
         int recordsPerPage = 5;
 

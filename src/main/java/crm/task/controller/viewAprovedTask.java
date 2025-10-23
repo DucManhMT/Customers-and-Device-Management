@@ -8,8 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import crm.common.model.Request;
 import crm.common.model.Account;
@@ -94,12 +97,12 @@ public class viewAprovedTask extends HttpServlet {
 			if (hasFilter) {
 				List<Request> allApproved = em.findWithConditions(Request.class, conditions);
 
-				java.util.stream.Stream<Request> stream = allApproved.stream();
+				Stream<Request> stream = allApproved.stream();
 				
 				if (fromDateStr != null && !fromDateStr.isEmpty()) {
 					try {
-						java.time.LocalDate from = java.time.LocalDate.parse(fromDateStr,
-								java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+						LocalDate from = LocalDate.parse(fromDateStr,
+								DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 						stream = stream.filter(r -> r.getStartDate() != null
 								&& !r.getStartDate().toLocalDate().isBefore(from));
 					} catch (Exception ex) {
@@ -108,8 +111,8 @@ public class viewAprovedTask extends HttpServlet {
 				
 				if (toDateStr != null && !toDateStr.isEmpty()) {
 					try {
-						java.time.LocalDate to = java.time.LocalDate.parse(toDateStr,
-								java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+						LocalDate to = LocalDate.parse(toDateStr,
+								DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 						stream = stream.filter(r -> r.getStartDate() != null
 								&& !r.getStartDate().toLocalDate().isAfter(to));
 					} catch (Exception ex) {
