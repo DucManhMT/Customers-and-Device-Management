@@ -60,7 +60,15 @@ public class InventoryController extends HttpServlet {
 
         //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
-        List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
+        List<Map<String, Object>> inventorySummary;
+
+        boolean isAggregated = (warehouseFilter == null || warehouseFilter.isEmpty() || "All Warehouses".equalsIgnoreCase(warehouseFilter));
+
+        if (isAggregated) {
+            inventorySummary = warehouseDAO.getAggregatedInventorySummary();
+        } else {
+            inventorySummary = warehouseDAO.getInventorySummary();
+        }
 
         if(inventorySummary.isEmpty()){
             req.setAttribute("errorMessage", "No inventory data available.");
@@ -70,7 +78,6 @@ public class InventoryController extends HttpServlet {
 
         //Get warehouse for filter dropdown
         List<Warehouse> warehouses = warehouseDAO.findAll();
-
 
         // Apply filters
         if (productNameFilter != null && !productNameFilter.isEmpty()) {

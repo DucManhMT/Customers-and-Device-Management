@@ -28,6 +28,12 @@ public class ProductWarehouseController extends HttpServlet {
 
         Account account = (Account) req.getSession().getAttribute("account");
 
+        if(account == null){
+            req.setAttribute("errorMessage", "You haven't logged in yet");
+            req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
+            return;
+        }
+
         // Pagination parameters
         int pageSize = 10; // Default items per page
         int currentPage = 1; // Default page

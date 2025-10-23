@@ -1,112 +1,223 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product Requests</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
-<div class="container my-5">
-    <h1 class="mb-4">Incoming Product Requests</h1>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-light py-3">
-            <h2 class="h5 mb-0">Pending Requests</h2>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+<div class="container py-4">
+    <!-- Header -->
+    <div class="card shadow-sm p-3 mb-4">
+        <h1 class="h3 fw-bold text-dark mb-0">Incoming Product Requests</h1>
+    </div>
+
+    <!-- Page Size Selector -->
+    <div class="card shadow-sm p-3 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">Display:</span>
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests" method="GET"
+                      class="mb-0">
+                    <input type="hidden" name="page" value="${currentPage}">
+                    <select name="pageSize" id="pageSize" class="form-select form-select-sm"
+                            onchange="this.form.submit()">
+                        <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
+                        <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                        <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
+                        <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
+                    </select>
+                </form>
+            </div>
+            <div class="text-muted small">
+                Total: <span class="fw-semibold text-primary">${totalRequests}</span> requests
+            </div>
         </div>
-        <a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"
-           class="btn btn-secondary d-flex align-items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                 class="bi bi-house-door-fill me-2" viewBox="0 0 16 16">
-                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.505A.5.5 0 0 0 9.5 15h-3a.5.5 0 0 0-.5-.5z"/>
-                <path d="M1.5 2.5a.5.5 0 0 0 0 1v12A1.5 1.5 0 0 0 3 17h10a1.5 1.5 0 0 0 1.5-1.5v-12a.5.5 0 0 0 0-1H1.5zM11 2h.5a.5.5 0 0 1 .5.5V4h-1V2.5a.5.5 0 0 1 .5-.5zM4.5 2H5v1.5H4V2.5a.5.5 0 0 1 .5-.5z"/>
-            </svg>
-            Home
-        </a>
-        <div class="card-body">
-            <c:if test="${not empty errorMessage}">
-                <div class="alert alert-danger" role="alert">
-                        ${errorMessage}
-                </div>
-            </c:if>
-            <c:choose>
-                <c:when test="${not empty productRequests}">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
+    </div>
+
+    <!-- Requests Table -->
+    <div class="card shadow-sm p-3 mb-4">
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger" role="alert">
+                    ${errorMessage}
+            </div>
+        </c:if>
+        <c:choose>
+            <c:when test="${not empty productRequests}">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="pr" items="${productRequests}">
                             <tr>
-                                <th>Request ID</th>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Request Date</th>
-                                <th>Status</th>
-                                <th>Description</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="pr" items="${productRequests}">
-                                <tr>
-                                    <td>#${pr.request.requestID}</td>
-                                    <td>
-                                        <div class="fw-bold">${pr.product.productName}</div>
-                                        <div class="small text-muted">${pr.product.type.typeName}</div>
-                                    </td>
-                                    <td>${pr.quantity}</td>
-                                    <td>${pr.requestDate}</td>
-                                    <td>
+                                <td>#${pr.request.requestID}</td>
+                                <td>
+                                    <div class="fw-bold">${pr.product.productName}</div>
+                                    <div class="small text-muted">${pr.product.type.typeName}</div>
+                                </td>
+                                <td>${pr.quantity}</td>
+                                <td>${pr.requestDate}</td>
+                                <td>
                                         <span class="badge
                                             ${pr.status == 'Pending' ? 'bg-warning text-dark' : ''}
                                             ${pr.status == 'Approved' ? 'bg-success' : ''}
                                             ${pr.status == 'Rejected' ? 'bg-danger' : ''}
-                                            ${pr.status == 'Finished' ? 'bg-success' : ''}">
+                                            ${pr.status == 'Finished' ? 'bg-primary' : ''}">
                                                 ${pr.status}
                                         </span>
-                                    </td>
-                                    <td class="text-muted small">${pr.description}</td>
-                                    <td>
-                                        <c:if test="${pr.status == 'Pending'}">
-                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
-                                                  method="post"
-                                                  class="d-flex justify-content-center gap-2">
-                                                <input type="hidden" name="productRequestID"
-                                                       value="${pr.productRequestID}">
-                                                <button type="submit" name="action" value="accept"
-                                                        class="btn btn-sm btn-success">
-                                                    Accept
-                                                </button>
-                                                <button type="submit" name="action" value="reject"
-                                                        class="btn btn-sm btn-danger">
-                                                    Reject
-                                                </button>
-                                            </form>
-                                        </c:if>
-                                        <c:if test="${pr.status == 'Approved'}">
-                                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product"
-                                                  method="post" class="d-inline">
-                                                <input type="hidden" name="productRequestID"
-                                                       value="${pr.productRequestID}">
-                                                <input type="hidden" name="requestID" value="${pr.request.requestID}">
-                                                <button type="submit" class="btn btn-sm btn-primary">Export</button>
-                                            </form>
-                                        </c:if>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="alert alert-info text-center" role="alert">
-                        There are no pending product requests for your warehouse.
-                    </div>
-                </c:otherwise>
-            </c:choose>
+                                </td>
+                                <td class="text-muted small">${pr.description}</td>
+                                <td>
+                                    <c:if test="${pr.status == 'Approved'}">
+                                        <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product"
+                                              method="post" class="d-flex justify-content-center">
+                                            <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
+                                            <input type="hidden" name="requestID" value="${pr.request.requestID}">
+                                            <button type="submit" class="btn btn-sm btn-primary">Export</button>
+                                        </form>
+                                    </c:if>
+                                    <c:if test="${pr.status == 'Pending'}">
+                                        <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
+                                              method="post"
+                                              class="d-flex justify-content-center gap-2">
+                                            <input type="hidden" name="productRequestID"
+                                                   value="${pr.productRequestID}">
+                                            <button type="submit" name="action" value="accept"
+                                                    class="btn btn-sm btn-success">
+                                                Accept
+                                            </button>
+                                            <button type="submit" name="action" value="reject"
+                                                    class="btn btn-sm btn-danger">
+                                                Reject
+                                            </button>
+                                        </form>
+                                    </c:if>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </c:when>
+        </c:choose>
+    </div>
+
+    <!-- Pagination -->
+    <div class="card shadow-sm p-3">
+        <c:set var="startItem" value="${totalRequests == 0 ? 0 : (currentPage - 1) * pageSize + 1}"/>
+        <c:set var="endItem"
+               value="${currentPage * pageSize > totalRequests ? totalRequests : currentPage * pageSize}"/>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="text-muted small">
+                Page <span class="fw-semibold">${currentPage}</span> of <span class="fw-semibold">${totalPages}</span>
+                (Displaying ${startItem} - ${endItem} of ${totalRequests} items)
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0">
+                        <!-- Previous -->
+                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests?page=${currentPage - 1}&pageSize=${pageSize}">Previous</a>
+                        </li>
+
+                        <!-- Page Numbers Logic -->
+                        <c:set var="maxVisiblePages" value="5"/>
+                        <c:set var="startPage" value="${currentPage - 2}"/>
+                        <c:set var="endPage" value="${currentPage + 2}"/>
+                        <c:if test="${startPage < 1}"><c:set var="endPage" value="${endPage - (startPage - 1)}"/><c:set
+                                var="startPage" value="1"/></c:if>
+                        <c:if test="${endPage > totalPages}"><c:set var="startPage"
+                                                                    value="${startPage - (endPage - totalPages)}"/><c:set
+                                var="endPage" value="${totalPages}"/></c:if>
+                        <c:if test="${startPage < 1}"><c:set var="startPage" value="1"/></c:if>
+
+                        <c:if test="${startPage > 1}">
+                            <li class="page-item"><a class="page-link"
+                                                     href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests?page=1&pageSize=${pageSize}">1</a>
+                            </li>
+                            <c:if test="${startPage > 2}">
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            </c:if>
+                        </c:if>
+
+                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                <a class="page-link"
+                                   href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests?page=${i}&pageSize=${pageSize}">${i}</a>
+                            </li>
+                        </c:forEach>
+
+                        <c:if test="${endPage < totalPages}">
+                            <c:if test="${endPage < totalPages - 1}">
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            </c:if>
+                            <li class="page-item"><a class="page-link"
+                                                     href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests?page=${totalPages}&pageSize=${pageSize}">${totalPages}</a>
+                            </li>
+                        </c:if>
+
+                        <!-- Next -->
+                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests?page=${currentPage + 1}&pageSize=${pageSize}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Go to Page -->
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests" method="GET"
+                      class="d-flex align-items-center gap-1 mb-0">
+                    <input type="hidden" name="pageSize" value="${pageSize}">
+                    <input type="number" name="page" min="1" max="${totalPages}"
+                           class="form-control form-control-sm" style="width: 70px;" placeholder="Page">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Go</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+</div>
 
+
+<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

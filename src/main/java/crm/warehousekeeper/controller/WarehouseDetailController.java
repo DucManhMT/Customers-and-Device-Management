@@ -22,6 +22,12 @@ public class WarehouseDetailController extends HttpServlet {
 
         Account account = (Account) req.getSession().getAttribute("account");
 
+        if(account == null){
+            req.setAttribute("errorMessage", "You haven't logged in yet");
+            req.getRequestDispatcher("/warehouse_keeper/view_warehouse_detail.jsp").forward(req, resp);
+            return;
+        }
+
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
         if (warehouse == null) {

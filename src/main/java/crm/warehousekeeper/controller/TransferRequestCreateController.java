@@ -51,6 +51,12 @@ public class TransferRequestCreateController extends HttpServlet {
         //Get warehouse keeper account
         Account account = (Account) req.getSession().getAttribute("account");
 
+        if(account == null){
+            req.setAttribute("errorMessage", "You haven't logged in yet");
+            req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
+            return;
+        }
+
         //Get current login warehouseKeeper's warehouse
         Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 

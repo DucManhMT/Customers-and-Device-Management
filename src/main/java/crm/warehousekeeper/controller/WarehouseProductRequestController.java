@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS)
 public class WarehouseProductRequestController extends HttpServlet {
@@ -25,12 +26,42 @@ public class WarehouseProductRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        int pageSize = 10; // Default items per page
+        int currentPage = 1; // Default page
+
+        // Get pagination parameters from request
+        String pageSizeParam = req.getParameter("pageSize");
+        String pageParam = req.getParameter("page");
+
+        if (pageSizeParam != null && !pageSizeParam.isEmpty()) {
+            try {
+                pageSize = Integer.parseInt(pageSizeParam);
+            } catch (NumberFormatException e) {
+                // Use default if invalid
+            }
+        }
+
+        if (pageParam != null && !pageParam.isEmpty()) {
+            try {
+                currentPage = Integer.parseInt(pageParam);
+                if (currentPage < 1) currentPage = 1;
+            } catch (NumberFormatException e) {
+                // Use default if invalid
+            }
+        }
+
         Account account = (Account) req.getSession().getAttribute("account");
+
+        if(account == null){
+            req.setAttribute("errorMessage", "You haven't logged in yet");
+            req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
+            return;
+        }
 
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
-        if(warehouse == null){
-            req.setAttribute("errorMessage","You must be assigned to a warehouse to view product requests.");
+        if (warehouse == null) {
+            req.setAttribute("errorMessage", "You must be assigned to a warehouse to view product requests.");
             req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
             return;
         }
@@ -41,7 +72,32 @@ public class WarehouseProductRequestController extends HttpServlet {
                 .filter(pr -> pr.getWarehouse().getWarehouseID().equals(warehouse.getWarehouseID()))
                 .toList();
 
+        if(productRequests.isEmpty()){
+            req.setAttribute("errorMessage", "No product requests found for your warehouse.");
+            req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
+            return;
+        }
+
+        int totalRequests = productRequests.size();
+        int totalPages = (int) Math.ceil((double) totalRequests / pageSize);
+
+        if (currentPage > totalPages && totalPages > 0) {
+            currentPage = totalPages;
+        }
+
+        int offset = (currentPage - 1) * pageSize;
+
+        productRequests = productRequests.stream()
+                .skip(offset)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+
         req.setAttribute("productRequests", productRequests);
+
+        req.setAttribute("currentPage", currentPage);
+        req.setAttribute("totalPages", totalPages);
+        req.setAttribute("pageSize", pageSize);
+        req.setAttribute("totalRequests", totalRequests);
 
         req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
     }

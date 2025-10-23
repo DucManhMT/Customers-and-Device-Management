@@ -27,13 +27,20 @@
     <nav aria-label="breadcrumb" class="mb-2">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a
-                    href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a>
+                    href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Home</a>
             </li>
             <li class="breadcrumb-item"><a
                     href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">Products</a></li>
             <li class="breadcrumb-item active">${product.productName}</li>
         </ol>
     </nav>
+
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                ${errorMessage}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
 
     <!-- Product Detail Card -->
     <div class="card shadow-sm mb-3">
