@@ -29,6 +29,7 @@
     </style>
 </head>
 <body class="bg-light">
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container py-4">
     <!-- Header -->
     <div class="card shadow-sm p-3 mb-4">
@@ -67,11 +68,12 @@
                 </svg>
                 Transfer Items
             </a>
-            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail" class="btn btn-info d-flex align-items-center">
+            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail"
+               class="btn btn-info d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-arrow-left-right me-2" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                          d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
+                     class="bi bi-building me-2" viewBox="0 0 16 16">
+                    <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1ZM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Z"/>
+                    <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1Zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3V1Z"/>
                 </svg>
                 Warehouse Detail
             </a>
@@ -81,7 +83,8 @@
     <!-- Filters -->
     <div class="card shadow-sm p-3 mb-4">
         <h2 class="h5 fw-semibold text-dark mb-3">Filter</h2>
-        <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET" id="filterForm">
+        <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET"
+              id="filterForm">
             <input type="hidden" name="pageSize" value="${pageSize}">
             <input type="hidden" name="page" value="${currentPage}">
             <div class="row g-3 align-items-end">
@@ -111,7 +114,8 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
                 <span class="text-muted small">Display:</span>
-                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET" class="mb-0">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET"
+                      class="mb-0">
                     <input type="hidden" name="productName" value="${productName}">
                     <input type="hidden" name="productType" value="${productType}">
                     <input type="hidden" name="page" value="${currentPage}">
@@ -166,7 +170,8 @@
                         </td>
                         <td class="fw-semibold">${productCounts[productWarehouse.productID]}</td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${productWarehouse.productID}" class="btn btn-sm btn-info">View Detail</a>
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${productWarehouse.productID}"
+                               class="btn btn-sm btn-info">View Detail</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -241,7 +246,8 @@
                 </nav>
 
                 <!-- Go to Page -->
-                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET" class="d-flex align-items-center gap-1 mb-0">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" method="GET"
+                      class="d-flex align-items-center gap-1 mb-0">
                     <input type="hidden" name="pageSize" value="${pageSize}">
                     <input type="hidden" name="productName" value="${productName}">
                     <input type="hidden" name="productType" value="${productType}">

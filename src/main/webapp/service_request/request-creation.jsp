@@ -9,6 +9,8 @@
 
 </head>
 <body class="bg-light">
+<jsp:include page="../components/customer_header.jsp"/>
+<div class="container mt-5">
 
 <div class="container mt-5">
     <div class="row justify-content-center">

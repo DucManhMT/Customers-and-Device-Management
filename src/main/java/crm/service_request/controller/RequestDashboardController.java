@@ -2,6 +2,7 @@ package crm.service_request.controller;
 
 import crm.common.MessageConst;
 import crm.common.URLConstants;
+import crm.common.model.Account;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,6 +22,11 @@ public class RequestDashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestService requestService = new RequestService();
+        Account account = (Account) req.getSession().getAttribute("account");
+        if (account == null) {
+            resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
+            return;
+        }
         try {
             String fromDateString = req.getParameter("fromDate");
             String toDateString = req.getParameter("toDate");

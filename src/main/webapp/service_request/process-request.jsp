@@ -14,7 +14,10 @@
           rel="stylesheet"/>
 </head>
 <body>
+<jsp:include page="../components/supporter_header.jsp"/>
 <div class="container py-5">
+    <div class="card shadow-sm">
+
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">Process Request</h3>
@@ -38,8 +41,6 @@
                         <option value="">Select Status</option>
                         <option value="Approved" ${status == 'Approved' ? 'selected' : ''}>Approved</option>
                         <option value="Rejected" ${status == 'Rejected' ? 'selected' : ''}>Rejected</option>
-                        <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
-                        <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
                     </select>
                 </div>
 

@@ -27,8 +27,6 @@ public class FeedbackService {
         String username = account != null ? account.getUsername() : null;
         req.setAttribute("currentUsername", username);
 
-        req.removeAttribute("errorMessage");
-
         int page = 1;
         int recordsPerPage = 5;
 
@@ -71,7 +69,7 @@ public class FeedbackService {
         String feedbackType = req.getParameter("feedbackType");
         String customContent = req.getParameter("customContent");
         String ratingStr = req.getParameter("rating");
-        String response = req.getParameter("response");
+        String description = req.getParameter("description");
 
         String content = "";
 
@@ -119,21 +117,18 @@ public class FeedbackService {
                     feedback.setFeedbackID(IDGeneratorService.generateID(Feedback.class));
                     feedback.setContent(content);
                     feedback.setRating(rating);
-                    feedback.setResponse(response != null ? response.trim() : null);
+                    feedback.setDescription(description != null ? description.trim() : null);
                     feedback.setFeedbackDate(currentTimestamp);
                     feedback.setCustomerID(username);
 
                     entityManager.persist(feedback, Feedback.class);
+                    req.setAttribute("successMessage",
+                            "Feedback created successfully! Thank you " + username + " for your review.");
 
-                    entityManager.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    throw new SQLException("Failed to create feedback", e);
+                    req.setAttribute("errorMessage", "Failed to create feedback. Please try again later.");
                 }
-
-                req.setAttribute("successMessage",
-                        "Feedback created successfully! Thank you " + username + " for your review.");
-
                 entityManager.close();
 
                 showCreateFeedbackForm(req, resp);
@@ -231,7 +226,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbackByUsernamePaginated(EntityManager entityManager, String username, int page,
-            int recordsPerPage) throws SQLException {
+                                                         int recordsPerPage) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> userFeedbacks = new ArrayList<>();
@@ -273,7 +268,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-            String username, Integer rating) throws SQLException {
+                                                  String username, Integer rating) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();

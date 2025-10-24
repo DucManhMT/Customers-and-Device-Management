@@ -50,12 +50,13 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <!-- Role Details -->
-                <div class="col-lg-8">
-                    <form id="roleForm" method="post" action="${pageContext.request.contextPath}/admin/role_list/edit_role">
-                        <input type="hidden" name="roleID" value="${role.roleID}" />
+        <div class="row">
+            <!-- Role Details -->
+            <div class="col-lg-8">
+                <form id="roleForm" method="post" action="${pageContext.request.contextPath}/admin/role_list/edit_role">
+                    <input type="hidden" name="roleID" value="${role.roleID}"/>
 
                         <div class="card mb-4">
                             <div class="card-header">
@@ -112,63 +113,114 @@
                 <div class="col-lg-4">
                     <div class="card">
                         <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0">
-                                    <i class="bi bi-people me-2"></i>Accounts with this Role
-                                </h5>
-                                <span class="badge bg-primary" id="accountCount">${accountCount}</span>
-                            </div>
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-person-badge me-2"></i>Role Information
+                            </h5>
                         </div>
-                        <div class="card-body p-0">
-                            <div class="list-group list-group-flush" id="accountsList">
-                                <c:forEach var="account" items="${accounts}">
-                                    <div class="list-group-item account-card">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">${account.username}</h6>
-                                            </div>
-    <%--                                        <form method="post" action="RemoveAccountRole" style="margin:0;">--%>
-    <%--                                            <input type="hidden" name="username" value="${account.username}" />--%>
-    <%--                                            <input type="hidden" name="roleID" value="${role.roleID}" />--%>
-    <%--                                            <button type="submit" class="btn btn-sm btn-outline-danger"--%>
-    <%--                                                    onclick="return confirm('Remove role from this account?');">--%>
-    <%--                                                <i class="bi bi-person-dash"></i>--%>
-    <%--                                            </button>--%>
-    <%--                                        </form>--%>
-                                        </div>
-                                    </div>
-                                </c:forEach>
-                                <c:if test="${empty accounts}">
-                                    <div class="list-group-item text-center text-muted">No account for this role</div>
-                                </c:if>
-
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="roleName" class="form-label">Role Name</label>
+                                <input type="text" class="form-control" id="roleName" name="roleName"
+                                       value="${role.roleName}" required>
+                                <div class="form-text">Choose a descriptive name for this role</div>
                             </div>
                         </div>
                     </div>
-    <%--                <div class="card-footer bg-light">--%>
-    <%--                    <button class="btn btn-outline-primary btn-sm w-100" onclick="addAccountToRole()">--%>
-    <%--                        <i class="bi bi-person-plus me-1"></i>Add Account to Role--%>
-    <%--                    </button>--%>
-    <%--                </div>--%>
+
+                    <!-- Permissions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-shield-check me-2"></i>Permissions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="permission-group">
+
+                                <c:forEach var="feature" items="${features}">
+                                    <div class="permission-item mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="featureIds"
+                                                   value="${feature.featureID}"
+                                                   id="feature_${feature.featureID}"
+                                                   <c:if test="${selectedFeatureIds.contains(feature.featureID)}">checked</c:if>>
+                                            <label class="form-check-label" for="feature_${feature.featureID}">
+                                                <strong>${feature.featureURL}</strong>
+                                                <small class="text-muted d-block">${feature.description}</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+            <!-- Accounts with this Role -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-people me-2"></i>Accounts with this Role
+                            </h5>
+                            <span class="badge bg-primary" id="accountCount">${accountCount}</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="accountsList">
+                            <c:forEach var="account" items="${accounts}">
+                                <div class="list-group-item account-card">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">${account.username}</h6>
+                                        </div>
+                                            <%--                                        <form method="post" action="RemoveAccountRole" style="margin:0;">--%>
+                                            <%--                                            <input type="hidden" name="username" value="${account.username}" />--%>
+                                            <%--                                            <input type="hidden" name="roleID" value="${role.roleID}" />--%>
+                                            <%--                                            <button type="submit" class="btn btn-sm btn-outline-danger"--%>
+                                            <%--                                                    onclick="return confirm('Remove role from this account?');">--%>
+                                            <%--                                                <i class="bi bi-person-dash"></i>--%>
+                                            <%--                                            </button>--%>
+                                            <%--                                        </form>--%>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                            <c:if test="${empty accounts}">
+                                <div class="list-group-item text-center text-muted">No account for this role</div>
+                            </c:if>
+
+                        </div>
+                    </div>
                 </div>
+                <%--                <div class="card-footer bg-light">--%>
+                <%--                    <button class="btn btn-outline-primary btn-sm w-100" onclick="addAccountToRole()">--%>
+                <%--                        <i class="bi bi-person-plus me-1"></i>Add Account to Role--%>
+                <%--                    </button>--%>
+                <%--                </div>--%>
             </div>
         </div>
     </div>
-    </div>
+</div>
+</div>
 
-    <!-- Success Toast -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="successToast" class="toast" role="alert">
-            <div class="toast-header">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                <strong class="me-auto">Success</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body" id="toastMessage">
-                Role updated successfully!
-            </div>
+<!-- Success Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast" role="alert">
+        <div class="toast-header">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Role updated successfully!
         </div>
     </div>
+</div>
 
-    </body>
-    </html>
+</body>
+</html>

@@ -24,45 +24,53 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         .table-container {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .status-badge {
             padding: 0.35rem 0.65rem;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 500;
         }
+
         .status-pending {
             background-color: #fff3cd;
             color: #856404;
         }
+
         .status-completed {
             background-color: #d1e7dd;
             color: #0f5132;
         }
+
         .status-cancelled {
             background-color: #f8d7da;
             color: #842029;
         }
+
         .status-processing {
             background-color: #cfe2ff;
             color: #084298;
         }
+
         .table thead th {
             background-color: #f8f9fa;
             font-weight: 600;
             border-bottom: 2px solid #dee2e6;
         }
+
         .table tbody tr:hover {
             background-color: #f8f9fa;
         }
     </style>
 </head>
 <body class="bg-light">
-
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="row mb-4">
@@ -77,7 +85,8 @@
                             <p class="mb-0 opacity-75">View all product transaction records</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/warehouse/dashboard" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehouse/dashboard"
+                               class="btn btn-light btn-sm">
                                 <i class="fas fa-home me-1"></i>Dashboard
                             </a>
                             <button type="button" class="btn btn-outline-light btn-sm" onclick="window.print()">
@@ -187,7 +196,7 @@
                                         <td>
                                             <i class="far fa-calendar-alt me-1"></i>
                                             <fmt:formatDate value="${transaction.transactionDate}"
-                                                            pattern="dd/MM/yyyy HH:mm" />
+                                                            pattern="dd/MM/yyyy HH:mm"/>
                                         </td>
                                         <td>
                                             <i class="fas fa-warehouse me-1 text-primary"></i>
@@ -244,7 +253,8 @@
                                                         </span>
                                                 </c:when>
                                                 <c:otherwise>
-                                                        <span class="status-badge" style="background-color: #e9ecef; color: #495057;">
+                                                        <span class="status-badge"
+                                                              style="background-color: #e9ecef; color: #495057;">
                                                                 ${transaction.transactionStatus}
                                                         </span>
                                                 </c:otherwise>
@@ -268,12 +278,14 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/transaction/view?id=${transaction.transactionID}">
+                                                        <a class="dropdown-item"
+                                                           href="${pageContext.request.contextPath}/transaction/view?id=${transaction.transactionID}">
                                                             <i class="fas fa-eye me-2"></i>View Details
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/transaction/edit?id=${transaction.transactionID}">
+                                                        <a class="dropdown-item"
+                                                           href="${pageContext.request.contextPath}/transaction/edit?id=${transaction.transactionID}">
                                                             <i class="fas fa-edit me-2"></i>Edit
                                                         </a>
                                                     </li>
@@ -335,7 +347,7 @@
     }
 
     // Calculate status counts
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const rows = document.querySelectorAll('#transactionTable tbody tr');
         let completed = 0, pending = 0, processing = 0;
 

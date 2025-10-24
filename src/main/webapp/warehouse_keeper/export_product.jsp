@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/warehouse_keeper/export_product.css">
 </head>
 <body>
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -30,7 +31,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <!-- Back Button -->
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_request"
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
                                class="btn btn-light back-button">
                                 <i class="bi bi-arrow-left-circle"></i> Back
                             </a>
@@ -42,7 +43,8 @@
                         <!-- Export Counter -->
                         <div>
                                 <span class="badge bg-light text-dark export-count-badge">
-                                    <i class="bi bi-cart-check"></i> Exported: <span id="exportedCount">0</span> / <span id="requiredQty">${not empty productRequests ? productRequests.quantity : 0}</span>
+                                    <i class="bi bi-cart-check"></i> Exported: <span id="exportedCount">0</span> / <span
+                                        id="requiredQty">${not empty productRequests ? productRequests.quantity : 0}</span>
                                 </span>
                         </div>
                     </div>
@@ -91,7 +93,8 @@
                                         <td><strong>${request.request.requestID}</strong></td>
                                         <td>${request.product.productName}</td>
                                         <td class="text-center">
-                                            <span class="badge bg-secondary" id="requestedQtyBadge">${request.quantity}</span>
+                                            <span class="badge bg-secondary"
+                                                  id="requestedQtyBadge">${request.quantity}</span>
                                         </td>
                                         <td>${request.requestDate}</td>
                                         <td>
@@ -129,7 +132,8 @@
                             <h5 class="mb-0">
                                 <i class="bi bi-box-arrow-up"></i> Products to be Exported
                             </h5>
-                            <button type="button" class="btn btn-success" id="confirmExportBtn" style="display: none;" onclick="submitExport()">
+                            <button type="button" class="btn btn-success" id="confirmExportBtn" style="display: none;"
+                                    onclick="submitExport()">
                                 <i class="bi bi-check-circle"></i> Confirm Export
                             </button>
                         </div>
@@ -137,7 +141,8 @@
                         <!-- Quantity Warning Alert -->
                         <div id="quantityAlert" class="alert alert-warning d-none mb-3" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <strong>Limit Reached!</strong> You have added the maximum quantity required for this request.
+                            <strong>Limit Reached!</strong> You have added the maximum quantity required for this
+                            request.
                         </div>
 
                         <div id="exportedProductsList" class="border rounded p-3 bg-light">
@@ -169,9 +174,23 @@
             <!-- Warehouse Product List Section -->
             <div class="card shadow">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-database"></i> Available Warehouse Products
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-database"></i> Available Warehouse Products
+                        </h5>
+                        <!-- Filter Section -->
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="text-white mb-0 me-2">
+                                <i class="bi bi-funnel"></i> Filter by Status:
+                            </label>
+                            <select id="statusFilter" class="form-select form-select-sm" style="width: 150px;"
+                                    onchange="filterByStatus()">
+                                <option value="all">All</option>
+                                <option value="In_Stock" selected>In Stock</option>
+                                <option value="Exported">Exported</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -185,6 +204,9 @@
                                     </c:choose>
                                 </span>
                         </p>
+                        <p class="mb-0"><strong>Filtered Results:</strong>
+                            <span class="badge bg-primary" id="filteredCount">0</span>
+                        </p>
                     </div>
 
                     <div class="table-responsive">
@@ -197,10 +219,10 @@
                                 <th style="width: 10%">Action</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="warehouseTableBody">
                             <c:choose>
                                 <c:when test="${empty warehouseProducts}">
-                                    <tr>
+                                    <tr class="no-products-row">
                                         <td colspan="4" class="text-center py-4">
                                             <i class="bi bi-archive" style="font-size: 3rem; color: #ccc;"></i>
                                             <p class="mt-2 text-muted">No products available in warehouse</p>
@@ -209,8 +231,10 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="product" items="${warehouseProducts}" varStatus="status">
-                                        <tr class="warehouse-item" id="warehouse-row-${product.productWarehouseID}">
-                                            <td class="text-center">${status.index + 1}</td>
+                                        <tr class="warehouse-item"
+                                            id="warehouse-row-${product.productWarehouseID}"
+                                            data-status="${product.productStatus}">
+                                            <td class="text-center item-number">${status.index + 1}</td>
                                             <td>
                                                 <strong>${product.inventoryItem.serialNumber}</strong>
                                             </td>
@@ -265,7 +289,8 @@
 </div>
 
 <!-- Hidden Form for Submission -->
-<form id="exportForm" method="POST" action="${pageContext.request.contextPath}/warehouse_keeper/export_product_controller">
+<form id="exportForm" method="POST"
+      action="${pageContext.request.contextPath}/warehouse_keeper/export_product_controller">
     <c:if test="${not empty productRequests}">
         <input type="hidden" name="productRequestID" value="${productRequests.productRequestID}">
     </c:if>
@@ -289,7 +314,7 @@
     // ========================================
     // INITIALIZE ON PAGE LOAD
     // ========================================
-    window.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function () {
         // Get required quantity from page
         var qtyElement = document.getElementById('requiredQty');
         if (qtyElement) {
@@ -297,9 +322,9 @@
         }
 
         // Auto-dismiss alerts after 5 seconds
-        setTimeout(function() {
+        setTimeout(function () {
             var alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
+            alerts.forEach(function (alert) {
                 try {
                     new bootstrap.Alert(alert).close();
                 } catch (e) {
@@ -307,7 +332,89 @@
                 }
             });
         }, 5000);
+
+        // Apply initial filter (In Stock by default)
+        filterByStatus();
     });
+
+    // ========================================
+    // FILTER BY STATUS
+    // ========================================
+    function filterByStatus() {
+        var filterValue = document.getElementById('statusFilter').value;
+        var rows = document.querySelectorAll('.warehouse-item');
+        var visibleCount = 0;
+
+        rows.forEach(function (row) {
+            var rowStatus = row.getAttribute('data-status');
+
+            if (filterValue === 'all') {
+                row.style.display = '';
+                visibleCount++;
+            } else if (rowStatus === filterValue) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Renumber visible rows
+        renumberWarehouseRows();
+
+        // Update filtered count
+        var filteredCountElement = document.getElementById('filteredCount');
+        if (filteredCountElement) {
+            filteredCountElement.innerText = visibleCount;
+        }
+
+        // Show/hide no results message
+        showNoResultsMessage(visibleCount);
+    }
+
+    // ========================================
+    // RENUMBER WAREHOUSE ROWS
+    // ========================================
+    function renumberWarehouseRows() {
+        var rows = document.querySelectorAll('.warehouse-item');
+        var visibleIndex = 1;
+
+        rows.forEach(function (row) {
+            if (row.style.display !== 'none') {
+                var numberCell = row.querySelector('.item-number');
+                if (numberCell) {
+                    numberCell.innerText = visibleIndex;
+                    visibleIndex++;
+                }
+            }
+        });
+    }
+
+    // ========================================
+    // SHOW/HIDE NO RESULTS MESSAGE
+    // ========================================
+    function showNoResultsMessage(visibleCount) {
+        var tbody = document.getElementById('warehouseTableBody');
+        if (!tbody) return;
+
+        // Remove existing no-results row if any
+        var existingNoResults = tbody.querySelector('.no-results-row');
+        if (existingNoResults) {
+            existingNoResults.remove();
+        }
+
+        // Add no-results row if needed
+        if (visibleCount === 0) {
+            var noResultsRow = document.createElement('tr');
+            noResultsRow.className = 'no-results-row';
+            noResultsRow.innerHTML =
+                '<td colspan="4" class="text-center py-4">' +
+                '<i class="bi bi-search" style="font-size: 3rem; color: #ccc;"></i>' +
+                '<p class="mt-2 text-muted">No products found with selected status</p>' +
+                '</td>';
+            tbody.appendChild(noResultsRow);
+        }
+    }
 
     // ========================================
     // ADD PRODUCT TO EXPORT LIST
@@ -458,7 +565,7 @@
         if (!tbody) return;
 
         var rows = tbody.querySelectorAll('tr');
-        rows.forEach(function(row, index) {
+        rows.forEach(function (row, index) {
             var firstCell = row.querySelector('td:first-child');
             if (firstCell) {
                 firstCell.innerText = (index + 1);
@@ -505,7 +612,7 @@
     // ========================================
     function disableAllAddButtons() {
         var buttons = document.querySelectorAll('.add-btn:not(:disabled)');
-        buttons.forEach(function(button) {
+        buttons.forEach(function (button) {
             button.disabled = true;
             button.classList.remove('btn-primary');
             button.classList.add('btn-secondary');
@@ -518,7 +625,7 @@
     // ========================================
     function enableAllAddButtons() {
         var buttons = document.querySelectorAll('.add-btn');
-        buttons.forEach(function(button) {
+        buttons.forEach(function (button) {
             var warehouseID = button.getAttribute('data-warehouse-id');
 
             // Check if this product is in exported list

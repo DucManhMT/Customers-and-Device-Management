@@ -19,8 +19,6 @@ public interface CrudRepository<E, K> {
 
     void deleteById(K key) throws SQLException;
 
-    void deleteWithCondition(ClauseBuilder clause) throws SQLException;
-
     int count() throws SQLException;
 
     List<E> findAll();
