@@ -19,19 +19,13 @@ public class ProductDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try {
-            int productId = Integer.parseInt(req.getParameter("productId"));
+        int productId = Integer.parseInt(req.getParameter("productId"));
 
-            Product product = productDAO.findIncludeSpec(productId);
+        Product product = productDAO.findIncludeSpec(productId);
 
-            req.setAttribute("product", product);
+        req.setAttribute("product", product);
 
-            req.getRequestDispatcher("/warehouse_keeper/view_product_detail.jsp").forward(req, resp);
-
-        } catch (NumberFormatException e) {
-            req.setAttribute("errorMessage", "Invalid product ID.");
-            req.getRequestDispatcher("/warehouse_keeper/view_product_detail.jsp").forward(req, resp);
-        }
+        req.getRequestDispatcher("/warehouse_keeper/view_product_detail.jsp").forward(req, resp);
     }
 
     @Override

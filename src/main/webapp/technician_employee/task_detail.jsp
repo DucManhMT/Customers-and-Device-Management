@@ -187,40 +187,6 @@
                 </div>
             </c:if>
         </div>
-        <% } %>
-
-        <div class="action-buttons">
-
-            <% if (RequestStatus.Approved.equals(task.getRequestStatus())) { %>
-            <form method="POST" action="${pageContext.request.contextPath}/task/updateStatus" style="display: inline;"
-                  onsubmit="return confirm('Are you sure you want to mark this task as finished?')">
-                <input type="hidden" name="requestId" value="<%= task.getRequestID() %>">
-                <input type="hidden" name="status" value="finished">
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-check"></i>
-                    Mark as Finished
-                </button>
-            </form>
-            <% } else if (RequestStatus.Finished.equals(task.getRequestStatus())) { %>
-            <button class="btn btn-secondary" disabled>
-                <i class="fas fa-check-circle"></i>
-                Task Completed
-            </button>
-            <% } %>
-            <a href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"
-               class="btn home-button">
-                <span>Back to Action Center</span>
-            </a>
-        </div>
-
-        <% } else { %>
-        <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Task Not Found</h3>
-            <p>The requested task could not be found or you don't have permission to view it.</p>
-        </div>
-        <% } %>
     </div>
-</div>
 </body>
 </html>

@@ -11,6 +11,6 @@
     <title>Title</title>
 </head>
 <body>
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+
 </body>
 </html>

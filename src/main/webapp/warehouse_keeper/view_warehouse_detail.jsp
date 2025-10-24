@@ -12,25 +12,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-light">
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+
 <div class="container py-5">
     <!-- Header with breadcrumb -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Warehouse Details</h1>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a
-                        href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a>
-                </li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Details</li>
             </ol>
         </nav>
     </div>
-
+    
     <div class="error">
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger" role="alert">
-                    ${errorMessage}
+                ${errorMessage}
             </div>
         </c:if>
     </div>

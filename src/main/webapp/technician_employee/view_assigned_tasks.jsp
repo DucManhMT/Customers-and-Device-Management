@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/task/viewAssignedTasks.css">
 </head>
 <body>
-<jsp:include page="../components/teach_employee_header.jsp"/>
 <button class="mobile-menu-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
 </button>

@@ -8,13 +8,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Action Center</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <title>Title</title>
 </head>
 <body>
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
-<p>THIS IS WAREHOUSEKEEPER</p>
+    <p>THIS IS WAREHOUSEKEEPER</p>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/export_product"></a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests">View Product Request</a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory">View Inventory</a>

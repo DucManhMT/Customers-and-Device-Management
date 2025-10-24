@@ -102,50 +102,6 @@ public class WarehouseDAO extends FuntionalityDAO<Warehouse> {
         return inventorySummary;
     }
 
-    public List<Map<String, Object>> getAggregatedInventorySummary() {
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        List<Map<String, Object>> aggregatedSummary = new ArrayList<>();
-
-        // Get all products
-        List<Product> allProducts = em.findAll(Product.class);
-
-        // Load specifications for all products
-        Map<String, Object> specConditions = new HashMap<>();
-        for (Product product : allProducts) {
-            specConditions.clear();
-            specConditions.put("product", product.getProductID());
-            List<ProductSpecification> specs = em.findWithConditions(ProductSpecification.class, specConditions);
-            product.setProductSpecifications(specs);
-        }
-
-        // Get all in-stock items to calculate counts
-        Map<String, Object> stockConditions = new HashMap<>();
-        stockConditions.put("productStatus", ProductStatus.In_Stock.name());
-        List<ProductWarehouse> inStockItems = em.findWithConditions(ProductWarehouse.class, stockConditions);
-
-        // Create a map to track total counts for each product
-        Map<Integer, Long> productCountMap = new HashMap<>();
-        for (ProductWarehouse pw : inStockItems) {
-            int productId = pw.getInventoryItem().getProduct().getProductID();
-            productCountMap.merge(productId, 1L, Long::sum);
-        }
-
-        // Create aggregated summary for all products
-        for (Product product : allProducts) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("product", product);
-
-            // Get count from map or default to 0 if not found
-            Long count = productCountMap.getOrDefault(product.getProductID(), 0L);
-
-            item.put("count", count);
-            aggregatedSummary.add(item);
-        }
-
-        return aggregatedSummary;
-    }
-
-
 
     public Warehouse getWarehouseByUsername(String username) {
         EntityManager em = new EntityManager(DBcontext.getConnection());

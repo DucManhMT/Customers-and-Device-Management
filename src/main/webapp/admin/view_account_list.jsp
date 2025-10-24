@@ -15,9 +15,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/admin_header.jsp"/>
 <div class="container-fluid">
     <div class="row">
+        <div class="col-auto">
+            <a href="${pageContext.request.contextPath}/admin/admin_actioncenter" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Back to Menu
+            </a>
+        </div>
         <div class="col-md-12 main-content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -76,7 +80,7 @@
                                     <option value="${role.roleID}"
                                             <c:if test="${roleFilter == role.roleID}">selected</c:if>
                                     >
-                                        <c:out value="${role.roleName}"/>
+                                        <c:out value="${role.roleName}" />
                                     </option>
                                 </c:forEach>
                             </select>
@@ -84,11 +88,8 @@
                         <div class="col-md-2">
                             <select class="form-select" id="statusFilter" name="statusFilter">
                                 <option value="">All Status</option>
-                                <option value="Active" <c:if test="${statusFilter == 'Active'}">selected</c:if>>Active
-                                </option>
-                                <option value="Deactive" <c:if test="${statusFilter == 'Deactive'}">selected</c:if>>
-                                    Deactive
-                                </option>
+                                <option value="Active" <c:if test="${statusFilter == 'Active'}">selected</c:if>>Active</option>
+                                <option value="Deactive" <c:if test="${statusFilter == 'Deactive'}">selected</c:if>>Deactive</option>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex gap-2">
@@ -120,11 +121,11 @@
                     <tbody id="accountsTableBody">
                     <c:forEach var="account" items="${accountInfos}">
                         <tr>
-                            <td><c:out value="${account.username}"/></td>
-                            <td><c:out value="${account.name}"/></td>
-                            <td><c:out value="${account.email}"/></td>
-                            <td><c:out value="${account.role.roleName}"/></td>
-                            <td><c:out value="${account.status}"/></td>
+                            <td><c:out value="${account.username}" /></td>
+                            <td><c:out value="${account.name}" /></td>
+                            <td><c:out value="${account.email}" /></td>
+                            <td><c:out value="${account.role.roleName}" /></td>
+                            <td><c:out value="${account.status}" /></td>
                             <td>
                                 <a href="#" class="btn btn-sm btn-info me-2 text-white">
                                     <i class="bi bi-eye"></i> View Detail
@@ -132,13 +133,13 @@
                                 <a href="#" class="btn btn-sm btn-primary me-2">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                    <%--                                <form action="${pageContext.request.contextPath}/admin/role_list" method="post" style="display:inline;">--%>
-                                    <%--                                    <input type="hidden" name="action" value="delete"/>--%>
-                                    <%--                                    <input type="hidden" name="id" value="${role.roleID}"/>--%>
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                                    <%--                                </form>--%>
+<%--                                <form action="${pageContext.request.contextPath}/admin/role_list" method="post" style="display:inline;">--%>
+<%--                                    <input type="hidden" name="action" value="delete"/>--%>
+<%--                                    <input type="hidden" name="id" value="${role.roleID}"/>--%>
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+<%--                                </form>--%>
                             </td>
                         </tr>
                     </c:forEach>
@@ -148,11 +149,11 @@
 
             <!-- Pagination -->
             <form method="get" action="${pageContext.request.contextPath}/admin/account_list">
-                <input type="hidden" name="searchUsername" value="${searchUsername}"/>
-                <input type="hidden" name="searchName" value="${searchName}"/>
-                <input type="hidden" name="searchEmail" value="${searchEmail}"/>
-                <input type="hidden" name="roleFilter" value="${roleFilter}"/>
-                <input type="hidden" name="statusFilter" value="${statusFilter}"/>
+                <input type="hidden" name="searchUsername" value="${searchUsername}" />
+                <input type="hidden" name="searchName" value="${searchName}" />
+                <input type="hidden" name="searchEmail" value="${searchEmail}" />
+                <input type="hidden" name="roleFilter" value="${roleFilter}" />
+                <input type="hidden" name="statusFilter" value="${statusFilter}" />
                 <div class="mt-4 d-flex align-items-center">
                     <span class="me-3">Show:</span>
                     <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"

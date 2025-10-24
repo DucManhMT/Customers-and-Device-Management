@@ -19,9 +19,9 @@
           rel="stylesheet"/>
 </head>
 <body>
-<jsp:include page="../components/supporter_header.jsp"/>
+
 <div class="container-fluid">
-    <jsp:include page="../components/header.jsp"/>
+
     <div class="container-fluid">
         <h2 class="mt-1">Service Request List</h2>
         <form method="get" action="../requests/list" onkeydown="if(event.key==='Enter'){event.preventDefault();}">

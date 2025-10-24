@@ -19,8 +19,7 @@
         <div class="col-lg-10">
             <!-- Header -->
             <div class="mb-4">
-                <a href="${pageContext.request.contextPath}/admin/role_list"
-                   class="btn-back d-inline-flex align-items-center mb-3">
+                <a href="${pageContext.request.contextPath}/admin/role_list" class="btn-back d-inline-flex align-items-center mb-3">
                     <i class="bi bi-arrow-left me-2"></i>
                     Back to Roles
                 </a>

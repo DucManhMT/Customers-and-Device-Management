@@ -226,7 +226,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbackByUsernamePaginated(EntityManager entityManager, String username, int page,
-                                                         int recordsPerPage) throws SQLException {
+            int recordsPerPage) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> userFeedbacks = new ArrayList<>();
@@ -268,7 +268,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-                                                  String username, Integer rating) throws SQLException {
+            String username, Integer rating) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();
