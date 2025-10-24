@@ -8,9 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Action Center</title>
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
 <body>
+<jsp:include page="../components/admin_header.jsp"/>
 <h1>Admin Action Center</h1>
 <p>Welcome to the Admin Action Center. Here you can manage various administrative tasks.</p>
 <a href="${pageContext.request.contextPath}/admin/role_list">View role list</a>

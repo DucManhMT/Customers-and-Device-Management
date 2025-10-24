@@ -271,13 +271,13 @@ public class SelectTechnicianService {
         if (allRequests.isEmpty()) {
             return 1;
         }
-        
+
         Integer maxId = allRequests.stream()
-            .map(AccountRequest::getAccountRequestID)
-            .filter(id -> id != null)
-            .max(Integer::compareTo)
-            .orElse(0);
-            
+                .map(AccountRequest::getAccountRequestID)
+                .filter(id -> id != null)
+                .max(Integer::compareTo)
+                .orElse(0);
+
         return maxId + 1;
     }
 }

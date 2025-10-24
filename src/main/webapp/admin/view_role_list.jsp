@@ -9,22 +9,16 @@
     <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<jsp:include page="../components/admin_header.jsp"/>
 <div class="container-fluid py-4">
     <!-- Page Header -->
-    <div class="col-auto">
-        <a href="${pageContext.request.contextPath}/admin/admin_actioncenter" class="btn btn-outline-primary">
-            <i class="bi bi-arrow-left-circle me-1"></i> Back to Menu
-        </a>
-    </div>
     <div class="row mb-4">
         <div class="col">
             <h2 class="fw-bold text-dark mb-2">Role Management</h2>
         </div>
     </div>
 
-    <c:if test="${not empty error}">
-        <div class="alert alert-danger">${error}</div>
-    </c:if>
+
     <c:if test="${not empty success}">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
                 ${success}
@@ -32,6 +26,9 @@
         </div>
     </c:if>
 
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-6">
@@ -65,9 +62,11 @@
     <!-- Roles Table -->
     <div class="table-container">
         <div class="card-header bg-white border-bottom p-4">
-            <form class="row g-2 align-items-center" method="get" action="${pageContext.request.contextPath}/admin/role_list">
+            <form class="row g-2 align-items-center" method="get"
+                  action="${pageContext.request.contextPath}/admin/role_list">
                 <div class="col-12 col-md-5">
-                    <input type="text" class="form-control" name="search" placeholder="Search roles..." value="${search}">
+                    <input type="text" class="form-control" name="search" placeholder="Search roles..."
+                           value="${search}">
                 </div>
 
                 <div class="col-12 col-md-2">
@@ -75,13 +74,15 @@
                         <i class="bi bi-search"></i> Search
                     </button>
                 </div>
-                <div class ="col-12 col-md-2">
-                    <a href="${pageContext.request.contextPath}/admin/role_list" class="btn btn-outline-secondary w-100">
+                <div class="col-12 col-md-2">
+                    <a href="${pageContext.request.contextPath}/admin/role_list"
+                       class="btn btn-outline-secondary w-100">
                         <i class="bi bi-arrow-clockwise"></i> Reset
                     </a>
                 </div>
                 <div class="col-12 col-md-3">
-                    <a href="${pageContext.request.contextPath}/admin/role_list/create_role" class="btn btn-primary w-100">
+                    <a href="${pageContext.request.contextPath}/admin/role_list/create_role"
+                       class="btn btn-primary w-100">
                         <i class="bi bi-plus-lg"></i> Add New Role
                     </a>
                 </div>
@@ -106,16 +107,20 @@
                     <td>${role.roleName}</td>
                     <td>${userCountPerRole[role.roleID]}</td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/admin/role_list/view_role_detail?id=${role.roleID}" class="btn btn-sm btn-info me-2 text-white">
+                        <a href="${pageContext.request.contextPath}/admin/role_list/view_role_detail?id=${role.roleID}"
+                           class="btn btn-sm btn-info me-2 text-white">
                             <i class="bi bi-eye"></i> View Detail
                         </a>
-                        <a href="${pageContext.request.contextPath}/admin/role_list/edit_role?id=${role.roleID}" class="btn btn-sm btn-primary me-2">
+                        <a href="${pageContext.request.contextPath}/admin/role_list/edit_role?id=${role.roleID}"
+                           class="btn btn-sm btn-primary me-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <form action="${pageContext.request.contextPath}/admin/role_list" method="post" style="display:inline;">
+                        <form action="${pageContext.request.contextPath}/admin/role_list" method="post"
+                              style="display:inline;">
                             <input type="hidden" name="action" value="delete"/>
                             <input type="hidden" name="id" value="${role.roleID}"/>
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this role?');">
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this role?');">
                                 <i class="bi bi-trash"></i> Delete
                             </button>
                         </form>
@@ -128,7 +133,7 @@
 
     <!-- Pagination -->
     <form method="get" action=${pageContext.request.contextPath}/admin/role_list>
-        <input type="hidden" name="search" value="${search}" />
+        <input type="hidden" name="search" value="${search}"/>
         <div class="mt-4 d-flex align-items-center">
             <span class="me-3">Show:</span>
             <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"

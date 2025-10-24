@@ -11,9 +11,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Add Products to Import - Warehouse</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <!-- Bootstrap 5 CSS -->
     <link
@@ -29,42 +29,52 @@
             cursor: pointer;
             border: 2px solid transparent;
         }
+
         .product-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
         .product-card.selected {
             border-color: #0d6efd;
             background-color: #f8f9ff;
         }
+
         .product-card.already-imported {
             opacity: 0.6;
             background-color: #f8f9fa;
         }
+
         .product-card.already-imported:hover {
             transform: none;
         }
+
         .header-gradient {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
         }
+
         .search-box {
             border-radius: 50px;
         }
+
         .category-filter {
             border-radius: 20px;
         }
+
         .selection-summary {
             position: sticky;
             top: 20px;
             z-index: 100;
         }
+
         .product-image {
             width: 100%;
             height: 120px;
             object-fit: cover;
             border-radius: 8px;
         }
+
         .product-code {
             font-family: 'Courier New', monospace;
             font-size: 0.85rem;
@@ -72,7 +82,9 @@
     </style>
 </head>
 <body class="bg-light">
+<jsp:include page="../components/warehouse_keeper_header.jsp"/>
 <div class="container-fluid py-4">
+    <jsp:include page="../components/header.jsp"/>
     <!-- Header -->
     <div class="row mb-4">
         <div class="col">
@@ -86,7 +98,8 @@
                             <p class="mb-0 opacity-75">Select products from warehouse catalog to add to import list</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/import_product" class="btn btn-light btn-sm">
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
+                               class="btn btn-light btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>Back to Import
                             </a>
                         </div>
@@ -241,7 +254,8 @@
                         <div id="gridViewContainer" class="row">
                             <c:forEach items="${availableProducts}" var="product">
                                 <!-- Check if product is already in import list using the set from request -->
-                                <c:set var="isAlreadyImported" value="${importedProductIds.contains(product.productID)}" />
+                                <c:set var="isAlreadyImported"
+                                       value="${importedProductIds.contains(product.productID)}"/>
 
                                 <div class="col-xl-3 col-lg-4 col-md-6 mb-4 product-item"
                                      data-product-id="${product.productID}"
@@ -258,7 +272,9 @@
                                         <div class="position-relative">
                                             <c:choose>
                                                 <c:when test="${not empty product.productImage}">
-                                                    <img src="${product.productImage}" class="card-img-top product-image" alt="${product.productName}">
+                                                    <img src="${product.productImage}"
+                                                         class="card-img-top product-image"
+                                                         alt="${product.productName}">
                                                 </c:when>
                                                 <c:otherwise>
                                                     <div class="card-img-top product-image bg-light d-flex align-items-center justify-content-center">
@@ -305,15 +321,15 @@
 
                                             <div class="row text-center small">
                                                 <div class="col-6">
-<%--                                                    <div class="text-muted">Stock</div>--%>
-<%--                                                    <div class="fw-medium">${product.stockQuantity}</div>--%>
+                                                        <%--                                                    <div class="text-muted">Stock</div>--%>
+                                                        <%--                                                    <div class="fw-medium">${product.stockQuantity}</div>--%>
                                                 </div>
-<%--                                                <c:if test="${not empty product.price}">--%>
-<%--                                                    <div class="col-6">--%>
-<%--                                                        <div class="text-muted">Price</div>--%>
-<%--                                                        <div class="fw-medium">$${product.price}</div>--%>
-<%--                                                    </div>--%>
-<%--                                                </c:if>--%>
+                                                    <%--                                                <c:if test="${not empty product.price}">--%>
+                                                    <%--                                                    <div class="col-6">--%>
+                                                    <%--                                                        <div class="text-muted">Price</div>--%>
+                                                    <%--                                                        <div class="fw-medium">$${product.price}</div>--%>
+                                                    <%--                                                    </div>--%>
+                                                    <%--                                                </c:if>--%>
                                             </div>
                                         </div>
                                     </div>
@@ -330,7 +346,8 @@
                                         <tr>
                                             <th style="width: 50px;">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="selectAllCheckbox">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           id="selectAllCheckbox">
                                                 </div>
                                             </th>
                                             <th>Code</th>
@@ -342,7 +359,8 @@
                                         <tbody>
                                         <c:forEach items="${availableProducts}" var="product">
                                             <!-- Check if product is already in import list using the set from request -->
-                                            <c:set var="isAlreadyImported" value="${importedProductIds.contains(product.productID)}" />
+                                            <c:set var="isAlreadyImported"
+                                                   value="${importedProductIds.contains(product.productID)}"/>
 
                                             <tr class="product-item-row ${isAlreadyImported ? 'table-secondary' : ''}"
                                                 data-product-id="${product.productID}"
@@ -373,7 +391,8 @@
                                                         </small>
                                                     </c:if>
                                                 </td>
-                                                <td><span class="badge bg-secondary">${product.type.typeName}</span></td>
+                                                <td><span class="badge bg-secondary">${product.type.typeName}</span>
+                                                </td>
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${isAlreadyImported}">
@@ -408,7 +427,8 @@
 </div>
 
 <!-- Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -465,7 +485,7 @@
     function updateImportStatus() {
         // Count already imported items that are visible
         const visibleImported = document.querySelectorAll('.product-item:not(.d-none)[data-imported="true"]').length +
-                               document.querySelectorAll('.product-item-row:not(.d-none)[data-imported="true"]').length;
+            document.querySelectorAll('.product-item-row:not(.d-none)[data-imported="true"]').length;
 
         if (visibleImported > 0) {
             // Show a small indicator of how many are already imported
@@ -786,7 +806,7 @@
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
+                switch (e.key) {
                     case 'a':
                         e.preventDefault();
                         selectAllVisible();

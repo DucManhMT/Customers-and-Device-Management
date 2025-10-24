@@ -15,22 +15,32 @@
             max-height: 300px;
             object-fit: contain;
         }
+
         .spec-table td, .spec-table th {
             padding: 0.5rem;
         }
     </style>
 </head>
 <body class="bg-light">
-
 <div class="container py-3">
     <!-- Navigation breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-2">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">Products</a></li>
+            <li class="breadcrumb-item"><a
+                    href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Home</a>
+            </li>
+            <li class="breadcrumb-item"><a
+                    href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">Products</a></li>
             <li class="breadcrumb-item active">${product.productName}</li>
         </ol>
     </nav>
+
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                ${errorMessage}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
 
     <!-- Product Detail Card -->
     <div class="card shadow-sm mb-3">
@@ -45,10 +55,12 @@
                 <div class="col-md-4 text-center mb-3">
                     <c:choose>
                         <c:when test="${not empty product.productImage}">
-                            <img src="${product.productImage}" alt="${product.productName}" class="img-fluid product-img border rounded">
+                            <img src="${product.productImage}" alt="${product.productName}"
+                                 class="img-fluid product-img border rounded">
                         </c:when>
                         <c:otherwise>
-                            <div class="border rounded p-5 d-flex align-items-center justify-content-center bg-light" style="height: 300px">
+                            <div class="border rounded p-5 d-flex align-items-center justify-content-center bg-light"
+                                 style="height: 300px">
                                 <i class="fas fa-image fa-4x text-secondary"></i>
                             </div>
                         </c:otherwise>
@@ -82,13 +94,16 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2">
-                        <a href="${pageContext.request.contextPath}/warehouse/editProduct?productId=${product.productID}" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/warehouse/editProduct?productId=${product.productID}"
+                           class="btn btn-primary">
                             <i class="fas fa-edit me-1"></i> Edit
                         </a>
-                        <a href="${pageContext.request.contextPath}/warehouse/productInventory?productId=${product.productID}" class="btn btn-info">
+                        <a href="${pageContext.request.contextPath}/warehouse/productInventory?productId=${product.productID}"
+                           class="btn btn-info">
                             <i class="fas fa-boxes me-1"></i> View Inventory
                         </a>
-                        <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse" class="btn btn-secondary">
+                        <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
+                           class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back
                         </a>
                     </div>

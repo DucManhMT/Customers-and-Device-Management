@@ -51,6 +51,12 @@ public class TransferRequestCreateController extends HttpServlet {
         //Get warehouse keeper account
         Account account = (Account) req.getSession().getAttribute("account");
 
+        if(account == null){
+            req.setAttribute("errorMessage", "You haven't logged in yet");
+            req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
+            return;
+        }
+
         //Get current login warehouseKeeper's warehouse
         Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
@@ -162,7 +168,7 @@ public class TransferRequestCreateController extends HttpServlet {
             }
             entityManager.commit();
 
-            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST); // Redirect to a success or listing page
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_INVENTORY); // Redirect to a success or listing page
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");

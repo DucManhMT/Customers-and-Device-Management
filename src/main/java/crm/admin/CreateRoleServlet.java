@@ -45,6 +45,11 @@ public class CreateRoleServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
         String roleName = request.getParameter("roleName");
+        if(!Validator.isValidName(roleName)){
+            session.setAttribute("error", "Role name contains invalid characters.");
+            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
+            return;
+        }
         int roleID = IDGeneratorService.generateID(Role.class);
 
         // Kiểm tra rỗng
@@ -64,11 +69,7 @@ public class CreateRoleServlet extends HttpServlet {
             return;
         }
 
-        if(!Validator.isValidName(roleName)){
-            session.setAttribute("error", "Role name contains invalid characters.");
-            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
-            return;
-        }
+
 
 
 

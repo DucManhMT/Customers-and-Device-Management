@@ -9,6 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
+    <jsp:include page="../components/supporter_header.jsp"/>
     <title>Request Timeline</title>
     <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
           rel="stylesheet"/>
@@ -45,7 +46,9 @@
     </style>
 </head>
 <body class="bg-light">
+
 <div class="container py-5">
+    <jsp:include page="../components/header.jsp"/>
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">Request Timeline</h3>
