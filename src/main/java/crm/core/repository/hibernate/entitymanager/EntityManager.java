@@ -16,13 +16,13 @@ import java.util.Map;
 /**
  * Lightweight EntityManager implementation
  */
-public class EntityManager implements IEntityManager,AutoCloseable {
+public class EntityManager implements IEntityManager {
 
     private final Connection connection;
     private final QueryUtils queryUtils = new QueryUtils();
 
 
-     public EntityManager(Connection connection) {
+    public EntityManager(Connection connection) {
         this.connection = connection;
     }
 
@@ -98,7 +98,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectAll(entityClass);
             List<T> results = new ArrayList<>();
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql());
-                    ResultSet rs = ps.executeQuery()) {
+                 ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     T entity = EntityFieldMapper.mapEntity(rs, entityClass);
                     results.add(entity);
@@ -137,7 +137,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithOrder(entityClass, orderConditions);
             List<T> results = new ArrayList<>();
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql());
-                    ResultSet rs = ps.executeQuery()) {
+                 ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     T entity = EntityFieldMapper.mapEntity(rs, entityClass);
                     results.add(entity);
@@ -172,7 +172,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
 
     // ---------- FIND WITH CONDITIONS AND ORDER ----------
     public <T> List<T> findWithConditionsAndOrder(Class<T> entityClass, Map<String, Object> conditions,
-            Map<String, SortDirection> orderConditions) {
+                                                  Map<String, SortDirection> orderConditions) {
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithConditionsAndOrder(entityClass, conditions,
                     orderConditions);
@@ -195,7 +195,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
 
     // ---------- FIND WITH CONDITIONS AND PAGINATION ----------
     public <T> List<T> findWithConditionsAndPagination(Class<T> entityClass, Map<String, Object> conditions, int limit,
-            int offset) {
+                                                       int offset) {
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithConditionsAndLimitOffset(entityClass, conditions,
                     limit, offset);
@@ -218,7 +218,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
 
     // ---------- FIND WITH ORDER AND PAGINATION ----------
     public <T> List<T> findWithOrderAndPagination(Class<T> entityClass, Map<String, SortDirection> orderConditions,
-            int limit, int offset) {
+                                                  int limit, int offset) {
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithOrderAndLimitOffset(entityClass, orderConditions,
                     limit, offset);
@@ -241,7 +241,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
 
     // ---------- FIND WITH CONDITIONS, ORDER AND PAGINATION ----------
     public <T> List<T> findWithConditionsOrderAndPagination(Class<T> entityClass, Map<String, Object> conditions,
-            Map<String, SortDirection> orderConditions, int limit, int offset) {
+                                                            Map<String, SortDirection> orderConditions, int limit, int offset) {
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildSelectWithAll(entityClass, conditions, orderConditions, limit,
                     offset);
@@ -315,7 +315,7 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         try {
             SqlAndParamsDTO sqlParams = queryUtils.buildCount(entityClass);
             try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql());
-                    ResultSet rs = ps.executeQuery()) {
+                 ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
@@ -331,12 +331,14 @@ public class EntityManager implements IEntityManager,AutoCloseable {
             connection.setAutoCommit(false);
         }
     }
+
     public void commit() throws SQLException {
         if (!connection.getAutoCommit()) {
             connection.commit();
             connection.setAutoCommit(true);
         }
     }
+
     public void rollback() {
         try {
             if (!connection.getAutoCommit()) {
@@ -378,7 +380,6 @@ public class EntityManager implements IEntityManager,AutoCloseable {
     }
 
 
-
     // ---------- UTILITIES ----------
 
     private void setParams(PreparedStatement ps, List<Object> params) throws SQLException {
@@ -387,10 +388,10 @@ public class EntityManager implements IEntityManager,AutoCloseable {
         }
     }
 
-    @Override
-    public void close() throws Exception {
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
-        }
-    }
+//    @Override
+//    public void close() throws Exception {
+//        if (connection != null && !connection.isClosed()) {
+//            connection.close();
+//        }
+//    }
 }

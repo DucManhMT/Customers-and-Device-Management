@@ -77,9 +77,9 @@ public class viewAprovedTask extends HttpServlet {
             }
         } catch (NumberFormatException ex) {
         }
-
-        try (Connection connection = DBcontext.getConnection();
-             EntityManager em = new EntityManager(connection)) {
+        Connection connection = DBcontext.getConnection();
+        EntityManager em = new EntityManager(connection);
+        try {
 
             Map<String, Object> conditions = new java.util.HashMap<>();
             conditions.put("requestStatus", RequestStatus.Approved.name());

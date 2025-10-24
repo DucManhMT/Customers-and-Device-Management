@@ -421,9 +421,6 @@
                                             <button class="btn btn-sm btn-outline-primary selected-task-view"
                                                     type="button"><i class="bi bi-eye"></i> View
                                             </button>
-                                            <button class="btn btn-sm btn-outline-danger selected-task-remove"
-                                                    type="button"><i class="bi bi-x"></i> Remove
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
