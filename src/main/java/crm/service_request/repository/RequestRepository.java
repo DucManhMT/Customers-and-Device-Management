@@ -57,8 +57,9 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
     public Integer countRequestByStatus(RequestStatus requestStatus, LocalDateTime from, LocalDateTime to) {
         String sql = "SELECT COUNT(*) AS Total " +
                 "FROM Request " +
-                "WHERE RequestStatus = '" + requestStatus.toString() + "'" +
-                "+ StartDate BETWEEN '" + from.toString() + "' AND '" + to.toString() + "'";
+                "WHERE RequestStatus = '" + requestStatus + "' " +
+                "AND StartDate >= '" + from + "' " +
+                "AND StartDate <= '" + to + "'";
         Connection connection = DBcontext.getConnection();
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
