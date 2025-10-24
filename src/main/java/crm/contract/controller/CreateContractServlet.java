@@ -7,6 +7,7 @@ import crm.contract.service.ContractCodeGenerator;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.core.validator.Validator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -66,6 +67,12 @@ public class CreateContractServlet extends HttpServlet {
 
         Contract contract = new Contract();
         String customerUsername = request.getParameter("userName");
+        if(!Validator.isValidName(customerUsername)){
+            request.setAttribute("error", "Customer username contains invalid characters.");
+            request.setAttribute("userName", customerUsername); // giữ lại giá trị đã nhập
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
         System.out.println("customerUsername: " + customerUsername);
         Customer customer = null;
         if (customerUsername != null && !customerUsername.isEmpty()) {

@@ -82,6 +82,14 @@ public class ViewAccountListServlet extends HttpServlet {
 
         // Lấy danh sách role cho dropdown
         List<Role> roleList = em.findAll(Role.class);
+        List<Role> filteredRoleList = new ArrayList<>();
+        for (Role r : roleList) {
+            if (r != null && r.getRoleID() != 1) { // Skip role ID 1
+                filteredRoleList.add(r);
+            }
+        }
+        roleList = filteredRoleList;
+
 
 
         // 1) Fetch all accounts (ordered). If dataset is very large, replace with DB-side filtering.
