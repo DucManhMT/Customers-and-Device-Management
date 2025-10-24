@@ -22,9 +22,7 @@
         </div>
     </div>
 
-    <c:if test="${not empty error}">
-        <div class="alert alert-danger">${error}</div>
-    </c:if>
+
     <c:if test="${not empty success}">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
                 ${success}
@@ -32,6 +30,9 @@
         </div>
     </c:if>
 
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-6">

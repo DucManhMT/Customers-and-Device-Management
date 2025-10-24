@@ -53,6 +53,14 @@ public class EditRoleServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         int roleId = Integer.parseInt(request.getParameter("roleID"));
         String roleName = request.getParameter("roleName");
+        List<Role> allRoles = em.findAll(Role.class);
+        for (Role role : allRoles) {
+            if (role.getRoleName().equals(roleName) && role.getRoleID() != roleId) {
+                request.getSession().setAttribute("error", "Role name already exists.");
+                response.sendRedirect(request.getContextPath() + "/admin/role_list/edit_role?id=" + roleId);
+                return;
+            }
+        }
 
 
         Role role = em.find(Role.class, roleId);

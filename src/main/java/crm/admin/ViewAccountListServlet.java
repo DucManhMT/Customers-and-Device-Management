@@ -83,16 +83,6 @@ public class ViewAccountListServlet extends HttpServlet {
         // Lấy danh sách role cho dropdown
         List<Role> roleList = em.findAll(Role.class);
 
-        // --- IMPORTANT CHANGE ---
-        // Previously you fetched a paginated list and then filtered it,
-        // which made pagination/count inconsistent with filters.
-        // Now we build the full list of accountInfos (unpaginated),
-        // apply filters in-memory, and only then paginate the filtered list.
-        //
-        // NOTE: If your DB is large this is inefficient. The ideal solution
-        // is to apply filters in the DB (query + count). If EntityManager
-        // can build conditional queries (LIKE, =), prefer that.
-        //
 
         // 1) Fetch all accounts (ordered). If dataset is very large, replace with DB-side filtering.
         List<Account> allAccounts = em.findWithOrderAndPagination(Account.class, orderConditions, Integer.MAX_VALUE, 0);

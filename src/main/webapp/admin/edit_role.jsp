@@ -27,6 +27,7 @@
                     Role removed from account successfully!
                 </div>
             </c:if>
+
             <div class="row mb-4">
                 <div class="col-12">
                     <nav aria-label="breadcrumb">
@@ -35,6 +36,7 @@
                             <li class="breadcrumb-item active">Edit Role</li>
                         </ol>
                     </nav>
+
                     <div class="d-flex justify-content-between align-items-center">
                         <h1 class="h3 mb-0">Edit Role</h1>
                         <div>
@@ -67,6 +69,9 @@
                                     <input type="text" class="form-control" id="roleName" name="roleName" value="${role.roleName}" required>
                                     <div class="form-text">Choose a descriptive name for this role</div>
                                 </div>
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger">${error}</div>
+                                </c:if>
                             </div>
                         </div>
 
