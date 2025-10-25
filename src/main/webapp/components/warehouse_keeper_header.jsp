@@ -28,6 +28,9 @@
                 <strong class="text-dark">
                     ${empty sessionScope.account ? 'Guest' : sessionScope.account.username}
                 </strong>
+                <c:if test="${not empty sessionScope.account}">
+                    <a href="${pageContext.request.contextPath}/auth/logout"> Logout </a>
+                </c:if>
             </span>
         </nav>
     </div>

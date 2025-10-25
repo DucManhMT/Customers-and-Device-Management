@@ -5,6 +5,7 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
 import crm.core.repository.hibernate.querybuilder.QueryOperation;
+
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -24,7 +25,8 @@ public class OTPProvider {
     }
 
     public static boolean verifyOTP(String inputOtp, String userEmail) {
-        try (EntityManager em = new EntityManager(DBcontext.getConnection())) {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try {
             deleteExpiredOtp(em);
             UserOTP userOTP = em.executeCustomQuery(UserOTP.class, QueryOperation.select(UserOTP.class).where("email", userEmail).orderBy("expiredTime", SortDirection.DESC).build()).get(0);
             if (userOTP == null || userOTP.getExpiredTime().isBefore(LocalDateTime.now())) {
@@ -54,7 +56,8 @@ public class OTPProvider {
     public static boolean sendOTPEmail(String toEmail, String otp) {
         String subject = "Your OTP Code";
         String body = "Your verification code is " + otp + ". It expires in 1 minute.";
-        try (EntityManager em = new EntityManager(DBcontext.getConnection())) {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try {
             // Save OTP to database with 1 minute expiration
             deleteExpiredOtp(em);
             UserOTP userOTP = new UserOTP();

@@ -20,34 +20,34 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet(name="TaskDetailServlet", urlPatterns = { URLConstants.TASK_DETAIL})
+@WebServlet(name = "TaskDetailServlet", urlPatterns = {URLConstants.TASK_DETAIL})
 public class TaskDetailServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String requestIdStr = request.getParameter("id");
-        
+
         if (requestIdStr == null || requestIdStr.trim().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Task ID is required");
             return;
         }
-        
+
         Connection connection = null;
         try {
             int requestId = Integer.parseInt(requestIdStr);
             connection = DBcontext.getConnection();
             EntityManager entityManager = new EntityManager(connection);
-            
+
             Request task = entityManager.find(Request.class, requestId);
             if (task == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
                 return;
             }
-            
+
             Customer customer = null;
             Contract contract = null;
             if (task.getContract() != null) {
@@ -59,22 +59,21 @@ public class TaskDetailServlet extends HttpServlet {
 
             List<AccountRequest> allAccountRequests = entityManager.findAll(AccountRequest.class);
             List<Account> assignedAccounts = allAccountRequests.stream()
-                    .filter(ar -> ar.getRequest() != null && 
-                                 ar.getRequest().getRequestID() != null && 
-                                 ar.getRequest().getRequestID().equals(requestId))
+                    .filter(ar -> ar.getRequest() != null &&
+                            ar.getRequest().getRequestID() != null &&
+                            ar.getRequest().getRequestID().equals(requestId))
                     .filter(ar -> ar.getAccount() != null)
                     .map(ar -> ar.getAccount())
                     .collect(Collectors.toList());
-            
+
             request.setAttribute("task", task);
             request.setAttribute("customer", customer);
             request.setAttribute("contract", contract);
             request.setAttribute("assignedAccounts", assignedAccounts);
-            
-            entityManager.close();
+
 
             request.getRequestDispatcher("/technician_employee/task_detail.jsp").forward(request, response);
-            
+
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         } catch (Exception e) {

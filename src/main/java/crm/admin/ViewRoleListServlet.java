@@ -56,7 +56,7 @@ public class ViewRoleListServlet extends HttpServlet {
                 page = 1;
             }
         }
-        int recordsPerPage = 2;
+        int recordsPerPage = 5;
         if (itemsPerPageParam != null && !itemsPerPageParam.isEmpty()) {
             try {
                 recordsPerPage = Integer.parseInt(itemsPerPageParam);
@@ -70,7 +70,7 @@ public class ViewRoleListServlet extends HttpServlet {
         List<Role> allRoles = em.findAll(Role.class);
 
         List<Role> filteredRoles = allRoles.stream()
-                .filter(r -> r.getRoleID()!=1)
+                .filter(r -> r.getRoleID() != 1)
                 .filter(r -> searchParam == null || searchParam.isEmpty()
                         || (r.getRoleName() != null && r.getRoleName().toLowerCase().contains(searchParam.toLowerCase())))
                 .sorted((r1, r2) -> Integer.compare(r1.getRoleID(), r2.getRoleID())) // sort ASC theo ID
@@ -92,7 +92,7 @@ public class ViewRoleListServlet extends HttpServlet {
             userCountPerRole.put(role.getRoleID(), count);
         }
 
-        int totalRoles = em.count(Role.class)-1;
+        int totalRoles = em.count(Role.class) - 1;
         List<Account> allAccounts = em.findAll(Account.class);
         int totalUsers = 0;
         for (Account acc : allAccounts) {

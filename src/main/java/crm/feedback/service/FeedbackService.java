@@ -129,7 +129,6 @@ public class FeedbackService {
                     e.printStackTrace();
                     req.setAttribute("errorMessage", "Failed to create feedback. Please try again later.");
                 }
-                entityManager.close();
 
                 showCreateFeedbackForm(req, resp);
             } catch (SQLException e) {
