@@ -81,7 +81,7 @@ public class CreateRoleServlet extends HttpServlet {
 
             em.persist(role, Role.class);
             session.setAttribute("success", "Role created successfully.");
-            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
+            response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
         } catch (Exception e) {
             session.setAttribute("error", "Error creating role: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);

@@ -18,8 +18,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <jsp:include page="../components/admin_header.jsp" />
     <header class="bg-white shadow-sm border-bottom mb-4 p-3">
       <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
+        <a href="${pageContext.request.contextPath}/admin/role_list"
+           class="btn-back d-inline-flex align-items-center mb-3">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Roles
+        </a>
     </header>
-
+    <c:if test="${not empty success}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${success}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
     <div class="container-fluid px-4 py-4">
       <div class="row g-4">
         <!-- Create New Role Form -->

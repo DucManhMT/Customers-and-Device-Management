@@ -23,7 +23,7 @@ import java.util.Map;
 @WebServlet(name = "CreateContract", value = URLConstants.CUSTOMER_SUPPORTER_CREATE_CONTRACT)
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,  // 1MB
-        maxFileSize = 1024 * 1024 * 10,   // 10MB
+        maxFileSize = 1024 * 1024 * 50,   // 50MB
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 
@@ -40,18 +40,16 @@ public class CreateContractServlet extends HttpServlet {
 
         String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
         String mimeType = getServletContext().getMimeType(fileName);
-        if (mimeType == null || !mimeType.startsWith("image/")) {
-            request.setAttribute("error", "Invalid file type. Please upload an image file.");
+        if (mimeType == null || !mimeType.equals("application/pdf")) {
+            request.setAttribute("error", "Invalid file type. Only PDF files are allowed.");
             request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
             return;
         }
 
         // ✅ Kiểm tra đuôi file hợp lệ
         String lowerName = fileName.toLowerCase();
-        if (!(lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg") ||
-                lowerName.endsWith(".png") || lowerName.endsWith(".gif") ||
-                lowerName.endsWith(".webp"))) {
-            request.setAttribute("error", "Invalid file extension. Allowed: .jpg, .jpeg, .png, .gif, .webp");
+        if (!lowerName.endsWith(".pdf")) {
+            request.setAttribute("error", "Invalid file extension. Only .pdf is allowed.");
             request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
             return;
         }
@@ -98,17 +96,17 @@ public class CreateContractServlet extends HttpServlet {
         contract.setExpiredDate(LocalDate.now().plusYears(1));
 
         contract.setCustomer(customer);
-//        System.out.println("contract.getContractID(): " + contract.getContractID());
-//        System.out.println("contract.getContractImage(): " + contract.getContractImage());
-//        System.out.println("contract.getStartDate(): " + contract.getStartDate());
-//        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
-//        System.out.println(contract.getCustomer().getCustomerID());
+        System.out.println("contract.getContractID(): " + contract.getContractID());
+        System.out.println("contract.getContractImage(): " + contract.getContractImage());
+        System.out.println("contract.getStartDate(): " + contract.getStartDate());
+        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
+        System.out.println(contract.getCustomer().getCustomerID());
         em.persist(contract, Contract.class);
 
         // Gửi phản hồi hiển thị ảnh đã upload
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().println("<html><body style='font-family:Arial;text-align:center;'>");
-        response.getWriter().println("<h2>Upload Successful!</h2>");
+        response.getWriter().println("<h2>PDF Upload Successful!</h2>");
         response.getWriter().println("<a href='create_contract.jsp'>← Back to Upload</a>");
         response.getWriter().println("</body></html>");
     }
