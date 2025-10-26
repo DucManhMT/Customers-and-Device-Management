@@ -13,7 +13,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EntityFieldMapper {
 
@@ -100,6 +102,9 @@ public class EntityFieldMapper {
                 // Lấy tên cột từ @OneToOne/@JoinColumn
                 OneToOne ann = field.getAnnotation(OneToOne.class);
                 columnName = ann.joinColumn(); // giả sử bạn có attribute joinColumn trong annotation
+            }else if (isOneToMany(field)) {
+                OneToMany ann = field.getAnnotation(OneToMany.class);
+                columnName = ann.joinColumn();
             }
 
             if (columnName == null) {
@@ -129,6 +134,14 @@ public class EntityFieldMapper {
             }
 
             // TODO: handle OneToMany nếu cần
+//            if (isOneToMany(field)) {
+//                Class<?> targetType = field.getAnnotation(OneToMany.class).targetEntity();
+//                EntityManager em = new EntityManager(DBcontext.getConnection());
+//                Map<String, Object> conditions = new HashMap<>();
+//                Object keyValue =
+//                conditions.put(field.getAnnotation(OneToMany.class).mappedBy(), value );
+//
+//            }
 
             return value;
         } catch (Exception e) {
@@ -161,7 +174,6 @@ public class EntityFieldMapper {
                     List<?> list = new EntityFieldMapper().getOneToManyList(entity);
                     field.set(entity, list);
                 }
-
             }
 
             return entity;
@@ -255,6 +267,8 @@ public class EntityFieldMapper {
             throw new RuntimeException("Failed to map entity to columns and values", e);
         }
     }
+
+
 
     private <T> List<T> executeQuery(SqlAndParamsDTO sqlAndParamsDTO, Class<T> resultClass) {
         // Thực thi truy vấn SQL với tham số và trả về ResultSet
