@@ -9,7 +9,7 @@
 
 </head>
 <body class="bg-light">
-<jsp:include page="../components/customer_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container mt-5">
 
 <div class="container mt-5">

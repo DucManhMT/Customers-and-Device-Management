@@ -9,7 +9,7 @@
     <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<jsp:include page="../components/admin_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid py-4">
     <!-- Page Header -->
     <div class="row mb-4">

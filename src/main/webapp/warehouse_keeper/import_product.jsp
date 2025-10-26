@@ -52,7 +52,7 @@
     </style>
 </head>
 <body class="bg-light">
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid py-4">
     <jsp:include page="../components/header.jsp"/>
     <!-- Header -->

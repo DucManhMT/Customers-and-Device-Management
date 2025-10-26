@@ -27,7 +27,7 @@
 </head>
 
 <body>
-<jsp:include page="../components/customer_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
 
     <div class="main-container">

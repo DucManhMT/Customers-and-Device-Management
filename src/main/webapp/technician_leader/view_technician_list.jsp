@@ -24,7 +24,7 @@
     <script src="${pageContext.request.contextPath}/js/view_technician_list.js"></script>
 </head>
 <body>
-<jsp:include page="../components/teach_lead_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
     <div class="header-section">
         <div class="container">
