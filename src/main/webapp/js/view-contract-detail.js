@@ -1,37 +1,42 @@
-function viewDetails(contractId, contractImageName) {
-    let imagePath = contextPath + "/assets/" + contractImageName;
-    let contractImage = document.getElementById("contractImage");
-    let noImageNotice = document.getElementById("noImageNotice");
-    let downloadBtn = document.getElementById("downloadContractBtn");
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Ẩn tạm thời các phần tử
-    contractImage.style.display = "none";
-    noImageNotice.style.display = "none";
-    downloadBtn.style.display = "none";
+    window.viewDetails = function (contractCode, contractImageName) {
+        let contractPDF = document.getElementById("contractPDF");
+        let noPDFNotice = document.getElementById("noPDFNotice");
+        let downloadBtn = document.getElementById("downloadContractBtn");
 
-    // Kiểm tra xem ảnh có tồn tại hay không
-    const testImg = new Image();
-    testImg.onload = function() {
-        // Hiển thị ảnh khi load thành công
-        contractImage.src = imagePath;
-        contractImage.style.display = "block";
 
-        // Cấu hình nút tải xuống
-        downloadBtn.href = imagePath;
-        downloadBtn.setAttribute("download", contractImageName);
-        downloadBtn.style.display = "inline-block";
-        noImageNotice.style.display = "none";
-    };
-    testImg.onerror = function() {
-        // Ẩn ảnh và nút tải khi ảnh không tồn tại
-        contractImage.style.display = "none";
+        if (!contractPDF || !noPDFNotice || !downloadBtn) {
+            return;
+        }
+
+        // Ẩn trước
+        contractPDF.style.display = "none";
+        noPDFNotice.style.display = "none";
         downloadBtn.style.display = "none";
-        noImageNotice.style.display = "block";
+
+        let pdfPath = contextPath + "/assets/" + contractImageName;
+
+        fetch(pdfPath, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    contractPDF.src = pdfPath;
+                    contractPDF.style.display = "block";
+                    downloadBtn.href = pdfPath;
+                    downloadBtn.setAttribute("download", contractImageName);
+                    downloadBtn.style.display = "inline-block";
+                } else {
+                    noPDFNotice.style.display = "block";
+                }
+            })
+            .catch(() => noPDFNotice.style.display = "block");
+
+        let modalEl = document.getElementById("contractModal");
+        if (!modalEl) {
+            console.error(" Modal container not found!");
+            return;
+        }
+        let modal = new bootstrap.Modal(modalEl);
+        modal.show();
     };
-
-    testImg.src = imagePath;
-
-    // Mở modal hiển thị hợp đồng
-    let modal = new bootstrap.Modal(document.getElementById("contractModal"));
-    modal.show();
-}
+});

@@ -182,20 +182,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <img id="contractImage" src="" alt="Contract Image" class="img-fluid rounded shadow"
-                     style="display:none;">
-                <div id="noImageNotice" class="alert alert-warning mt-3" style="display:none;">
-                    No image!
+                <embed id="contractPDF" type="application/pdf" width="100%" height="600px" style="display: none;">
+
+                <div id="noPDFNotice" class="alert alert-warning mt-3" style="display: none;">
+                    Contract file not found or cannot be displayed.
                 </div>
-                <br>
-                <a id="downloadContractBtn" class="btn btn-success mt-3" href="#" download style="display:none;">
+
+                <a id="downloadContractBtn" class="btn btn-success mt-3" href="#" download style="display: none;">
                     <i class="bi bi-download"></i> Download Contract
                 </a>
             </div>
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/js/view-contract-detail.js"></script>
+
+<script src="${pageContext.request.contextPath}/js/view-contract-detail.js" ></script>
 </body>
 
 </html>
