@@ -19,7 +19,7 @@
           rel="stylesheet"/>
 </head>
 <body>
-<jsp:include page="../components/supporter_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
     <div class="container-fluid">
         <h2 class="mt-1">Service Request List</h2>

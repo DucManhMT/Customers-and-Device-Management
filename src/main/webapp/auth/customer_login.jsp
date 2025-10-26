@@ -51,6 +51,9 @@
                 <a href="forgotPassword.jsp" class="text-decoration-none">Forgot Password?</a>
                 <a href="${pageContext.request.contextPath}/auth/customer_register" class="text-decoration-none">Register New Account</a>
             </div>
+            <div class="links-row d-flex justify-content-center">
+                <a href="${pageContext.request.contextPath}">Back to home</a>
+            </div>
         </form>
     </div>
 </div>

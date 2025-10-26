@@ -29,7 +29,7 @@
     </style>
 </head>
 <body class="bg-light">
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container py-4">
     <!-- Header -->
     <div class="card shadow-sm p-3 mb-4">

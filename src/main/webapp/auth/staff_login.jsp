@@ -50,6 +50,9 @@
             <div class="links-row d-flex justify-content-center">
                 <a href="forgotPassword.jsp" class="text-decoration-none">Forgot Password?</a>
             </div>
+            <div class="links-row d-flex justify-content-center">
+                <a href="${pageContext.request.contextPath}">Back to home</a>
+            </div>
         </form>
     </div>
 </div>
