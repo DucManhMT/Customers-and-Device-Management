@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
-@WebServlet(name="UpdateTaskStatusServlet", urlPatterns = { URLConstants.TECHEM_UPDATE_TASK_STATUS})
+@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = {URLConstants.TECHEM_UPDATE_TASK_STATUS})
 public class UpdateTaskStatusServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -35,12 +35,12 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
         Connection connection = null;
         EntityManager entityManager = null;
-        
+
         try {
             int requestId = Integer.parseInt(requestIdStr);
             connection = DBcontext.getConnection();
             entityManager = new EntityManager(connection);
-            
+
             Request req = entityManager.find(Request.class, requestId);
             if (req == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
@@ -54,12 +54,12 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
 
             if ("finished".equals(newStatus)) {
-                
+
                 req.setRequestStatus(RequestStatus.Finished);
                 req.setFinishedDate(LocalDateTime.now());
 
                 entityManager.merge(req, Request.class);
-                
+
                 request.getSession().setAttribute("successMessage", "Task #" + requestId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
             } else {
@@ -67,32 +67,12 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
 
         } catch (NumberFormatException e) {
-            if (entityManager != null) {
-                try {
-                    entityManager.close();
-                } catch (Exception rollbackException) {
-                    rollbackException.printStackTrace();
-                }
-            }
+
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID");
         } catch (Exception e) {
-            if (entityManager != null) {
-                try {
-                    entityManager.close();
-                } catch (Exception rollbackException) {
-                    rollbackException.printStackTrace();
-                }
-            }
+
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }

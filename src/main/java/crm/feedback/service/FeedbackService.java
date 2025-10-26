@@ -27,7 +27,6 @@ public class FeedbackService {
         String username = account != null ? account.getUsername() : null;
         req.setAttribute("currentUsername", username);
 
-
         int page = 1;
         int recordsPerPage = 5;
 
@@ -130,7 +129,6 @@ public class FeedbackService {
                     e.printStackTrace();
                     req.setAttribute("errorMessage", "Failed to create feedback. Please try again later.");
                 }
-                entityManager.close();
 
                 showCreateFeedbackForm(req, resp);
             } catch (SQLException e) {

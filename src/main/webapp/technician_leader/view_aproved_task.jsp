@@ -1,19 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="crm.common.model.Request" %>
-<%@ page import="crm.common.model.enums.RequestStatus" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
-<%@ page import="java.time.LocalDateTime" %>
-<%
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    List<Request> approvedRequests = (List<Request>) request.getAttribute("approvedRequests");
-    Integer totalApproved = request.getAttribute("totalCount") != null ? (Integer) request.getAttribute("totalCount") : (approvedRequests != null ? approvedRequests.size() : 0);
-    Integer totalPages = request.getAttribute("totalPages") != null ? (Integer) request.getAttribute("totalPages") : 1;
-    Integer currentPage = request.getAttribute("currentPage") != null ? (Integer) request.getAttribute("currentPage") : 1;
-    Integer pageSize = request.getAttribute("pageSize") != null ? (Integer) request.getAttribute("pageSize") : 8;
-    Integer showingStart = request.getAttribute("startItem") != null ? (Integer) request.getAttribute("startItem") : (totalApproved > 0 ? 1 : 0);
-    Integer showingEnd = request.getAttribute("endItem") != null ? (Integer) request.getAttribute("endItem") : (approvedRequests != null ? approvedRequests.size() : 0);
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -25,7 +12,6 @@
     <link href="${pageContext.request.contextPath}/assets/css/task-views.css" rel="stylesheet"/>
 </head>
 <body>
-<jsp:include page="../components/teach_lead_header.jsp"/>
 <div class="page-header">
     <div class="container">
         <div class="row align-items-center">
@@ -38,8 +24,7 @@
                 <div class="d-flex align-items-center justify-content-end">
                     <div class="me-3">
                         <div class="text-white-50 small">Total Approved Requests</div>
-                        <div class="h4 mb-0 fw-bold" id="totalTasksCount"><%= totalApproved %>
-                        </div>
+                        <div class="h4 mb-0 fw-bold" id="totalTasksCount">${totalCount}</div>
                     </div>
                     <i class="bi bi-clipboard-check display-4 opacity-50"></i>
                 </div>
@@ -49,40 +34,32 @@
 </div>
 
 <div class="container">
-    <br>
+    <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+       class="btn btn-primary mb-2">
+        <span>Back to Action Center</span>
+    </a><br>
 
-        <%
-        String successMessage = (String) session.getAttribute("successMessage");
-        if (successMessage != null) {
-          session.removeAttribute("successMessage");
-      %>
+    <c:if test="${not empty sessionScope.successMessage}">
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i><%= successMessage %>
+        <i class="bi bi-check-circle me-2"></i>${sessionScope.successMessage}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-        <% } %>
-
-        <%
-        String warningMessage = (String) session.getAttribute("warningMessage");
-        if (warningMessage != null) {
-          session.removeAttribute("warningMessage");
-      %>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+    <c:if test="${not empty sessionScope.warningMessage}">
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i><%= warningMessage %>
+        <i class="bi bi-exclamation-triangle me-2"></i>${sessionScope.warningMessage}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-        <% } %>
-
-        <%
-        String errorMessage = (String) session.getAttribute("errorMessage");
-        if (errorMessage != null) {
-          session.removeAttribute("errorMessage");
-      %>
+        <c:remove var="warningMessage" scope="session"/>
+    </c:if>
+    <c:if test="${not empty sessionScope.errorMessage}">
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-x-circle me-2"></i><%= errorMessage %>
+        <i class="bi bi-x-circle me-2"></i>${sessionScope.errorMessage}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-        <% } %>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
 
     <div class="row">
         <div class="col-lg-8">
@@ -104,7 +81,7 @@
                                         class="form-control"
                                         id="phoneFilter"
                                         name="phoneFilter"
-                                        value="<%= request.getAttribute("phoneFilter") != null ? request.getAttribute("phoneFilter") : "" %>"
+                                        value="${phoneFilter}"
                                         placeholder="Enter phone number..."
                                 />
                             </div>
@@ -115,7 +92,7 @@
                                         class="form-control"
                                         id="fromDate"
                                         name="fromDate"
-                                        value="<%= request.getAttribute("fromDate") != null ? request.getAttribute("fromDate") : "" %>"
+                                        value="${fromDate}"
                                         title="Select start date for filtering requests"
                                 />
                             </div>
@@ -126,7 +103,7 @@
                                         class="form-control"
                                         id="toDate"
                                         name="toDate"
-                                        value="<%= request.getAttribute("toDate") != null ? request.getAttribute("toDate") : "" %>"
+                                        value="${toDate}"
                                         title="Select end date for filtering requests"
                                 />
                             </div>
@@ -137,7 +114,7 @@
                                         class="form-control"
                                         id="customerFilter"
                                         name="customerFilter"
-                                        value="<%= request.getAttribute("customerFilter") != null ? request.getAttribute("customerFilter") : "" %>"
+                                        value="${customerFilter}"
                                         placeholder="Search customer..."
                                 />
                             </div>
@@ -155,7 +132,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="page" value="1"/>
-                        <input type="hidden" name="pageSize" value="<%= pageSize %>"/>
+                        <input type="hidden" name="pageSize" value="${pageSize}"/>
                     </form>
                 </div>
             </div>
@@ -165,7 +142,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
                             <label class="form-check-label fw-semibold">
-                                Request List (<span id="visibleRequestsCount"><%= totalApproved %></span> requests)
+                                Request List (<span id="visibleRequestsCount">${totalCount}</span> requests)
                             </label>
                         </div>
                         <div class="d-flex align-items-center gap-3">
@@ -185,8 +162,7 @@
                         class="card-header d-flex justify-content-between align-items-center"
                 >
                     <h5 class="mb-0">
-                        <i class="bi bi-list-ul"></i> Request List (<span id="totalCount"><%= totalApproved %></span>
-                        requests)
+                        <i class="bi bi-list-ul"></i> Request List (<span id="totalCount">${totalCount}</span> requests)
                     </h5>
                     <div class="d-flex align-items-center gap-2">
                         <label class="form-label mb-0 me-2">Show:</label>
@@ -218,60 +194,80 @@
                         </thead>
 
                         <tbody id="requestsTableBody">
-                        <%
-                            if (approvedRequests != null && !approvedRequests.isEmpty()) {
-                                for (Request reqObj : approvedRequests) {
-                        %>
-                        <tr>
-                            <td>
-                                <input type="checkbox" class="form-check-input request-checkbox" name="selectedTasks"
-                                       value="<%= reqObj.getRequestID() %>"/>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-primary mb-1"><%= reqObj.getRequestDescription() != null ? reqObj.getRequestDescription() : "Service Request" %>
-                                </div>
-                                <small class="text-muted"><%= reqObj.getNote() != null ? reqObj.getNote() : "" %>
-                                </small>
-                                <div class="mt-1">
-                                    <small class="badge bg-light text-dark border">REQ-<%= reqObj.getRequestID() %>
-                                    </small>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="fw-semibold"><%= (reqObj.getContract() != null && reqObj.getContract().getCustomer() != null && reqObj.getContract().getCustomer().getCustomerName() != null) ? reqObj.getContract().getCustomer().getCustomerName() : "" %>
-                                </div>
-                                <small class="text-muted"><i
-                                        class="bi bi-telephone me-1"></i><%= (reqObj.getContract() != null && reqObj.getContract().getCustomer() != null && reqObj.getContract().getCustomer().getPhone() != null) ? reqObj.getContract().getCustomer().getPhone() : "" %>
-                                </small>
-                            </td>
-                            <td>
-                                <small><i
-                                        class="bi bi-calendar me-1"></i><%= reqObj.getStartDate() != null ? reqObj.getStartDate().format(formatter) : "" %>
-                                </small>
-                            </td>
-                            <td>
-                                <span class="badge bg-success"><%= reqObj.getRequestStatus() %></span>
-                            </td>
-                            <td>
-                                <form method="post" action="${pageContext.request.contextPath}/task/detail"
-                                      style="display:inline-block;">
-                                    <input type="hidden" name="id" value="<%= reqObj.getRequestID() %>"/>
-                                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-eye"></i> View
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        <%
-                            }
-                        } else {
-                        %>
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">No approved requests found</td>
-                        </tr>
-                        <%
-                            }
-                        %>
+                        <c:choose>
+                            <c:when test="${not empty approvedRequests}">
+                                <c:forEach var="reqObj" items="${approvedRequests}">
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="form-check-input request-checkbox"
+                                                   name="selectedTasks" value="${reqObj.requestID}"/>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-primary mb-1">
+                                                <c:choose>
+                                                    <c:when test="${not empty reqObj.requestDescription}">
+                                                        ${reqObj.requestDescription}
+                                                    </c:when>
+                                                    <c:otherwise>Service Request</c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <small class="text-muted">
+                                                <c:out value="${reqObj.note}" default=""/>
+                                            </small>
+                                            <div class="mt-1">
+                                                <small class="badge bg-light text-dark border">REQ-${reqObj.requestID}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">
+                                                <c:choose>
+                                                    <c:when test="${not empty reqObj.contract and not empty reqObj.contract.customer and not empty reqObj.contract.customer.customerName}">
+                                                        ${reqObj.contract.customer.customerName}
+                                                    </c:when>
+                                                    <c:otherwise></c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <small class="text-muted">
+                                                <i class="bi bi-telephone me-1"></i>
+                                                <c:choose>
+                                                    <c:when test="${not empty reqObj.contract and not empty reqObj.contract.customer and not empty reqObj.contract.customer.phone}">
+                                                        ${reqObj.contract.customer.phone}
+                                                    </c:when>
+                                                    <c:otherwise></c:otherwise>
+                                                </c:choose>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small><i class="bi bi-calendar me-1"></i>
+                                                <c:choose>
+                                                    <c:when test="${not empty reqObj.startDate}">
+                                                        ${reqObj.startDate}
+                                                    </c:when>
+                                                    <c:otherwise></c:otherwise>
+                                                </c:choose>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">${reqObj.requestStatus}</span>
+                                        </td>
+                                        <td>
+                                            <form method="post" action="${pageContext.request.contextPath}/task/detail"
+                                                  style="display:inline-block;">
+                                                <input type="hidden" name="id" value="${reqObj.requestID}"/>
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">No approved requests found</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
                         </tbody>
                     </table>
                 </div>
@@ -279,39 +275,32 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="text-muted">
-                            Showing <span id="showingStart"><%= showingStart %></span> to
-                            <span id="showingEnd"><%= showingEnd %></span> of
-                            <span id="showingTotal"><%= totalApproved %></span> entries
+                            Showing <span id="showingStart">${startItem}</span> to
+                            <span id="showingEnd">${endItem}</span> of
+                            <span id="showingTotal">${totalCount}</span> entries
                         </div>
                         <nav aria-label="Request pagination">
                             <ul class="pagination mb-0" id="pagination">
-                                <%
-                                    int prev = Math.max(1, currentPage - 1);
-                                    int next = Math.min(totalPages, currentPage + 1);
-                                %>
-                                <li class="page-item <%= currentPage == 1 ? "disabled" : "" %>">
+                                <c:set var="prev" value="${currentPage > 1 ? currentPage - 1 : 1}"/>
+                                <c:set var="next" value="${currentPage < totalPages ? currentPage + 1 : totalPages}"/>
+                                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                     <a class="page-link pagination-link" href="#"
-                                       data-page="<%= prev %>" <%= currentPage == 1 ? "data-disabled='true'" : "" %>>
+                                       data-page="${prev}" ${currentPage == 1 ? 'data-disabled="true"' : ''}>">
                                         <i class="bi bi-chevron-left"></i> Previous
                                     </a>
                                 </li>
-                                <%
-                                    // render up to 7 page links: current +/- 3
-                                    int startPage = Math.max(1, currentPage - 3);
-                                    int endPage = Math.min(totalPages, currentPage + 3);
-                                    for (int p = startPage; p <= endPage; p++) {
-                                %>
-                                <li class="page-item <%= p == currentPage ? "active" : "" %>">
+                                <c:set var="startPage" value="${currentPage - 3 > 0 ? currentPage - 3 : 1}"/>
+                                <c:set var="endPage"
+                                       value="${currentPage + 3 < totalPages ? currentPage + 3 : totalPages}"/>
+                                <c:forEach var="p" begin="${startPage}" end="${endPage}">
+                                    <li class="page-item ${p == currentPage ? 'active' : ''}">
+                                        <a class="page-link pagination-link" href="#"
+                                           data-page="${p}" ${p == currentPage ? 'data-current="true"' : ''}>${p}</a>
+                                    </li>
+                                </c:forEach>
+                                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                     <a class="page-link pagination-link" href="#"
-                                       data-page="<%= p %>" <%= p == currentPage ? "data-current='true'" : "" %>><%= p %>
-                                    </a>
-                                </li>
-                                <%
-                                    }
-                                %>
-                                <li class="page-item <%= currentPage == totalPages ? "disabled" : "" %>">
-                                    <a class="page-link pagination-link" href="#"
-                                       data-page="<%= next %>" <%= currentPage == totalPages ? "data-disabled='true'" : "" %>>
+                                       data-page="${next}" ${currentPage == totalPages ? 'data-disabled="true"' : ''}>">
                                         Next <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>
@@ -432,9 +421,6 @@
                                             <button class="btn btn-sm btn-outline-primary selected-task-view"
                                                     type="button"><i class="bi bi-eye"></i> View
                                             </button>
-                                            <button class="btn btn-sm btn-outline-danger selected-task-remove"
-                                                    type="button"><i class="bi bi-x"></i> Remove
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -458,12 +444,13 @@
         </div>
     </div>
 
+
     <script>
+        const contextPath = '${pageContext.request.contextPath}';
         document.getElementById('pageSize').addEventListener('change', function () {
             const form = document.getElementById('filterForm');
             const pageSizeInput = form.querySelector('input[name="pageSize"]');
             const pageInput = form.querySelector('input[name="page"]');
-
             pageSizeInput.value = this.value;
             pageInput.value = 1;
             form.submit();
@@ -720,6 +707,7 @@
             toggleSelectedTasksDisplay();
         }
 
+
         function assignSelectedTasks() {
             if (selectedTasks.size === 0) {
                 alert('Please select at least one task to assign.');
@@ -730,9 +718,9 @@
             if (confirm(`Are you sure you want to assign ${taskCount} task(s) to a technician?`)) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '${pageContext.request.contextPath}/task/selectTechnician';
+                form.action = contextPath + '/task/selectTechnician';
 
-                Array.from(selectedTasks).forEach(taskId => {
+                selectedTasks.forEach(taskId => {
                     const input = document.createElement('input');
                     input.type = 'hidden';
                     input.name = 'selectedTasks';
@@ -743,12 +731,13 @@
                 document.body.appendChild(form);
                 form.submit();
             }
-
         }
 
 
     </script>
-    <%--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>--%>
-    <%--    <script src="${pageContext.request.contextPath}/js/view_aproved_task.js"></script>--%>
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/view_aproved_task.js"></script> -->
+
 </body>
 </html>

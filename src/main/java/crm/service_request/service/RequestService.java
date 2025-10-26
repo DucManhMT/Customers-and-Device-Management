@@ -50,8 +50,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
-            String status, int contractId,
-            int page, int recordsPerPage) {
+                                     String status, int contractId,
+                                     int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -84,8 +84,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
-            String status, int contractId,
-            int page, int recordsPerPage) {
+                                              String status, int contractId,
+                                              int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";

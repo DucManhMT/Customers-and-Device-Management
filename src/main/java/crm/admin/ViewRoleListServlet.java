@@ -70,6 +70,7 @@ public class ViewRoleListServlet extends HttpServlet {
         List<Role> allRoles = em.findAll(Role.class);
 
         List<Role> filteredRoles = allRoles.stream()
+                .filter(r -> r.getRoleID() != 1)
                 .filter(r -> searchParam == null || searchParam.isEmpty()
                         || (r.getRoleName() != null && r.getRoleName().toLowerCase().contains(searchParam.toLowerCase())))
                 .sorted((r1, r2) -> Integer.compare(r1.getRoleID(), r2.getRoleID())) // sort ASC theo ID
@@ -91,11 +92,11 @@ public class ViewRoleListServlet extends HttpServlet {
             userCountPerRole.put(role.getRoleID(), count);
         }
 
-        int totalRoles = em.count(Role.class);
+        int totalRoles = em.count(Role.class) - 1;
         List<Account> allAccounts = em.findAll(Account.class);
         int totalUsers = 0;
         for (Account acc : allAccounts) {
-            if (acc.getRole() != null) {
+            if (acc.getRole() != null && acc.getRole().getRoleID() != 1) {
                 totalUsers++;
             }
         }
@@ -128,6 +129,7 @@ public class ViewRoleListServlet extends HttpServlet {
                     Role roleToDelete = em.find(Role.class, roleId);
                     if (roleToDelete != null) {
                         em.remove(roleToDelete, Role.class);
+                        request.getSession().setAttribute("error", "Role deleted successfully.");
                     }
                 } catch (Exception e) {
                     request.getSession().setAttribute("error", "This role can't be delete because have assigned to one or more account.");

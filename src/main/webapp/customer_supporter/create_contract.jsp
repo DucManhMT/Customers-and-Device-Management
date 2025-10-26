@@ -67,10 +67,10 @@
             <div class="mb-4">
                 <label for="userName" class="form-label fw-semibold">
                     <i class="bi bi-person me-2"></i>
-                    Customer Name
+                    Customer Username
                 </label>
                 <input type="text" class="form-control" id="userName" name="userName"
-                       placeholder="Enter customer name" required>
+                       placeholder="Enter customer username" required>
             </div>
             <!-- ✅ Khu vực chọn file -->
             <div class="upload-zone" id="uploadZone">

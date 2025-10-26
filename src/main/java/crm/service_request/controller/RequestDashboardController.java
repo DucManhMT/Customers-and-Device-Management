@@ -44,11 +44,19 @@ public class RequestDashboardController extends HttpServlet {
             } else {
                 fromDate = LocalDate.parse(fromDateString).atStartOfDay();
                 toDate = LocalDate.parse(toDateString).atStartOfDay();
+                LocalDateTime today = LocalDate.now().atStartOfDay();
+
+                if (toDate.isAfter(today)) {
+                    throw new DateTimeException("Time travel is not allowed!");
+                }
                 if (fromDate.isAfter(toDate)) {
                     throw new DateTimeException(MessageConst.MSG22);
                 }
             }
+            System.out.println("From date: " + fromDate + ", To date: " + toDate);
+
             Map<String, Integer> map = requestService.statisticRequestsByStatus(fromDate, toDate);
+
             req.setAttribute("total", map.get("All"));
             req.setAttribute("stats", map);
             req.setAttribute("fromDate", fromDateString);

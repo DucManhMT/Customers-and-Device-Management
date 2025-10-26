@@ -1,48 +1,60 @@
 <%-- Created by IntelliJ IDEA. User: FPT SHOP Date: 10/11/2025 Time: 2:34 PM To
-change this template use File | Settings | File Templates. --%> <%@ page
-contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+change this template use File | Settings | File Templates. --%>
+<%@ page
+        contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c"
+           uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-  <head>
+<head>
     <title>Create Role</title>
     <link
-      href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
-      rel="stylesheet"
+            href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+            rel="stylesheet"
     />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-      rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+            rel="stylesheet"
     />
-  </head>
-  <body>
-    <jsp:include page="../components/admin_header.jsp" />
-    <header class="bg-white shadow-sm border-bottom mb-4 p-3">
-      <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
-    </header>
-
-    <div class="container-fluid px-4 py-4">
-      <div class="row g-4">
+</head>
+<body>
+<jsp:include page="../components/admin_header.jsp"/>
+<header class="bg-white shadow-sm border-bottom mb-4 p-3">
+    <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
+    <a href="${pageContext.request.contextPath}/admin/role_list"
+       class="btn-back d-inline-flex align-items-center mb-3">
+        <i class="bi bi-arrow-left me-2"></i>
+        Back to Roles
+    </a>
+</header>
+<c:if test="${not empty success}">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+            ${success}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</c:if>
+<div class="container-fluid px-4 py-4">
+    <div class="row g-4">
         <!-- Create New Role Form -->
         <div class="col-lg-8">
-          <div class="form-card">
-            <div class="d-flex align-items-center mb-4">
-              <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
-                <i class="bi bi-plus-circle text-primary fs-5"></i>
-              </div>
-              <h2 class="h4 mb-0">Create New Role</h2>
-            </div>
-            <c:if test="${not empty error}">
-              <div class="alert alert-danger">${error}</div>
-            </c:if>
-            <form
-              id="roleForm"
-              action="${pageContext.request.contextPath}/admin/role_list/create_role"
-              method="post"
-            >
-              <!-- Role Name -->
-              <%--
-              <div class="mb-4">
-                --%> <%--
+            <div class="form-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                        <i class="bi bi-plus-circle text-primary fs-5"></i>
+                    </div>
+                    <h2 class="h4 mb-0">Create New Role</h2>
+                </div>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger">${error}</div>
+                </c:if>
+                <form
+                        id="roleForm"
+                        action="${pageContext.request.contextPath}/admin/role_list/create_role"
+                        method="post"
+                >
+                    <!-- Role Name -->
+                    <%--
+                    <div class="mb-4">
+                      --%> <%--
                 <label for="roleId" class="form-label fw-medium">Role ID</label
                 >--%> <%--
                 <input
@@ -57,31 +69,31 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
               --%>
 
-              <div class="mb-4">
-                <label for="roleName" class="form-label fw-medium"
-                  >Role Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control form-control-lg"
-                  id="roleName"
-                  name="roleName"
-                  required
-                  placeholder="Enter role name..."
-                  value="${roleName != null ? roleName : ''}"
-                />
-              </div>
+                    <div class="mb-4">
+                        <label for="roleName" class="form-label fw-medium"
+                        >Role Name</label
+                        >
+                        <input
+                                type="text"
+                                class="form-control form-control-lg"
+                                id="roleName"
+                                name="roleName"
+                                required
+                                placeholder="Enter role name..."
+                                value="${roleName != null ? roleName : ''}"
+                        />
+                    </div>
 
-              <!-- Description -->
+                    <!-- Description -->
 
-              <!-- Permissions -->
-              <%--
-              <div class="mb-4">
-                --%> <%--
+                    <!-- Permissions -->
+                    <%--
+                    <div class="mb-4">
+                      --%> <%--
                 <label class="form-label fw-medium mb-3">Permissions</label>--%>
-                <%--
-                <div class="row g-3">
-                  --%> <%--
+                    <%--
+                    <div class="row g-3">
+                      --%> <%--
                   <!-- User Management -->--%> <%--
                   <div class="col-md-6">
                     --%> <%--
@@ -239,7 +251,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       --%> <%--
                       <h5 class="h6 mb-3 d-flex align-items-center">
                         --%> <%-- <i class="bi bi-gear text-muted me-2"></i>--%>
-                        <%-- System Settings--%> <%--
+                    <%-- System Settings--%> <%--
                       </h5>
                       --%> <%--
                       <div class="d-flex flex-column gap-2">
@@ -358,21 +370,21 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
               --%>
 
-              <!-- Submit Buttons -->
-              <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                <a
-                  href="${pageContext.request.contextPath}/admin/role_list"
-                  class="btn btn-outline-secondary"
-                >
-                  Cancel
-                </a>
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-plus-circle me-2"></i>
-                  Create Role
-                </button>
-              </div>
-            </form>
-          </div>
+                    <!-- Submit Buttons -->
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a
+                                href="${pageContext.request.contextPath}/admin/role_list"
+                                class="btn btn-outline-secondary"
+                        >
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Create Role
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Sidebar -->
@@ -424,9 +436,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   <h4 class="h6 mb-0 fw-medium">Editor</h4>
                   --%> <%--
                   <span class="badge bg-success badge-custom">Content</span>--%>
-                  <%--
-                </div>
-                --%> <%--
+        <%--
+      </div>
+      --%> <%--
                 <p class="text-muted small mb-2">Can create and edit content</p>
                 --%> <%--
                 <div class="d-flex gap-2">
@@ -481,9 +493,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <div class="d-flex justify-content-between">
                 --%> <%-- <span class="text-muted">Total Roles</span>--%> <%--
                 <span class="fw-medium" id="totalRoles">${roleCount}</span>--%>
-                <%--
-              </div>
-              --%> <%--
+        <%--
+      </div>
+      --%> <%--
               <div class="d-flex justify-content-between">
                 --%> <%-- <span class="text-muted">Active Users</span>--%> <%--
                 <span class="fw-medium">24</span>--%> <%--
@@ -500,7 +512,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           --%> <%--
         </div>
         --%>
-      </div>
     </div>
-  </body>
+</div>
+</div>
+
+
+</body>
 </html>

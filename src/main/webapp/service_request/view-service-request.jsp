@@ -16,7 +16,7 @@
 <body>
 <jsp:include page="../components/customer_header.jsp"/>
 <div class=" container-fluid">
-    
+
     <form action="">
         <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
 
@@ -65,13 +65,13 @@
                         <a href="./requests/detail?requestId=${request.requestID}" class="btn btn-info btn-sm">View</a>
                         <a href="./requests/timeline?requestId=${request.requestID}"
                            class="btn btn-primary btn-sm">Timeline</a>
-                        <a href="./../feedback/create"
-                           class="btn btn-primary btn-sm">Feedback</a>
                     </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+        <a href="./../feedback/create"
+           class="btn btn-primary btn-sm">Feedback</a>
         <jsp:include page="../components/paging-bottom.jsp"/>
     </form>
     <jsp:include page="../components/scroll-button.jsp"/>
