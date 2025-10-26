@@ -128,7 +128,6 @@
                                             <td>${productCounts[p.productID]}</td>
                                             <td>
                                                 <input type="number" min="1"
-                                                       max="${productCounts[p.productID]}"
                                                        class="form-control quantity-input" placeholder="Qty"
                                                        style="width: 80px;" disabled>
                                             </td>

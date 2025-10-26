@@ -1,13 +1,17 @@
 package crm.common.model;
 
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
 import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.annotation.OneToMany;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity(tableName = "Type")
 public class Type {
@@ -74,4 +78,5 @@ public class Type {
     public void setSpecificationTypes(List<SpecificationType> specificationTypes) {
         this.specificationTypes = specificationTypes;
     }
+
 }

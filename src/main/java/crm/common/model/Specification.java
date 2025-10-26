@@ -1,9 +1,14 @@
 package crm.common.model;
 
+import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.annotation.*;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity(tableName = "Specification")
 public class Specification {
@@ -56,10 +61,13 @@ public class Specification {
                 specificationType.getSpecificationTypeID());
     }
 
-    public List<ProductSpecification> getProductSpecifications() {
-        return productSpecifications;
-    }
 
+    public List<ProductSpecification> getProductSpecifications(Integer specificationID) {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put("SpecificationID", specificationID);
+        return em.findWithConditions(ProductSpecification.class, conditions);
+    }
     public void setProductSpecifications(List<ProductSpecification> productSpecifications) {
         this.productSpecifications = productSpecifications;
     }
