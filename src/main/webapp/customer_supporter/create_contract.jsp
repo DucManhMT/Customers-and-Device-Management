@@ -85,15 +85,21 @@
                 </button>
 
                 <!-- ✅ input file thật -->
-                <input type="file" id="fileInput" name="contractImage" class="d-none" accept="image/*" required>
+                <input type="file" id="fileInput" name="contractImage" class="d-none" accept=".pdf" required>
 
                 <div class="mt-3">
                     <small class="text-muted">
-                        Supported formats: JPG, PNG, GIF, WebP (Max 10MB per file)
+                        Supported format: PDF (Max 10MB per file)
                     </small>
                 </div>
             </div>
-
+            <div class="file-preview" id="filePreview" style="display:none;">
+                <h5 class="mt-4 mb-3">
+                    <i class="bi bi-eye me-2"></i>
+                    Preview
+                </h5>
+                <div id="previewContainer" class="row g-3"></div>
+            </div>
             <!-- ✅ Nút hành động -->
             <div class="mt-4">
                 <button type="reset" class="btn btn-outline-secondary me-2">

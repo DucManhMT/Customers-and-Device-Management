@@ -2,6 +2,7 @@ package crm.warehousekeeper.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.*;
+import crm.common.repository.Warehouse.ProductDAO;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,7 @@ public class ProductWarehouseController extends HttpServlet {
         //Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
+        ProductDAO productDAO = new ProductDAO();
 
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
@@ -74,7 +77,7 @@ public class ProductWarehouseController extends HttpServlet {
 
         final int warehouseID = warehouse.getWarehouseID();
 
-        List<Product> products = warehouseDAO.getProductsInWarehouse(warehouse.getWarehouseID());
+        List<Product> products = productDAO.findAll();
 
         if(products.isEmpty()){
             req.setAttribute("errorMessage", "No products found in your warehouse.");
@@ -90,6 +93,11 @@ public class ProductWarehouseController extends HttpServlet {
                         pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
                         Collectors.counting()
                 ));
+
+
+        for (Product p : products) {
+            productCounts.putIfAbsent(p.getProductID(), 0L);
+        }
 
         // Get unique product types for filter dropdown
         TypeDAO typeDAO = new TypeDAO();

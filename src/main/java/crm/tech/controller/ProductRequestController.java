@@ -135,7 +135,7 @@ public class ProductRequestController extends HttpServlet {
 
             em.commit();
 
-            resp.sendRedirect(req.getContextPath() + "/tech/employees/viewProductRequest");
+//            resp.sendRedirect(req.getContextPath() + "/tech/employees/viewProductRequest");
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");

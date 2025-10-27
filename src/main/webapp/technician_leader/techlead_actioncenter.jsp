@@ -13,7 +13,7 @@
           rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/teach_lead_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <p>THIS IS TECHLEAD</p>
 <a href="${pageContext.request.contextPath}/task/techlead/assignTask.jsp">
     Assign Task

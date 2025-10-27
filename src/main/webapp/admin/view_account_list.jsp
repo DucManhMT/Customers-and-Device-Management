@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/admin_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-content">

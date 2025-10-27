@@ -17,7 +17,7 @@ change this template use File | Settings | File Templates. --%>
     />
 </head>
 <body>
-<jsp:include page="../components/admin_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <header class="bg-white shadow-sm border-bottom mb-4 p-3">
     <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
     <a href="${pageContext.request.contextPath}/admin/role_list"

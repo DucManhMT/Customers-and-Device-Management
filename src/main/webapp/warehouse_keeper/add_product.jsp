@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -22,55 +22,61 @@
                     </c:if>
                 </div>
                 <div class="card-body">
-                    <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="post"
-                          enctype="multipart/form-data">
-                        <%-- Product Name --%>
-                        <div class="mb-3">
-                            <label for="productName" class="form-label">Product Name</label>
-                            <input type="text" class="form-control" id="productName" name="productName" required>
-                        </div>
 
-                        <%-- Product Description --%>
-                        <div class="mb-3">
-                            <label for="productDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="productDescription" name="productDescription"
-                                      rows="3"></textarea>
-                        </div>
-
-                        <%-- Product Image Upload --%>
-                        <div class="mb-3">
-                            <label for="productImage" class="form-label">Product Image</label>
-                            <input class="form-control" type="file" id="productImage" name="productImage"
-                                   accept="image/*">
-                        </div>
-
-                        <%-- Product Type --%>
-                        <div class="mb-3">
-                            <label for="type" class="form-label">Product Type</label>
-                            <select class="form-select" id="type" name="typeID" required>
+                    <%-- Product Type --%>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Product Type</label>
+                        <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="GET">
+                            <select class="form-select" id="type" name="typeID" required onchange="this.form.submit()">
                                 <option value="" disabled selected>-- Select a Type --</option>
                                 <c:forEach var="type" items="${types}">
-                                    <option value="${type.typeID}">${type.typeName}</option>
+                                    <option value="${type.typeID}" ${selectedType.typeID == type.typeID ? 'selected' : ''}>${type.typeName}</option>
                                 </c:forEach>
                             </select>
-                        </div>
+                        </form>
+                    </div>
 
-                        <%-- Dynamic Specifications --%>
-                        <div class="mb-4">
-                            <label class="form-label">Specifications</label>
-                            <div id="specifications-container">
-                                <%-- Initial specification row will be added by script --%>
+                    <c:if test="${not empty selectedType}">
+                        <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="post"
+                              enctype="multipart/form-data">
+                            <input type="hidden" name="typeID" value="${selectedType.typeID}">
+                                <%-- Product Name --%>
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="productName" name="productName" required>
                             </div>
-                            <button type="button" id="add-spec-btn" class="btn btn-sm btn-outline-secondary mt-2">
-                                Add Specification
-                            </button>
-                        </div>
 
-                        <%-- Submit Button --%>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Add Product</button>
-                        </div>
-                    </form>
+                                <%-- Product Description --%>
+                            <div class="mb-3">
+                                <label for="productDescription" class="form-label">Description</label>
+                                <textarea class="form-control" id="productDescription" name="productDescription"
+                                          rows="3"></textarea>
+                            </div>
+
+                                <%-- Product Image Upload --%>
+                            <div class="mb-3">
+                                <label for="productImage" class="form-label">Product Image</label>
+                                <input class="form-control" type="file" id="productImage" name="productImage"
+                                       accept="image/*">
+                            </div>
+
+                                <%-- Dynamic Specifications --%>
+                            <div class="mb-4">
+                                <label class="form-label">Specifications</label>
+                                <div id="specifications-container">
+                                        <%-- Initial specification row will be added by script --%>
+                                </div>
+                                <button type="button" id="add-spec-btn" class="btn btn-sm btn-outline-secondary mt-2">
+                                    Add Specification
+                                </button>
+                            </div>
+
+                                <%-- Submit Button --%>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Add Product</button>
+                            </div>
+                        </form>
+                    </c:if>
                 </div>
             </div>
         </div>
@@ -83,8 +89,10 @@
         <div class="col">
             <select class="form-select" name="specIDs">
                 <option value="" disabled selected>-- Select Specification --</option>
-                <c:forEach var="spec" items="${specifications}">
-                    <option value="${spec.specificationID}">${spec.specificationName}: ${spec.specificationValue}</option>
+                <c:forEach var="specType" items="${selectedType.specificationTypes}">
+                    <c:forEach var="spec" items="${specType.specifications}">
+                        <option value="${spec.specificationID}">${spec.specificationName}: ${spec.specificationValue}</option>
+                    </c:forEach>
                 </c:forEach>
             </select>
         </div>

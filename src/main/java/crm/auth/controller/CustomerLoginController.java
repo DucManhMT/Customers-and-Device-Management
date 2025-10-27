@@ -20,7 +20,7 @@ public class CustomerLoginController extends HttpServlet {
 
         if (Validator.isValidUsername(username) && Validator.isValidPassword(password)) {
             Account account = LoginService.login(username, password);
-            if (account != null) {
+            if (account != null && account.getRole().getRoleName().equals("Customer")) {
                 HttpSession session = request.getSession();
                 session.setAttribute("account", account);
                 response.sendRedirect(request.getContextPath() + "/customer/customer_actioncenter");

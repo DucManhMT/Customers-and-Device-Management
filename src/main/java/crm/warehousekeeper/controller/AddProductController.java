@@ -1,10 +1,9 @@
 package crm.warehousekeeper.controller;
 
 import crm.common.URLConstants;
-import crm.common.model.Product;
-import crm.common.model.ProductSpecification;
-import crm.common.model.Specification;
-import crm.common.model.Type;
+import crm.common.model.*;
+import crm.common.model.enums.ProductStatus;
+import crm.common.repository.Warehouse.TypeDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
@@ -21,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = URLConstants.WAREHOUSE_ADD_PRODUCT)
 @MultipartConfig(
@@ -33,21 +34,41 @@ public class AddProductController extends HttpServlet {
 
     EntityManager em = new EntityManager(DBcontext.getConnection());
 
+    TypeDAO typeDAO = new TypeDAO();
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<Type> types = em.findAll(Type.class);
-        List<Specification> specifications = em.findAll(Specification.class);
+        List<Type> types = typeDAO.findAll();
 
-        if (types.isEmpty() || specifications.isEmpty()) {
-            req.setAttribute("errorMessage", "Please ensure that at least one product type and one specification exist before adding a product.");
+
+        if (types.isEmpty()) {
+            req.setAttribute("errorMessage", "Please ensure that at least one product type exist before adding a product.");
             req.getRequestDispatcher("/warehouse_keeper/add_product.jsp").forward(req, resp);
             return;
         }
 
         req.setAttribute("types", types);
-        req.setAttribute("specifications", specifications);
 
+        String typeIDStr = req.getParameter("typeID");
+
+        int typeID = -1;
+        if (typeIDStr != null) {
+            try {
+                typeID = Integer.parseInt(typeIDStr);
+            } catch (NumberFormatException e) {
+                // Ignore invalid typeID parameter
+            }
+        }
+
+        if (typeID != -1) {
+            Type selectedType = em.find(Type.class, typeID);
+
+            selectedType.setSpecificationTypes(typeDAO.getSpecificationTypes(selectedType.getTypeID()));
+
+            req.setAttribute("selectedType", selectedType);
+        }
 
         req.getRequestDispatcher("/warehouse_keeper/add_product.jsp").forward(req, resp);
     }
@@ -84,13 +105,22 @@ public class AddProductController extends HttpServlet {
             if (filePart != null && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                 String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
 
-                String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) uploadDir.mkdir();
+                String lowerName = fileName.toLowerCase();
+                if (lowerName.endsWith(".png") || lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) {
+                    String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) uploadDir.mkdir();
 
-                String filePath = uploadPath + File.separator + fileName;
-                filePart.write(filePath);
-                product.setProductImage("../assets/" + fileName);
+                    String filePath = uploadPath + File.separator + fileName;
+                    filePart.write(filePath);
+                    product.setProductImage("../assets/" + fileName);
+                } else {
+                    req.setAttribute("errorMessage", "Invalid image file.");
+                    doGet(req, resp);
+                    return;
+                }
+
+
             }
 
             product.setProductID(IDGeneratorService.generateID(Product.class));

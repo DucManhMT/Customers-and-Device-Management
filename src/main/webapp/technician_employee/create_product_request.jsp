@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/teach_employee_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Create Product Request</h1>
 
@@ -128,7 +128,6 @@
                                             <td>${productCounts[p.productID]}</td>
                                             <td>
                                                 <input type="number" min="1"
-                                                       max="${productCounts[p.productID]}"
                                                        class="form-control quantity-input" placeholder="Qty"
                                                        style="width: 80px;" disabled>
                                             </td>
