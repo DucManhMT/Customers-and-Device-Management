@@ -28,8 +28,8 @@ public class ViewAccountListServlet extends HttpServlet {
         // --- Read params (trimmed) ---
         String itemsPerPageParam = trimParam(request.getParameter("itemsPerPage"));
         String pageParam = trimParam(request.getParameter("page"));
-        System.out.println("itemsPerPageParam: " + itemsPerPageParam);
-        System.out.println("pageParam: " + pageParam);
+//        System.out.println("itemsPerPageParam: " + itemsPerPageParam);
+//        System.out.println("pageParam: " + pageParam);
 
         // Keep session fallback behavior
         if (itemsPerPageParam == null || itemsPerPageParam.isEmpty()) {

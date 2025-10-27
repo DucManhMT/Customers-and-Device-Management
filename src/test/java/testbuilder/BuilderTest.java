@@ -60,7 +60,10 @@ package testbuilder;// //package testbuilder;
 // import crm.core.validator.Validator;
 // import org.glassfish.json.JsonUtil;
 
+import crm.common.model.Account;
 import crm.common.model.Customer;
+import crm.common.model.Role;
+import crm.common.model.Staff;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 
@@ -151,20 +154,46 @@ public class BuilderTest {
 //        contract.setExpiredDate(LocalDate.now().plusYears(1));
 //        contract.setCustomer(customer);
 //        em.persist(contract,Contract.class);
-        String customerUsername = "cust1";
-        Customer customer = null;
-        if (customerUsername != null && !customerUsername.isEmpty()) {
-            Map<String, Object> cond = new HashMap<>();
-            // Lưu ý: key "username" phải khớp với tên field trong Customer.java (tên property)
-            cond.put("account", customerUsername);
-            List<Customer> found = em.findWithConditions(Customer.class, cond);
-            if (found != null && !found.isEmpty()) {
-                customer = found.get(0);
-                int customerId = customer.getCustomerID();
-                System.out.println("Customer ID: " + customerId);
-            }
-        }
+//        String customerUsername = "cust1";
+//        Customer customer = null;
+//        if (customerUsername != null && !customerUsername.isEmpty()) {
+//            Map<String, Object> cond = new HashMap<>();
+//            // Lưu ý: key "username" phải khớp với tên field trong Customer.java (tên property)
+//            cond.put("account", customerUsername);
+//            List<Customer> found = em.findWithConditions(Customer.class, cond);
+//            if (found != null && !found.isEmpty()) {
+//                customer = found.get(0);
+//                int customerId = customer.getCustomerID();
+//                System.out.println("Customer ID: " + customerId);
+//            }
+//        }
 
+//        String username = "cust1";
+//        Customer customer = null;
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("account", username);
+//        List<Customer> customers = em.findWithConditions(Customer.class, map);
+//        if (customers != null && !customers.isEmpty()) {
+//            customer = customers.get(0);
+//            String customerId = customer.getCustomerName();
+//            System.out.println("Customer name: " + customerId);
+//
+//        }
+//        String username1 = "staff1";
+//        Staff staff = null;
+//        Map<String, Object> map1 = new HashMap<>();
+//        map1.put("account", username1);
+//        List<Staff> staffs = em.findWithConditions(Staff.class, map1);
+//        if (staffs != null && !staffs.isEmpty()) {
+//            staff = staffs.get(0);
+//            String staffName = staff.getStaffName();
+//            System.out.println("Staff name: " + staffName);
+//        }
+        Account account = em.find(Account.class, "staff1");
+        System.out.println("Account role: " + account.getRole().getRoleID());
+        account.setRole(em.find(Role.class, 3));
+        em.merge(account, Account.class);
+        System.out.println("Account role: " + account.getRole().getRoleID());
     }
 }
 

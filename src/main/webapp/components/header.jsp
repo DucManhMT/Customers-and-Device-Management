@@ -114,7 +114,7 @@
 <c:if test="${not empty sessionScope.account}">
     <c:choose>
         <c:when test="${sessionScope.account.role.roleName == 'Admin'}">
-            <c:set var="homeLink" value="${URLConstants.ADMIN_ACTION_CENTER}/"/>
+            <c:set var="homeLink" value="${URLConstants.ADMIN_ACTION_CENTER}"/>
         </c:when>
         <c:when test="${sessionScope.account.role.roleName == 'Customer'}">
             <c:set var="homeLink" value="${URLConstants.CUSTOMER_ACTION_CENTER}/"/>
