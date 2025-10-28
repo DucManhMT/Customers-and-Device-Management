@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @WebServlet(name = "TaskDetailServlet", urlPatterns = {URLConstants.TASK_DETAIL})
 public class TaskDetailServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -59,12 +58,12 @@ public class TaskDetailServlet extends HttpServlet {
 
             List<AccountRequest> allAccountRequests = entityManager.findAll(AccountRequest.class);
             List<Account> assignedAccounts = allAccountRequests.stream()
-                    .filter(ar -> ar.getRequest() != null &&
-                            ar.getRequest().getRequestID() != null &&
-                            ar.getRequest().getRequestID().equals(requestId))
-                    .filter(ar -> ar.getAccount() != null)
-                    .map(ar -> ar.getAccount())
-                    .collect(Collectors.toList());
+            .filter(ar -> ar.getRequest() != null &&
+                ar.getRequest().getRequestID() != null &&
+                ar.getRequest().getRequestID().equals(requestId))
+            .filter(ar -> ar.getAccount() != null && ar.getAccount().getRole() != null && ar.getAccount().getRole().getRoleID() == 6)
+            .map(AccountRequest::getAccount)
+            .collect(Collectors.toList());
 
             request.setAttribute("task", task);
             request.setAttribute("customer", customer);
