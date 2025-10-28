@@ -68,12 +68,12 @@ public class FeedbackService {
             }
 
             if (existingFeedback != null) {
-                req.setAttribute("alreadyFeedback", true);
-                req.setAttribute("feedback", existingFeedback);
-                req.setAttribute("requestId", requestIdStr);
-                req.setAttribute("currentUsername", username);
-                req.setAttribute("currentRoleId", roleId);
-                req.getRequestDispatcher(URLConstants.CUSTOMER_VIEW_FEEDBACK).forward(req, resp);
+                req.getSession().setAttribute("alreadyFeedback", true);
+                req.getSession().setAttribute("feedback", existingFeedback);
+                req.getSession().setAttribute("requestId", requestIdStr);
+                req.getSession().setAttribute("currentUsername", username);
+                req.getSession().setAttribute("currentRoleId", roleId);
+                resp.sendRedirect(req.getContextPath() + URLConstants.CUSTOMER_VIEW_FEEDBACK);
                 return;
             }
 
@@ -219,7 +219,7 @@ public class FeedbackService {
     public void showFeedbackDetails(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Account account = (Account) req.getSession().getAttribute("account");
-        String requestIdStr = req.getParameter("requestId");
+        String requestIdStr = (String) req.getSession().getAttribute("requestId");
         String username = account != null ? account.getUsername() : null;
         Integer roleId = account != null ? account.getRole().getRoleID() : null;
         req.setAttribute("currentUsername", username);

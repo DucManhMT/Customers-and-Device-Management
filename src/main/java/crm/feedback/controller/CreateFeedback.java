@@ -49,10 +49,6 @@ public class CreateFeedback extends HttpServlet {
             return;
         }
         String username = account.getUsername();
-        if (username == null || username.trim().isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
-            return;
-        }
 
         try {
 

@@ -19,21 +19,15 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="..">Home</a></li>
-                        <li class="breadcrumb-item">
-                            <form method="get" action="${pageContext.request.contextPath}/customer/requests" style="display:inline;">
-                                <button type="submit" class="btn btn-link p-0 text-decoration-none">Feedback List</button>
-                            </form>
-                        </li>
+                        <li class="breadcrumb-item"><a href="../feedback/list">Feedback List</a></li>
                         <li class="breadcrumb-item active">Feedback #${feedback.feedbackID}</li>
                     </ol>
                 </nav>
             </div>
             <div>
-                <form method="get" action="${pageContext.request.contextPath}/customer/requests" style="display:inline;">
-                    <button type="submit" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to Request List
-                    </button>
-                </form>
+                <a href="../feedback/list" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
             </div>
         </div>
 
@@ -60,8 +54,8 @@
                                 <div class="info-item">
                                     <div class="info-label">Request ID</div>
                                     <div class="info-value">
-                                        <form method="get" action="${pageContext.request.contextPath}/customer/requests/detail" style="display:inline;">
-                                            <input type="hidden" name="requestId" value="${feedback.requestID.foreignKeyValue}" />
+                                        <form method="post" action="../task/detail" style="display:inline;">
+                                            <input type="hidden" name="id" value="${feedback.requestID.foreignKeyValue}" />
                                             <button type="submit" class="btn btn-link p-0 text-decoration-none">
                                                 <span class="badge bg-info fs-6">#${feedback.requestID.foreignKeyValue}</span>
                                             </button>
@@ -140,19 +134,24 @@
                     <div class="card-body">
                         <h6 class="card-title">Actions</h6>
                         <div class="d-flex gap-2 flex-wrap">
-                            <form method="get" action="../feedback/edit" style="display: inline;">
-                                <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
-                                <button type="submit" class="btn btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit Feedback
-                                </button>
-                            </form>
+                            <c:if test="${empty feedback.response}">
+                                <form method="get" action="../feedback/respond" style="display: inline;">
+                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-reply"></i> Add Response
+                                    </button>
+                                </form>
+                            </c:if>
 
-                            <form method="get" action="../feedback/delete" style="display: inline;">
-                                <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i> Delete Feedback
-                                </button>
-                            </form>
+                            <c:if test="${not empty feedback.response}">
+                                <form method="get" action="../feedback/respond" style="display: inline;">
+                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-pencil-square"></i> Edit Response
+                                    </button>
+                                </form>
+                            </c:if>
+
                         </div>
                     </div>
                 </div>
