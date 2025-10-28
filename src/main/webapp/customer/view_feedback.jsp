@@ -19,15 +19,21 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="..">Home</a></li>
-                        <li class="breadcrumb-item"><a href="../feedback/list">Feedback List</a></li>
+                        <li class="breadcrumb-item">
+                            <form method="get" action="${pageContext.request.contextPath}/customer/requests" style="display:inline;">
+                                <button type="submit" class="btn btn-link p-0 text-decoration-none">Feedback List</button>
+                            </form>
+                        </li>
                         <li class="breadcrumb-item active">Feedback #${feedback.feedbackID}</li>
                     </ol>
                 </nav>
             </div>
             <div>
-                <a href="../feedback/list" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </a>
+                <form method="get" action="${pageContext.request.contextPath}/customer/requests" style="display:inline;">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Request List
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -54,8 +60,8 @@
                                 <div class="info-item">
                                     <div class="info-label">Request ID</div>
                                     <div class="info-value">
-                                        <form method="post" action="../task/detail" style="display:inline;">
-                                            <input type="hidden" name="id" value="${feedback.requestID.foreignKeyValue}" />
+                                        <form method="get" action="${pageContext.request.contextPath}/customer/requests/detail" style="display:inline;">
+                                            <input type="hidden" name="requestId" value="${feedback.requestID.foreignKeyValue}" />
                                             <button type="submit" class="btn btn-link p-0 text-decoration-none">
                                                 <span class="badge bg-info fs-6">#${feedback.requestID.foreignKeyValue}</span>
                                             </button>
@@ -147,25 +153,6 @@
                                     <i class="bi bi-trash"></i> Delete Feedback
                                 </button>
                             </form>
-
-                            <c:if test="${empty feedback.response}">
-                                <form method="get" action="../feedback/respond" style="display: inline;">
-                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-reply"></i> Add Response
-                                    </button>
-                                </form>
-                            </c:if>
-
-                            <c:if test="${not empty feedback.response}">
-                                <form method="get" action="../feedback/respond" style="display: inline;">
-                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
-                                    <button type="submit" class="btn btn-outline-success">
-                                        <i class="bi bi-pencil-square"></i> Edit Response
-                                    </button>
-                                </form>
-                            </c:if>
-
                         </div>
                     </div>
                 </div>
@@ -178,64 +165,16 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">Status:</span>
-                            <span class="badge bg-success">Completed</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">Response Status:</span>
                             <span class="badge ${not empty feedback.response ? 'bg-success' : 'bg-warning'}">
                                 ${not empty feedback.response ? 'Responded' : 'Pending'}
                             </span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">Priority:</span>
+                            <span class="text-muted">Rating:</span>
                             <span class="badge ${feedback.rating <= 2 ? 'bg-danger' : feedback.rating == 3 ? 'bg-warning' : 'bg-info'}">
-                                ${feedback.rating <= 2 ? 'High' : feedback.rating == 3 ? 'Medium' : 'Low'}
+                                ${feedback.rating >= 4 ? 'High' : feedback.rating == 3 ? 'Medium' : 'Low'}
                             </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <h6 class="mb-0">Related Links</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            <a href="../requests/view?requestId=${feedback.requestID}"
-                               class="list-group-item list-group-item-action">
-                                <i class="bi bi-file-text me-2"></i>
-                                View Original Request
-                            </a>
-                            <a href="../customer/profile?username=${feedback.customerID}"
-                               class="list-group-item list-group-item-action">
-                                <i class="bi bi-person me-2"></i>
-                                Customer Profile
-                            </a>
-                            <a href="../feedback/list?username=${feedback.customerID}"
-                               class="list-group-item list-group-item-action">
-                                <i class="bi bi-chat-dots me-2"></i>
-                                              All Feedbacks by ${feedback.customerID}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h6 class="mb-0">Navigation</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <a href="../feedback/create" class="btn btn-success btn-sm">
-                                <i class="bi bi-plus-circle"></i> Create New Feedback
-                            </a>
-                            <a href="../feedback/list" class="btn btn-primary btn-sm">
-                                <i class="bi bi-list"></i> All Feedbacks
-                            </a>
-                            <a href=".." class="btn btn-outline-secondary btn-sm">
-                                <i class="bi bi-house"></i> Dashboard
-                            </a>
                         </div>
                     </div>
                 </div>

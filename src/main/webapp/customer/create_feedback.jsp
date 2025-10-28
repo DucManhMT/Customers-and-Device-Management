@@ -34,7 +34,7 @@
                 </div>
             </c:if>
 
-                <form method="post" action="${pageContext.request.contextPath}/feedback/create">
+                <form method="post" action="../feedback/create">
                     <input type="hidden" name="username" value="${currentUsername}">
                     <input type="hidden" name="requestId" value="${requestId}">
                     
@@ -186,7 +186,7 @@
                             <td>${feedback.feedbackDate}</td>
                             <td>
                                 <form method="get" action="../feedback/view" style="display: inline;">
-                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
+                                    <input type="hidden" name="requestId" value="${feedback.requestID.getForeignKeyValue()}">
                                     <button type="submit" class="btn btn-info btn-sm">
                                         View
                                     </button>
