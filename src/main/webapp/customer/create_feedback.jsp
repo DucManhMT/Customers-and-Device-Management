@@ -34,93 +34,96 @@
                 </div>
             </c:if>
 
-            <form method="post" action="../feedback/create">
-                <input type="hidden" name="username" value="${currentUsername}">
+                <form method="post" action="${pageContext.request.contextPath}/feedback/create">
+                    <input type="hidden" name="username" value="${currentUsername}">
+                    <input type="hidden" name="requestId" value="${requestId}">
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="feedbackType" class="form-label">Service Type Evaluation</label>
+                            <select class="form-select" id="feedbackType" name="feedbackType" required
+                                    onchange="toggleCustomInput()">
+                                <option value="">-- Select service type to evaluate --</option>
+                                <option value="repair_quality">Repair and Warranty Quality</option>
+                                <option value="service_quality">Service Quality</option>
+                                <option value="staff_attitude">Staff Attitude</option>
+                                <option value="other">Other (custom input)</option>
+                            </select>
+                            <div class="form-text">
+                                Select the type of service you want to evaluate.
+                            </div>
+                        </div>
 
-                <div class="row">
-                    <div class="col-md-8 mb-3">
-                        <label for="feedbackType" class="form-label">Service Type Evaluation</label>
-                        <select class="form-select" id="feedbackType" name="feedbackType" required
-                                onchange="toggleCustomInput()">
-                            <option value="">-- Select service type to evaluate --</option>
-                            <option value="repair_quality">Repair and Warranty Quality</option>
-                            <option value="service_quality">Service Quality</option>
-                            <option value="staff_attitude">Staff Attitude</option>
-                            <option value="other">Other (custom input)</option>
-                        </select>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Customer Information</label>
+                            <div class="form-control-plaintext border rounded bg-light p-2">
+                                <strong><i class="bi bi-person"></i> ${currentUsername}</strong><br>
+                                <small class="text-muted">Current user</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="customContentDiv" style="display: none;">
+                        <label for="customContent" class="form-label">Custom Feedback Content</label>
+                        <input type="text" class="form-control" id="customContent" name="customContent"
+                            placeholder="Enter your feedback content..." maxlength="255">
                         <div class="form-text">
-                            Select the type of service you want to evaluate.
+                            Enter specific content for "Other" option.
                         </div>
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Customer Information</label>
-                        <div class="form-control-plaintext border rounded bg-light p-2">
-                            <strong><i class="bi bi-person"></i> ${currentUsername}</strong><br>
-                            <small class="text-muted">Current user</small>
+                    <div class="mb-3">
+                        <label class="form-label">Service Quality Rating</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" required>
+                            <label for="star5" title="Excellent">★</label>
+
+                            
+
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4" title="Good">★</label>
+
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3" title="Average">★</label>
+
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2" title="Poor">★</label>
+
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1" title="Very Poor">★</label>
+                        </div>
+                        <div class="rating-text">
+                            <span id="ratingText" class="text-muted">Please select rating</span>
                         </div>
                     </div>
-                </div>
 
-                <div class="mb-3" id="customContentDiv" style="display: none;">
-                    <label for="customContent" class="form-label">Custom Feedback Content</label>
-                    <input type="text" class="form-control" id="customContent" name="customContent"
-                           placeholder="Enter your feedback content..." maxlength="255">
-                    <div class="form-text">
-                        Enter specific content for "Other" option.
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Your Detailed Review</label>
+                        <textarea class="form-control" id="description" name="description" rows="4"
+                                placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..."
+                                maxlength="255"></textarea>
+                        <div class="form-text">
+                            <span id="charCount">0 </span>/255 characters. Share your feelings and suggestions about the
+                            service.
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Service Quality Rating</label>
-                    <div class="star-rating">
-                        <input type="radio" id="star5" name="rating" value="5" required>
-                        <label for="star5" title="Excellent">★</label>
+                    <div class="d-flex justify-content-between">
+                        <a href="${pageContext.request.contextPath}/customer/customer_actioncenter"
+                        class="btn btn-outline-secondary">
+                            Back to Customer Action Center
+                        </a>
 
-                        <input type="radio" id="star4" name="rating" value="4">
-                        <label for="star4" title="Good">★</label>
-
-                        <input type="radio" id="star3" name="rating" value="3">
-                        <label for="star3" title="Average">★</label>
-
-                        <input type="radio" id="star2" name="rating" value="2">
-                        <label for="star2" title="Poor">★</label>
-
-                        <input type="radio" id="star1" name="rating" value="1">
-                        <label for="star1" title="Very Poor">★</label>
+                        <div>
+                            <button type="reset" class="btn btn-outline-warning me-2">
+                                Reset Form
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Submit Feedback
+                            </button>
+                        </div>
                     </div>
-                    <div class="rating-text">
-                        <span id="ratingText" class="text-muted">Please select rating</span>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="description" class="form-label">Your Detailed Review</label>
-                    <textarea class="form-control" id="description" name="description" rows="4"
-                              placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..."
-                              maxlength="255"></textarea>
-                    <div class="form-text">
-                        <span id="charCount">0 </span>/255 characters. Share your feelings and suggestions about the
-                        service.
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between">
-                    <a href="${pageContext.request.contextPath}/customer/customer_actioncenter"
-                       class="btn btn-outline-secondary">
-                        Back to Customer Action Center
-                    </a>
-
-                    <div>
-                        <button type="reset" class="btn btn-outline-warning me-2">
-                            Reset Form
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            Submit Feedback
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
         </div>
     </div>
 
