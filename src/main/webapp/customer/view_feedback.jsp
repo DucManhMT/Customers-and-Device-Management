@@ -10,16 +10,7 @@
 <jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
 
-    <c:set var="feedback" value="${{
-        'feedbackID': 1,
-        'requestID': 1001,
-        'username': 'john_doe',
-        'rating': 5,
-        'content': 'Excellent service, very professional staff! The team was responsive and solved my issue quickly. I was impressed by the attention to detail and the follow-up communication. The technician arrived on time and completed the work efficiently. Highly recommend this service to anyone looking for reliable and professional support.',
-        'response': 'Thank you for your wonderful feedback! We are delighted to hear that you had such a positive experience with our service. Your kind words about our team and their professionalism mean a lot to us. We will make sure to share your feedback with the technician who assisted you.',
-        'feedbackDate': '2025-10-06 14:30:00',
-        'responseDate': '2025-10-07 09:15:00'
-    }}"/>
+
 
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -29,7 +20,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="..">Home</a></li>
                         <li class="breadcrumb-item"><a href="../feedback/list">Feedback List</a></li>
-                        <li class="breadcrumb-item active">Feedback #${param.feedbackId}</li>
+                        <li class="breadcrumb-item active">Feedback #${feedback.feedbackID}</li>
                     </ol>
                 </nav>
             </div>
@@ -46,7 +37,7 @@
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="bi bi-chat-square-text"></i>
-                            Feedback #${feedback.feedbackID}
+                            Feedback 
                         </h5>
                     </div>
                     <div class="card-body">
@@ -63,10 +54,12 @@
                                 <div class="info-item">
                                     <div class="info-label">Request ID</div>
                                     <div class="info-value">
-                                        <a href="../requests/view?requestId=${feedback.requestID}"
-                                           class="text-decoration-none">
-                                            <span class="badge bg-info fs-6">#${feedback.requestID}</span>
-                                        </a>
+                                        <form method="post" action="../task/detail" style="display:inline;">
+                                            <input type="hidden" name="id" value="${feedback.requestID.foreignKeyValue}" />
+                                            <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                                                <span class="badge bg-info fs-6">#${feedback.requestID.foreignKeyValue}</span>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +70,7 @@
                                 <div class="info-item">
                                     <div class="info-label">Customer Username</div>
                                     <div class="info-value">
-                                        <strong>${feedback.username}</strong>
+                                        <strong>${feedback.customerID}</strong>
                                     </div>
                                 </div>
                             </div>
@@ -107,10 +100,18 @@
                         </div>
 
                         <div class="info-item">
-                            <div class="info-label">Customer Feedback</div>
+                            <div class="info-label">Content</div>
                             <div class="feedback-content">
                                 <i class="bi bi-quote text-primary fs-3 opacity-50"></i>
                                 <p class="mb-0 mt-2">${feedback.content}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">Customer Feedback</div>
+                            <div class="feedback-content">
+                                <i class="bi bi-quote text-primary fs-3 opacity-50"></i>
+                                <p class="mb-0 mt-2">${feedback.description}</p>
                             </div>
                         </div>
 
@@ -165,9 +166,6 @@
                                 </form>
                             </c:if>
 
-                            <button class="btn btn-info" onclick="window.print()">
-                                <i class="bi bi-printer"></i> Print
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -209,15 +207,15 @@
                                 <i class="bi bi-file-text me-2"></i>
                                 View Original Request
                             </a>
-                            <a href="../customer/profile?username=${feedback.username}"
+                            <a href="../customer/profile?username=${feedback.customerID}"
                                class="list-group-item list-group-item-action">
                                 <i class="bi bi-person me-2"></i>
                                 Customer Profile
                             </a>
-                            <a href="../feedback/list?username=${feedback.username}"
+                            <a href="../feedback/list?username=${feedback.customerID}"
                                class="list-group-item list-group-item-action">
                                 <i class="bi bi-chat-dots me-2"></i>
-                                All Feedbacks by ${feedback.username}
+                                              All Feedbacks by ${feedback.customerID}
                             </a>
                         </div>
                     </div>
@@ -244,21 +242,5 @@
             </div>
         </div>
     </div>
-
-
-    <style media="print">
-        .btn, .breadcrumb, .card:last-child {
-            display: none !important;
-        }
-
-        .card {
-            break-inside: avoid;
-        }
-
-        body {
-            font-size: 12pt;
-        }
-    </style>
-
 </body>
 </html>

@@ -84,7 +84,8 @@ public class EntityFieldMapper {
 
             return value;
         } catch (Exception e) {
-            throw new RuntimeException("Cannot extract value for field " + field.getName(), e);
+            e.printStackTrace();
+            return null;
         }
     }
 

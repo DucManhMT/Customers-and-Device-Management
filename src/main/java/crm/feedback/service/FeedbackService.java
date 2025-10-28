@@ -7,10 +7,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Feedback;
+import crm.common.model.Request;
+import crm.common.model.enums.FeedbackStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
 import crm.core.service.IDGeneratorService;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
@@ -25,7 +29,10 @@ public class FeedbackService {
 
         Account account = (Account) req.getSession().getAttribute("account");
         String username = account != null ? account.getUsername() : null;
+        Integer roleId = account != null ? account.getRole().getRoleID() : null;
         req.setAttribute("currentUsername", username);
+
+        String requestIdStr = req.getParameter("requestId");
 
         int page = 1;
         int recordsPerPage = 5;
@@ -43,6 +50,33 @@ public class FeedbackService {
         try (Connection connection = DBcontext.getConnection()) {
             EntityManager entityManager = new EntityManager(connection);
 
+            Feedback existingFeedback = null;
+            if (requestIdStr != null && !requestIdStr.trim().isEmpty()) {
+                try {
+                    int reqId = Integer.parseInt(requestIdStr.trim());
+                    List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
+                    for (Feedback fb : allFeedbacks) {
+                        if (fb.getRequestID() != null && fb.getRequestID().getForeignKeyValue() != null
+                                && fb.getRequestID().getForeignKeyValue().equals(reqId)
+                                && fb.getCustomerID() != null && fb.getCustomerID().equals(username)) {
+                            existingFeedback = fb;
+                            break;
+                        }
+                    }
+                } catch (Exception ex) {
+                }
+            }
+
+            if (existingFeedback != null) {
+                req.setAttribute("alreadyFeedback", true);
+                req.setAttribute("feedback", existingFeedback);
+                req.setAttribute("requestId", requestIdStr);
+                req.setAttribute("currentUsername", username);
+                req.setAttribute("currentRoleId", roleId);
+                req.getRequestDispatcher(URLConstants.CUSTOMER_VIEW_FEEDBACK).forward(req, resp);
+                return;
+            }
+
             Page<Feedback> feedbackPage = getFeedbackByUsernamePaginated(entityManager, username, page, recordsPerPage);
             req.setAttribute("recentFeedbacks", feedbackPage.getContent());
             req.setAttribute("currentPage", page);
@@ -50,7 +84,7 @@ public class FeedbackService {
             req.setAttribute("recordsPerPage", recordsPerPage);
             req.setAttribute("totalRecords", feedbackPage.getTotalElements());
             req.setAttribute("currentUsername", username);
-
+            req.setAttribute("requestId", requestIdStr);
         } catch (SQLException e) {
             e.printStackTrace();
             if (e.getMessage() != null && !e.getMessage().contains("No data found")) {
@@ -59,7 +93,6 @@ public class FeedbackService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         req.getRequestDispatcher("/customer/create_feedback.jsp").forward(req, resp);
     }
 
@@ -70,6 +103,7 @@ public class FeedbackService {
         String customContent = req.getParameter("customContent");
         String ratingStr = req.getParameter("rating");
         String description = req.getParameter("description");
+        String requestIdStr = req.getParameter("requestId");
 
         String content = "";
 
@@ -93,55 +127,45 @@ public class FeedbackService {
                     default:
                         throw new IllegalArgumentException("Please select feedback type");
                 }
-            } else {
-                throw new IllegalArgumentException("Please select feedback type");
-            }
-
-            if (ratingStr == null || ratingStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("Please select rating");
             }
 
             int rating = Integer.parseInt(ratingStr);
-
             if (rating < 1 || rating > 5) {
                 throw new IllegalArgumentException("Rating must be from 1 to 5");
             }
 
-            try (Connection connection = DBcontext.getConnection()) {
-                EntityManager entityManager = new EntityManager(connection);
-
-                try {
-                    LocalDateTime currentTimestamp = LocalDateTime.now();
-
-                    Feedback feedback = new Feedback();
-                    feedback.setFeedbackID(IDGeneratorService.generateID(Feedback.class));
-                    feedback.setContent(content);
-                    feedback.setRating(rating);
-                    feedback.setDescription(description != null ? description.trim() : null);
-                    feedback.setFeedbackDate(currentTimestamp);
-                    feedback.setCustomerID(username);
-
-                    entityManager.persist(feedback, Feedback.class);
-                    req.setAttribute("successMessage",
-                            "Feedback created successfully! Thank you " + username + " for your review.");
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    req.setAttribute("errorMessage", "Failed to create feedback. Please try again later.");
-                }
-
-                showCreateFeedbackForm(req, resp);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Database error when creating feedback", e);
+            Integer requestId = null;
+            if (requestIdStr != null && !requestIdStr.trim().isEmpty()) {
+                requestId = Integer.parseInt(requestIdStr.trim());
+            } else {
+                throw new IllegalArgumentException("Request ID is required");
             }
 
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid data format");
+            try (Connection connection = DBcontext.getConnection()) {
+                EntityManager entityManager = new EntityManager(connection);
+                LocalDateTime now = LocalDateTime.now();
+
+                Feedback feedback = new Feedback();
+                feedback.setFeedbackID(IDGeneratorService.generateID(Feedback.class));
+                feedback.setContent(content);
+                feedback.setRating(rating);
+                feedback.setDescription(description != null ? description.trim() : null);
+                feedback.setFeedbackDate(now);
+                feedback.setCustomerID(username);
+                feedback.setRequestID(new LazyReference<>(Request.class, requestId));
+                feedback.setFeedbackStatus(FeedbackStatus.Pending);
+
+                entityManager.persist(feedback, Feedback.class);
+
+                req.setAttribute("successMessage", "Feedback created successfully! Thank you, " + username + ".");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Unknown error when creating feedback", e);
+            req.setAttribute("errorMessage", "Failed to create feedback. Please try again.");
         }
+
+        showCreateFeedbackForm(req, resp);
     }
 
     public void showFeedbackList(HttpServletRequest req, HttpServletResponse resp)
@@ -194,38 +218,54 @@ public class FeedbackService {
 
     public void showFeedbackDetails(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        Account account = (Account) req.getSession().getAttribute("account");
+        String requestIdStr = req.getParameter("requestId");
+        String username = account != null ? account.getUsername() : null;
+        Integer roleId = account != null ? account.getRole().getRoleID() : null;
+        req.setAttribute("currentUsername", username);
 
-        String feedbackIdStr = req.getParameter("feedbackId");
-        if (feedbackIdStr == null || feedbackIdStr.trim().isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Feedback ID is required");
-            return;
-        }
-
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager entityManager = new EntityManager(connection);
-
-            Integer feedbackId = Integer.parseInt(feedbackIdStr);
-
-            Feedback feedback = getFeedbackById(entityManager, feedbackId);
-            if (feedback == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Feedback not found");
+        if (requestIdStr != null && !requestIdStr.trim().isEmpty()) {
+            try (Connection connection = DBcontext.getConnection()) {
+                EntityManager entityManager = new EntityManager(connection);
+                int reqId = Integer.parseInt(requestIdStr.trim());
+                List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
+                Feedback feedback = null;
+                for (Feedback fb : allFeedbacks) {
+                    if (fb.getRequestID() != null && fb.getRequestID().getForeignKeyValue() != null
+                            && fb.getRequestID().getForeignKeyValue().equals(reqId)
+                            && fb.getCustomerID() != null && fb.getCustomerID().equals(username)) {
+                        feedback = fb;
+                        break;
+                    }
+                }
+                if (feedback == null) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Feedback not found for this request");
+                    return;
+                }
+                req.setAttribute("feedback", feedback);
+                req.setAttribute("currentRoleId", roleId);
+                if (roleId != null && roleId == 2) {
+                    req.getRequestDispatcher("/customer/view_feedback.jsp").forward(req, resp);
+                } else if (roleId != null && roleId == 3) {
+                    req.getRequestDispatcher("/customer_supporter/view_feedback_detail.jsp").forward(req, resp);
+                } else {
+                    req.getRequestDispatcher("/customer/view_feedback.jsp").forward(req, resp);
+                }
+                return;
+            } catch (NumberFormatException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID format");
+                return;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                req.setAttribute("errorMessage", "Failed to load feedback details: " + e.getMessage());
+                req.getRequestDispatcher("/customer/create_feedback.jsp").forward(req, resp);
                 return;
             }
-
-            req.setAttribute("feedback", feedback);
-            req.getRequestDispatcher("/customer/view_feedback.jsp").forward(req, resp);
-
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid feedback ID format");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            req.setAttribute("errorMessage", "Failed to load feedback details: " + e.getMessage());
-            req.getRequestDispatcher("/customer/create_feedback.jsp").forward(req, resp);
         }
     }
 
     public Page<Feedback> getFeedbackByUsernamePaginated(EntityManager entityManager, String username, int page,
-                                                         int recordsPerPage) throws SQLException {
+            int recordsPerPage) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> userFeedbacks = new ArrayList<>();
@@ -267,7 +307,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-                                                  String username, Integer rating) throws SQLException {
+            String username, Integer rating) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();
