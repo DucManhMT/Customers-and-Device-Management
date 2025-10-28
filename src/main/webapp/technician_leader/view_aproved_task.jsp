@@ -12,8 +12,9 @@
     <link href="${pageContext.request.contextPath}/assets/css/task-views.css" rel="stylesheet"/>
 </head>
 <body>
+<jsp:include page="../components/header.jsp"/>
 <div class="page-header">
-    <div class="container">
+    <div>
         <div class="row align-items-center">
             <div class="col-md-8">
                 <h1 class="display-5 fw-bold mb-0">
@@ -33,8 +34,8 @@
     </div>
 </div>
 
-<div class="container">
-    <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+<div class="container-fluid">
+    <a href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
        class="btn btn-primary mb-2">
         <span>Back to Action Center</span>
     </a><br>
