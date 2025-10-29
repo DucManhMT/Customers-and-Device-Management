@@ -33,7 +33,7 @@ public class URLConstants {
     public static final String CUSTOMER_VIEW_FEEDBACK_LIST = "/feedback/list";
 
     // CUSTOMER SUPPORTER
-    public static final String CUSTOMER_SUPPORTER_ACTION_CENTER = "/customer_supporter/customer_supporter_actioncenter";
+    public static final String CUSTOMER_SUPPORTER_ACTION_CENTER = "/customer_supporter/customersupporter_actioncenter";
     public static final String CUSTOMER_SUPPORTER_CREATE_CONTRACT = "/customer_supporter/create_contract";
     public static final String CUSTOMER_SUPPORTER_REQUEST_DASHBOARD = "/supporter/requests/dashboard";
     public static final String CUSTOMER_SUPPORTER_PROCESS_REQUEST = "/supporter/requests/process";
