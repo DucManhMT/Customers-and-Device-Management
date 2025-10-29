@@ -140,14 +140,14 @@
                     <div class="card-body">
                         <h6 class="card-title">Actions</h6>
                         <div class="d-flex gap-2 flex-wrap">
-                            <form method="get" action="../feedback/edit" style="display: inline;">
+                            <form method="get" action="#" style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
                                 <button type="submit" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit Feedback
                                 </button>
                             </form>
 
-                            <form method="get" action="../feedback/delete" style="display: inline;">
+                            <form method="get" action="#" style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
                                 <button type="submit" class="btn btn-danger">
                                     <i class="bi bi-trash"></i> Delete Feedback

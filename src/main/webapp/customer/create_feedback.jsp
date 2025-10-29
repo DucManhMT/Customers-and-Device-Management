@@ -12,13 +12,6 @@
 <div class="container-fluid">
 
     <div class="card mb-4 feedback-form">
-        <div class="card-header feedback-card-header">
-            <h5 class="mb-0">Create New Feedback</h5>
-            <p class="mb-0 mt-2">
-                <i class="bi bi-person-circle"></i>
-                Logged in as: <strong>${currentUsername}</strong>
-            </p>
-        </div>
         <div class="card-body">
             <c:if test="${not empty successMessage}">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">

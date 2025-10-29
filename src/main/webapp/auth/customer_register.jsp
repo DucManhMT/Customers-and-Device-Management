@@ -242,16 +242,6 @@
     let countdownTimer = null;
     let countdownSeconds = 0;
 
-    // Location data (simplified)
-    // const locationData = {
-    //     'US': ['California', 'New York', 'Texas', 'Florida'],
-    //     'CA': ['Ontario', 'Quebec', 'British Columbia', 'Alberta'],
-    //     'UK': ['England', 'Scotland', 'Wales', 'Northern Ireland'],
-    //     'VN': ['Ho Chi Minh City', 'Hanoi', 'Da Nang', 'Can Tho'],
-    //     'JP': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama'],
-    //     'KR': ['Seoul', 'Busan', 'Incheon', 'Daegu'],
-    //     'CN': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen']
-    // };
 
 
     // Validation functions
@@ -262,7 +252,21 @@
 
     function validatePhone(phone) {
         const phoneRegex = /^0\d{9}$/;
-        return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+
+        let phoneNumberExisted;
+        fetch(contextPath + "/api/check_phonenumber?phoneNumber="+ encodeURIComponent(phone))
+            .then(res => res.json())
+            .then(data => {
+                phoneNumberExisted = data.exists;
+                if (phoneNumberExisted){
+                    showValidation('phoneValidation', false, '','✗ Phone number is already taken' )
+                }
+            })
+            .catch(error => {
+                console.log('Error', error);
+            });
+        return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, '')) && !phoneNumberExisted;
+
     }
 
     function validateUsername(username) {

@@ -26,7 +26,7 @@
             <div class="mb-4">
                 <h5 class="border-bottom pb-2 text-secondary">Customer Information</h5>
                 <p><strong>Customer Name:</strong>
-                    <a href="/requests/list">
+                    <a href="#">
                         ${request.contract.customer.customerName}
                     </a>
                 </p>
@@ -39,7 +39,7 @@
             <div class="mb-4">
                 <h5 class="border-bottom pb-2 text-secondary">Request Information</h5>
                 <p><strong>Contract ID:</strong>
-                    <a href="./requests/list">
+                    <a href="#">
                         ${request.contract.contractID}
                     </a>
                 </p>
