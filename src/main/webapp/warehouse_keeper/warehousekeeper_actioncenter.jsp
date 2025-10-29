@@ -20,7 +20,8 @@
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory">View Inventory</a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">View My Warehouse</a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests">View Product Request</a>
-<a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_transaction">View all product transaction</a>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_transaction">View all product transaction</a><br/>
+<a href="${pageContext.request.contextPath}/warehouse_keeper/import_product">Import product</a><br/>
 
 </body>
 </html>
