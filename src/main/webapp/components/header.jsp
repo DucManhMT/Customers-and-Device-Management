@@ -117,19 +117,19 @@
             <c:set var="homeLink" value="${URLConstants.ADMIN_ACTION_CENTER}"/>
         </c:when>
         <c:when test="${sessionScope.account.role.roleName == 'Customer'}">
-            <c:set var="homeLink" value="${URLConstants.CUSTOMER_ACTION_CENTER}/"/>
+            <c:set var="homeLink" value="${URLConstants.CUSTOMER_ACTION_CENTER}"/>
         </c:when>
         <c:when test="${sessionScope.account.role.roleName == 'CustomerSupporter'}">
-            <c:set var="homeLink" value="${URLConstants.CUSTOMER_SUPPORTER_ACTION_CENTER}/"/>
+            <c:set var="homeLink" value="${URLConstants.CUSTOMER_SUPPORTER_ACTION_CENTER}"/>
         </c:when>
         <c:when test="${sessionScope.account.role.roleName == 'WarehouseKeeper'}">
-            <c:set var="homeLink" value="${URLConstants.WAREHOUSE_ACTION_CENTER}/"/>
+            <c:set var="homeLink" value="${URLConstants.WAREHOUSE_ACTION_CENTER}"/>
         </c:when>
         <c:when test="${sessionScope.account.role.roleName == 'TechnicianLeader'}">
-            <c:set var="homeLink" value="${URLConstants.TECHLEAD_ACTION_CENTER}/"/>
+            <c:set var="homeLink" value="${URLConstants.TECHLEAD_ACTION_CENTER}"/>
         </c:when>
         <c:when test="${sessionScope.account.role.roleName == 'TechnicianEmployee'}">
-            <c:set var="homeLink" value="${URLConstants.TECHEM_ACTION_CENTER}/"/>
+            <c:set var="homeLink" value="${URLConstants.TECHEM_ACTION_CENTER}"/>
         </c:when>
     </c:choose>
 </c:if>
