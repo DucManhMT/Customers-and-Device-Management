@@ -2,6 +2,7 @@ package crm.warehousekeeper.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.*;
+import crm.common.model.enums.ProductStatus;
 import crm.common.repository.Warehouse.ProductDAO;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
@@ -89,6 +90,7 @@ public class ProductWarehouseController extends HttpServlet {
 
         Map<Integer, Long> productCounts = pw.stream()
                 .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == warehouseID)
+                .filter(pw1 -> pw1.getProductStatus() == ProductStatus.In_Stock)
                 .collect(Collectors.groupingBy(
                         pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
                         Collectors.counting()

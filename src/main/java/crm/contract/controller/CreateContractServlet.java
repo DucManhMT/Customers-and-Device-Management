@@ -46,7 +46,6 @@ public class CreateContractServlet extends HttpServlet {
             return;
         }
 
-        // ✅ Kiểm tra đuôi file hợp lệ
         String lowerName = fileName.toLowerCase();
         if (!lowerName.endsWith(".pdf")) {
             request.setAttribute("error", "Invalid file extension. Only .pdf is allowed.");
@@ -54,12 +53,10 @@ public class CreateContractServlet extends HttpServlet {
             return;
         }
 
-        // Tạo thư mục lưu file nếu chưa có
-        String uploadPath = getServletContext().getRealPath("") + File.separator + "assets";
+        String uploadPath = getServletContext().getRealPath("/assets");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdir();
 
-        // Lưu file
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
@@ -67,15 +64,14 @@ public class CreateContractServlet extends HttpServlet {
         String customerUsername = request.getParameter("userName");
         if(!Validator.isValidName(customerUsername)){
             request.setAttribute("error", "Customer username contains invalid characters.");
-            request.setAttribute("userName", customerUsername); // giữ lại giá trị đã nhập
+            request.setAttribute("userName", customerUsername);
             request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
             return;
         }
-        System.out.println("customerUsername: " + customerUsername);
+//        System.out.println("customerUsername: " + customerUsername);
         Customer customer = null;
         if (customerUsername != null && !customerUsername.isEmpty()) {
             Map<String, Object> cond = new HashMap<>();
-            // Lưu ý: key "username" phải khớp với tên field trong Customer.java (tên property)
             cond.put("account", customerUsername);
             List<Customer> found = em.findWithConditions(Customer.class, cond);
             if (found != null && !found.isEmpty()) {
@@ -96,13 +92,14 @@ public class CreateContractServlet extends HttpServlet {
         contract.setExpiredDate(LocalDate.now().plusYears(1));
 
         contract.setCustomer(customer);
-        System.out.println("contract.getContractID(): " + contract.getContractID());
-        System.out.println("contract.getContractImage(): " + contract.getContractImage());
-        System.out.println("contract.getStartDate(): " + contract.getStartDate());
-        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
-        System.out.println(contract.getCustomer().getCustomerID());
+//        System.out.println("contract.getContractID(): " + contract.getContractID());
+//        System.out.println("contract.getContractImage(): " + contract.getContractImage());
+//        System.out.println("contract.getStartDate(): " + contract.getStartDate());
+//        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
+//        System.out.println(contract.getCustomer().getCustomerID());
         em.persist(contract, Contract.class);
-
+        String pdfURL = request.getContextPath() + "/assets/" + fileName;
+        request.setAttribute("contractPDF", pdfURL);
         // Gửi phản hồi hiển thị ảnh đã upload
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().println("<html><body style='font-family:Arial;text-align:center;'>");

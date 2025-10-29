@@ -16,6 +16,7 @@ public class URLConstants {
     public static final String ADMIN_CREATE_ROLE = "/admin/role_list/create_role";
     public static final String ADMIN_VIEW_ACCOUNT_LIST = "/admin/account_list";
     public static final String ADMIN_ACTION_CENTER = "/admin/admin_actioncenter";
+    public static final String ADMIN_EDIT_ACCOUNT = "/admin/account_list/edit_account";
     //STAFF
     
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";

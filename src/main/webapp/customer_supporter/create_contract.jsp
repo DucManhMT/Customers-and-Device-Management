@@ -13,6 +13,69 @@
     <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .upload-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .upload-zone {
+            border: 3px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+
+
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+        }
+
+        iframe {
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+
+    </style>
 </head>
 <body>
 <header>
@@ -47,7 +110,6 @@
             <p class="text-muted">Upload customer contract images for review and processing</p>
         </div>
 
-        <!-- ✅ Nút Back to Menu -->
         <div class="text-center mb-4">
             <a href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"
                class="btn btn-outline-primary">
@@ -61,7 +123,6 @@
         </c:if>
 
 
-        <!-- ✅ FORM CHÍNH: chỉ thêm action, method, enctype -->
         <form id="uploadForm" action="${pageContext.request.contextPath}/customer_supporter/create_contract"
               method="post" enctype="multipart/form-data">
             <div class="mb-4">
@@ -72,66 +133,56 @@
                 <input type="text" class="form-control" id="userName" name="userName"
                        placeholder="Enter customer username" required>
             </div>
-            <!-- ✅ Khu vực chọn file -->
-            <div class="upload-zone" id="uploadZone">
+
+            <div class="upload-zone text-center" id="uploadZone" onclick="document.getElementById('fileInput').click()">
                 <div class="upload-icon">
                     <i class="bi bi-cloud-upload"></i>
                 </div>
-                <h4 class="mb-3">Drop contract images here</h4>
-                <p class="text-muted mb-3">or click to browse files</p>
-                <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
-                    <i class="bi bi-folder2-open me-2"></i>
-                    Choose Files
-                </button>
+                <h4 class="mb-3">Drop contract PDF here</h4>
+                <p class="text-muted mb-3">or click to browse file</p>
 
-                <!-- ✅ input file thật -->
-                <input type="file" id="fileInput" name="contractImage" class="d-none" accept=".pdf" required>
+                <input type="file" id="fileInput" name="contractImage" class="d-none" accept="application/pdf" required>
 
                 <div class="mt-3">
-                    <small class="text-muted">
-                        Supported format: PDF (Max 10MB per file)
-                    </small>
+                    <small class="text-muted">Supported format: PDF (Max 10MB per file)</small>
                 </div>
             </div>
-            <div class="file-preview" id="filePreview" style="display:none;">
-                <h5 class="mt-4 mb-3">
-                    <i class="bi bi-eye me-2"></i>
-                    Preview
-                </h5>
-                <div id="previewContainer" class="row g-3"></div>
+
+            <div id="pdfPreviewContainer" class="mt-4" style="display:none;">
+                <h5><i class="bi bi-eye me-2"></i>Preview</h5>
+                <iframe id="pdfPreview" width="100%" height="600px" style="border: 1px solid #ccc; border-radius: 8px;"></iframe>
             </div>
-            <!-- ✅ Nút hành động -->
+
             <div class="mt-4">
-                <button type="reset" class="btn btn-outline-secondary me-2">
+                <a href="${pageContext.request.contextPath}/customer_supporter/create_contract"
+                   class="btn btn-outline-secondary me-2">
                     <i class="bi bi-arrow-clockwise me-1"></i>
                     Clear
-                </button>
+                </a>
                 <button type="submit" class="btn btn-primary" id="submitBtn">
                     <i class="bi bi-upload me-2"></i>
                     Upload Contract
                 </button>
             </div>
         </form>
-        <div id="alertContainer"></div>
-        <%--            <div class="progress-container" id="progressContainer">--%>
-        <%--                <label for="uploadProgress" class="form-label">Upload Progress</label>--%>
-        <%--                <div class="progress" style="height: 8px;">--%>
-        <%--                    <div class="progress-bar progress-bar-striped progress-bar-animated"--%>
-        <%--                         id="uploadProgress" role="progressbar" style="width: 0%"></div>--%>
-        <%--                </div>--%>
-        <%--            </div>--%>
 
-        <%--            <div class="file-preview" id="filePreview">--%>
-        <%--                <h5 class="mb-3">--%>
-        <%--                    <i class="bi bi-eye me-2"></i>--%>
-        <%--                    Preview--%>
-        <%--                </h5>--%>
-        <%--                <div id="previewContainer" class="row g-3"></div>--%>
-        <%--            </div>--%>
+        <script>
+            const fileInput = document.getElementById("fileInput");
+            const pdfPreviewContainer = document.getElementById("pdfPreviewContainer");
+            const pdfPreview = document.getElementById("pdfPreview");
 
+            fileInput.addEventListener("change", () => {
+                const file = fileInput.files[0];
+                if (file && file.type === "application/pdf") {
+                    const fileURL = URL.createObjectURL(file);
+                    pdfPreview.src = fileURL;
+                    pdfPreviewContainer.style.display = "block";
+                } else {
+                    pdfPreviewContainer.style.display = "none";
+                    alert("Please select a valid PDF file.");
+                }
+            });
+        </script>
 
-    </div>
-
-</main>
 </body>
 </html>
