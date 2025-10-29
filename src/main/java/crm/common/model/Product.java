@@ -78,9 +78,8 @@ public class Product {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Product)) return false;
-        Product product = (Product) obj;
-        return productID == product.productID;
+        if (!(obj instanceof Product product)) return false;
+        return productID.equals(product.productID);
     }
 
     @Override
