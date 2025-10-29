@@ -16,10 +16,12 @@ public class URLConstants {
     public static final String ADMIN_CREATE_ROLE = "/admin/role_list/create_role";
     public static final String ADMIN_VIEW_ACCOUNT_LIST = "/admin/account_list";
     public static final String ADMIN_ACTION_CENTER = "/admin/admin_actioncenter";
+    public static final String ADMIN_EDIT_ACCOUNT = "/admin/account_list/edit_account";
     //STAFF
     
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
     // CUSTOMER
+    public static final String CUSTOMER_ACTION_CENTER = "/customer/customer_actioncenter";
     public static final String CUSTOMER_VIEW_CONTRACT_HISTORY = "/customer/contract_history";
     public static final String CUSTOMER_VIEW_REQUEST = "/customer/requests";
     public static final String CUSTOMER_REQUEST_DETAIL = "/customer/requests/detail";
@@ -31,6 +33,7 @@ public class URLConstants {
     public static final String CUSTOMER_VIEW_FEEDBACK_LIST = "/feedback/list";
 
     // CUSTOMER SUPPORTER
+    public static final String CUSTOMER_SUPPORTER_ACTION_CENTER = "/customer_supporter/customer_supporter_actioncenter";
     public static final String CUSTOMER_SUPPORTER_CREATE_CONTRACT = "/customer_supporter/create_contract";
     public static final String CUSTOMER_SUPPORTER_REQUEST_DASHBOARD = "/supporter/requests/dashboard";
     public static final String CUSTOMER_SUPPORTER_PROCESS_REQUEST = "/supporter/requests/process";
@@ -38,19 +41,20 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_REQUEST_LIST = "/supporter/requests/list";
 
     // TECHNICAL LEADER
+    public static final String TECHLEAD_ACTION_CENTER = "/technician_leader/techlead_actioncenter";
     public static final String TECHLEAD_SELECT_TECHNICIAN = "/task/selectTechnician";
     public static final String TECHLEAD_VIEW_APROVED_TASK = "/task/viewAprovedTask";
     public static final String TECHLEAD_VIEW_TECHEM_LIST = "/tech/employees";
     public static final String TECHLEAD_VIEW_TECHEM_DETAIL = "/tech/employees/view";
 
     // TECHNICAL EMPLOYEE
+    public static final String TECHEM_ACTION_CENTER = "/technician_employee/techemployee_actioncenter";
     public static final String TECHEM_UPDATE_TASK_STATUS = "/task/updateStatus";
     public static final String TECHEM_VIEW_ASSIGNED_TASK = "/task/viewAssignedTasks";
-
-    // TECHNICAL EMPLOYEE
     public static final String CREATE_PRODUCT_REQUEST = "/tech/employees/create_product_requests";
 
     // WAREHOUSE KEEPER
+    public static final String WAREHOUSE_ACTION_CENTER = "/warehouse_keeper/warehousekeeper_actioncenter";
     public static final String WAREHOUSE_VIEW_PRODUCT_WAREHOUSE = "/warehouse_keeper/view_product_warehouse";
     public static final String WAREHOUSE_VIEW_PRODUCT_DETAIL = "/warehouse_keeper/view_product_detail";
     public static final String WAREHOUSE_VIEW_INVENTORY = "/warehouse_keeper/view_inventory";

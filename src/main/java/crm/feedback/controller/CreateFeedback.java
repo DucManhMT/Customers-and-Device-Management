@@ -42,16 +42,13 @@ public class CreateFeedback extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("✅ POST /feedback/create received");
         Account account = (Account) req.getSession().getAttribute("account");
         if (account == null) {
             resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
             return;
         }
         String username = account.getUsername();
-        if (username == null || username.trim().isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
-            return;
-        }
 
         try {
 

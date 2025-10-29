@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<jsp:include page="../components/teach_lead_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">

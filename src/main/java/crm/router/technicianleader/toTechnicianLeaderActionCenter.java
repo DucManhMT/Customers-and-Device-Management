@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "toTechnicianLeaderActionCenter", value = "/technicianleader/technicianleader_actioncenter")
+@WebServlet(name = "toTechnicianLeaderActionCenter", value = "/technician_leader/techlead_actioncenter")
 public class toTechnicianLeaderActionCenter extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

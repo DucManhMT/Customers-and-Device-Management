@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/admin_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-content">
@@ -129,16 +129,12 @@
                                 <a href="#" class="btn btn-sm btn-info me-2 text-white">
                                     <i class="bi bi-eye"></i> View Detail
                                 </a>
-                                <a href="#" class="btn btn-sm btn-primary me-2">
+                                <a href="${pageContext.request.contextPath}/admin/account_list/edit_account?id=${account.username}&role=${account.role.roleID}" class="btn btn-sm btn-primary me-2">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                    <%--                                <form action="${pageContext.request.contextPath}/admin/role_list" method="post" style="display:inline;">--%>
-                                    <%--                                    <input type="hidden" name="action" value="delete"/>--%>
-                                    <%--                                    <input type="hidden" name="id" value="${role.roleID}"/>--%>
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     <i class="bi bi-trash"></i> Delete
                                 </button>
-                                    <%--                                </form>--%>
                             </td>
                         </tr>
                     </c:forEach>

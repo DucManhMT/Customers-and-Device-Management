@@ -33,7 +33,7 @@
     </style>
 </head>
 <body>
-<jsp:include page="../components/supporter_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Request Dashboard</h1>

@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">

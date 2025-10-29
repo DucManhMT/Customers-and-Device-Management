@@ -11,7 +11,7 @@ To change this template use File | Settings | File Templates. --%>
     />
 </head>
 <body>
-<jsp:include page="../components/supporter_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <p>THIS IS CUSTOMERSUPPORTER</p>
 <h1>Customer Supporter Action Center</h1>
 <p>

@@ -13,7 +13,7 @@
           rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/warehouse_keeper_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <p>THIS IS WAREHOUSEKEEPER</p>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/export_product"></a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests">View Product Request</a>

@@ -15,25 +15,25 @@ change this template use File | Settings | File Templates. --%>
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
             rel="stylesheet"
     />
-  </head>
-  <body>
-    <jsp:include page="../components/admin_header.jsp" />
-    <header class="bg-white shadow-sm border-bottom mb-4 p-3">
-      <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
-        <a href="${pageContext.request.contextPath}/admin/role_list"
-           class="btn-back d-inline-flex align-items-center mb-3">
-            <i class="bi bi-arrow-left me-2"></i>
-            Back to Roles
-        </a>
-    </header>
-    <c:if test="${not empty success}">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                ${success}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </c:if>
-    <div class="container-fluid px-4 py-4">
-      <div class="row g-4">
+</head>
+<body>
+<jsp:include page="../components/header.jsp"/>
+<header class="bg-white shadow-sm border-bottom mb-4 p-3">
+    <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
+    <a href="${pageContext.request.contextPath}/admin/role_list"
+       class="btn-back d-inline-flex align-items-center mb-3">
+        <i class="bi bi-arrow-left me-2"></i>
+        Back to Roles
+    </a>
+</header>
+<c:if test="${not empty success}">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+            ${success}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</c:if>
+<div class="container-fluid px-4 py-4">
+    <div class="row g-4">
         <!-- Create New Role Form -->
         <div class="col-lg-8">
             <div class="form-card">

@@ -12,7 +12,7 @@
 
 </head>
 <body>
-<jsp:include page="../components/customer_header.jsp"/>
+<jsp:include page="../components/header.jsp"/>
 <p>${sessionScope.account.username}</p>
 </body>
 </html>
