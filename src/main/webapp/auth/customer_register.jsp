@@ -736,7 +736,7 @@
 
         // Initialize other validations as needed
         showValidation('usernameValidation', false, '', 'Username is required (3-20 characters, alphanumeric)');
-        showValidation('passwordValidation', false, '', 'Strong password is required (8+ chars, letters, numbers, symbols)');
+        showValidation('passwordValidation', false, '', 'Strong password is required (6+ chars, letters, numbers, symbols)');
         showValidation('confirmPasswordValidation', false, '', 'Please confirm your password');
 
         showValidation('provinceValidation', false, '', 'Please select your province');
