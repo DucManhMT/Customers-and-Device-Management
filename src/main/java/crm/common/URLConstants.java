@@ -8,6 +8,7 @@ public class URLConstants {
     public static final String AUTH_STAFF_LOGIN = "/auth/staff_login";
     public static final String AUTH_CUSTOMER_LOGIN = "/auth/customer_login";
     public static final String AUTH_CUSTOMER_REGISTER = "/auth/customer_register";
+    public static final String AUTH_FORGOT_PASSWORD = "/auth/forgot_password";
 
     // ADMIN
     public static final String ADMIN_VIEW_ROLE_LIST = "/admin/role_list";
