@@ -57,8 +57,8 @@
                 <c:forEach items="${requests}" var="request" varStatus="status">
                     <tr>
                         <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                        <td><a href="./list">${request.contract.contractID}</a></td>
-                        <td><a href="./list">${request.contract.customer.customerName}</a></td>
+                        <td><a href="#">${request.contract.contractID}</a></td>
+                        <td><a href="#">${request.contract.customer.customerName}</a></td>
                         <td>${request.requestStatus}</td>
                         <td>${request.startDate}</td>
                         <td><c:out value="${empty request.finishedDate ? '-' : request.finishedDate}"/></td>

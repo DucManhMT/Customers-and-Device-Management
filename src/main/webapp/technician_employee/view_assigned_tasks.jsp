@@ -10,35 +10,19 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/task/viewAssignedTasks.css">
 </head>
 <body>
-<jsp:include page="../components/header.jsp"/>
+<div class="main-content">
+    <jsp:include page="../components/header.jsp"/>
 <button class="mobile-menu-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
 </button>
+        <h1> Task List</h1>
+        <a href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter" class="btn btn-primary mb-3 back-button">
+            <i class="fas fa-box "></i>
+            <span>Back to Action Center</span>
+        </a>
 
-<nav class="sidebar">
-    <div class="sidebar-header">
-        <h3><i class="fas fa-tools"></i> Tech Dashboard</h3>
-    </div>
-    <ul class="sidebar-menu">
-        <li class="active">
-            <a href="${pageContext.request.contextPath}/techemployee/assignedTasks.jsp">
-                <i class="fas fa-list-check"></i>
-                <span>Assigned Tasks List</span>
-            </a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter">
-                <i class="fas fa-box"></i>
-                <span>Back to Action Center</span>
-            </a>
-        </li>
-    </ul>
-</nav>
-
-<div class="main-content">
-    <div class="container">
         <div class="header">
-            <h1> Task List</h1>
+            
         </div>
 
         <c:if test="${not empty successMessage}">

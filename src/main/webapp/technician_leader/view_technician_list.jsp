@@ -26,18 +26,11 @@
 <body>
 <jsp:include page="../components/header.jsp"/>
 <div class="container-fluid">
-    <div class="header-section">
-        <div class="container">
-            <div class="text-center">
-                <h1 class="display-4 fw-bold mb-2">
+    <div class="container-fluid" >
+        <h1 class="display-4 fw-bold mb-2">
                     <i class="bi bi-people-fill"></i> Technician list
                 </h1>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+        <a href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
            class="btn btn-primary mb-3">
             <span>Back to Action Center</span>
         </a>

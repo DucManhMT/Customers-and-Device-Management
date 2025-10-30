@@ -1,8 +1,13 @@
 package crm.common.model;
 
+import crm.common.model.enums.FeedbackStatus;
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
+import crm.core.repository.hibernate.annotation.Enumerated;
 import crm.core.repository.hibernate.annotation.Key;
+import crm.core.repository.hibernate.annotation.OneToOne;
+import crm.core.repository.hibernate.entitymanager.LazyReference;
+
 import java.time.LocalDateTime;
 
 @Entity(tableName = "Feedback")
@@ -29,6 +34,29 @@ public class Feedback {
     @Column(name = "CustomerID")
     private String customerID;
 
+    @OneToOne(mappedBy = "requestID", joinColumn = "RequestID")
+    private LazyReference<Request> requestID;
+
+    @Enumerated
+    @Column(name = "FeedbackStatus")
+    private FeedbackStatus feedbackStatus;
+
+    public FeedbackStatus getFeedbackStatus() {
+        return feedbackStatus;
+    }
+
+    public void setFeedbackStatus(FeedbackStatus feedbackStatus) {
+        this.feedbackStatus = feedbackStatus;
+    }
+
+    public LazyReference<Request> getRequestID() {
+        return requestID;
+    }
+
+    public void setRequestID(LazyReference<Request> requestID) {
+        this.requestID = requestID;
+    }
+
     public Integer getFeedbackID() {
         return feedbackID;
     }
@@ -52,9 +80,14 @@ public class Feedback {
     public void setRating(Integer rating) {
         this.rating = rating;
     }
-    public String getDescription() { return description; }
 
-    public void setDescription(String description) { this.description = description; }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getResponse() {
         return response;
@@ -75,6 +108,7 @@ public class Feedback {
     public String getCustomerID() {
         return customerID;
     }
+
     public void setCustomerID(String customerID) {
         this.customerID = customerID;
     }
@@ -89,6 +123,8 @@ public class Feedback {
                 ", description='" + description + '\'' +
                 ", feedbackDate=" + feedbackDate +
                 ", customerID='" + customerID + '\'' +
+                ", requestID=" + requestID +
+                ", feedbackStatus=" + feedbackStatus +
                 '}';
     }
 }

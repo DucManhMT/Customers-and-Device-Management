@@ -43,14 +43,15 @@
     <!-- Time filter -->
     <div class="card p-4 mb-4 shadow-sm">
         <form class="row g-3 align-items-end">
-            <div class="col-md-4">
-                <label for="fromDate" class="form-label">From</label>
-                <input type="date" class="form-control" id="fromDate" name="fromDate" value="${fromDate}">
-            </div>
-            <div class="col-md-4">
-                <label for="toDate" class="form-label">To</label>
-                <input type="date" class="form-control" id="toDate" name="toDate" value="${toDate}">
-            </div>
+                <div class="col-md-4">
+                    <input type="date" class="form-control" id="fromDate" name="fromDate"
+                           value="${fromDate}" max="<%= java.time.LocalDate.now() %>">
+                </div>
+                <div class="col-md-4">
+                    <label for="toDate" class="form-label">To</label>
+                    <input type="date" class="form-control" id="toDate" name="toDate"
+                           value="${toDate}" max="<%= java.time.LocalDate.now() %>">
+                </div>
             <div class="col-md-4 d-flex gap-2">
                 <button type="submit" class="btn btn-primary flex-fill">Filter</button>
                 <button class="btn btn-outline-secondary flex-fill" onclick="resetFilters(event,this)">Reset</button>

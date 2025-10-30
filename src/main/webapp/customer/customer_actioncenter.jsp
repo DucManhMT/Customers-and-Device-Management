@@ -20,9 +20,6 @@ contentType="text/html;charset=UTF-8" language="java" %>
     <a href="${pageContext.request.contextPath}/customer/contract_history"
       >Contract Histoy</a
     >
-    <a href="${pageContext.request.contextPath}/feedback/create">
-      Customer Feedback
-    </a>
     <a href="./requests/create">Customer create request</a>
     <a href="./requests">Customer request</a>
   </body>
