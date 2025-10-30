@@ -84,6 +84,9 @@
                                         name="phoneFilter"
                                         value="${phoneFilter}"
                                         placeholder="Enter phone number..."
+                                        inputmode="numeric"
+                                        pattern="\\d*"
+                                        title="Only digits are allowed"
                                 />
                             </div>
                             <div class="col-md-3">
@@ -480,6 +483,7 @@
             initializeTaskSelection();
             initializeDateFilters();
             initializePagination();
+            setupPhoneFilter();
         });
 
         function initializePagination() {
@@ -514,6 +518,41 @@
 
             toDate.addEventListener('change', function () {
                 validateDateRange();
+            });
+        }
+
+        function setupPhoneFilter() {
+            const phoneInput = document.getElementById('phoneFilter');
+            const form = document.getElementById('filterForm');
+            if (!phoneInput || !form) return;
+
+            // Ensure numeric input on mobile and hint to browsers
+            phoneInput.setAttribute('inputmode', 'numeric');
+            phoneInput.setAttribute('pattern', '\\d*');
+
+            // On input: remove any non-digit characters
+            phoneInput.addEventListener('input', function () {
+                const cursor = this.selectionStart;
+                this.value = this.value.replace(/\D/g, '');
+                try { this.setSelectionRange(cursor, cursor); } catch (e) { /* ignore */ }
+            });
+
+            // On paste: filter pasted content to digits only
+            phoneInput.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                this.value = text.replace(/\D/g, '');
+            });
+
+            // On form submit, validate phone contains digits only (if not empty)
+            form.addEventListener('submit', function (e) {
+                const val = phoneInput.value.trim();
+                if (val !== '' && !/^\d+$/.test(val)) {
+                    e.preventDefault();
+                    alert('Phone number must contain digits only.');
+                    phoneInput.focus();
+                    return false;
+                }
             });
         }
 
