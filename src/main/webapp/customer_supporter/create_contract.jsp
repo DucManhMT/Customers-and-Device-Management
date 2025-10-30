@@ -138,8 +138,7 @@
                 <div class="upload-icon">
                     <i class="bi bi-cloud-upload"></i>
                 </div>
-                <h4 class="mb-3">Drop contract PDF here</h4>
-                <p class="text-muted mb-3">or click to browse file</p>
+                <h4 class="mb-3">Click to browse PDF file</h4>
 
                 <input type="file" id="fileInput" name="contractImage" class="d-none" accept="application/pdf" required>
 

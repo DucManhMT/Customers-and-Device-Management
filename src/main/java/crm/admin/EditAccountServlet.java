@@ -90,6 +90,7 @@ public class EditAccountServlet extends HttpServlet {
             em.merge(staff, Staff.class);
 
         }
+
         Account account = em.find(Account.class, username);
         if (newpassword != null && !newpassword.isEmpty()) {
             account.setPasswordHash(newpassword);
