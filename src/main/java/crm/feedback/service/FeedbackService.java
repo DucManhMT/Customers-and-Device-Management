@@ -220,6 +220,9 @@ public class FeedbackService {
             throws ServletException, IOException {
         Account account = (Account) req.getSession().getAttribute("account");
         String requestIdStr = (String) req.getSession().getAttribute("requestId");
+        if (requestIdStr == null) {
+            requestIdStr = req.getParameter("requestId");
+        }
         String username = account != null ? account.getUsername() : null;
         Integer roleId = account != null ? account.getRole().getRoleID() : null;
         req.setAttribute("currentUsername", username);
@@ -308,21 +311,44 @@ public class FeedbackService {
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
             String username, Integer rating) throws SQLException {
+        return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, null);
+    }
+
+    /**
+     * Extended filter that supports username (partial, case-insensitive), rating and status.
+     */
+    public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
+            String username, Integer rating, String status) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();
 
+            String usernameNorm = (username != null) ? username.trim().toLowerCase() : null;
+            String statusNorm = (status != null) ? status.trim().toLowerCase() : null;
+
             for (Feedback feedback : allFeedbacks) {
                 boolean matches = true;
 
-                if (username != null && !username.trim().isEmpty()) {
-                    if (feedback.getCustomerID() == null || !feedback.getCustomerID().equals(username)) {
+                // username: partial, case-insensitive
+                if (usernameNorm != null && !usernameNorm.isEmpty()) {
+                    String cust = feedback.getCustomerID();
+                    boolean customerMatch = (cust != null && cust.toLowerCase().contains(usernameNorm));
+                    System.out.println("[DEBUG] feedbackId=" + feedback.getFeedbackID() + ", customerID='" + cust + "', customerMatch=" + customerMatch);
+                    if (!customerMatch) {
                         matches = false;
                     }
                 }
 
+                // rating: exact match
                 if (rating != null) {
                     if (feedback.getRating() == null || !feedback.getRating().equals(rating)) {
+                        matches = false;
+                    }
+                }
+
+                // status: compare enum name case-insensitive
+                if (statusNorm != null && !statusNorm.isEmpty()) {
+                    if (feedback.getFeedbackStatus() == null || !feedback.getFeedbackStatus().name().toLowerCase().equals(statusNorm)) {
                         matches = false;
                     }
                 }
