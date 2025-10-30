@@ -1,5 +1,6 @@
 <%-- Created by IntelliJ IDEA. User: MasterLong Date: 10/10/2025 Time: 7:50 AM
 To change this template use File | Settings | File Templates. --%>
+<%@ page import="crm.common.URLConstants" %>
 <%@ page
         contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -24,5 +25,6 @@ To change this template use File | Settings | File Templates. --%>
 >
 <a href="../supporter/requests/list">Customer supporter request</a>
 <a href="../supporter/requests/dashboard">Request Dashboard</a>
+<a href="${pageContext.request.contextPath}${URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT}">Feedback Management</a>
 </body>
 </html>
