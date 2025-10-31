@@ -70,6 +70,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
+                            <div class="input-group mb-2">
                             <select class="form-select" id="roleFilter" name="roleFilter">
                                 <option value="">All Roles</option>
                                 <c:forEach var="role" items="${roleList}">
@@ -80,8 +81,10 @@
                                     </option>
                                 </c:forEach>
                             </select>
+                            </div>
                         </div>
                         <div class="col-md-2">
+                            <div class="input-group mb-2">
                             <select class="form-select" id="statusFilter" name="statusFilter">
                                 <option value="">All Status</option>
                                 <option value="Active" <c:if test="${statusFilter == 'Active'}">selected</c:if>>Active
@@ -90,20 +93,32 @@
                                     Deactive
                                 </option>
                             </select>
+                            </div>
                         </div>
                         <div class="col-md-2 d-flex gap-2">
+                            <div class="input-group mb-2">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="bi bi-search"></i> Search
                             </button>
+                            </div>
+                            <div class="input-group mb-2">
+
                             <button type="button" class="btn btn-secondary w-100"
                                     onclick="window.location.href='${pageContext.request.contextPath}/admin/account_list'">
                                 <i class="bi bi-arrow-clockwise"></i> Reset
                             </button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </form>
-
+            <c:if test="${not empty sessionScope.success}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${sessionScope.success}
+                </div>
+                <c:remove var="success" scope="session"/>
+            </c:if>
             <!-- Accounts Table -->
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
