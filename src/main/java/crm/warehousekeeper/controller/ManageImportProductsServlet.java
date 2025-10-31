@@ -26,6 +26,7 @@ public class ManageImportProductsServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private void handleRemoveProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productIdStr = req.getParameter("productId");
 

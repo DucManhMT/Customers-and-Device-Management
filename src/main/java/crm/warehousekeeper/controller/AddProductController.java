@@ -157,7 +157,8 @@ public class AddProductController extends HttpServlet {
 
             em.commit();
 
-            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_INVENTORY);
+            req.setAttribute("successMessage", "Product added successfully.");
+            doGet(req, resp);
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check type or specification.");

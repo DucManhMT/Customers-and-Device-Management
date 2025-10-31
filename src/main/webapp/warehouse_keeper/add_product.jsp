@@ -20,6 +20,12 @@
                                 ${errorMessage}
                         </div>
                     </c:if>
+                    
+                    <c:if test="${not empty successMessage}">
+                        <div class="alert alert-success text-center m-3" role="alert">
+                                ${successMessage}
+                        </div>
+                    </c:if>
                 </div>
                 <div class="card-body">
 

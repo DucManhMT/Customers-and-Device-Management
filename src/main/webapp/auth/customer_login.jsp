@@ -48,7 +48,7 @@
             </div>
 
             <div class="links-row">
-                <a href="forgotPassword.jsp" class="text-decoration-none">Forgot Password?</a>
+                <a href="${pageContext.request.contextPath}/auth/forgot_password" class="text-decoration-none">Forgot Password?</a>
                 <a href="${pageContext.request.contextPath}/auth/customer_register" class="text-decoration-none">Register New Account</a>
             </div>
             <div class="links-row d-flex justify-content-center">

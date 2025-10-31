@@ -14,7 +14,7 @@ import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
 
 public class OTPProvider {
-    public static String generateOTP() {
+    private static String generateOTP() {
         int otpLength = 6;
         StringBuilder otp = new StringBuilder();
         for (int i = 0; i < otpLength; i++) {
@@ -53,7 +53,8 @@ public class OTPProvider {
         entityManager.executeUpdate(dto);
     }
 
-    public static boolean sendOTPEmail(String toEmail, String otp) {
+    public static boolean sendOTPEmail(String toEmail) {
+        String otp = generateOTP();
         String subject = "Your OTP Code";
         String body = "Your verification code is " + otp + ". It expires in 3 minute.";
         EntityManager em = new EntityManager(DBcontext.getConnection());
