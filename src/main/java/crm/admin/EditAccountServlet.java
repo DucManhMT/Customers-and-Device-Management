@@ -7,6 +7,7 @@ import crm.common.model.Role;
 import crm.common.model.Staff;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.validator.Validator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -47,9 +48,15 @@ public class EditAccountServlet extends HttpServlet {
         }
 
         List<Role> allRoles = em.findAll(Role.class);
+
         List<Role> filteredRoles = allRoles.stream()
                 .filter(r -> r.getRoleID() != 1)
-                .filter(r->r.getRoleID()!=2)// Exclude role with ID 1
+                .filter(r -> {
+                    if (Integer.parseInt(role) != 2) {
+                        return r.getRoleID() != 2;
+                    }
+                    return true;
+                })
                 .toList();
         request.setAttribute("allRole", filteredRoles);
 
@@ -62,12 +69,43 @@ public class EditAccountServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         String username = request.getParameter("id");
+        String role = request.getParameter("role");
+
         String accountName = request.getParameter("accountName");
+        if (!Validator.isValidName(accountName)) {
+            request.getSession().setAttribute("error", "Account name contains invalid characters.");
+            response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
+            return;
+        }
         String accountEmail = request.getParameter("accountEmail");
+        if (!Validator.isValidEmail(accountEmail)) {
+            request.getSession().setAttribute("error", "Invalid email format.");
+            response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
+            return;
+        }
         String accountPhone = request.getParameter("accountPhone");
+        if (!Validator.isValidPhone(accountPhone)) {
+            request.getSession().setAttribute("error", "Invalid phone number format.");
+            response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
+            return;
+        }
+        if (Integer.parseInt(role) == 2) {
+            List<Customer> cusPhoneList = em.findWithConditions(Customer.class, Map.of("phone", accountPhone));
+            if (!cusPhoneList.isEmpty() && !cusPhoneList.get(0).getAccount().equals(username)) {
+                request.getSession().setAttribute("error", "Phone number already in use by another customer.");
+                response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
+                return;
+            }
+        } else { // Staff
+            List<Staff> staffPhoneList = em.findWithConditions(Staff.class, Map.of("phone", accountPhone));
+            if (!staffPhoneList.isEmpty() && !staffPhoneList.get(0).getAccount().equals(username)) {
+                request.getSession().setAttribute("error", "Phone number already in use by another staff member.");
+                response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
+                return;
+            }
+        }
         String accountAddress = request.getParameter("accountAddress");
         String newpassword = request.getParameter("newPassword");
-        String role = request.getParameter("role");
         if (Integer.parseInt(role) == 2) {
             Map<String, Object> cond = new HashMap<>();
             cond.put("account", username);
@@ -104,6 +142,7 @@ public class EditAccountServlet extends HttpServlet {
         }
 
         em.merge(account, Account.class);
+        request.getSession().setAttribute("success", "Account updated successfully.");
         response.sendRedirect(request.getContextPath() + "/admin/account_list");
 
     }

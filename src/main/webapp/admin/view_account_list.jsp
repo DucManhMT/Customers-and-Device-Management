@@ -103,7 +103,12 @@
                     </div>
                 </div>
             </form>
-
+            <c:if test="${not empty sessionScope.success}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${sessionScope.success}
+                </div>
+                <c:remove var="success" scope="session"/>
+            </c:if>
             <!-- Accounts Table -->
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
