@@ -92,6 +92,10 @@
     <div class="profile-header">
         <h1 class="mb-2" id="page-title">Edit Account</h1>
     </div>
+    <c:if test="${not empty sessionScope.error}">
+        <div class="alert alert-danger">${sessionScope.error}</div>
+        <c:remove var="error" scope="session"/>
+    </c:if>
 
     <form action="${pageContext.request.contextPath}/admin/account_list/edit_account" method="post">
         <!-- hidden values -->
@@ -176,6 +180,8 @@
                     </div>
                 </div>
             </div>
+            <div id="passwordError" class="alert alert-danger d-none" role="alert"></div>
+
         </div>
 
         <!-- Role -->
@@ -207,6 +213,7 @@
                 <button type="reset" class="btn btn-secondary">
                     <i class="bi bi-arrow-clockwise me-2"></i> Reset
                 </button>
+
                 <button type="submit" class="btn btn-primary" id="update-btn">
                     <i class="bi bi-check-circle me-2"></i> Update Information
                 </button>
@@ -221,7 +228,34 @@
         const field = document.getElementById(id);
         field.type = field.type === "password" ? "text" : "password";
     }
+
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const newPass = document.getElementById("newPassword").value.trim();
+        const confirmPass = document.getElementById("confirmPassword").value.trim();
+        const alertBox = document.getElementById("passwordError");
+
+        // Ẩn thông báo cũ
+        alertBox.classList.add("d-none");
+        alertBox.textContent = "";
+
+        if (newPass !== "" || confirmPass !== "") {
+            if (newPass.length < 6) {
+                e.preventDefault();
+                alertBox.textContent = "Password must be at least 6 characters long.";
+                alertBox.classList.remove("d-none");
+                return false;
+            }
+
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                alertBox.textContent = "Passwords do not match. Please re-enter.";
+                alertBox.classList.remove("d-none");
+                return false;
+            }
+        }
+    });
 </script>
+
 
 </body>
 </html>

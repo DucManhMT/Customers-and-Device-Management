@@ -223,6 +223,7 @@ public class ViewAccountListServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
 
     }
 }

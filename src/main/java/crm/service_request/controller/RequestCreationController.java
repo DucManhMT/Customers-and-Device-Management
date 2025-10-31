@@ -69,7 +69,7 @@ public class RequestCreationController extends HttpServlet {
             return;
         }
 
-        List<Contract> contracts = contractRepo.findByUsername(account.getUsername());
+        List<Contract> contracts = contractRepo.findNotExpiredByUserName(account.getUsername());
         req.setAttribute("contracts", contracts);
 
         req.getRequestDispatcher("/service_request/request-creation.jsp").forward(req, resp);
