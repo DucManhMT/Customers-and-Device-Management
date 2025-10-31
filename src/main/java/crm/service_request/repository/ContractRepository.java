@@ -1,5 +1,6 @@
 package crm.service_request.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import crm.common.model.Contract;
@@ -46,6 +47,22 @@ public class ContractRepository extends AbstractRepository<Contract, Integer> {
                 ClauseBuilder.builder().in("CustomerID",
                         customers.stream().map(c -> c.getCustomerID()).toList()));
 
+    }
+
+    public List<Contract> findNotExpiredByUserName(String username) {
+        if (username == null || username.isEmpty()) {
+            return findAll();
+        }
+        CustomerRepository customerRepository = new CustomerRepository();
+        List<Customer> customers = (List<Customer>) customerRepository
+                .findWithCondition(ClauseBuilder.builder().equal("Username", username));
+        if (customers == null || customers.isEmpty()) {
+            return null;
+        }
+
+        return findWithCondition(
+                ClauseBuilder.builder().in("CustomerID",
+                        customers.stream().map(c -> c.getCustomerID()).toList()).lessOrEqual("ExpiredDate", LocalDate.now()));
     }
 
     public List<Contract> findByCustomerName(String customerName) {
