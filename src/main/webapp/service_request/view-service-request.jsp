@@ -44,7 +44,7 @@
             <thead class="table-light">
             <tr>
                 <th>No</th>
-                <th>Contract ID</th>
+                <th>Contract Code</th>
                 <th>Description</th>
                 <th>Status</th>
                 <th>Creation Date</th>
@@ -56,7 +56,7 @@
             <c:forEach items="${requests}" var="request" varStatus="status">
                 <tr>
                     <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                    <td><a href="./list">${request.contract.contractID}</a></td>
+                    <td><a href="./list">${request.contract.contractCode}</a></td>
                     <td>${request.requestDescription}</td>
                     <td>${request.requestStatus}</td>
                     <td>${request.startDate}</td>
