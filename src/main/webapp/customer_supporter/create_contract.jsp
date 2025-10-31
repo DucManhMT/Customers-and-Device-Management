@@ -133,13 +133,30 @@
                 <input type="text" class="form-control" id="userName" name="userName"
                        placeholder="Enter customer username" required>
             </div>
+             <div class="mb-4">
+                <label for="startDate" class="form-label fw-semibold">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    Start Date
+                </label>
+                <input type="date" class="form-control" id="startDate" name="startDate" required>
+                <small class="text-muted">Select the contract start date</small>
+            </div>
+
+            <div class="mb-4">
+                <label for="expireDate" class="form-label fw-semibold">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    Expire Date
+                </label>
+                <input type="date" class="form-control" id="expireDate" name="expireDate" required>
+                <small class="text-muted">Select the contract expiration date</small>
+            </div>
+
 
             <div class="upload-zone text-center" id="uploadZone" onclick="document.getElementById('fileInput').click()">
                 <div class="upload-icon">
                     <i class="bi bi-cloud-upload"></i>
                 </div>
-                <h4 class="mb-3">Drop contract PDF here</h4>
-                <p class="text-muted mb-3">or click to browse file</p>
+                <h4 class="mb-3">Click to browse PDF file</h4>
 
                 <input type="file" id="fileInput" name="contractImage" class="d-none" accept="application/pdf" required>
 

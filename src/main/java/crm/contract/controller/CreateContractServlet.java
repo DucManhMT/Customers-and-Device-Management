@@ -88,8 +88,47 @@ public class CreateContractServlet extends HttpServlet {
         contract.setContractID(contractId);
         contract.setContractImage(fileName);
         contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR", "contractId"));
-        contract.setStartDate(LocalDate.now());
-        contract.setExpiredDate(LocalDate.now().plusYears(1));
+
+        String startDateStr = request.getParameter("startDate");
+        if (startDateStr == null || startDateStr.isEmpty()) {
+            request.setAttribute("error", "Start date is required.");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
+
+        LocalDate startDate;
+        try {
+            startDate = LocalDate.parse(startDateStr);
+        } catch (Exception e) {
+            request.setAttribute("error", "Invalid start date format.");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
+
+        contract.setStartDate(startDate);
+        String expireDateStr = request.getParameter("expireDate");
+
+        if (expireDateStr == null || expireDateStr.isEmpty()) {
+            request.setAttribute("error", "Expire date is required.");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            LocalDate expireDate = LocalDate.parse(expireDateStr);
+
+            if (expireDate.isBefore(LocalDate.now())) {
+                request.setAttribute("error", "Expire date must be after start date.");
+                request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+                return;
+            }
+
+            contract.setExpiredDate(expireDate);
+        } catch (Exception e) {
+            request.setAttribute("error", "Invalid expire date format.");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
 
         contract.setCustomer(customer);
 //        System.out.println("contract.getContractID(): " + contract.getContractID());
