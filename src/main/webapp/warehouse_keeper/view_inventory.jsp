@@ -42,6 +42,8 @@
         .filter-buttons .btn {
             border-radius: 20px;
             font-weight: 500;
+            background-color: var(--main-bg);
+            color: var(--sidebar-bg);
         }
 
         .inventory-card {
@@ -169,7 +171,7 @@
         <div class="page-header">
             <h1>Inventory (${totalProducts})</h1>
             <div class="filter-buttons d-flex gap-2">
-                <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product" class="btn btn-primary"><i
+                <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product" class="btn btn-light border"><i
                         class="fas fa-plus me-1"></i> Add Product</a>
                 <button class="btn btn-light border" data-bs-toggle="collapse" href="#filterCollapse"><i
                         class="fas fa-filter me-1"></i> Filter
