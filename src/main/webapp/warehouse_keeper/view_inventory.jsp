@@ -48,7 +48,7 @@
             background-color: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: none;
         }
 
@@ -71,7 +71,7 @@
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
         .product-card-header {
@@ -110,7 +110,7 @@
             height: 100%;
             width: 100%;
             object-fit: cover; /* This is key: it scales the image to fill the container without stretching */
-            border: 1px solid var(--border-color); /* Border directly on the image */
+            border: 2px solid var(--border-color); /* Border directly on the image */
             border-radius: 12px; /* Rounded corners on the image */
             background-color: #fff;
         }
@@ -126,6 +126,7 @@
             border-radius: 12px; /* Matching corners for placeholder */
             background-color: #fff; /* Matching background for placeholder */
         }
+
         .product-card-img-placeholder i {
             font-size: 2.5rem;
         }
@@ -212,28 +213,6 @@
         </div>
 
         <div class="inventory-card">
-            <!-- Items Per Page Selector and Total Count -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted small">Display:</span>
-                    <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET"
-                          class="mb-0">
-                        <input type="hidden" name="page" value="1"/>
-                        <input type="hidden" name="productName" value="${productName}"/>
-                        <input type="hidden" name="productType" value="${productType}"/>
-                        <input type="hidden" name="warehouse" value="${param.warehouse}"/>
-                        <select name="pageSize" onchange="this.form.submit()" class="form-select form-select-sm">
-                            <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
-                            <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
-                            <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
-                            <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
-                        </select>
-                    </form>
-                </div>
-                <div class="text-muted small">
-                    Total: <span class="fw-semibold text-dark">${totalProducts}</span> products
-                </div>
-            </div>
 
             <!-- NEW PRODUCT GRID LAYOUT -->
             <div class="product-grid">
@@ -246,13 +225,16 @@
                 <c:forEach var="item" items="${inventorySummary}">
                     <div class="product-card">
                         <div class="product-card-header">
-                            <a href="editProductWarehouse?productID=${item.product.productID}" class="btn-tag"><i class="fas fa-pencil-alt"></i> Edit</a>
-                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${item.product.productID}" class="btn-tag"><i class="fas fa-eye"></i> View</a>
+                            <a href="editProductWarehouse?productID=${item.product.productID}" class="btn-tag"><i
+                                    class="fas fa-pencil-alt"></i> Edit</a>
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${item.product.productID}"
+                               class="btn-tag"><i class="fas fa-eye"></i> View</a>
                         </div>
                         <div class="product-card-img-container">
                             <c:choose>
                                 <c:when test="${not empty item.product.productImage}">
-                                    <img src="${pageContext.request.contextPath}/assets/${item.product.productImage}" class="product-card-img"
+                                    <img src="${pageContext.request.contextPath}/assets/${item.product.productImage}"
+                                         class="product-card-img"
                                          alt="${item.product.productName}">
                                 </c:when>
                                 <c:otherwise>
@@ -298,26 +280,44 @@
                 </c:forEach>
             </div>
 
-            <c:if test="${totalPages > 1}">
-                <nav aria-label="Page navigation" class="mt-4 d-flex justify-content-end">
-                    <ul class="pagination">
-                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                            <a class="page-link"
-                               href="?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Previous</a>
-                        </li>
-                        <c:forEach begin="1" end="${totalPages}" var="i">
-                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small">Display:</span>
+                    <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET"
+                          class="mb-0">
+                        <input type="hidden" name="page" value="1"/>
+                        <input type="hidden" name="productName" value="${productName}"/>
+                        <input type="hidden" name="productType" value="${productType}"/>
+                        <input type="hidden" name="warehouse" value="${param.warehouse}"/>
+                        <select name="pageSize" onchange="this.form.submit()" class="form-select form-select-sm">
+                            <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
+                            <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
+                        </select>
+                    </form>
+                </div>
+                <c:if test="${totalPages > 1}">
+                    <nav aria-label="Page navigation" class="mt-4 d-flex justify-content-end">
+                        <ul class="pagination">
+                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                 <a class="page-link"
-                                   href="?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">${i}</a>
+                                   href="?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Previous</a>
                             </li>
-                        </c:forEach>
-                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                            <a class="page-link"
-                               href="?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-            </c:if>
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                    <a class="page-link"
+                                       href="?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">${i}</a>
+                                </li>
+                            </c:forEach>
+                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link"
+                                   href="?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </c:if>
+            </div>
 
         </div>
     </div>
