@@ -12,253 +12,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Product</title>
+    <title>Inventory Dashboard</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Link to your Global Stylesheet -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+
     <style>
-        body {
-            background-color: #f8f9fa;
+        /* Styles specific to the Inventory page */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .page-header h1 {
+            font-weight: 700;
+            color: var(--sidebar-bg);
         }
 
-        .card {
-            animation: fadeIn 0.5s ease-out;
+        .filter-buttons .btn {
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .inventory-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: none;
+        }
+
+        /* --- STYLES FOR PRODUCT GRID --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+            overflow: hidden; /* Ensures content respects the border-radius */
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-card-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-card-header .btn-tag {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .product-card-header .btn-tag:hover {
+            background-color: #e9ecef;
+        }
+
+        .product-card-img-container {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .product-card-img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover; /* This is key: it scales the image to fill the container without stretching */
+            border: 2px solid var(--border-color); /* Border directly on the image */
+            border-radius: 12px; /* Rounded corners on the image */
+            background-color: #fff;
+        }
+
+        .product-card-img-placeholder {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted-light);
+            border: 1px solid var(--border-color); /* Matching border for placeholder */
+            border-radius: 12px; /* Matching corners for placeholder */
+            background-color: #fff; /* Matching background for placeholder */
+        }
+
+        .product-card-img-placeholder i {
+            font-size: 2.5rem;
+        }
+
+        .product-card-content {
+            padding: 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--sidebar-bg);
+        }
+
+        .product-card-specifications {
+            font-size: 0.85rem;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f2f5;
+        }
+
+        .product-card-footer {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f2f5;
         }
     </style>
 </head>
-<body class="bg-light">
-<jsp:include page="../components/header.jsp"/>
-<div class="container py-4">
-    <!-- Header -->
-    <div class="card shadow-sm p-3 mb-4">
-        <h1 class="h3 fw-bold text-dark mb-0">View Product In Inventory</h1>
-    </div>
+<body>
+<c:set var="activePage" value="inventory" scope="request" />
+<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
 
-    <!-- Function Buttons -->
-    <div class="card shadow-sm p-3 mb-4">
-        <h2 class="h5 fw-semibold text-dark mb-3">Actions</h2>
-        <div class="d-flex flex-wrap gap-2">
-            <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
-               class="btn btn-primary d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-plus-lg me-2" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-                </svg>
-                Add Product
-            </a>
-            <a href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
-               class="btn btn-success d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-box-arrow-up me-2" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                          d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2Z"/>
-                    <path fill-rule="evenodd"
-                          d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3Z"/>
-                </svg>
-                Create Transfer Request
-            </a>
-        </div>
-    </div>
+<div class="main-content">
+    <jsp:include page="../components/warehouse_keeper_header.jsp"/>
 
-    <!-- Filters -->
-    <div class="card shadow-sm p-3 mb-4">
-        <h2 class="h5 fw-semibold text-dark mb-3">Filter</h2>
-        <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET" id="filterForm">
-            <input type="hidden" name="pageSize" value="${pageSize}">
-            <input type="hidden" name="page" value="${currentPage}">
-            <div class="row g-3 align-items-end">
-                <div class="col-md">
-                    <label for="productName" class="form-label">ProductName</label>
-                    <input type="text" id="productName" name="productName" class="form-control"
-                           placeholder="Enter product name...">
-                </div>
-                <div class="col-md">
-                    <label for="productType" class="form-label">Product Type</label>
-                    <select id="productType" name="productType" class="form-select">
-                        <option value="">All type</option>
-                        <c:forEach items="${uniqueProductTypes}" var="type">
-                            <option value="${type.typeName}" ${productType == type.typeName ? 'selected' : ''}>${type.typeName}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="col-md">
-                    <label for="warehouse" class="form-label">Warehouse</label>
-                    <select id="warehouse" name="warehouse" class="form-select">
-                        <option value="">All Warehouse</option>
-                        <c:forEach items="${warehouses}" var="warehouse">
-                            <option value="${warehouse.warehouseName}" ${param.warehouse == warehouse.warehouseName ? 'selected' : ''}>${warehouse.warehouseName}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="col-md-auto">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                </div>
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Inventory (${totalProducts})</h1>
+            <div class="filter-buttons d-flex gap-2">
+                <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product" class="btn btn-primary"><i
+                        class="fas fa-plus me-1"></i> Add Product</a>
+                <button class="btn btn-light border" data-bs-toggle="collapse" href="#filterCollapse"><i
+                        class="fas fa-filter me-1"></i> Filter
+                </button>
             </div>
-        </form>
-    </div>
+        </div>
 
-    <!-- Page Size Selector -->
-    <div class="card shadow-sm p-3 mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small">Display:</span>
-                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET"
-                      class="mb-0">
-                    <input type="hidden" name="productName" value="${productName}">
-                    <input type="hidden" name="productType" value="${productType}">
-                    <input type="hidden" name="page" value="${currentPage}">
-                    <select name="pageSize" id="pageSize" class="form-select form-select-sm"
-                            onchange="this.form.submit()">
-                        <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
-                        <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
-                        <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
-                        <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
-                    </select>
+        <div class="collapse" id="filterCollapse">
+            <div class="inventory-card mb-3">
+                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <input type="text" id="productName" name="productName" class="form-control"
+                                   value="${productName}">
+                        </div>
+                        <div class="col-md">
+                            <label for="productType" class="form-label">Product Type</label>
+                            <select id="productType" name="productType" class="form-select">
+                                <option value="">All</option>
+                                <c:forEach items="${uniqueProductTypes}" var="type">
+                                    <option value="${type.typeName}" ${productType == type.typeName ? 'selected' : ''}>${type.typeName}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <label for="warehouse" class="form-label">Warehouse</label>
+                            <select id="warehouse" name="warehouse" class="form-select">
+                                <option value="">All</option>
+                                <c:forEach items="${warehouses}" var="w">
+                                    <option value="${w.warehouseName}" ${param.warehouse == w.warehouseName ? 'selected' : ''}>${w.warehouseName}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn btn-primary">Apply</button>
+                        </div>
+                    </div>
                 </form>
             </div>
-            <div class="text-muted small">
-                Total: <span class="fw-semibold text-primary">${totalProducts}</span> products
-            </div>
         </div>
-    </div>
 
-    <c:if test="${empty inventorySummary}">
-        <div class="alert alert-info text-center" role="alert">
-                ${errorMessage}
-        </div>
-    </c:if>
+        <div class="inventory-card">
 
-    <!-- Products Table -->
-    <div class="card shadow-sm p-3 mb-4">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Specification</th>
-                    <th scope="col">Warehouse</th>
-                    <th scope="col">Stock</th>
-                    <th scope="col">Action</th>
-                </tr>
-                </thead>
-                <tbody>
+            <!-- NEW PRODUCT GRID LAYOUT -->
+            <div class="product-grid">
+                <c:if test="${empty inventorySummary}">
+                    <div class="alert alert-info w-100 text-center">
+                            ${empty errorMessage ? 'No products found in inventory.' : errorMessage}
+                    </div>
+                </c:if>
+
                 <c:forEach var="item" items="${inventorySummary}">
-                    <tr>
-                        <td>${item.product.productName}</td>
-                        <td class="text-muted">${item.product.productDescription}</td>
-                        <td>${item.product.type.typeName}</td>
-                        <td>
-                            <c:forEach var="spec" items="${item.product.productSpecifications}">
-                                <div class="text-nowrap">
-                                    <span class="fw-medium">${spec.specification.specificationName}:</span>
-                                    <span class="text-muted">${spec.specification.specificationValue}</span>
-                                </div>
-                            </c:forEach>
-                        </td>
-                        <td class="fw-semibold">${item.warehouse.warehouseName}</td>
-                        <td class="fw-semibold">${item.count}</td>
-                        <td>
-                            <a href="editProductWarehouse?productID=" class="btn btn-sm btn-secondary">Edit</a>
+                    <div class="product-card">
+                        <div class="product-card-header">
+                            <a href="editProductWarehouse?productID=${item.product.productID}" class="btn-tag"><i
+                                    class="fas fa-pencil-alt"></i> Edit</a>
                             <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${item.product.productID}"
-                               class="btn btn-sm btn-info">View Detail</a>
-                        </td>
-                    </tr>
+                               class="btn-tag"><i class="fas fa-eye"></i> View</a>
+                        </div>
+                        <div class="product-card-img-container">
+                            <c:choose>
+                                <c:when test="${not empty item.product.productImage}">
+                                    <img src="${pageContext.request.contextPath}/assets/${item.product.productImage}"
+                                         class="product-card-img"
+                                         alt="${item.product.productName}">
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="product-card-img-placeholder">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+
+                        <div class="product-card-content">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h3 class="product-card-title mb-0">${item.product.productName}</h3>
+                                    <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">${item.product.type.typeName}</span>
+                                </div>
+                                <p class="text-muted small mb-3">${item.product.productDescription}</p>
+                                <c:if test="${empty item.product.productDescription}">
+                                    <p class="text-muted small mb-3">No description</p>
+                                </c:if>
+                            </div>
+                            <div class="mt-auto">
+                                <div class="product-card-specifications">
+                                    <c:forEach var="spec" items="${item.product.productSpecifications}"
+                                               varStatus="loop">
+                                        <div class="text-nowrap small ${!loop.last ? 'mb-1' : ''}">
+                                            <span class="fw-medium">${spec.specification.specificationName}:</span>
+                                            <span class="text-muted">${spec.specification.specificationValue}</span>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                                <div class="product-card-footer d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="small text-muted">Stock: <span
+                                                class="fw-bold text-dark">${item.count}</span></div>
+                                        <div class="small text-muted">Warehouse: <span
+                                                class="fw-bold text-dark">${item.warehouse.warehouseName}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </c:forEach>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="card shadow-sm p-3">
-        <c:set var="startItem" value="${totalProducts == 0 ? 0 : (currentPage - 1) * pageSize + 1}"/>
-        <c:set var="endItem"
-               value="${currentPage * pageSize > totalProducts ? totalProducts : currentPage * pageSize}"/>
-
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-            <div class="text-muted small">
-                Page <span class="fw-semibold">${currentPage}</span> of <span class="fw-semibold">${totalPages}</span>
-                (Displaying ${startItem} - ${endItem} of ${totalProducts} items)
             </div>
 
-            <div class="d-flex align-items-center gap-2">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0">
-                        <!-- Previous -->
-                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                            <a class="page-link"
-                               href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Previous</a>
-                        </li>
-
-                        <!-- Page Numbers Logic -->
-                        <c:set var="maxVisiblePages" value="5"/>
-                        <c:set var="startPage" value="${currentPage - 2}"/>
-                        <c:set var="endPage" value="${currentPage + 2}"/>
-                        <c:if test="${startPage < 1}"><c:set var="endPage" value="${endPage - (startPage - 1)}"/><c:set
-                                var="startPage" value="1"/></c:if>
-                        <c:if test="${endPage > totalPages}"><c:set var="startPage"
-                                                                    value="${startPage - (endPage - totalPages)}"/><c:set
-                                var="endPage" value="${totalPages}"/></c:if>
-                        <c:if test="${startPage < 1}"><c:set var="startPage" value="1"/></c:if>
-
-                        <c:if test="${startPage > 1}">
-                            <li class="page-item"><a class="page-link"
-                                                     href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory?page=1&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">1</a>
-                            </li>
-                            <c:if test="${startPage > 2}">
-                                <li class="page-item disabled"><span class="page-link">...</span></li>
-                            </c:if>
-                        </c:if>
-
-                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                            <li class="page-item ${i == currentPage ? 'active' : ''}">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small">Display:</span>
+                    <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET"
+                          class="mb-0">
+                        <input type="hidden" name="page" value="1"/>
+                        <input type="hidden" name="productName" value="${productName}"/>
+                        <input type="hidden" name="productType" value="${productType}"/>
+                        <input type="hidden" name="warehouse" value="${param.warehouse}"/>
+                        <select name="pageSize" onchange="this.form.submit()" class="form-select form-select-sm">
+                            <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
+                            <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${pageSize == 50 ? 'selected' : ''}>50</option>
+                        </select>
+                    </form>
+                </div>
+                <c:if test="${totalPages > 1}">
+                    <nav aria-label="Page navigation" class="mt-4 d-flex justify-content-end">
+                        <ul class="pagination">
+                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                 <a class="page-link"
-                                   href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">${i}</a>
+                                   href="?page=${currentPage - 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Previous</a>
                             </li>
-                        </c:forEach>
-
-                        <c:if test="${endPage < totalPages}">
-                            <c:if test="${endPage < totalPages - 1}">
-                                <li class="page-item disabled"><span class="page-link">...</span></li>
-                            </c:if>
-                            <li class="page-item"><a class="page-link"
-                                                     href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory?page=${totalPages}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">${totalPages}</a>
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                    <a class="page-link"
+                                       href="?page=${i}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">${i}</a>
+                                </li>
+                            </c:forEach>
+                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link"
+                                   href="?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Next</a>
                             </li>
-                        </c:if>
-
-                        <!-- Next -->
-                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                            <a class="page-link"
-                               href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory?page=${currentPage + 1}&pageSize=${pageSize}&productName=${productName}&productType=${productType}&warehouse=${param.warehouse}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-
-                <!-- Go to Page -->
-                <form action="${pageContext.request.contextPath}/warehouse_keeper/view_inventory" method="GET"
-                      class="d-flex align-items-center gap-1 mb-0">
-                    <input type="hidden" name="pageSize" value="${pageSize}">
-                    <input type="hidden" name="productName" value="${productName}">
-                    <input type="hidden" name="productType" value="${productType}">
-                    <input type="hidden" name="warehouse" value="${param.warehouse}">
-                    <input type="number" name="page" min="1" max="${totalPages}"
-                           class="form-control form-control-sm" style="width: 70px;" placeholder="Page">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">Go</button>
-                </form>
+                        </ul>
+                    </nav>
+                </c:if>
             </div>
+
         </div>
     </div>
 </div>
