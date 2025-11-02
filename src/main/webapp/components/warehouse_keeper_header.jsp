@@ -6,18 +6,27 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        padding: 28px;
+        padding: 22px;
         border-bottom: 2px solid #dee2e6; /* Horizontal separator line */
         background-color: var(--main-bg);
+    }
+
+    .project-title span{
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #1A3A4A;
     }
 
     .user-profile {
         display: flex;
         align-items: center;
-        margin-left: 90%;
+        margin-right: 20px;
     }
 </style>
 <div class="top-header">
+    <div class="project-title">
+        <span>Customer Device Warranty Management</span>
+    </div>
     <div class="user-profile">
         <div class="dropdown">
             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"

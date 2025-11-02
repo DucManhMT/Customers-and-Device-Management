@@ -159,7 +159,7 @@
     </style>
 </head>
 <body>
-
+<c:set var="activePage" value="warehouses" scope="request"/>
 <jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
 
 <div class="main-content">
@@ -204,15 +204,13 @@
         </div>
 
         <div class="inventory-card">
-
+            <c:if test="${empty products}">
+                <div class="alert alert-info w-100 text-center">
+                        ${empty errorMessage ? 'No products found in your Warehouse.' : errorMessage}
+                </div>
+            </c:if>
             <!-- NEW PRODUCT GRID LAYOUT -->
             <div class="product-grid">
-                <c:if test="${empty products}">
-                    <div class="alert alert-info w-100 text-center">
-                            ${empty errorMessage ? 'No products found in your Warehouse.' : errorMessage}
-                    </div>
-                </c:if>
-
                 <c:forEach var="product" items="${products}">
                     <div class="product-card">
                         <div class="product-card-header">

@@ -159,7 +159,7 @@
     </style>
 </head>
 <body>
-
+<c:set var="activePage" value="inventory" scope="request" />
 <jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
 
 <div class="main-content">

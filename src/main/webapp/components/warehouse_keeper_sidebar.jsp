@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style>
     .sidebar {
         width: 260px;
@@ -48,12 +49,14 @@
 
     .sidebar-nav .nav-link {
         color: var(--sidebar-link-color);
-        padding: 10px 15px;
+        padding: 10px;
+        margin-left: 20px;
         margin-bottom: 5px;
-        border-radius: 8px;
+        border-radius: 30px;
         display: flex;
         align-items: center;
         font-weight: 500;
+        width: 75%;
     }
 
     .sidebar-nav .nav-link i {
@@ -84,28 +87,28 @@
         </div>
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><i class="fas fa-warehouse"></i> Warehouses</a>
+                <a class="nav-link ${activePage == 'warehouses' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><i class="fas fa-warehouse"></i> Warehouses</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-box-open"></i> Orders</a>
+                <a class="nav-link ${activePage == 'orders' ? 'active' : ''}" href="#"><i class="fas fa-box-open"></i> Orders</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-truck"></i> Shipments</a>
+                <a class="nav-link ${activePage == 'shipments' ? 'active' : ''}" href="#"><i class="fas fa-truck"></i> Shipments</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="#"><i class="fas fa-inventory"></i> Inventory</a>
+                <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><i class="fas fa-boxes-stacked"></i> Inventory</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-file-invoice-dollar"></i> Finance</a>
+                <a class="nav-link ${activePage == 'finance' ? 'active' : ''}" href="#"><i class="fas fa-file-invoice-dollar"></i> Finance</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-users"></i> Customers</a>
+                <a class="nav-link ${activePage == 'customers' ? 'active' : ''}" href="#"><i class="fas fa-users"></i> Customers</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-map-marker-alt"></i> Tracking</a>
+                <a class="nav-link ${activePage == 'tracking' ? 'active' : ''}" href="#"><i class="fas fa-map-marker-alt"></i> Tracking</a>
             </li>
         </ul>
     </div>
