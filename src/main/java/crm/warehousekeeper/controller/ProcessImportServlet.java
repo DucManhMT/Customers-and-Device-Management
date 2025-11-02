@@ -48,7 +48,7 @@ public class ProcessImportServlet extends HttpServlet {
             }
         }
 
-        // Add your logic here to save the data to the database.
+
         boolean importSuccess = true;
         EntityManager em = new EntityManager(DBcontext.getConnection());
         try {
