@@ -32,6 +32,8 @@ public class URLConstants {
     public static final String CUSTOMER_CREATE_FEEDBACK = "/feedback/create";
     public static final String CUSTOMER_VIEW_FEEDBACK = "/feedback/view";
     public static final String CUSTOMER_VIEW_FEEDBACK_LIST = "/feedback/list";
+    public static final String CUSTOMER_VIEW_PROFILE = "/customer/profile";
+    public static final String CUSTOMER_EDIT_PROFILE = "/customer/profile/edit";
 
     // CUSTOMER SUPPORTER
     public static final String CUSTOMER_SUPPORTER_ACTION_CENTER = "/customer_supporter/customersupporter_actioncenter";
