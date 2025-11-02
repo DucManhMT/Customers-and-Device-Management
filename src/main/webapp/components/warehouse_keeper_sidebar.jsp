@@ -87,7 +87,7 @@
                 <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-warehouse"></i> Warehouses</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><i class="fas fa-warehouse"></i> Warehouses</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"><i class="fas fa-box-open"></i> Orders</a>

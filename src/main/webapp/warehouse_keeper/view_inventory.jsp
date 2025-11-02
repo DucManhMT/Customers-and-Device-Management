@@ -74,16 +74,45 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
 
+        .product-card-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-card-header .btn-tag {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .product-card-header .btn-tag:hover {
+            background-color: #e9ecef;
+        }
+
         .product-card-img-container {
             width: 100%;
-            aspect-ratio: 16 / 10; /* Modern way to set size - forces a consistent shape */
-            background-color: #f0f2f5;
+            height: 100%;
+            padding: 10px;
+            overflow: hidden;
         }
 
         .product-card-img {
             height: 100%;
             width: 100%;
             object-fit: cover; /* This is key: it scales the image to fill the container without stretching */
+            border: 1px solid var(--border-color); /* Border directly on the image */
+            border-radius: 12px; /* Rounded corners on the image */
+            background-color: #fff;
         }
 
         .product-card-img-placeholder {
@@ -93,6 +122,9 @@
             align-items: center;
             justify-content: center;
             color: var(--text-muted-light);
+            border: 1px solid var(--border-color); /* Matching border for placeholder */
+            border-radius: 12px; /* Matching corners for placeholder */
+            background-color: #fff; /* Matching background for placeholder */
         }
         .product-card-img-placeholder i {
             font-size: 2.5rem;
@@ -213,6 +245,10 @@
 
                 <c:forEach var="item" items="${inventorySummary}">
                     <div class="product-card">
+                        <div class="product-card-header">
+                            <a href="editProductWarehouse?productID=${item.product.productID}" class="btn-tag"><i class="fas fa-pencil-alt"></i> Edit</a>
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${item.product.productID}" class="btn-tag"><i class="fas fa-eye"></i> View</a>
+                        </div>
                         <div class="product-card-img-container">
                             <c:choose>
                                 <c:when test="${not empty item.product.productImage}">
@@ -234,6 +270,9 @@
                                     <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">${item.product.type.typeName}</span>
                                 </div>
                                 <p class="text-muted small mb-3">${item.product.productDescription}</p>
+                                <c:if test="${empty item.product.productDescription}">
+                                    <p class="text-muted small mb-3">No description</p>
+                                </c:if>
                             </div>
                             <div class="mt-auto">
                                 <div class="product-card-specifications">
@@ -251,12 +290,6 @@
                                                 class="fw-bold text-dark">${item.count}</span></div>
                                         <div class="small text-muted">Warehouse: <span
                                                 class="fw-bold text-dark">${item.warehouse.warehouseName}</span></div>
-                                    </div>
-                                    <div>
-                                        <a href="editProductWarehouse?productID=${item.product.productID}"
-                                           class="btn btn-sm btn-outline-secondary">Edit</a>
-                                        <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail?productId=${item.product.productID}"
-                                           class="btn btn-sm btn-primary">View</a>
                                     </div>
                                 </div>
                             </div>

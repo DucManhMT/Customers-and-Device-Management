@@ -6,7 +6,7 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        padding: 20px;
+        padding: 28px;
         border-bottom: 2px solid #dee2e6; /* Horizontal separator line */
         background-color: var(--main-bg);
     }
@@ -14,23 +14,11 @@
     .user-profile {
         display: flex;
         align-items: center;
-        margin-left: 80%;
-    }
-
-    .icon-group .btn {
-        background: transparent;
-        border: none;
-        color: var(--text-muted-light);
-        font-size: 1.2rem;
+        margin-left: 90%;
     }
 </style>
 <div class="top-header">
     <div class="user-profile">
-        <div class="icon-group me-3">
-            <button class="btn"><i class="fas fa-bell"></i></button>
-            <button class="btn"><i class="fas fa-calendar-alt"></i></button>
-            <button class="btn"><i class="fas fa-sun"></i></button>
-        </div>
         <div class="dropdown">
             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                aria-expanded="false">
