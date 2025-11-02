@@ -18,5 +18,6 @@
 <p>Welcome to the Admin Action Center. Here you can manage various administrative tasks.</p>
 <a href="${pageContext.request.contextPath}/admin/role_list">View role list</a>
 <a href="${pageContext.request.contextPath}/admin/account_list">View account list</a>
+<a href="${pageContext.request.contextPath}/admin/create_account">Create new account</a>
 </body>
 </html>

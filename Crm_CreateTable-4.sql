@@ -295,6 +295,12 @@ CREATE TABLE WarehouseRequestProduct(
                                         FOREIGN KEY (WarehouseRequestID) REFERENCES WarehouseRequest(WarehouseRequestID),
                                         FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
+CREATE TABLE ProductImportedLog(
+										ProductImportedLogID INT NOT NULL PRIMARY KEY,
+                                        ItemID INT NOT NULL PRIMARY KEY,
+                                        WarehouseID INT NOT NULL,
+                                        
+);
 
 
 

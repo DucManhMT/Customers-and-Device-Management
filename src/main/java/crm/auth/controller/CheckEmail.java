@@ -1,6 +1,7 @@
 package crm.auth.controller;
 
 import crm.common.model.Customer;
+import crm.common.model.Staff;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import jakarta.servlet.http.HttpServlet;
@@ -22,12 +23,18 @@ public class CheckEmail extends HttpServlet {
         // Simulate email existence check
         String email = req.getParameter("email");
         Map<String, Object> params = Map.of("email", email);
-        em.findWithConditions(Customer.class, params);
-        boolean exists = !em.findWithConditions(Customer.class, params).isEmpty();
-        if (exists) {
-            String jsonResponse = String.format("{\"exists\": true}");
-            resp.getWriter().write(jsonResponse);
-        } else {
+
+        try{
+            boolean exists = !em.findWithConditions(Customer.class, params).isEmpty() || !em.findWithConditions(Staff.class, params).isEmpty();
+            if (exists) {
+                String jsonResponse = String.format("{\"exists\": true}");
+                resp.getWriter().write(jsonResponse);
+            } else {
+                String jsonResponse = String.format("{\"exists\": false}");
+                resp.getWriter().write(jsonResponse);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
             String jsonResponse = String.format("{\"exists\": false}");
             resp.getWriter().write(jsonResponse);
         }
