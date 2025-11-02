@@ -8,110 +8,30 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="crm.common.URLConstants" %>
-
 <style>
-    .navbar-header {
-        background-color: #0e4274;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 1rem 2rem;
+    .top-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        margin-bottom: 30px;
+        width: 100%;
+        padding: 22px;
+        border-bottom: 2px solid #dee2e6; /* Horizontal separator line */
+        background-color: var(--main-bg);
     }
 
-    .navbar-logo {
+    .project-title span{
         font-size: 1.5rem;
         font-weight: bold;
-        color: #667eea;
+        color: #1A3A4A;
     }
 
-    .navbar-logo a {
-        color:#faebef;
-        text-decoration: none;
-        transition: all 0.3s ease;
+    .user-profile {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-    }
-
-    .navbar-logo a:hover {
-        color: #5568d3;
-        transform: scale(1.05);
-    }
-
-    .navbar-logo a:active {
-        transform: scale(0.98);
-    }
-
-    .navbar-user-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .user-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background-color: #f8f9fa;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-    .user-badge strong {
-        color: #0e4274;
-        font-weight: 600;
-    }
-
-    .btn-logout {
-        padding: 0.6rem 1.5rem;
-        text-decoration: none;
-        border-radius: 25px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: 2px solid #667eea;
-        background-color: transparent;
-        color: #faebef;
-        display: inline-block;
-    }
-
-    .btn-logout:hover {
-        background-color: #667eea;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .navbar-header {
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        .navbar-user-info {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .user-badge {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .btn-logout {
-            width: 100%;
-            text-align: center;
-        }
+        margin-right: 20px;
     }
 </style>
+
 <c:if test="${not empty sessionScope.account}">
     <c:choose>
         <c:when test="${sessionScope.account.role.roleName == 'Admin'}">
@@ -135,49 +55,38 @@
     </c:choose>
 </c:if>
 
-<c:choose>
-    <c:when test="${not empty sessionScope.account}">
-        <header class="navbar-header">
-            <div class="navbar-logo">
-                <a href="${pageContext.request.contextPath}${homeLink}">
-                    <span>🔧 CRM System</span>
-                </a>
-            </div>
-
-            <nav class="navbar-user-info" aria-label="Primary">
-        <span class="user-badge">
-            <span>Signed in as:</span>
-            <strong>
+<div class="top-header">
+    <div class="project-title">
+        <span>Customer Device Warranty Management</span>
+    </div>
+    <div class="user-profile">
+        <div class="dropdown">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+               aria-expanded="false">
+                <strong>
                     ${empty sessionScope.account ? 'Guest' : sessionScope.account.username}
-            </strong>
-        </span>
+                </strong>
+            </a>
+            <ul class="dropdown-menu text-small dropdown-menu-end">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
                 <c:if test="${not empty sessionScope.account}">
-                    <a href="${pageContext.request.contextPath}/auth/logout" class="btn-logout">
-                        Logout
-                    </a>
+                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/auth/logout">Sign out</a></li>
                 </c:if>
-            </nav>
-        </header>
-    </c:when>
-    <c:otherwise>
-        <header class="navbar-header">
-            <div class="logo">
-                <a href="${pageContext.request.contextPath}/">
-                    <span>🔧 CRM System</span>
-                </a>
-            </div>
-            <div class="login-buttons">
-                <a href="${pageContext.request.contextPath}/auth/staff_login" class="btn btn-staff">
-                    Staff Login
-                </a>
-                <a href="${pageContext.request.contextPath}/auth/customer_login" class="btn btn-customer">
-                    Customer Login
-                </a>
-                <a href="${pageContext.request.contextPath}/auth/customer_register" class="btn btn-customer">
-                    Customer Register
-                </a>
-            </div>
-        </header>
-    </c:otherwise>
-</c:choose>
+                <c:if test="${empty sessionScope.account}">
+                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/auth/staff_login">Staff login</a></li>
+                </c:if>
+                <c:if test="${empty sessionScope.account}">
+                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/auth/customer_login">Customer login</a></li>
+                </c:if>
+                <c:if test="${empty sessionScope.account}">
+                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/auth/customer_register">Customer register</a></li>
+                </c:if>
+            </ul>
+        </div>
+    </div>
+</div>
 

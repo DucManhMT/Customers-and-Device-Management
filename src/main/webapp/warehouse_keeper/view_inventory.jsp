@@ -163,7 +163,7 @@
 <jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
 
 <div class="main-content">
-    <jsp:include page="../components/warehouse_keeper_header.jsp"/>
+    <jsp:include page="../components/header.jsp"/>
 
     <div class="page-content">
         <div class="page-header">
