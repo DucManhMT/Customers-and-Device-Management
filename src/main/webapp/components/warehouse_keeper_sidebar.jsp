@@ -10,7 +10,7 @@
 <style>
     .sidebar {
         width: 260px;
-        background-color: var(--sidebar-bg);
+        background-color: #1A3A4A;
         color: white;
         position: fixed;
         height: 100%;
@@ -34,7 +34,7 @@
 
     .sidebar .logo i {
         font-size: 2rem;
-        color: var(--sidebar-active-bg);
+        color: #F9C941;
     }
 
     .sidebar .logo span {
@@ -48,7 +48,7 @@
     }
 
     .sidebar-nav .nav-link {
-        color: var(--sidebar-link-color);
+        color: #B0BEC5;
         padding: 10px;
         margin-left: 20px;
         margin-bottom: 5px;
@@ -67,16 +67,16 @@
 
     .sidebar-nav .nav-link:hover {
         background-color: rgba(255, 255, 255, 0.1);
-        color: var(--sidebar-active-link-color);
+        color: #0D1B2A;
     }
 
     .sidebar-nav .nav-link.active {
-        background-color: var(--sidebar-active-bg);
-        color: var(--sidebar-bg);
+        background-color: #F9C941;
+        color: #1A3A4A;
     }
 
     .sidebar-nav .nav-link.active i {
-        color: var(--sidebar-bg);
+        color: #1A3A4A;
     }
 </style>
 <div class="sidebar">

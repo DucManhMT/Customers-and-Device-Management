@@ -42,6 +42,8 @@
         .filter-buttons .btn {
             border-radius: 20px;
             font-weight: 500;
+            background-color: var(--main-bg);
+            color: var(--sidebar-bg);
         }
 
         .inventory-card {
