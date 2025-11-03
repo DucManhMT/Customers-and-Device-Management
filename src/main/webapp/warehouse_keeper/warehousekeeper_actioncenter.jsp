@@ -26,6 +26,6 @@
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests">View Product Request</a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_transaction">View all product transaction</a><br/>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/import_product">Import product</a><br/>
-
+<a href="${pageContext.request.contextPath}/staff/profile">Profile</a>
 </body>
 </html>

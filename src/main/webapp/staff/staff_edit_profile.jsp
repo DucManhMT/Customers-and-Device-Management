@@ -97,7 +97,18 @@
         <c:remove var="error" scope="session"/>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/customer/profile/edit" method="post">
+    <c:if test="${not empty sessionScope.success}">
+        <div class="alert alert-success">${sessionScope.success}</div>
+        <%
+            session.removeAttribute("success");
+        %>
+        <script>
+            setTimeout(function() {
+                window.location.href = '${pageContext.request.contextPath}/staff/profile';
+            }, 3000); // 3 giây
+        </script>
+    </c:if>
+    <form action="${pageContext.request.contextPath}/staff/profile/edit" method="post">
         <!-- hidden values -->
         <input type="hidden" name="id" value="${username}">
 
@@ -112,14 +123,14 @@
                 <div class="col-md-6 mb-3">
                     <label for="accountName" class="form-label">Account Name</label>
                     <input type="text" class="form-control" id="accountName" name="accountName"
-                           required value="${accountName}">
+                           required value="${staff.staffName}">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="email" class="form-label">Email</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                         <input type="email" class="form-control" id="email" name="accountEmail"
-                               required value="${accountEmail}">
+                               required value="${staff.email}">
                     </div>
                 </div>
             </div>
@@ -130,7 +141,7 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                         <input type="tel" class="form-control" id="phoneNumber" name="accountPhone"
-                               value="${accountPhone}">
+                               value="${staff.phone}" required>
                     </div>
                 </div>
             </div>
@@ -145,7 +156,7 @@
             <div class="mb-3">
                 <label for="accountAddress" class="form-label">Detailed Address</label>
                 <input type="text" class="form-control" id="accountAddress" name="accountAddress"
-                       required value="${accountAddress}">
+                       required value="${staff.address}">
             </div>
         </div>
 

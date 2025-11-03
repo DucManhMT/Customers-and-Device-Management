@@ -26,5 +26,6 @@ To change this template use File | Settings | File Templates. --%>
 <a href="../supporter/requests/list">Customer supporter request</a>
 <a href="../supporter/requests/dashboard">Request Dashboard</a>
 <a href="${pageContext.request.contextPath}${URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT}">Feedback Management</a>
+<a href="${pageContext.request.contextPath}/staff/profile">Profile</a>
 </body>
 </html>

@@ -87,6 +87,6 @@ public class EditProfileServlet extends HttpServlet {
 
 
         request.getSession().setAttribute("success", "Account updated successfully.");
-        response.sendRedirect(request.getContextPath() + "/customer/profile?id=" + username);
+        response.sendRedirect(request.getContextPath() + "/customer/profile/edit?id=" + username);
     }
 }

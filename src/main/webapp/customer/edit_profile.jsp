@@ -96,6 +96,17 @@
         <div class="alert alert-danger">${sessionScope.error}</div>
         <c:remove var="error" scope="session"/>
     </c:if>
+    <c:if test="${not empty sessionScope.success}">
+        <div class="alert alert-success">${sessionScope.success}</div>
+        <%
+            session.removeAttribute("success");
+        %>
+        <script>
+            setTimeout(function() {
+                window.location.href = '${pageContext.request.contextPath}/customer/profile?id=${account.username}';
+            }, 3000); // 3 giây
+        </script>
+    </c:if>
 
     <form action="${pageContext.request.contextPath}/customer/profile/edit" method="post">
         <!-- hidden values -->
