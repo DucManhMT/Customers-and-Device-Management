@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Profile</title>
@@ -167,7 +168,7 @@
                         Full Name
                     </div>
                     <div class="info-value" id="name-display">
-                        ${customer.customerName}
+                        ${staff.staffName}
                     </div>
                 </div>
             </div>
@@ -179,7 +180,7 @@
                         Phone Number
                     </div>
                     <div class="info-value" id="phone-display">
-                        ${customer.phone}
+                        ${staff.phone}
                     </div>
                 </div>
             </div>
@@ -191,7 +192,7 @@
                         Email Address
                     </div>
                     <div class="info-value" id="email-display">
-                        ${customer.email}
+                        ${staff.email}
                     </div>
                 </div>
             </div>
@@ -203,15 +204,28 @@
                         Address
                     </div>
                     <div class="info-value" id="address-display">
-                        ${customer.address}
+                        ${staff.address}
                     </div>
                 </div>
+
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="bi bi-calendar-check"></i>
+                </div>
+                <div class="info-content">
+                    <div class="info-label">
+                        Date of Birth
+                    </div>
+                    <div class="info-value" id="dateBirth">
+                        ${staff.dateOfBirth}
+                    </div>
+                </div>
+
             </div>
             <div class="text-center mt-4">
-                <a href="${pageContext.request.contextPath}/customer/profile/edit?id=${account.username}" class="btn btn-primary btn-lg px-5 py-3">
+                <a href="${pageContext.request.contextPath}/staff/profile/edit" class="btn btn-primary btn-lg px-5 py-3">
                     <i
                             class="bi bi-pencil-square me-2"></i> Edit Profile
-
                 </a>
             </div>
         </div>

@@ -22,6 +22,8 @@ public class URLConstants {
     //STAFF
     
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
+    public static final String STAFF_EDIT_PROFILE = "/staff/profile/edit";
+    public static final String STAFF_VIEW_PROFILE = "/staff/profile";
     // CUSTOMER
     public static final String CUSTOMER_ACTION_CENTER = "/customer/customer_actioncenter";
     public static final String CUSTOMER_VIEW_CONTRACT_HISTORY = "/customer/contract_history";
