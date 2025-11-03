@@ -38,9 +38,9 @@
 
             <div class="mb-4">
                 <h5 class="border-bottom pb-2 text-secondary">Request Information</h5>
-                <p><strong>Contract ID:</strong>
+                <p><strong>Contract Code:</strong>
                     <a href="#">
-                        ${request.contract.contractID}
+                        ${request.contract.contractCode}
                     </a>
                 </p>
                 <p><strong>Description:</strong> ${request.requestDescription}</p>

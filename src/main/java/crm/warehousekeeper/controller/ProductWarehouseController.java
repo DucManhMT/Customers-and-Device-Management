@@ -139,6 +139,7 @@ public class ProductWarehouseController extends HttpServlet {
         req.setAttribute("products", pagedProducts);
         req.setAttribute("productCounts", productCounts);
         req.setAttribute("uniqueProductTypes", ProductTypes);
+        req.setAttribute("warehouse", warehouse);
 
         // Pagination metadata
         req.setAttribute("currentPage", currentPage);

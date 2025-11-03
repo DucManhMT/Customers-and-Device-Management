@@ -1,5 +1,7 @@
 package crm.service_request.repository.persistence.query.crud;
 
+import crm.core.config.RepositoryConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +22,21 @@ public abstract class AbstractQueryBuilder {
         return parameters;
     }
 
-    abstract public String build();
+    public String build() {
+        String query = createQuery();
+        if (RepositoryConfig.PRINT_SQL) {
+            System.out.println("Generated Query: " + query);
+        }
+        return query;
+    }
 
-    abstract public String build(boolean isPrintSql);
+    public String build(boolean isPrintSql) {
+        String query = createQuery();
+        if (isPrintSql) {
+            System.out.println("Generated Query: " + query);
+        }
+        return query;
+    }
 
     abstract public String createQuery();
 }

@@ -11,25 +11,34 @@
 
 <style>
     .navbar-header {
-        background-color: #0e4274;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-image: url("${pageContext.request.contextPath}/assets/images/header-background.jpg");
+        background-color: transparent; /* Transparent background */
+        backdrop-filter: blur(8px); /* Optional: glass effect */
+        box-shadow: none; /* Remove drop shadow */
         padding: 1rem 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        position: sticky;
+        height: 70px;
+        position: fixed;
         top: 0;
-        z-index: 1000;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+        transition: background-color 0.3s ease;
     }
 
     .navbar-logo {
         font-size: 1.5rem;
         font-weight: bold;
-        color: #667eea;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .navbar-logo a {
-        color:#faebef;
+        color: white;
         text-decoration: none;
         transition: all 0.3s ease;
         display: flex;
@@ -38,12 +47,8 @@
     }
 
     .navbar-logo a:hover {
-        color: #5568d3;
+        color: #a3bffa;
         transform: scale(1.05);
-    }
-
-    .navbar-logo a:active {
-        transform: scale(0.98);
     }
 
     .navbar-user-info {
@@ -57,14 +62,14 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
-        background-color: #f8f9fa;
+        background-color: rgba(255, 255, 255, 0.15); /* subtle translucent background */
         border-radius: 20px;
         font-size: 0.9rem;
-        color: #666;
+        color: white;
     }
 
     .user-badge strong {
-        color: #0e4274;
+        color: white;
         font-weight: 600;
     }
 
@@ -74,17 +79,17 @@
         border-radius: 25px;
         font-weight: 600;
         transition: all 0.3s ease;
-        border: 2px solid #667eea;
+        border: 2px solid white;
         background-color: transparent;
-        color: #faebef;
+        color: white;
         display: inline-block;
     }
 
     .btn-logout:hover {
-        background-color: #667eea;
-        color: white;
+        background-color: #a3bffa;
+        color: #0e4274;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
     }
 
     /* Responsive Design */
@@ -93,6 +98,8 @@
             flex-direction: column;
             gap: 1rem;
             padding: 1rem;
+            height: auto;
+            margin-left: 0;
         }
 
         .navbar-user-info {
@@ -111,36 +118,13 @@
         }
     }
 </style>
-<c:if test="${not empty sessionScope.account}">
-    <c:choose>
-        <c:when test="${sessionScope.account.role.roleName == 'Admin'}">
-            <c:set var="homeLink" value="${URLConstants.ADMIN_ACTION_CENTER}"/>
-        </c:when>
-        <c:when test="${sessionScope.account.role.roleName == 'Customer'}">
-            <c:set var="homeLink" value="${URLConstants.CUSTOMER_ACTION_CENTER}"/>
-        </c:when>
-        <c:when test="${sessionScope.account.role.roleName == 'CustomerSupporter'}">
-            <c:set var="homeLink" value="${URLConstants.CUSTOMER_SUPPORTER_ACTION_CENTER}"/>
-        </c:when>
-        <c:when test="${sessionScope.account.role.roleName == 'WarehouseKeeper'}">
-            <c:set var="homeLink" value="${URLConstants.WAREHOUSE_ACTION_CENTER}"/>
-        </c:when>
-        <c:when test="${sessionScope.account.role.roleName == 'TechnicianLeader'}">
-            <c:set var="homeLink" value="${URLConstants.TECHLEAD_ACTION_CENTER}"/>
-        </c:when>
-        <c:when test="${sessionScope.account.role.roleName == 'TechnicianEmployee'}">
-            <c:set var="homeLink" value="${URLConstants.TECHEM_ACTION_CENTER}"/>
-        </c:when>
-    </c:choose>
-</c:if>
+
 
 <c:choose>
     <c:when test="${not empty sessionScope.account}">
         <header class="navbar-header">
             <div class="navbar-logo">
-                <a href="${pageContext.request.contextPath}${homeLink}">
-                    <span>🔧 CRM System</span>
-                </a>
+                <span>🔧 DWMS</span>
             </div>
 
             <nav class="navbar-user-info" aria-label="Primary">
@@ -179,4 +163,3 @@
         </header>
     </c:otherwise>
 </c:choose>
-

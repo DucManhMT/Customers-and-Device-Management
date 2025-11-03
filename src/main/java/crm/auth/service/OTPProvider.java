@@ -14,7 +14,7 @@ import crm.core.service.IDGeneratorService;
 import crm.core.service.MailService;
 
 public class OTPProvider {
-    private static String generateOTP() {
+    public static String generateOTP() {
         int otpLength = 6;
         StringBuilder otp = new StringBuilder();
         for (int i = 0; i < otpLength; i++) {

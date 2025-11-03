@@ -2,6 +2,7 @@ package crm.service_request.repository.persistence.query.crud;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import crm.core.config.RepositoryConfig;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Order;
@@ -141,22 +142,5 @@ public class SelectQueryBuilder<E> extends AbstractQueryBuilder {
         return query.toString();
     }
 
-    @Override
-    public String build(boolean isPrintSql) {
-        String query = createQuery();
-        if (isPrintSql) {
-            System.out.println("Generated Query: " + query);
-        }
-        return query;
-    }
-
-    @Override
-    public String build() {
-        String query = createQuery();
-        if (RepositoryConfig.PRINT_SQL) {
-            System.out.println("Generated Query: " + query);
-        }
-        return query;
-    }
 
 }

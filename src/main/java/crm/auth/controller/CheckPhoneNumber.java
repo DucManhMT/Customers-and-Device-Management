@@ -1,6 +1,7 @@
 package crm.auth.controller;
 
 import crm.common.model.Customer;
+import crm.common.model.Staff;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import jakarta.servlet.ServletException;
@@ -21,13 +22,19 @@ public class CheckPhoneNumber extends HttpServlet {
 
         String phoneNumber = req.getParameter("phoneNumber");
         EntityManager em = new EntityManager(DBcontext.getConnection());
-        Map<String,Object> conditions = Map.of("phone", phoneNumber);
-        boolean exists = !em.findWithConditions(Customer.class, conditions).isEmpty();
+        try {
+            Map<String, Object> conditions = Map.of("phone", phoneNumber);
+            boolean exists = !em.findWithConditions(Customer.class, conditions).isEmpty() || !em.findWithConditions(Staff.class, conditions).isEmpty();
 
-        if (exists) {
-            String jsonResponse = String.format("{\"exists\": true}");
-            resp.getWriter().write(jsonResponse);
-        } else {
+            if (exists) {
+                String jsonResponse = String.format("{\"exists\": true}");
+                resp.getWriter().write(jsonResponse);
+            } else {
+                String jsonResponse = String.format("{\"exists\": false}");
+                resp.getWriter().write(jsonResponse);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
             String jsonResponse = String.format("{\"exists\": false}");
             resp.getWriter().write(jsonResponse);
         }
