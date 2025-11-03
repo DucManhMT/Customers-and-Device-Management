@@ -297,8 +297,12 @@ CREATE TABLE WarehouseRequestProduct(
 );
 CREATE TABLE ProductImportedLog(
 										ProductImportedLogID INT NOT NULL PRIMARY KEY,
-                                        ItemID INT NOT NULL PRIMARY KEY,
+                                        ItemID INT NOT NULL,
                                         WarehouseID INT NOT NULL,
+                                        ImportedDate DATETIME NOT NULL,
+                                        FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
+                                        FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID)
+                                        
                                         
 );
 

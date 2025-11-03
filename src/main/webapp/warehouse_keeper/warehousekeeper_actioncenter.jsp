@@ -6,13 +6,17 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Action Center</title>
     <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
+<c:set var="activePage" value="dashboard" scope="request" />
+<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
 <jsp:include page="../components/header.jsp"/>
 <p>THIS IS WAREHOUSEKEEPER</p>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/export_product"></a>
