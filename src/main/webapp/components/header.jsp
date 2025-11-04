@@ -117,6 +117,9 @@
             text-align: center;
         }
     }
+    body{
+        padding-top: 70px;
+    }
 </style>
 
 
