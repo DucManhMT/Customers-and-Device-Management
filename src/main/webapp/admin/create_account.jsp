@@ -331,13 +331,13 @@
         <form id="registrationForm" action="${pageContext.request.contextPath}/admin/create_account_controller" method="post" enctype="multipart/form-data">
             <c:if test="${not empty sessionScope.errorMessage}">
                 <div class="alert alert-danger" role="alert">
-                    ${sessionScope.errorMessage}
+                        ${sessionScope.errorMessage}
                 </div>
                 <c:remove var="errorMessage" scope="session"/>
             </c:if>
             <c:if test="${not empty sessionScope.successMessage}">
                 <div class="alert alert-success" role="alert">
-                    ${sessionScope.successMessage}
+                        ${sessionScope.successMessage}
                 </div>
                 <c:remove var="successMessage" scope="session"/>
             </c:if>
@@ -605,6 +605,34 @@
         return address.trim().length >= 10 && address.trim().length <= 200;
     }
 
+    function validateImage(file) {
+        if (!file) return { isValid: true, message: '' }; // Optional field
+
+        // Check file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+            return {
+                isValid: false,
+                message: '✗ Image size must be less than 5MB (Current: ' + (file.size / (1024 * 1024)).toFixed(2) + 'MB)'
+            };
+        }
+
+        // Check file type (only jpg, jpeg, png)
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        const fileType = file.type.toLowerCase();
+
+        if (!allowedTypes.includes(fileType)) {
+            return {
+                isValid: false,
+                message: '✗ Only JPG, JPEG, and PNG files are allowed (Current type: ' + (fileType || 'Unknown') + ')'
+            };
+        }
+
+        return {
+            isValid: true,
+            message: '✓ Image uploaded successfully (' + (file.size / 1024).toFixed(1) + ' KB)'
+        };
+    }
+
     // Show validation message
     function showValidation(elementId, isValid, validMessage, invalidMessage) {
         const element = document.getElementById(elementId);
@@ -619,34 +647,46 @@
         }
     }
 
-    // Image upload preview (optional)
+    // Image upload preview and validation
     document.getElementById('imageInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         const imagePreview = document.getElementById('imagePreview');
         const imageValidation = document.getElementById('imageValidation');
 
         if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                imageValidation.textContent = '❌ Image size must be less than 5MB';
-                imageValidation.className = 'validation-text invalid';
+            const validation = validateImage(file);
+
+            if (!validation.isValid) {
+                showValidation('imageValidation', false, '', validation.message);
                 this.value = '';
+
+                // Reset preview to placeholder
+                imagePreview.innerHTML = `
+                    <div class="image-placeholder">
+                        <i class="bi bi-camera-fill"></i>
+                        <p>Upload Photo</p>
+                    </div>
+                `;
                 return;
             }
 
-            if (!file.type.match('image.*')) {
-                imageValidation.textContent = '❌ Please select a valid image file';
-                imageValidation.className = 'validation-text invalid';
-                this.value = '';
-                return;
-            }
-
+            // If validation passes, show preview
             const reader = new FileReader();
             reader.onload = function(e) {
                 imagePreview.innerHTML = '<img src="' + e.target.result + '" alt="Profile Preview">';
-                imageValidation.textContent = '✓ Image uploaded successfully';
-                imageValidation.className = 'validation-text valid';
+                showValidation('imageValidation', true, validation.message, '');
             };
             reader.readAsDataURL(file);
+        } else {
+            // Clear validation when no file selected
+            imageValidation.textContent = '';
+            imageValidation.className = 'validation-text';
+            imagePreview.innerHTML = `
+                <div class="image-placeholder">
+                    <i class="bi bi-camera-fill"></i>
+                    <p>Upload Photo</p>
+                </div>
+            `;
         }
     });
 
@@ -887,6 +927,7 @@
         const province = document.getElementById('province').value;
         const village = document.getElementById('village').value;
         const address = document.getElementById('address').value;
+        const imageFile = document.getElementById('imageInput').files[0];
 
         let isValid = true;
 
@@ -913,6 +954,15 @@
 
         if (!role || !province || !village || !validateAddress(address)) {
             isValid = false;
+        }
+
+        // Validate image if uploaded
+        if (imageFile) {
+            const imageValidation = validateImage(imageFile);
+            if (!imageValidation.isValid) {
+                isValid = false;
+                showValidation('imageValidation', false, '', imageValidation.message);
+            }
         }
 
         if (!isValid) {
