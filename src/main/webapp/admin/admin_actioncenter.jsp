@@ -169,29 +169,9 @@
 
 </head>
 <body>
-
-<div class="sidebar">
-    <div class="brand">
-        <i class="bi bi-gear-wide-connected me-2"></i> Admin Center
-    </div>
-    <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-link active">
-        <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/role_list" class="nav-link">
-        <i class="bi bi-person-gear"></i> Role Management
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/account_list" class="nav-link">
-        <i class="bi bi-people-fill"></i> Account Management
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/settings" class="nav-link">
-        <i class="bi bi-sliders"></i> System Settings
-    </a>
-    <div class="logout">
-        <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </a>
-    </div>
-</div>
+<c:set var="activePage" value="warehouses" scope="request" />
+<jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/admin_sidebar.jsp"/>
 
 <div class="main-content">
     <div class="main-header">

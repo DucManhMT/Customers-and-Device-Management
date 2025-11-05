@@ -15,7 +15,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
+<c:set var="activePage" value="accountmanage" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/admin_sidebar.jsp"/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-content">
@@ -141,15 +143,24 @@
                             <td><c:out value="${account.role.roleName}"/></td>
                             <td><c:out value="${account.status}"/></td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-info me-2 text-white">
+                                <a href="${pageContext.request.contextPath}/admin/account_list/view_account_detail?id=${account.username}&role=${account.role.roleID}" class="btn btn-sm btn-info me-2 text-white">
                                     <i class="bi bi-eye"></i> View Detail
                                 </a>
                                 <a href="${pageContext.request.contextPath}/admin/account_list/edit_account?id=${account.username}&role=${account.role.roleID}" class="btn btn-sm btn-primary me-2">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
+                                <form action="${pageContext.request.contextPath}/admin/account_list" method="post" class="d-inline">
+                                    <input type="hidden" name="action"
+                                           value="${account.status == 'Active' ? 'deactivate' : 'activate'}">
+                                    <input type="hidden" name="username" value="${account.username}">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-${account.status == 'Active' ? 'danger' : 'success'}"
+                                            onclick="return confirm('Are you sure you want to ${account.status == 'Active' ? 'deactivate' : 'activate'} this account?')">
+                                        <i class="bi ${account.status == 'Active' ? 'bi-person-x' : 'bi-person-check'}"></i>
+                                            ${account.status == 'Active' ? 'Deactivate' : 'Activate'}
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>
