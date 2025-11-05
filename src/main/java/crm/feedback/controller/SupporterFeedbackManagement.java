@@ -62,6 +62,7 @@ public class SupporterFeedbackManagement extends HttpServlet {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             int respondedCount = 0;
             int pendingCount = 0;
+            int deletedCount = 0;
             for (Feedback f : allFeedbacks) {
                 boolean matches = true;
                 if (username != null && !username.trim().isEmpty()) {
@@ -71,7 +72,24 @@ public class SupporterFeedbackManagement extends HttpServlet {
                     if (f.getRating() == null || !f.getRating().equals(rating)) matches = false;
                 }
                 if (!matches) continue;
-                if (f.getResponse() != null && !f.getResponse().trim().isEmpty()) respondedCount++; else pendingCount++;
+                
+                // Count by feedback status
+                if (f.getFeedbackStatus() != null) {
+                    if (f.getFeedbackStatus() == FeedbackStatus.Responded) {
+                        respondedCount++;
+                    } else if (f.getFeedbackStatus() == FeedbackStatus.Pending) {
+                        pendingCount++;
+                    } else if (f.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                        deletedCount++;
+                    }
+                } else {
+                    // Fallback to old logic if status is null
+                    if (f.getResponse() != null && !f.getResponse().trim().isEmpty()) {
+                        respondedCount++;
+                    } else {
+                        pendingCount++;
+                    }
+                }
             }
 
             req.setAttribute("feedbacks", feedbackPage.getContent());
@@ -81,6 +99,7 @@ public class SupporterFeedbackManagement extends HttpServlet {
             req.setAttribute("totalCount", feedbackPage.getTotalElements());
             req.setAttribute("respondedCount", respondedCount);
             req.setAttribute("pendingCount", pendingCount);
+            req.setAttribute("deletedCount", deletedCount);
             req.setAttribute("usernameFilter", username);
             req.setAttribute("ratingFilter", ratingStr);
             req.setAttribute("statusFilter", statusFilter);
