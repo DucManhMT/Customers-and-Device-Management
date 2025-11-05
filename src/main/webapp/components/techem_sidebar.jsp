@@ -97,6 +97,9 @@
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAssignedTasks"> View Assigned Tasks</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewReceivedAssignments"> View Received Assignments</a>
+            </li>
 
 
         </ul>

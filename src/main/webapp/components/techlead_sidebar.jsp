@@ -91,10 +91,6 @@
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile">My Profile </a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/techlead/assignTask.jsp"> Assign Task </a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees"> View Technician List</a>
             </li>

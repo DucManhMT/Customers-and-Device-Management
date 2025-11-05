@@ -291,7 +291,7 @@
                                 <c:set var="next" value="${currentPage < totalPages ? currentPage + 1 : totalPages}"/>
                                 <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                                     <a class="page-link pagination-link" href="#"
-                                       data-page="${prev}" ${currentPage == 1 ? 'data-disabled="true"' : ''}>">
+                                       data-page="${prev}" ${currentPage == 1 ? 'data-disabled="true"' : ''}>
                                         <i class="bi bi-chevron-left"></i> Previous
                                     </a>
                                 </li>
@@ -306,7 +306,7 @@
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
                                     <a class="page-link pagination-link" href="#"
-                                       data-page="${next}" ${currentPage == totalPages ? 'data-disabled="true"' : ''}>">
+                                       data-page="${next}" ${currentPage == totalPages ? 'data-disabled="true"' : ''}>
                                         Next <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>

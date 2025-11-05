@@ -18,9 +18,10 @@
     <i class="fas fa-bars"></i>
 </button>
         <h1> Task List</h1>
-        <a href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter" class="btn btn-primary mb-3 back-button">
-            <i class="fas fa-box "></i>
-            <span>Back to Action Center</span>
+
+        <a href="${pageContext.request.contextPath}/task/viewReceivedAssignments" class="btn btn-outline-primary mb-3 ms-2">
+            <i class="fas fa-inbox"></i>
+            <span>Pending Assignments</span>
         </a>
 
         <div class="header">
@@ -187,6 +188,7 @@
                                                 <i class="fas fa-check"></i> Mark as Finished
                                             </button>
                                         </form>
+                                        <!-- Pending assignments are handled on Pending Assignments page -->
                                     </c:otherwise>
                                 </c:choose>
                             </div>

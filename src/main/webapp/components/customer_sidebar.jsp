@@ -101,6 +101,9 @@
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/requests"> My Request</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/list">My Feedback</a>
+            </li>
 
 
         </ul>

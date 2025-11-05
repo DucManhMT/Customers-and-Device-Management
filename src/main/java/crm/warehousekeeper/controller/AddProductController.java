@@ -98,7 +98,16 @@ public class AddProductController extends HttpServlet {
             }
 
             String typeIDStr = req.getParameter("typeID");
+
+            if(typeIDStr == null || typeIDStr.isEmpty()){
+                req.setAttribute("errorMessage", "Product type is required.");
+                doGet(req, resp);
+                return;
+            }
+
             int typeID = Integer.parseInt(typeIDStr);
+
+
             String[] specIDs = req.getParameterValues("specIDs");
 
             Part filePart = req.getPart("productImage");
@@ -113,14 +122,12 @@ public class AddProductController extends HttpServlet {
 
                     String filePath = uploadPath + File.separator + fileName;
                     filePart.write(filePath);
-                    product.setProductImage("../assets/" + fileName);
+                    product.setProductImage(fileName);
                 } else {
                     req.setAttribute("errorMessage", "Invalid image file.");
                     doGet(req, resp);
                     return;
                 }
-
-
             }
 
             product.setProductID(IDGeneratorService.generateID(Product.class));
@@ -148,11 +155,14 @@ public class AddProductController extends HttpServlet {
                         productSpecification.setSpecification(specification);
                         em.persist(productSpecification, ProductSpecification.class);
                         productSpecifications.add(productSpecification);
-
                     }
                 }
                 product.setProductSpecifications(productSpecifications);
                 em.merge(product, Product.class);
+            } else{
+                req.setAttribute("errorMessage", "Please provide at least one specification for the product.");
+                doGet(req, resp);
+                return;
             }
 
             em.commit();

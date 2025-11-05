@@ -18,7 +18,6 @@ body {
 }
 
 .main-content {
-    margin-left: 260px; /* Space for the sidebar */
     flex-grow: 1;
     width: calc(100% - 260px);
     display: flex;
@@ -26,6 +25,5 @@ body {
 }
 
 .page-content {
-    padding: 20px; /* Padding for the actual content area */
     background-color: var(--main-bg);
 }
