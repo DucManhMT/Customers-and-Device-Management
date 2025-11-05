@@ -307,6 +307,20 @@ CREATE TABLE ProductImportedLog(
                                         
 );
 
+CREATE TABLE Task (
+                      TaskID INT PRIMARY KEY ,
+                      AssignBy INT NOT NULL,                          
+                      AssignTo INT NOT NULL,               
+                      RequestID INT NOT NULL,                         
+                      StartDate DATETIME NOT NULL,
+                      EndDate DATETIME,
+                      Deadline DATETIME NOT NULL,
+                      Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
+                      FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
+                      FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
+                      FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
+);
+
 
 
 -- Generated INSERTs for Province and Village tables
