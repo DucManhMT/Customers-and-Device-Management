@@ -315,6 +315,7 @@ CREATE TABLE Task (
                       StartDate DATETIME NOT NULL,
                       EndDate DATETIME,
                       Deadline DATETIME NOT NULL,
+                      Description NVARCHAR(255),
                       Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
