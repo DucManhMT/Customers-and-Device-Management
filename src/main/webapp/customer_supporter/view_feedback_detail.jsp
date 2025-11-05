@@ -25,6 +25,24 @@
                 </nav>
             </div>
             <div>
+
+        <!-- Notifications: prefer request attributes, fallback to session -->
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success mt-3">${successMessage}</div>
+        </c:if>
+        <c:if test="${empty successMessage and not empty sessionScope.successMessage}">
+            <div class="alert alert-success mt-3">${sessionScope.successMessage}</div>
+            <c:remove var="successMessage" scope="session" />
+        </c:if>
+
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger mt-3">${errorMessage}</div>
+        </c:if>
+        <c:if test="${empty errorMessage and not empty sessionScope.errorMessage}">
+            <div class="alert alert-danger mt-3">${sessionScope.errorMessage}</div>
+            <c:remove var="errorMessage" scope="session" />
+        </c:if>
+
                 <a href="../feedback/list" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back to List
                 </a>
@@ -119,11 +137,18 @@
                             <div class="info-item">
                                 <div class="info-label">Our Response</div>
                                 <div class="response-section">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-reply-fill text-success me-2"></i>
-                                        <small class="text-muted">Responded on: ${feedback.responseDate}</small>
-                                    </div>
-                                    <p class="mb-0">${feedback.response}</p>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-reply-fill text-success me-2"></i>
+                                            <small class="text-muted">Responded on:
+                                                <c:choose>
+                                                    <c:when test="${not empty feedback.responseDate}">
+                                                        <c:out value="${feedback.responseDate}"/>
+                                                    </c:when>
+                                                    <c:otherwise>N/A</c:otherwise>
+                                                </c:choose>
+                                            </small>
+                                        </div>
+                                    <p class="mb-0"><c:out value="${feedback.response}"/></p>
                                 </div>
                             </div>
                         </c:if>
@@ -136,7 +161,7 @@
                         <div class="d-flex gap-2 flex-wrap">
                             <c:if test="${empty feedback.response}">
                                 <form method="get" action="../feedback/respond" style="display: inline;">
-                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
+                                    <input type="hidden" name="requestId" value="${feedback.requestID.foreignKeyValue}">
                                     <button type="submit" class="btn btn-success">
                                         <i class="bi bi-reply"></i> Add Response
                                     </button>
@@ -145,7 +170,7 @@
 
                             <c:if test="${not empty feedback.response}">
                                 <form method="get" action="../feedback/respond" style="display: inline;">
-                                    <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
+                                    <input type="hidden" name="requestId" value="${feedback.requestID.foreignKeyValue}">
                                     <button type="submit" class="btn btn-outline-success">
                                         <i class="bi bi-pencil-square"></i> Edit Response
                                     </button>

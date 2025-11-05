@@ -1,0 +1,167 @@
+/* Enhanced styles for customer/list_feedback.jsp */
+:root {
+  --accent: #2575fc;
+  --accent-2: #6a11cb;
+  --muted: #58616b;
+  --card-bg: #ffffff;
+  --surface-shadow: 0 12px 34px rgba(16, 24, 40, 0.08);
+  --hero-gradient: linear-gradient(90deg,#eef2ff 0%, #f5f8ff 100%);
+}
+
+.feedback-list-container {
+  max-width: 1200px;
+  margin: 22px auto;
+  padding: 0 12px;
+}
+.page-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  background: var(--hero-gradient);
+  border-radius: 10px;
+  border: 1px solid rgba(37,117,252,0.06);
+}
+.page-hero h2 {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 1.6rem;
+}
+.page-hero p.lead {
+  margin: 0;
+  color: var(--muted);
+}
+
+.page-hero .btn-outline-primary{ color:var(--accent-2); border-radius:8px; border:1px solid rgba(106,17,203,0.08); padding:8px 12px; }
+.page-hero .btn-outline-primary:hover{ background: rgba(106,17,203,0.06); }
+
+.filter-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: var(--surface-shadow);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+}
+.filter-form .form-label {
+  font-weight: 600;
+  color: var(--muted);
+}
+.filter-form .form-control,
+.filter-form .form-select {
+  border-radius: 8px;
+}
+  .results-card {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border-radius: 12px;
+    box-shadow: var(--surface-shadow);
+    padding: 14px;
+  }
+
+  .badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .badge-status.pending{ background: linear-gradient(90deg,#ffd54d,#ffb74d); color:#5a3a00; }
+  .badge-status.responded{ background: linear-gradient(90deg,#b2ff59,#69f0ae); color:#08350a; }
+  .badge-status.deleted{ background: linear-gradient(90deg,#ef9a9a,#ff8a80); color:#5a0a0a; }
+
+  .rating-chip{
+    display:inline-block; padding:6px 8px; border-radius:8px; background:rgba(37,117,252,0.06); color:var(--accent-2); font-weight:700;
+  }
+
+  table.feedback-table thead{ background: linear-gradient(90deg, rgba(106,17,203,0.04), rgba(37,117,252,0.04)); }
+  table.feedback-table tbody tr:nth-child(odd){ background: rgba(245,247,255,0.6); }
+  table.feedback-table td{ vertical-align: middle; }
+
+  .preview-link{ color:var(--accent-2); font-weight:600; text-decoration:underline; cursor:pointer; }
+
+.results-card {
+  margin-top: 16px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--surface-shadow);
+  overflow: hidden;
+}
+.results-card .table-responsive {
+  padding: 12px;
+}
+.table thead th {
+  background: #fbfdff;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+.table td,
+.table th {
+  vertical-align: middle;
+}
+.table .truncate {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table tbody tr:hover {
+  background: linear-gradient(90deg, rgba(13,110,253,0.03), rgba(13,110,253,0.02));
+}
+.truncate {
+  cursor: help;
+}
+
+.preview-link{ color:var(--accent-2); text-decoration:none; display:inline-block; }
+.preview-link:hover{ text-decoration:underline; }
+
+/* Improve table row spacing and avatar column */
+.table td, .table th { padding: 0.75rem 0.9rem; }
+.request-badge{ font-weight:600; color:var(--accent-2); }
+
+/* Pagination compact */
+.pagination { margin: 0; }
+.pagination .page-item .page-link { min-width: 38px; text-align:center; }
+
+/* subtle header small utility */
+.lead { color: #58616b; }
+.badge-status-pending {
+  background: #ffc107;
+  color: #212529;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+.badge-status-responded {
+  background: #198754;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.action-btns .btn {
+  margin-right: 6px;
+}
+
+.page-link {
+  color: var(--accent);
+}
+.pagination .active .page-link {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* small screens */
+@media (max-width: 992px) {
+  .table-responsive {
+    font-size: 0.95rem;
+  }
+  .truncate {
+    max-width: 160px;
+  }
+  .page-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
