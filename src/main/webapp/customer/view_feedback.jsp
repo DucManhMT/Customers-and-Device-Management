@@ -7,6 +7,7 @@
     <link href="../css/feedback/viewFeedback.css" rel="stylesheet"/>
 </head>
 <body>
+
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container-fluid">

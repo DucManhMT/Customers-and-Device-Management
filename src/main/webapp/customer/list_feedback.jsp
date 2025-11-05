@@ -16,7 +16,6 @@
         }
         body{
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px 0;
             position: relative;
@@ -496,19 +495,14 @@
     </style>
 </head>
 <body>
+<c:set var="activePage" value="myFeedback" scope="request" />
 <jsp:include page="../components/header.jsp" />
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container mt-4">
     <div class="page-hero">
         <div>
             <h2><i class="fas fa-comments"></i> Feedback History</h2>
-            <p class="lead">Review your previous feedback and responses. Use filters to narrow results.</p>
-        </div>
-        <div>
-            <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/feedback/create">
-                <i class="fas fa-plus-circle"></i>
-                Write Feedback
-            </a>
-        </div>
+            </div>
     </div>
 
     <div class="filter-card filter-form">

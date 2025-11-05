@@ -12,7 +12,7 @@
     <style>
         body{
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
             min-height: 100vh;
         }
         .main-content{
@@ -253,7 +253,9 @@
 <body>
 
 <div class="main-content">
+    <c:set var="activePage" value="viewReceivedAssignments" scope="request" />
     <jsp:include page="../components/header.jsp" />
+    <jsp:include page="../components/techem_sidebar.jsp"/>
     <div class="container mt-4">
         <div class="page-header">
             <h2>

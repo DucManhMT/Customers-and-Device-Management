@@ -448,6 +448,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp" />
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="feedback-edit-container">
     <div class="feedback-edit-card">
         <div class="card-header">
