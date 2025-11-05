@@ -149,6 +149,7 @@
 </head>
 
 <body>
+<c:set var="activePage" value="cusProfile" scope="request" />
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/customer_sidebar.jsp"/>
 

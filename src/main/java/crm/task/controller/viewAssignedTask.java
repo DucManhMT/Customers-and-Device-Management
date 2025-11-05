@@ -145,9 +145,17 @@ public class viewAssignedTask extends HttpServlet {
 
             List<Request> allAssignedRequests = entityManager.findAll(Request.class);
 
-            List<Request> filteredByAssignment = allAssignedRequests.stream()
-                    .filter(req -> assignedRequestIds.contains(req.getRequestID()))
-                    .collect(Collectors.toList());
+        List<Request> filteredByAssignment = allAssignedRequests.stream()
+            .filter(req -> assignedRequestIds.contains(req.getRequestID()))
+            .collect(Collectors.toList());
+
+        // By default (no explicit statusFilter), exclude Pending tasks here so that
+        // `viewAssignedTasks` shows tasks the technician has accepted (Processing/Finished).
+        if (statusFilter == null || statusFilter.isEmpty()) {
+        filteredByAssignment = filteredByAssignment.stream()
+            .filter(r -> r.getRequestStatus() != null && !r.getRequestStatus().name().equalsIgnoreCase("Pending"))
+            .collect(Collectors.toList());
+        }
 
             List<Request> filteredRequests = filteredByAssignment;
             if (statusFilter != null && !statusFilter.isEmpty() && !"all status".equalsIgnoreCase(statusFilter)) {

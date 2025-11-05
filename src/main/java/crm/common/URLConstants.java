@@ -77,6 +77,8 @@ public class URLConstants {
 
     // TASK
     public static final String TASK_PROCESS_ASSIGNMENT = "/task/processAssignment";
+    public static final String TASK_ASSIGNMENT_DECISION = "/task/assignmentDecision";
+    public static final String TASK_VIEW_RECEIVED_ASSIGNMENTS = "/task/viewReceivedAssignments";
     public static final String TASK_DETAIL = "/task/detail";
 
 }

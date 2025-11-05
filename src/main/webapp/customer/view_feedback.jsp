@@ -7,7 +7,9 @@
     <link href="../css/feedback/viewFeedback.css" rel="stylesheet"/>
 </head>
 <body>
+
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container-fluid">
 
 
@@ -127,9 +129,15 @@
                                 <div class="response-section">
                                     <div class="d-flex align-items-center mb-2">
                                         <i class="bi bi-reply-fill text-success me-2"></i>
-                                        <small class="text-muted">Responded on: ${feedback.responseDate}</small>
+                                        <small class="text-muted">Responded
+                                            <c:choose>
+                                                <c:when test="${not empty feedback.responseDate}">
+                                                    <c:out value="${feedback.responseDate}"/>
+                                                </c:when>
+                                            </c:choose>
+                                        </small>
                                     </div>
-                                    <p class="mb-0">${feedback.response}</p>
+                                    <p class="mb-0"><c:out value="${feedback.response}"/></p>
                                 </div>
                             </div>
                         </c:if>
@@ -140,16 +148,16 @@
                     <div class="card-body">
                         <h6 class="card-title">Actions</h6>
                         <div class="d-flex gap-2 flex-wrap">
-                            <form method="get" action="#" style="display: inline;">
+                            <form method="get" action="${pageContext.request.contextPath}/feedback/edit" style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
                                 <button type="submit" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit Feedback
                                 </button>
                             </form>
 
-                            <form method="get" action="#" style="display: inline;">
+                            <form method="post" action="${pageContext.request.contextPath}/feedback/delete" style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete (hide) this feedback?');">
                                     <i class="bi bi-trash"></i> Delete Feedback
                                 </button>
                             </form>

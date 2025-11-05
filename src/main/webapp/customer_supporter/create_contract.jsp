@@ -16,7 +16,6 @@
     <style>
         body {
             box-sizing: border-box;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -78,24 +77,11 @@
     </style>
 </head>
 <body>
-<header>
+<c:set var="activePage" value="createContract" scope="request" />
+<jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/supporter_sidebar.jsp"/>
 
-    <nav class="navbar navbar-expand-lg navbar-dark"
-         style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-headset me-2"></i>
-                Customer Support Portal
-            </a>
-            <div class="navbar-nav ms-auto">
-                    <span class="navbar-text">
-                        <i class="bi bi-person-circle me-1"></i>
-                        Support Agent
-                    </span>
-            </div>
-        </div>
-    </nav>
-</header>
+
 
 <main class="container">
 

@@ -16,7 +16,9 @@
     </style>
 </head>
 <body>
+<c:set var="activePage" value="feedbackManagement" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/supporter_sidebar.jsp"/>
 
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -58,6 +60,7 @@
                         <option value="">All status</option>
                         <option value="Pending" ${statusFilter == 'Pending' ? 'selected' : ''}>Pending</option>
                         <option value="Responded" ${statusFilter == 'Responded' ? 'selected' : ''}>Responded</option>
+                        <option value="Deleted" ${statusFilter == 'Deleted' ? 'selected' : ''}>Deleted</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -80,7 +83,7 @@
     </div>
 
     <div class="row stats">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <strong>Total feedbacks</strong>
@@ -88,7 +91,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <strong>Responded</strong>
@@ -96,11 +99,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
                     <strong>Pending</strong>
                     <div class="display-6">${pendingCount != null ? pendingCount : 0}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger">
+                <div class="card-body">
+                    <strong>Deleted</strong>
+                    <div class="display-6 text-danger">${deletedCount != null ? deletedCount : 0}</div>
                 </div>
             </div>
         </div>
@@ -136,14 +147,29 @@
                                         <td>${f.customerID}</td>
                                         <td>${f.rating}</td>
                                         <td>${f.feedbackDate}</td>
-                                        <td>${f.response ne null ? 'Responded' : 'Pending'}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${f.feedbackStatus.name() == 'Pending'}">
+                                                    <span class="badge bg-warning">Pending</span>
+                                                </c:when>
+                                                <c:when test="${f.feedbackStatus.name() == 'Responded'}">
+                                                    <span class="badge bg-success">Responded</span>
+                                                </c:when>
+                                                <c:when test="${f.feedbackStatus.name() == 'Deleted'}">
+                                                    <span class="badge bg-danger">Deleted</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${f.feedbackStatus}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
                                         <td class="table-actions">
                                             <form method="get" action="${pageContext.request.contextPath}${URLConstants.CUSTOMER_VIEW_FEEDBACK}">
                                                 <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
                                                 <button type="submit" class="btn btn-sm btn-info">View</button>
                                             </form>
                                             <form method="get" action="${pageContext.request.contextPath}/customer_supporter/feedback/respond">
-                                                <input type="hidden" name="feedbackId" value="${f.feedbackID}"/>
+                                                <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
                                                 <button type="submit" class="btn btn-sm btn-success">Respond</button>
                                             </form>
                                         </td>

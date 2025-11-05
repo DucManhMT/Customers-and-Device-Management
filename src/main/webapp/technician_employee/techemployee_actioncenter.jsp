@@ -11,13 +11,10 @@ contentType="text/html;charset=UTF-8" language="java" %>
   </head>
   <body>
   <header>
-      <%--  <jsp:include page="../components/header.jsp"/>--%>
+      <jsp:include page="../components/techem_sidebar.jsp"/>
+      <jsp:include page="../components/header.jsp"/>
 
   </header>
-    <p>THIS IS TECHEMPLOYEE</p>
-    <a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
-    <a href="${pageContext.request.contextPath}/task/viewAssignedTasks">View Assigned Tasks</a>
-  <a href="${pageContext.request.contextPath}/staff/profile">Profile</a>
-  <a href="${pageContext.request.contextPath}/staff/profile/edit">Profile edit</a>
+
 </body>
 </html>

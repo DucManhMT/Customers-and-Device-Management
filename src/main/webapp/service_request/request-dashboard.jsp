@@ -33,7 +33,9 @@
     </style>
 </head>
 <body>
+<c:set var="activePage" value="requestDashboard" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/supporter_sidebar.jsp"/>
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Request </h1>

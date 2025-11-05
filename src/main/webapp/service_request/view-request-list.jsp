@@ -19,7 +19,9 @@
           rel="stylesheet"/>
 </head>
 <body>
+<c:set var="activePage" value="requestList" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/supporter_sidebar.jsp"/>
 <div class="container-fluid">
     <div class="container-fluid">
         <h2 class="mt-1">Request List</h2>
