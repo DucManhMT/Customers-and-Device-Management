@@ -304,7 +304,7 @@
     <jsp:include page="../components/header.jsp" />
     <div class="decision-card">
         <div class="decision-header">
-            <h3><i class="fas fa-clipboard-check"></i> Assignment Decision</h3>
+            <h3><i class="fas fa-clipboard-check"></i> Task Details & Decision</h3>
             <p class="subtitle">Please review the task details carefully and choose whether to accept or decline this assignment.</p>
         </div>
 
@@ -321,130 +321,130 @@
             </div>
         </c:if>
 
-        <c:set var="req" value="${requestScope.requestItem}"/>
+        <c:set var="task" value="${requestScope.taskItem}"/>
+        <c:set var="req" value="${task.request}"/>
         
         <div class="task-detail-section">
-            <h5><i class="fas fa-tasks"></i> ${req.requestDescription != null ? req.requestDescription : 'Service Request'}</h5>
+            <h5><i class="fas fa-tasks"></i> Task Assignment</h5>
+            
+            <div class="task-meta">
+                <span class="meta-item">
+                    <i class="fas fa-hashtag"></i>
+                    Task ID: <strong>#${task.taskID}</strong>
+                </span>
+                <span class="meta-item">
+                    <i class="fas fa-link"></i>
+                    Request ID: <strong>#${req.requestID}</strong>
+                </span>
+                <span class="meta-item">
+                    <i class="fas fa-user-tie"></i>
+                    Assigned by: <strong>${task.assignBy.staffName}</strong>
+                </span>
+            </div>
             
             <div class="detail-grid">
                 <div class="detail-item">
                     <div class="label">
-                        <i class="fas fa-hashtag"></i>
-                        Request ID
-                    </div>
-                    <div class="value">#${req.requestID}</div>
-                </div>
-                
-                <div class="detail-item">
-                    <div class="label">
                         <i class="fas fa-info-circle"></i>
-                        Status
+                        Task Status
                     </div>
                     <div class="value">
-                        <span class="status-badge ${req.requestStatus == 'Approved' ? 'approved' : 'pending'}">
-                            ${req.requestStatus}
+                        <span class="status-badge pending">
+                            ${task.status}
                         </span>
                     </div>
                 </div>
                 
                 <div class="detail-item">
                     <div class="label">
-                        <i class="fas fa-calendar-alt"></i>
-                        Start Date
+                        <i class="fas fa-calendar-plus"></i>
+                        Task Start Date
                     </div>
-                    <div class="value ${empty req.startDate ? 'secondary' : ''}">
-                        ${not empty req.startDate ? req.startDate : 'Not set'}
+                    <div class="value ${empty task.startDate ? 'secondary' : ''}">
+                        ${not empty task.startDate ? task.startDate : 'Not started yet'}
                     </div>
                 </div>
                 
                 <div class="detail-item">
                     <div class="label">
-                        <i class="fas fa-calendar-check"></i>
-                        Finished Date
+                        <i class="fas fa-calendar-alt"></i>
+                        Task Deadline
                     </div>
-                    <div class="value ${empty req.finishedDate ? 'secondary' : ''}">
-                        ${not empty req.finishedDate ? req.finishedDate : 'Not completed'}
+                    <div class="value" style="color: #f59e0b;">
+                        ${not empty task.deadline ? task.deadline : 'Not set'}
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Contract Information -->
-        <c:if test="${not empty req.contract}">
-            <c:set var="contract" value="${req.contract}" />
-            <div class="info-section">
-                <h6><i class="fas fa-file-contract"></i> Contract Information</h6>
-                <div class="info-row">
-                    <span class="info-label">Contract ID</span>
-                    <span class="info-value">#${contract.contractID}</span>
-                </div>
-                <c:if test="${not empty contract.contractCode}">
-                    <div class="info-row">
-                        <span class="info-label">Contract Code</span>
-                        <span class="info-value">${contract.contractCode}</span>
-                    </div>
-                </c:if>
-                <c:if test="${not empty contract.startDate}">
-                    <div class="info-row">
-                        <span class="info-label">Contract Start Date</span>
-                        <span class="info-value">${contract.startDate}</span>
-                    </div>
-                </c:if>
-                <c:if test="${not empty contract.expiredDate}">
-                    <div class="info-row">
-                        <span class="info-label">Contract Expiry Date</span>
-                        <span class="info-value">${contract.expiredDate}</span>
-                    </div>
-                </c:if>
-                <c:catch var="customerError">
-                    <c:set var="customer" value="${contract.customer}" />
-                    <c:if test="${not empty customer}">
-                        <div class="info-row">
-                            <span class="info-label">Customer</span>
-                            <span class="info-value">
-                                <c:choose>
-                                    <c:when test="${not empty customer.fullName}">
-                                        ${customer.fullName}
-                                    </c:when>
-                                    <c:when test="${not empty customer.username}">
-                                        ${customer.username}
-                                    </c:when>
-                                    <c:otherwise>
-                                        Customer #${customer.customerID}
-                                    </c:otherwise>
-                                </c:choose>
-                            </span>
+        <!-- Customer Information Section -->
+        <c:if test="${not empty req.contract and not empty req.contract.customer}">
+            <c:set var="customer" value="${req.contract.customer}" />
+            <div class="task-detail-section" style="background: linear-gradient(135deg, rgba(16,185,129,0.03) 0%, rgba(5,150,105,0.03) 100%); border-color: rgba(16,185,129,0.08);">
+                <h5><i class="fas fa-user-circle"></i> Customer Information</h5>
+                
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="label">
+                            <i class="fas fa-user"></i>
+                            Customer Name
                         </div>
-                        <c:if test="${not empty customer.phone}">
-                            <div class="info-row">
-                                <span class="info-label">Customer Phone</span>
-                                <span class="info-value">
-                                    <i class="fas fa-phone" style="color: #6366f1;"></i> ${customer.phone}
-                                </span>
-                            </div>
-                        </c:if>
-                        <c:if test="${not empty customer.address}">
-                            <div class="info-row">
-                                <span class="info-label">Customer Address</span>
-                                <span class="info-value">
-                                    <i class="fas fa-map-marker-alt" style="color: #6366f1;"></i> ${customer.address}
-                                </span>
-                            </div>
-                        </c:if>
-                    </c:if>
-                </c:catch>
+                        <div class="value">
+                            ${not empty customer.customerName ? customer.customerName : 'N/A'}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="label">
+                            <i class="fas fa-phone"></i>
+                            Phone Number
+                        </div>
+                        <div class="value">
+                            ${not empty customer.phone ? customer.phone : 'N/A'}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item" style="grid-column: 1 / -1;">
+                        <div class="label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Address
+                        </div>
+                        <div class="value secondary">
+                            ${not empty customer.address ? customer.address : 'N/A'}
+                        </div>
+                    </div>
+                </div>
             </div>
         </c:if>
 
-        <c:if test="${not empty req.note}">
-            <div class="note-box">
-                <strong><i class="fas fa-sticky-note"></i> Additional Notes</strong>
-                <p>${req.note}</p>
+        <!-- Task Description Section -->
+        <c:if test="${not empty task.description}">
+            <div class="info-section" style="background: linear-gradient(135deg, rgba(139,92,246,0.03) 0%, rgba(168,85,247,0.03) 100%); border-color: rgba(139,92,246,0.1);">
+                <h6><i class="fas fa-file-alt"></i> Task Description</h6>
+                <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 12px;">
+                    <p style="margin: 0; color: #1e293b; line-height: 1.6; white-space: pre-wrap;">${task.description}</p>
+                </div>
             </div>
         </c:if>
+
+        <!-- Request Information Section -->
+        <div class="info-section">
+            <h6><i class="fas fa-clipboard-list"></i> Request Details</h6>
+            <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 12px;">
+                <c:if test="${not empty req.requestDescription}">
+                    <p style="margin: 0 0 12px 0; color: #1e293b; line-height: 1.6; white-space: pre-wrap;">${req.requestDescription}</p>
+                </c:if>
+                <c:if test="${not empty req.note}">
+                    <div style="background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 3px solid #f59e0b; margin-top: 12px;">
+                        <strong style="color: #92400e;"><i class="fas fa-sticky-note"></i> Additional Notes:</strong>
+                        <p style="margin: 6px 0 0 0; color: #78350f;">${req.note}</p>
+                    </div>
+                </c:if>
+            </div>
+        </div>
 
         <form method="post" action="${pageContext.request.contextPath}/task/assignmentDecision">
-            <input type="hidden" name="requestId" value="${req.requestID}" />
+            <input type="hidden" name="taskId" value="${task.taskID}" />
             
             <div class="form-section">
                 <label class="form-label"><i class="fas fa-comment"></i> Optional Comment</label>
@@ -458,9 +458,9 @@
                 </button>
 
                 <button type="submit" name="decision" value="decline" class="btn btn-outline-danger" 
-                        onclick="return confirm('Are you sure you want to decline this assignment?')">
+                        onclick="return confirm('Are you sure you want to decline this task?')">
                     <i class="fas fa-times-circle"></i>
-                    Decline Assignment
+                    Decline Task
                 </button>
 
                 <a href="${pageContext.request.contextPath}/task/viewReceivedAssignments" class="btn btn-secondary">
