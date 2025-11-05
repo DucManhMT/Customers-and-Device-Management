@@ -22,8 +22,14 @@ contentType="text/html;charset=UTF-8" language="java" %>
     >
     <a href="${pageContext.request.contextPath}/feedback/create">
       Customer Feedback
+    </a><br>
+    <a href="${pageContext.request.contextPath}/feedback/list">
+      Customer Feedback history
     </a>
     <a href="./requests/create">Customer create request</a>
-    <a href="./requests">Customer request</a>
+    <a href="./requests">Customer request</a><br>
+    <a href="${pageContext.request.contextPath}/feedback/list">
+      Customer Feedback history
+    </a>
   </body>
 </html>

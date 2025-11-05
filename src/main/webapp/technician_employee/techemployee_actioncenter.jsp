@@ -13,6 +13,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
   <jsp:include page="../components/header.jsp"/>
     <p>THIS IS TECHEMPLOYEE</p>
     <a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
+    <a href="${pageContext.request.contextPath}/task/viewReceivedAssignments">View Received Assignments</a>
     <a href="${pageContext.request.contextPath}/task/viewAssignedTasks">View Assigned Tasks</a>
 </body>
 </html>
