@@ -78,7 +78,7 @@
 
                                             <c:choose>
                                                 <c:when test="${not empty item.account}">
-                                                    <a href="./">${item.account.username}</a>
+                                                    <a href="#">${item.account.username}</a>
                                                 </c:when>
                                                 <c:otherwise>
                                                     System

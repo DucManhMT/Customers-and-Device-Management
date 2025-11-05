@@ -19,46 +19,46 @@
 <jsp:include page="../components/header.jsp"/>
 <div class="container py-5">
 
-<div class="container py-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Request Detail</h3>
+    <div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Request Detail</h3>
+            </div>
+            <c:choose>
+                <c:when test="${not empty error}">
+                    <div class="alert alert-danger mt-3">${error}</div>
+                </c:when>
+                <c:otherwise>
+                    <div class="card-body">
+
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 text-secondary">Request Information</h5>
+                            <p><strong>Contract Code:</strong>
+                                <a href="#">
+                                        ${request.contract.contractCode}
+                                </a>
+                            </p>
+                            <p><strong>Description:</strong> ${request.requestDescription}</p>
+                            <p><strong>Status:</strong>
+                                <span class="text-danger" style="font-weight: bold">${request.requestStatus}</span>
+                            </p>
+                            <p><strong>Note:</strong> ${request.note}</p>
+                            <p><strong>Create Date:</strong> ${request.startDate}</p>
+                            <p><strong>Finish Date:</strong> ${request.finishedDate}</p>
+                        </div>
+
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="../requests/timeline?requestId=${request.requestID}" class="btn btn-success">View
+                                Timeline</a>
+                            <a href="../../feedback/create" class="btn btn-info">Feedback</a>
+                            <a href="../requests" class="btn btn-secondary">Back to List</a>
+                        </div>
+
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
-        <c:choose>
-            <c:when test="${not empty error}">
-                <div class="alert alert-danger mt-3">${error}</div>
-            </c:when>
-            <c:otherwise>
-                <div class="card-body">
-
-                    <div class="mb-4">
-                        <h5 class="border-bottom pb-2 text-secondary">Request Information</h5>
-                        <p><strong>Contract ID:</strong>
-                            <a href="./requests/list">
-                                    ${request.contract.contractID}
-                            </a>
-                        </p>
-                        <p><strong>Description:</strong> ${request.requestDescription}</p>
-                        <p><strong>Status:</strong>
-                            <span class="text-danger" style="font-weight: bold">${request.requestStatus}</span>
-                        </p>
-                        <p><strong>Note:</strong> ${request.note}</p>
-                        <p><strong>Create Date:</strong> ${request.startDate}</p>
-                        <p><strong>Finish Date:</strong> ${request.finishedDate}</p>
-                    </div>
-
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="../requests/timeline?requestId=${request.requestID}" class="btn btn-success">View
-                            Timeline</a>
-                        <a href="../../feedback/create" class="btn btn-info">Feedback</a>
-                        <a href="../requests" class="btn btn-secondary">Back to List</a>
-                    </div>
-
-                </div>
-            </c:otherwise>
-        </c:choose>
     </div>
-</div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <%-- Created by IntelliJ IDEA. User: MasterLong Date: 10/7/2025 Time: 6:18 AM To
-change this template use File | Settings | File Templates. --%> <%@ page
-contentType="text/html;charset=UTF-8" language="java" %>
+change this template use File | Settings | File Templates. --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
   <head>
     <title>Action Center</title>
@@ -11,25 +12,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
   </head>
   <body>
   <jsp:include page="../components/header.jsp"/>
-    <p>${sessionScope.account.username}</p>
-    <h1>Customer Action Center</h1>
-    <p>
-      Welcome to the Customer Action Center. Here you can manage your account
-      and view your activities.
-    </p>
-    <a href="${pageContext.request.contextPath}/customer/contract_history"
-      >Contract Histoy</a
-    >
-    <a href="${pageContext.request.contextPath}/feedback/create">
-      Customer Feedback
-    </a><br>
-    <a href="${pageContext.request.contextPath}/feedback/list">
-      Customer Feedback history
-    </a>
-    <a href="./requests/create">Customer create request</a>
-    <a href="./requests">Customer request</a><br>
-    <a href="${pageContext.request.contextPath}/feedback/list">
-      Customer Feedback history
-    </a>
+  <jsp:include page="../components/customer_sidebar.jsp"/>
+
   </body>
 </html>

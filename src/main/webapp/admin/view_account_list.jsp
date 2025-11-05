@@ -15,7 +15,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
+<c:set var="activePage" value="accountmanage" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/admin_sidebar.jsp"/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-content">
@@ -24,9 +26,10 @@
                     <h2 class="mb-1">Account Management</h2>
                 </div>
 
-                <button class="btn btn-primary" onclick="showAddAccountModal()">
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/admin/create_account">
+
                     <i class="bi bi-plus-circle me-2"></i>Add New Account
-                </button>
+                </a>
             </div>
 
             <!-- Search and Filters -->
@@ -70,6 +73,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
+                            <div class="input-group mb-2">
                             <select class="form-select" id="roleFilter" name="roleFilter">
                                 <option value="">All Roles</option>
                                 <c:forEach var="role" items="${roleList}">
@@ -80,8 +84,10 @@
                                     </option>
                                 </c:forEach>
                             </select>
+                            </div>
                         </div>
                         <div class="col-md-2">
+                            <div class="input-group mb-2">
                             <select class="form-select" id="statusFilter" name="statusFilter">
                                 <option value="">All Status</option>
                                 <option value="Active" <c:if test="${statusFilter == 'Active'}">selected</c:if>>Active
@@ -90,20 +96,32 @@
                                     Deactive
                                 </option>
                             </select>
+                            </div>
                         </div>
                         <div class="col-md-2 d-flex gap-2">
+                            <div class="input-group mb-2">
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="bi bi-search"></i> Search
                             </button>
+                            </div>
+                            <div class="input-group mb-2">
+
                             <button type="button" class="btn btn-secondary w-100"
                                     onclick="window.location.href='${pageContext.request.contextPath}/admin/account_list'">
                                 <i class="bi bi-arrow-clockwise"></i> Reset
                             </button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </form>
-
+            <c:if test="${not empty sessionScope.success}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${sessionScope.success}
+                </div>
+                <c:remove var="success" scope="session"/>
+            </c:if>
             <!-- Accounts Table -->
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -126,15 +144,24 @@
                             <td><c:out value="${account.role.roleName}"/></td>
                             <td><c:out value="${account.status}"/></td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-info me-2 text-white">
+                                <a href="${pageContext.request.contextPath}/admin/account_list/view_account_detail?id=${account.username}&role=${account.role.roleID}" class="btn btn-sm btn-info me-2 text-white">
                                     <i class="bi bi-eye"></i> View Detail
                                 </a>
                                 <a href="${pageContext.request.contextPath}/admin/account_list/edit_account?id=${account.username}&role=${account.role.roleID}" class="btn btn-sm btn-primary me-2">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
+                                <form action="${pageContext.request.contextPath}/admin/account_list" method="post" class="d-inline">
+                                    <input type="hidden" name="action"
+                                           value="${account.status == 'Active' ? 'deactivate' : 'activate'}">
+                                    <input type="hidden" name="username" value="${account.username}">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-${account.status == 'Active' ? 'danger' : 'success'}"
+                                            onclick="return confirm('Are you sure you want to ${account.status == 'Active' ? 'deactivate' : 'activate'} this account?')">
+                                        <i class="bi ${account.status == 'Active' ? 'bi-person-x' : 'bi-person-check'}"></i>
+                                            ${account.status == 'Active' ? 'Deactivate' : 'Activate'}
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>

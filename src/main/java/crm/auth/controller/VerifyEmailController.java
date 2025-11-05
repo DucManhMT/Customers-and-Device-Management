@@ -42,8 +42,7 @@ public class VerifyEmailController extends HttpServlet {
             return;
 
         } else if ("send".equals(action) && email != null) {
-            String generatedOtp = OTPProvider.generateOTP();
-            boolean emailSent = OTPProvider.sendOTPEmail(email, generatedOtp);
+            boolean emailSent = OTPProvider.sendOTPEmail(email);
             if (emailSent) {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write("{\"success\":true, \"message\":\"OTP sent successfully.\"}");

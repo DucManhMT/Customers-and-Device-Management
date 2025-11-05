@@ -14,7 +14,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<c:set var="activePage" value="createProductRequests" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/techem_sidebar.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Create Product Request</h1>
 
@@ -39,6 +41,12 @@
             <c:if test="${not empty errorMessage}">
                 <div class="alert alert-danger mt-3" role="alert">
                         ${errorMessage}
+                </div>
+            </c:if>
+            
+            <c:if test="${not empty successMessage}">
+                <div class="alert alert-success mt-3" role="alert">
+                        ${successMessage}
                 </div>
             </c:if>
         </div>

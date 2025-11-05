@@ -12,7 +12,9 @@
     <link href="${pageContext.request.contextPath}/assets/css/task-views.css" rel="stylesheet"/>
 </head>
 <body>
+<c:set var="activePage" value="viewAprovedTask" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/techlead_sidebar.jsp"/>
 <div class="page-header">
     <div>
         <div class="row align-items-center">

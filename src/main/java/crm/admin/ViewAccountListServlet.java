@@ -5,6 +5,7 @@ import crm.common.model.Account;
 import crm.common.model.Customer;
 import crm.common.model.Role;
 import crm.common.model.Staff;
+import crm.common.model.enums.AccountStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
@@ -223,6 +224,44 @@ public class ViewAccountListServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        HttpSession session = request.getSession();
 
+        String action = request.getParameter("action");
+        String username = request.getParameter("username");
+
+        if (username == null || username.isEmpty()) {
+            session.setAttribute("success", "Invalid username!");
+            response.sendRedirect(request.getContextPath() + "/admin/account_list");
+            return;
+        }
+
+        try {
+            Map<String, Object> cond = new HashMap<>();
+            cond.put("username", username);
+            List<Account> accounts = em.findWithConditions(Account.class, cond);
+
+            if (accounts == null || accounts.isEmpty()) {
+                session.setAttribute("success", "Account not found!");
+            } else {
+                Account acc = accounts.get(0);
+
+                if ("deactivate".equalsIgnoreCase(action)) {
+                    acc.setAccountStatus(AccountStatus.Deactive);
+                    session.setAttribute("success", "Account " + username + " deactivated successfully!");
+                } else if ("activate".equalsIgnoreCase(action)) {
+                    acc.setAccountStatus(AccountStatus.Active);
+                    session.setAttribute("success", "Account " + username + " activated successfully!");
+                }
+
+                em.merge(acc,Account.class);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("success", "Failed to update account status!");
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/account_list");
     }
 }

@@ -53,18 +53,19 @@ public class OTPProvider {
         entityManager.executeUpdate(dto);
     }
 
-    public static boolean sendOTPEmail(String toEmail, String otp) {
+    public static boolean sendOTPEmail(String toEmail) {
+        String otp = generateOTP();
         String subject = "Your OTP Code";
-        String body = "Your verification code is " + otp + ". It expires in 1 minute.";
+        String body = "Your verification code is " + otp + ". It expires in 3 minute.";
         EntityManager em = new EntityManager(DBcontext.getConnection());
         try {
-            // Save OTP to database with 1 minute expiration
+            // Save OTP to database with 3 minute expiration
             deleteExpiredOtp(em);
             UserOTP userOTP = new UserOTP();
             userOTP.setUserOTPID(IDGeneratorService.generateID(UserOTP.class));
             userOTP.setEmail(toEmail);
             userOTP.setOtpCode(otp);
-            userOTP.setExpiredTime(LocalDateTime.now().plusMinutes(1));
+            userOTP.setExpiredTime(LocalDateTime.now().plusMinutes(3));
             em.persist(userOTP, UserOTP.class);
             MailService.sendEmail(toEmail, subject, body);
             return true;

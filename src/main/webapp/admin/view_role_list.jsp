@@ -9,7 +9,10 @@
     <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<c:set var="activePage" value="rolemanage" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/admin_sidebar.jsp"/>
+
 <div class="container-fluid py-4">
     <!-- Page Header -->
     <div class="row mb-4">
