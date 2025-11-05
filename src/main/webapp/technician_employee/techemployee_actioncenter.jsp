@@ -18,5 +18,6 @@ contentType="text/html;charset=UTF-8" language="java" %>
     <a href="${pageContext.request.contextPath}/technician_employee/create_product_request">Create export request</a>
     <a href="${pageContext.request.contextPath}/task/viewAssignedTasks">View Assigned Tasks</a>
   <a href="${pageContext.request.contextPath}/staff/profile">Profile</a>
+  <a href="${pageContext.request.contextPath}/staff/profile/edit">Profile edit</a>
 </body>
 </html>

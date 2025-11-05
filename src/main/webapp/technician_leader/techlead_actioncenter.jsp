@@ -24,5 +24,6 @@
 <a href="${pageContext.request.contextPath}/task/viewAprovedTask">
     View Aproved Tasks
 </a>
+<a href="${pageContext.request.contextPath}/staff/profile">Profile</a>
 </body>
 </html>
