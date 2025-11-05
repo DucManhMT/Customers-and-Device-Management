@@ -26,9 +26,10 @@
                     <h2 class="mb-1">Account Management</h2>
                 </div>
 
-                <button class="btn btn-primary" onclick="showAddAccountModal()">
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/admin/create_account">
+
                     <i class="bi bi-plus-circle me-2"></i>Add New Account
-                </button>
+                </a>
             </div>
 
             <!-- Search and Filters -->

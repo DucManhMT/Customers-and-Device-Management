@@ -33,6 +33,56 @@
             margin-bottom: 30px;
         }
 
+        .avatar-wrapper {
+            width: 140px;
+            height: 140px;
+            margin: auto;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: .3s;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: .3s;
+        }
+
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .avatar-wrapper:hover .avatar-preview {
+            transform: scale(1.05);
+        }
+
+        .avatar-icon {
+            font-size: 35px;
+            color: white;
+            opacity: 0;
+            transition: .3s;
+        }
+
+        .avatar-wrapper:hover .avatar-icon {
+            opacity: 1;
+        }
+
         .form-card {
             background-color: #ffffff;
             padding: 25px;
@@ -58,21 +108,6 @@
             color: #0d6efd;
         }
 
-        .password-strength {
-            height: 5px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-
-        .password-strength-bar {
-            height: 5px;
-            background-color: #198754;
-            width: 0;
-            transition: width 0.3s;
-        }
-
         .btn {
             min-width: 150px;
         }
@@ -84,6 +119,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+
 <div class="account-container">
     <a href="${pageContext.request.contextPath}/staff/profile" class="btn btn-link mb-3">
         <i class="bi bi-arrow-left-circle me-2"></i> Back to Profile
@@ -92,6 +128,7 @@
     <div class="profile-header">
         <h1 class="mb-2" id="page-title">Edit Account</h1>
     </div>
+
     <c:if test="${not empty sessionScope.error}">
         <div class="alert alert-danger">${sessionScope.error}</div>
         <c:remove var="error" scope="session"/>
@@ -105,14 +142,38 @@
         <script>
             setTimeout(function() {
                 window.location.href = '${pageContext.request.contextPath}/staff/profile';
-            }, 3000); // 3 giây
+            }, 3000);
         </script>
     </c:if>
-    <form action="${pageContext.request.contextPath}/staff/profile/edit" method="post">
-        <!-- hidden values -->
-        <input type="hidden" name="id" value="${username}">
 
-        <!-- Account Information -->
+    <!-- ✅ THÊM multipart/form-data -->
+    <form action="${pageContext.request.contextPath}/staff/profile/edit"
+          method="post"
+          enctype="multipart/form-data">
+
+        <!-- Avatar -->
+        <div class="form-card">
+            <div class="avatar-wrapper" onclick="document.getElementById('profileImgInput').click();">
+                <img id="previewImage"
+                     src="${pageContext.request.contextPath}/${staff.image}"
+                     class="avatar-preview"/>
+
+                <div class="avatar-overlay">
+                    <i class="bi bi-camera-fill avatar-icon"></i>
+                </div>
+            </div>
+
+            <!-- input file ẩn -->
+            <input type="file"
+                   id="profileImgInput"
+                   name="profileImage"
+                   accept="image/*"
+                   style="display:none"
+                   onchange="previewAvatar(event)">
+        </div>
+
+
+        <!-- Account Info -->
         <div class="form-card">
             <div class="section-header">
                 <i class="bi bi-person-circle icon-section"></i>
@@ -125,6 +186,7 @@
                     <input type="text" class="form-control" id="accountName" name="accountName"
                            required value="${staff.staffName}">
                 </div>
+
                 <div class="col-md-6 mb-3">
                     <label for="email" class="form-label">Email</label>
                     <div class="input-group">
@@ -141,7 +203,7 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                         <input type="tel" class="form-control" id="phoneNumber" name="accountPhone"
-                               value="${staff.phone}" required>
+                               required value="${staff.phone}">
                     </div>
                 </div>
             </div>
@@ -153,15 +215,13 @@
                 <i class="bi bi-geo-alt-fill icon-section"></i>
                 <h3 class="section-title mb-0">Address</h3>
             </div>
+
             <div class="mb-3">
                 <label for="accountAddress" class="form-label">Detailed Address</label>
                 <input type="text" class="form-control" id="accountAddress" name="accountAddress"
                        required value="${staff.address}">
             </div>
         </div>
-
-
-
 
         <!-- Buttons -->
         <div class="form-card">
@@ -177,6 +237,13 @@
         </div>
     </form>
 </div>
+
+<script>
+    function previewAvatar(event) {
+        const img = document.getElementById('previewImage');
+        img.src = URL.createObjectURL(event.target.files[0]);
+    }
+</script>
 
 </body>
 </html>

@@ -44,6 +44,7 @@ public class ViewAccountDetailServlet extends HttpServlet {
             request.setAttribute("accountPhone", staff.getPhone());
             request.setAttribute("accountAddress", staff.getAddress());
             request.setAttribute("accountDoB", staff.getDateOfBirth());
+            request.setAttribute("accountImage", staff.getImage());
             request.setAttribute("role", roleName);
 
         }
