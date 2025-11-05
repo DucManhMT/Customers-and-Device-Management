@@ -149,27 +149,10 @@
             margin-bottom: 8px;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                justify-content: space-around;
-                position: relative;
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-top: 20px;
-                padding: 1.5rem;
-            }
-        }
     </style>
 
 </head>
 <body>
-<c:set var="activePage" value="warehouses" scope="request" />
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/admin_sidebar.jsp"/>
 

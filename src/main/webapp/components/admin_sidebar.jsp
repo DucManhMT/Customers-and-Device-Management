@@ -80,7 +80,6 @@
     }
 
     body {
-        margin-left: 260px;
         padding-top: 70px;
         background-color: #f5f6f7;
     }
@@ -89,9 +88,7 @@
 <div id="sidebar" class="sidebar">
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'rolemanage' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/role_list"><i class="bi bi-person-gear"></i> Role Management </a>
             </li>
