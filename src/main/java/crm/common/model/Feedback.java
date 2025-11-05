@@ -31,6 +31,9 @@ public class Feedback {
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
     private LocalDateTime feedbackDate;
 
+    @Column(name = "ResponseDate", type = "DATETIME", nullable = false)
+    private LocalDateTime responseDate;
+
     @Column(name = "CustomerID")
     private String customerID;
 
@@ -113,6 +116,14 @@ public class Feedback {
         this.customerID = customerID;
     }
 
+    public LocalDateTime getResponseDate() {
+        return responseDate;
+    }
+
+    public void setResponseDate(LocalDateTime responseDate) {
+        this.responseDate = responseDate;
+    }
+
     @Override
     public String toString() {
         return "Feedback{" +
@@ -122,9 +133,11 @@ public class Feedback {
                 ", response='" + response + '\'' +
                 ", description='" + description + '\'' +
                 ", feedbackDate=" + feedbackDate +
+                ", responseDate=" + responseDate +
                 ", customerID='" + customerID + '\'' +
                 ", requestID=" + requestID +
                 ", feedbackStatus=" + feedbackStatus +
                 '}';
     }
+
 }
