@@ -20,6 +20,10 @@
             <i class="fas fa-box "></i>
             <span>Back to Action Center</span>
         </a>
+        <a href="${pageContext.request.contextPath}/task/viewReceivedAssignments" class="btn btn-outline-primary mb-3 ms-2">
+            <i class="fas fa-inbox"></i>
+            <span>Pending Assignments</span>
+        </a>
 
         <div class="header">
             
@@ -185,6 +189,7 @@
                                                 <i class="fas fa-check"></i> Mark as Finished
                                             </button>
                                         </form>
+                                        <!-- Pending assignments are handled on Pending Assignments page -->
                                     </c:otherwise>
                                 </c:choose>
                             </div>
