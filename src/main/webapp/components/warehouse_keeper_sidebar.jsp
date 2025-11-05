@@ -15,7 +15,6 @@
         position: fixed;
         height: 100%;
         z-index: 1030;
-        /* NO PADDING HERE */
     }
 
     .sidebar-inner {
