@@ -150,6 +150,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/customer_sidebar.jsp"/>
 
 <div class="profile-container">
     <div class="profile-content">
@@ -208,9 +209,10 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <a href="${pageContext.request.contextPath}/customer/profile/edit?id=${account.username}" class="btn btn-primary btn-lg px-5 py-3">
-               <i
-                        class="bi bi-pencil-square me-2"></i> Edit Profile
+                <a href="${pageContext.request.contextPath}/customer/profile/edit?id=${account.username}"
+                   class="btn btn-primary btn-lg px-5 py-3">
+                    <i
+                            class="bi bi-pencil-square me-2"></i> Edit Profile
 
                 </a>
             </div>

@@ -28,6 +28,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container-fluid">
 
     <div class="main-container">
@@ -196,7 +197,7 @@
     </div>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/view-contract-detail.js" ></script>
+<script src="${pageContext.request.contextPath}/js/view-contract-detail.js"></script>
 </body>
 
 </html>
