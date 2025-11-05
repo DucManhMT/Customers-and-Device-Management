@@ -9,7 +9,9 @@
 
 </head>
 <body class="bg-light">
+<c:set var="activePage" value="createRequest" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container mt-5">
 
     <div class="container mt-5">

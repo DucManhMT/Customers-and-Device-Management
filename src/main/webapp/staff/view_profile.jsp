@@ -151,6 +151,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<%--<jsp:include page="../components/techem_sidebar.jsp"/>--%>
 
 <div class="profile-container">
     <div class="profile-content">

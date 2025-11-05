@@ -11,7 +11,9 @@
 </head>
 <body>
 <div class="main-content">
+    <c:set var="activePage" value="viewAssignTask" scope="request" />
     <jsp:include page="../components/header.jsp"/>
+    <jsp:include page="../components/techem_sidebar.jsp"/>
 <button class="mobile-menu-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
 </button>

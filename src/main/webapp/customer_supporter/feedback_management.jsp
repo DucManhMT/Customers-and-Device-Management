@@ -16,7 +16,9 @@
     </style>
 </head>
 <body>
+<c:set var="activePage" value="feedbackManagement" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/supporter_sidebar.jsp"/>
 
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-3">

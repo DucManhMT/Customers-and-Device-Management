@@ -14,7 +14,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<c:set var="activePage" value="createProductRequests" scope="request" />
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/techem_sidebar.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Create Product Request</h1>
 
