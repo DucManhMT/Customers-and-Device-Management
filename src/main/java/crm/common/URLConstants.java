@@ -19,6 +19,7 @@ public class URLConstants {
     public static final String ADMIN_ACTION_CENTER = "/admin/admin_actioncenter";
     public static final String ADMIN_EDIT_ACCOUNT = "/admin/account_list/edit_account";
     public static final String ADMIN_CREATE_ACCOUNT = "/admin/create_account";
+    public static final String ADMIN_VIEW_ACCOUNT_DETAIL = "/admin/account_list/view_account_detail";
     //STAFF
     
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
@@ -76,6 +77,8 @@ public class URLConstants {
 
     // TASK
     public static final String TASK_PROCESS_ASSIGNMENT = "/task/processAssignment";
+    public static final String TASK_ASSIGNMENT_DECISION = "/task/assignmentDecision";
+    public static final String TASK_VIEW_RECEIVED_ASSIGNMENTS = "/task/viewReceivedAssignments";
     public static final String TASK_DETAIL = "/task/detail";
 
 }

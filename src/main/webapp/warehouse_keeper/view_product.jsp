@@ -158,6 +158,21 @@
             padding-top: 16px;
             border-top: 1px solid #f0f2f5;
         }
+
+        .grid-top span{
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--sidebar-bg);
+        }
+
+        .grid-top .btn{
+            border-radius: 20px;
+            font-weight: 400;
+            background-color: #fafafa;
+            color: var(--sidebar-bg);
+        }
+
+
     </style>
 </head>
 <body>
@@ -171,8 +186,6 @@
         <div class="page-header">
             <h1>${warehouse.warehouseName}</h1>
             <div class="filter-buttons d-flex gap-2">
-                <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product" class="btn btn-primary"><i
-                        class="fas fa-plus me-1"></i> Add Product</a>
                 <button class="btn btn-light border" data-bs-toggle="collapse" href="#filterCollapse"><i
                         class="fas fa-filter me-1"></i> Filter
                 </button>
@@ -211,6 +224,14 @@
                         ${empty errorMessage ? 'No products found in your Warehouse.' : errorMessage}
                 </div>
             </c:if>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="grid-top d-flex justify-content-between align-items-center w-100">
+                    <span>Total Product (${totalProducts})</span>
+                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
+                       class="btn btn-light border"><i
+                            class="fas fa-plus me-1"></i> Add Product</a>
+                </div>
+            </div>
             <!-- NEW PRODUCT GRID LAYOUT -->
             <div class="product-grid">
                 <c:forEach var="product" items="${products}">

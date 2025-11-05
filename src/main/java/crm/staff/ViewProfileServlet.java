@@ -29,6 +29,7 @@ public class ViewProfileServlet extends HttpServlet {
         cond.put("account", account.getUsername());
         Staff staff = em.findWithConditions(Staff.class, cond).get(0);
         request.setAttribute("staff", staff);
+        request.setAttribute("accountImage", staff.getImage());
         request.setAttribute("account", account);
         request.getRequestDispatcher("/staff/view_profile.jsp").forward(request, response);
 

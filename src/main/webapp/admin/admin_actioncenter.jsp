@@ -14,9 +14,8 @@
         body {
             margin: 0;
             font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            min-height: 100vh;
-            color: #333;
+            background-color: #f8fafc;
+            color: #1e293b;
         }
 
         /* ===== SIDEBAR ===== */
@@ -25,31 +24,37 @@
             top: 0;
             left: 0;
             height: 100vh;
-            width: 250px;
-            background-color: #0b1d44;
+            width: 260px;
+            background: linear-gradient(180deg, #0d47a1 0%, #1976d2 100%);
             color: #fff;
             padding-top: 1.5rem;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            box-shadow: 2px 0 8px rgba(0,0,0,0.2);
         }
 
         .sidebar .brand {
-            font-weight: 600;
-            font-size: 1.4rem;
+            font-weight: 700;
+            font-size: 1.5rem;
             text-align: center;
             margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar .brand i {
+            margin-right: 8px;
         }
 
         .sidebar .nav-link {
-            color: #cfd8dc;
+            color: #e3f2fd;
             font-size: 1.05rem;
             padding: 12px 20px;
-            border-radius: 8px;
-            margin: 4px 12px;
+            border-radius: 10px;
+            margin: 4px 14px;
             display: flex;
             align-items: center;
-            transition: 0.3s ease;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
         .sidebar .nav-link i {
@@ -59,9 +64,9 @@
 
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
-            background-color: #1a2c68;
+            background-color: rgba(255,255,255,0.2);
+            transform: translateX(5px);
             color: #fff;
-            transform: translateX(4px);
         }
 
         .sidebar .logout {
@@ -70,11 +75,24 @@
             text-align: center;
         }
 
+        .sidebar .logout .btn {
+            border-radius: 25px;
+            background-color: #fff;
+            color: #1976d2;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .sidebar .logout .btn:hover {
+            background-color: #e3f2fd;
+        }
+
         /* ===== MAIN CONTENT ===== */
         .main-content {
-            margin-left: 250px;
-            padding: 2rem;
-            color: #fff;
+            margin-left: 260px;
+            padding: 2rem 3rem;
+            min-height: 100vh;
+            background: #f1f5f9;
         }
 
         .main-header {
@@ -82,33 +100,53 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
         }
 
         .main-header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
+            color: #1e3a8a;
         }
 
         .main-header .btn {
             border-radius: 25px;
             font-weight: 500;
+            background-color: #1976d2;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            transition: 0.3s;
+        }
+
+        .main-header .btn:hover {
+            background-color: #1565c0;
         }
 
         .content-box {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: #fff;
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .content-box:hover {
+            transform: translateY(-2px);
         }
 
         .content-box h3 {
-            color: #fff;
+            color: #0d47a1;
             margin-bottom: 1rem;
         }
 
         .content-box p {
-            color: #e2e2e2;
+            color: #475569;
+        }
+
+        ul li {
+            margin-bottom: 8px;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -124,41 +162,21 @@
             .main-content {
                 margin-left: 0;
                 margin-top: 20px;
+                padding: 1.5rem;
             }
         }
     </style>
+
 </head>
 <body>
-
-<div class="sidebar">
-    <div class="brand">
-        <i class="bi bi-gear-wide-connected me-2"></i> Admin Center
-    </div>
-    <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-link active">
-        <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/role_list" class="nav-link">
-        <i class="bi bi-person-gear"></i> Role Management
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/account_list" class="nav-link">
-        <i class="bi bi-people-fill"></i> Account Management
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/settings" class="nav-link">
-        <i class="bi bi-sliders"></i> System Settings
-    </a>
-    <div class="logout">
-        <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </a>
-    </div>
-</div>
+<c:set var="activePage" value="warehouses" scope="request" />
+<jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/admin_sidebar.jsp"/>
 
 <div class="main-content">
     <div class="main-header">
         <h1>Welcome, Admin</h1>
-        <a href="${pageContext.request.contextPath}/admin/account_list" class="btn btn-light text-primary">
-            <i class="bi bi-person-circle"></i> My Account
-        </a>
+
     </div>
 
     <div class="content-box">

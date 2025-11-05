@@ -151,11 +151,15 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<%--<jsp:include page="../components/techem_sidebar.jsp"/>--%>
 
 <div class="profile-container">
     <div class="profile-content">
         <div class="profile-header">
-            <div class="profile-avatar"><i class="bi bi-person-circle"></i>
+            <div class="profile-avatar">
+                <img src="${pageContext.request.contextPath}/${accountImage}"
+                     alt="Profile Image"
+                     style="width:120px; height:120px; border-radius:50%; object-fit:cover;">
             </div>
             <h1 class="profile-username" id="username-display">${account.username}</h1>
         </div>
