@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +58,10 @@ public class FeedbackService {
                     int reqId = Integer.parseInt(requestIdStr.trim());
                     List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
                     for (Feedback fb : allFeedbacks) {
+                        // allow creating a new feedback if the previous one was soft-deleted
+                        if (fb.getFeedbackStatus() != null && fb.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                            continue;
+                        }
                         if (fb.getRequestID() != null && fb.getRequestID().getForeignKeyValue() != null
                                 && fb.getRequestID().getForeignKeyValue().equals(reqId)
                                 && fb.getCustomerID() != null && fb.getCustomerID().equals(username)) {
@@ -187,6 +193,10 @@ public class FeedbackService {
         String username = req.getParameter("username");
         String ratingStr = req.getParameter("rating");
         Integer rating = null;
+        String fromDateStr = req.getParameter("fromDate");
+        String toDateStr = req.getParameter("toDate");
+        String q = req.getParameter("q");
+        String status = req.getParameter("status");
 
         try {
             if (ratingStr != null && !ratingStr.trim().isEmpty()) {
@@ -195,18 +205,30 @@ public class FeedbackService {
         } catch (NumberFormatException e) {
         }
 
+        Account account = (Account) req.getSession().getAttribute("account");
+        Integer roleId = account != null ? account.getRole().getRoleID() : null;
+        if (roleId != null && roleId == 2) {
+            username = account.getUsername();
+        }
+
         try (Connection connection = DBcontext.getConnection()) {
             EntityManager entityManager = new EntityManager(connection);
 
-            Page<Feedback> feedbackPage = getFeedbacksWithFilters(entityManager, page, recordsPerPage, username,
-                    rating);
+        Page<Feedback> feedbackPage = getFeedbacksWithFilters(entityManager, page, recordsPerPage, username,
+            rating, status, fromDateStr, toDateStr, q, roleId);
 
             req.setAttribute("feedbacks", feedbackPage.getContent());
             req.setAttribute("currentPage", page);
             req.setAttribute("totalPages", feedbackPage.getTotalPages());
             req.setAttribute("recordsPerPage", recordsPerPage);
+            req.setAttribute("totalRecords", feedbackPage.getTotalElements());
             req.setAttribute("username", username);
             req.setAttribute("rating", ratingStr);
+            req.setAttribute("fromDate", fromDateStr);
+            req.setAttribute("toDate", toDateStr);
+            req.setAttribute("q", q);
+            req.setAttribute("status", status);
+            req.setAttribute("currentUsername", username);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -221,7 +243,7 @@ public class FeedbackService {
         Account account = (Account) req.getSession().getAttribute("account");
         String requestIdStr = (String) req.getSession().getAttribute("requestId");
         if (requestIdStr == null) {
-            requestIdStr = req.getParameter("requestId");
+            requestIdStr =(String) req.getParameter("requestId");
         }
         String username = account != null ? account.getUsername() : null;
         Integer roleId = account != null ? account.getRole().getRoleID() : null;
@@ -234,9 +256,14 @@ public class FeedbackService {
                 List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
                 Feedback feedback = null;
                 for (Feedback fb : allFeedbacks) {
+                    // Skip deleted feedbacks for non-supporters; supporters (roleId == 3) may view deleted entries
+                    if (fb.getFeedbackStatus() != null && fb.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                        if (roleId == null || roleId != 3) {
+                            continue;
+                        }
+                    }
                     if (fb.getRequestID() != null && fb.getRequestID().getForeignKeyValue() != null
-                            && fb.getRequestID().getForeignKeyValue().equals(reqId)
-                            && fb.getCustomerID() != null && fb.getCustomerID().equals(username)) {
+                            && fb.getRequestID().getForeignKeyValue().equals(reqId)) {
                         feedback = fb;
                         break;
                     }
@@ -247,6 +274,7 @@ public class FeedbackService {
                 }
                 req.setAttribute("feedback", feedback);
                 req.setAttribute("currentRoleId", roleId);
+                System.out.println(roleId);
                 if (roleId != null && roleId == 2) {
                     req.getRequestDispatcher("/customer/view_feedback.jsp").forward(req, resp);
                 } else if (roleId != null && roleId == 3) {
@@ -274,6 +302,10 @@ public class FeedbackService {
             List<Feedback> userFeedbacks = new ArrayList<>();
 
             for (Feedback feedback : allFeedbacks) {
+                // skip deleted feedbacks
+                if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                    continue;
+                }
                 if (username != null && feedback.getCustomerID() != null && feedback.getCustomerID().equals(username)) {
                     userFeedbacks.add(feedback);
                 }
@@ -311,7 +343,7 @@ public class FeedbackService {
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
             String username, Integer rating) throws SQLException {
-        return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, null);
+        return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, null, null, null, null, null);
     }
 
     /**
@@ -319,21 +351,54 @@ public class FeedbackService {
      */
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
             String username, Integer rating, String status) throws SQLException {
+        // delegate to extended filter with no date-range, no free-text query and no role
+        return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, status, null, null, null, null);
+    }
+
+    /**
+     * Extended filter supporting username (partial), rating, status, date range (from/to in yyyy-MM-dd), and free-text q.
+     */
+    public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
+            String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();
 
             String usernameNorm = (username != null) ? username.trim().toLowerCase() : null;
             String statusNorm = (status != null) ? status.trim().toLowerCase() : null;
+            String qNorm = (q != null) ? q.trim().toLowerCase() : null;
+
+            LocalDateTime fromDate = null;
+            LocalDateTime toDate = null;
+            try {
+                if (fromDateStr != null && !fromDateStr.trim().isEmpty()) {
+                    LocalDate ld = LocalDate.parse(fromDateStr.trim());
+                    fromDate = ld.atStartOfDay();
+                }
+                if (toDateStr != null && !toDateStr.trim().isEmpty()) {
+                    LocalDate ld = LocalDate.parse(toDateStr.trim());
+                    toDate = ld.atTime(LocalTime.MAX);
+                }
+            } catch (Exception ex) {
+                // ignore parse errors and treat as no date filter
+                fromDate = null;
+                toDate = null;
+            }
 
             for (Feedback feedback : allFeedbacks) {
+                // exclude soft-deleted feedbacks from filter results unless the viewer is a supporter (roleId == 3)
+                if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                    if (roleId == null || roleId != 3) {
+                        continue;
+                    }
+                }
+
                 boolean matches = true;
 
                 // username: partial, case-insensitive
                 if (usernameNorm != null && !usernameNorm.isEmpty()) {
                     String cust = feedback.getCustomerID();
                     boolean customerMatch = (cust != null && cust.toLowerCase().contains(usernameNorm));
-                    System.out.println("[DEBUG] feedbackId=" + feedback.getFeedbackID() + ", customerID='" + cust + "', customerMatch=" + customerMatch);
                     if (!customerMatch) {
                         matches = false;
                     }
@@ -349,6 +414,26 @@ public class FeedbackService {
                 // status: compare enum name case-insensitive
                 if (statusNorm != null && !statusNorm.isEmpty()) {
                     if (feedback.getFeedbackStatus() == null || !feedback.getFeedbackStatus().name().toLowerCase().equals(statusNorm)) {
+                        matches = false;
+                    }
+                }
+
+                // date range
+                if ((fromDate != null || toDate != null) && feedback.getFeedbackDate() != null) {
+                    LocalDateTime fd = feedback.getFeedbackDate();
+                    if (fromDate != null && fd.isBefore(fromDate)) {
+                        matches = false;
+                    }
+                    if (toDate != null && fd.isAfter(toDate)) {
+                        matches = false;
+                    }
+                }
+
+                // free-text q searched in content and description
+                if (qNorm != null && !qNorm.isEmpty()) {
+                    String content = feedback.getContent() != null ? feedback.getContent().toLowerCase() : "";
+                    String desc = feedback.getDescription() != null ? feedback.getDescription().toLowerCase() : "";
+                    if (!content.contains(qNorm) && !desc.contains(qNorm)) {
                         matches = false;
                     }
                 }

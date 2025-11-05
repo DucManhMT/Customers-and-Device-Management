@@ -277,14 +277,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/task/select-technician.js"></script>
 <script>
-    // Clear filter button: reset filter inputs and submit the filter form
     document.addEventListener('DOMContentLoaded', function () {
         const clearBtn = document.getElementById('clearFilterBtn');
         const form = document.getElementById('filterForm');
         if (!clearBtn || !form) return;
 
         clearBtn.addEventListener('click', function () {
-            // Reset visible filter fields
             const searchName = document.getElementById('searchName');
             const filterLocation = document.getElementById('filterLocation');
             const filterAge = document.getElementById('filterAge');
@@ -293,11 +291,9 @@
             if (filterLocation) filterLocation.selectedIndex = 0;
             if (filterAge) filterAge.selectedIndex = 0;
 
-            // Reset paging if present
             const pageInput = form.querySelector('input[name="page"]');
             if (pageInput) pageInput.value = '1';
 
-            // Submit the form to apply cleared filters
             form.submit();
         });
     });

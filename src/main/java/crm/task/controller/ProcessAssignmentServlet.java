@@ -4,7 +4,6 @@ import crm.common.URLConstants;
 import crm.common.model.AccountRequest;
 import crm.common.model.Account;
 import crm.common.model.Request;
-import crm.common.model.enums.RequestStatus;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.task.service.SelectTechnicianService;
 import crm.core.config.DBcontext;
@@ -63,6 +62,8 @@ public class ProcessAssignmentServlet extends HttpServlet {
                 int assignedCount = 0;
                 StringBuilder errorMessages = new StringBuilder();
 
+                List<AccountRequest> allAccountRequests = entityManager.findAll(AccountRequest.class);
+
                 for (Integer taskId : taskIds) {
                     try {
                         Request taskRequest = entityManager.find(Request.class, taskId);
@@ -71,16 +72,26 @@ public class ProcessAssignmentServlet extends HttpServlet {
                             continue;
                         }
 
+                        boolean alreadyAssigned = allAccountRequests.stream()
+                                .anyMatch(ar -> ar.getRequest() != null 
+                                        && ar.getRequest().getRequestID() != null
+                                        && ar.getRequest().getRequestID().equals(taskId)
+                                        && ar.getAccount() != null 
+                                        && ar.getAccount().getUsername() != null
+                                        && ar.getAccount().getUsername().equals(selectedTechnician));
+
+                        if (alreadyAssigned) {
+                            errorMessages.append("Task #").append(taskId)
+                                    .append(" is already assigned to this technician. ");
+                            continue;
+                        }
+
                         AccountRequest accountRequest = new AccountRequest();
                         Integer nextId = selectTechnicianService.getNextAccountRequestId(entityManager);
                         accountRequest.setAccountRequestID(nextId);
                         accountRequest.setAccount(techAccount);
                         accountRequest.setRequest(taskRequest);
-
                         entityManager.persist(accountRequest, AccountRequest.class);
-
-                        taskRequest.setRequestStatus(RequestStatus.Processing);
-                        entityManager.merge(taskRequest, Request.class);
 
                         assignedCount++;
 
@@ -93,7 +104,7 @@ public class ProcessAssignmentServlet extends HttpServlet {
                     connection.commit();
 
                     request.getSession().setAttribute("successMessage",
-                            assignedCount + " task(s) successfully assigned to technician and moved to Processing status.");
+                            assignedCount + " task(s) successfully assigned to technician. Waiting for technician to accept.");
 
                     if (errorMessages.length() > 0) {
                         request.getSession().setAttribute("warningMessage",

@@ -46,11 +46,14 @@
     ('user8', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 2),
     ('user9', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 2),
     ('user10', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 2),
-    ('user11', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 2);
+    ('user11', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 2),
+    ('supporter1', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3),
+    ('supporter2', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3),
+    ('supporter3', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3);
 
     -- Staff
     INSERT INTO Staff (StaffID, StaffName, Phone, Address, Email, Image, DateOfBirth, Username) VALUES
-    (1, 'Staff Member 1', '09001001', '1 Nguyen Trai, District 2', 'staff1@example.com', '/images/staff1.jpg', '1990-02-02', 'staff1'),
+     (1, 'Staff Member 1', '09001001', '1 Nguyen Trai, District 2', 'staff1@example.com', '/images/staff1.jpg', '1990-02-02', 'staff1'),
     (2, 'Staff Member 2', '09001002', '2 Nguyen Trai, District 3', 'staff2@example.com', '/images/staff2.jpg', '1990-03-03', 'staff2'),
     (3, 'Staff Member 3', '09001003', '3 Nguyen Trai, District 4', 'staff3@example.com', '/images/staff3.jpg', '1990-04-04', 'staff3'),
     (4, 'Staff Member 4', '09001004', '4 Nguyen Trai, District 5', 'staff4@example.com', '/images/staff4.jpg', '1990-05-05', 'staff4'),
@@ -59,7 +62,17 @@
     (7, 'Staff Member 7', '09001007', '7 Nguyen Trai, District 8', 'staff7@example.com', '/images/staff7.jpg', '1990-08-08', 'staff7'),
     (8, 'Staff Member 8', '09001008', '8 Nguyen Trai, District 9', 'staff8@example.com', '/images/staff8.jpg', '1990-09-09', 'staff8'),
     (9, 'Staff Member 9', '09001009', '9 Nguyen Trai, District 10', 'staff9@example.com', '/images/staff9.jpg', '1990-10-10', 'staff9'),
-    (10, 'Staff Member 10', '09001010', '10 Nguyen Trai, District 1', 'staff10@example.com', '/images/staff10.jpg', '1990-11-11', 'staff10');
+    (10, 'Staff Member 10', '09001010', '10 Nguyen Trai, District 1', 'staff10@example.com', '/images/staff10.jpg', '1990-11-11', 'staff10'),
+    (11, 'Warehouse Manager 1', '09002011', '11 Nguyen Trai, District X', 'wmgr1@example.com', '/images/wmgr1.jpg', '1985-01-01', 'wmgr1'),
+	(12, 'Warehouse Manager 2', '09002012', '12 Nguyen Trai, District X', 'wmgr2@example.com', '/images/wmgr2.jpg', '1985-02-02', 'wmgr2'),
+	(13, 'Warehouse Manager 3', '09002013', '13 Nguyen Trai, District X', 'wmgr3@example.com', '/images/wmgr3.jpg', '1985-03-03', 'wmgr3'),
+	(14, 'Warehouse Manager 4', '09002014', '14 Nguyen Trai, District X', 'wmgr4@example.com', '/images/wmgr4.jpg', '1985-04-04', 'wmgr4'),
+	(15, 'Warehouse Manager 5', '09002015', '15 Nguyen Trai, District X', 'wmgr5@example.com', '/images/wmgr5.jpg', '1985-05-05', 'wmgr5'),
+	(16, 'Warehouse Manager 6', '09002016', '16 Nguyen Trai, District X', 'wmgr6@example.com', '/images/wmgr6.jpg', '1985-06-06', 'wmgr6'),
+	(17, 'Tech Lead',            '09003001', '1 Tech Park, District Y',  'techlead@example.com', '/images/techLead.jpg', '1980-07-07', 'techLead'),
+	(18, 'Supporter 1', '09004001', '1 Support St, District Z', 'supporter1@example.com', '/images/supporter1.jpg', '1992-01-01', 'supporter1'),
+	(19, 'Supporter 2', '09004002', '2 Support St, District Z', 'supporter2@example.com', '/images/supporter2.jpg', '1992-02-02', 'supporter2'),
+	(20, 'Supporter 3', '09004003', '3 Support St, District Z', 'supporter3@example.com', '/images/supporter3.jpg', '1992-03-03', 'supporter3');
 
     -- Customers
     INSERT INTO Customer (CustomerID, CustomerName, Address, Phone, Email, Username) VALUES

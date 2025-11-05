@@ -14,15 +14,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<p>THIS IS TECHLEAD</p>
-<a href="${pageContext.request.contextPath}/task/techlead/assignTask.jsp">
-    Assign Task
-</a>
-<a href="${pageContext.request.contextPath}/tech/employees">
-    View Technician List
-</a>
-<a href="${pageContext.request.contextPath}/task/viewAprovedTask">
-    View Aproved Tasks
-</a>
+<jsp:include page="../components/techlead_sidebar.jsp"/>
+
 </body>
 </html>

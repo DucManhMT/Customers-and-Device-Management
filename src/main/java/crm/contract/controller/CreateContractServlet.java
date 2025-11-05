@@ -62,13 +62,14 @@ public class CreateContractServlet extends HttpServlet {
 
         Contract contract = new Contract();
         String customerUsername = request.getParameter("userName");
-        if(!Validator.isValidName(customerUsername)){
+        System.out.println(customerUsername);
+        if(!Validator.isValidUsername(customerUsername)){
             request.setAttribute("error", "Customer username contains invalid characters.");
             request.setAttribute("userName", customerUsername);
             request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
             return;
         }
-//        System.out.println("customerUsername: " + customerUsername);
+        System.out.println("customerUsername: " + customerUsername);
         Customer customer = null;
         if (customerUsername != null && !customerUsername.isEmpty()) {
             Map<String, Object> cond = new HashMap<>();
