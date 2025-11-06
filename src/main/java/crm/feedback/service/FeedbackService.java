@@ -157,7 +157,6 @@ public class FeedbackService {
                 feedback.setRating(rating);
                 feedback.setDescription(description != null ? description.trim() : null);
                 feedback.setFeedbackDate(now);
-                feedback.setResponseDate(now);
                 feedback.setCustomerID(username);
                 feedback.setRequestID(new LazyReference<>(Request.class, requestId));
                 feedback.setFeedbackStatus(FeedbackStatus.Pending);
@@ -215,8 +214,8 @@ public class FeedbackService {
         try (Connection connection = DBcontext.getConnection()) {
             EntityManager entityManager = new EntityManager(connection);
 
-            Page<Feedback> feedbackPage = getFeedbacksWithFilters(entityManager, page, recordsPerPage, username,
-                    rating, status, fromDateStr, toDateStr, q, roleId);
+        Page<Feedback> feedbackPage = getFeedbacksWithFilters(entityManager, page, recordsPerPage, username,
+            rating, status, fromDateStr, toDateStr, q, roleId);
 
             req.setAttribute("feedbacks", feedbackPage.getContent());
             req.setAttribute("currentPage", page);
@@ -244,7 +243,7 @@ public class FeedbackService {
         Account account = (Account) req.getSession().getAttribute("account");
         String requestIdStr = (String) req.getSession().getAttribute("requestId");
         if (requestIdStr == null) {
-            requestIdStr = (String) req.getParameter("requestId");
+            requestIdStr =(String) req.getParameter("requestId");
         }
         String username = account != null ? account.getUsername() : null;
         Integer roleId = account != null ? account.getRole().getRoleID() : null;
@@ -257,11 +256,8 @@ public class FeedbackService {
                 List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
                 Feedback feedback = null;
                 for (Feedback fb : allFeedbacks) {
-                    // Skip deleted feedbacks for non-supporters; supporters (roleId == 3) may view deleted entries
                     if (fb.getFeedbackStatus() != null && fb.getFeedbackStatus() == FeedbackStatus.Deleted) {
-                        if (roleId == null || roleId != 3) {
-                            continue;
-                        }
+                        continue;
                     }
                     if (fb.getRequestID() != null && fb.getRequestID().getForeignKeyValue() != null
                             && fb.getRequestID().getForeignKeyValue().equals(reqId)) {
@@ -297,7 +293,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbackByUsernamePaginated(EntityManager entityManager, String username, int page,
-                                                         int recordsPerPage) throws SQLException {
+            int recordsPerPage) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> userFeedbacks = new ArrayList<>();
@@ -343,7 +339,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-                                                  String username, Integer rating) throws SQLException {
+            String username, Integer rating) throws SQLException {
         return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, null, null, null, null, null);
     }
 
@@ -351,7 +347,7 @@ public class FeedbackService {
      * Extended filter that supports username (partial, case-insensitive), rating and status.
      */
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-                                                  String username, Integer rating, String status) throws SQLException {
+            String username, Integer rating, String status) throws SQLException {
         // delegate to extended filter with no date-range, no free-text query and no role
         return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, status, null, null, null, null);
     }
@@ -360,7 +356,7 @@ public class FeedbackService {
      * Extended filter supporting username (partial), rating, status, date range (from/to in yyyy-MM-dd), and free-text q.
      */
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-                                                  String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
+            String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();
@@ -387,11 +383,9 @@ public class FeedbackService {
             }
 
             for (Feedback feedback : allFeedbacks) {
-                // exclude soft-deleted feedbacks from filter results unless the viewer is a supporter (roleId == 3)
+                // Skip deleted feedbacks - nobody can view or respond to deleted entries
                 if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
-                    if (roleId == null || roleId != 3) {
-                        continue;
-                    }
+                    continue;
                 }
 
                 boolean matches = true;

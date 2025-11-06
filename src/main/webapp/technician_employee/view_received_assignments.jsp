@@ -266,7 +266,7 @@
         </div>
 
         <c:choose>
-            <c:when test="${empty pendingRequests}">
+            <c:when test="${empty pendingTasks}">
                 <div class="empty-state">
                     <i class="fas fa-inbox"></i>
                     <h4>No Pending Assignments</h4>
@@ -284,7 +284,7 @@
                             <i class="fas fa-clipboard-list"></i>
                             <div>
                                 <div class="stat-label">Total Assignments</div>
-                                <div class="stat-value">${pendingRequests.size()}</div>
+                                <div class="stat-value">${pendingTasks.size()}</div>
                             </div>
                         </div>
                     </div>
@@ -304,50 +304,50 @@
                     </div>
                 </div>
 
-                <c:forEach var="req" items="${pendingRequests}">
-                    <c:if test="${req.requestStatus == 'Approved'}">
-                        <div class="assignment-card">
-                            <div class="assignment-header">
-                                <div>
-                                    <h5 class="assignment-title">
-                                        <i class="fas fa-tasks"></i>
-                                        ${req.requestDescription != null ? req.requestDescription : 'Service Request'}
-                                    </h5>
-                                    <div class="assignment-meta">
-                                        <i class="fas fa-hashtag"></i>
-                                        Request ID: <strong>#${req.requestID}</strong>
+                <c:forEach var="task" items="${pendingTasks}">
+                    <div class="assignment-card">
+                        <div class="assignment-header">
+                            <div>
+                                <h5 class="assignment-title">
+                                    <i class="fas fa-tasks"></i>
+                                    ${not empty task.description ? task.description : (task.request.requestDescription != null ? task.request.requestDescription : 'Service Request')}
+                                </h5>
+                                <div class="assignment-meta">
+                                    <i class="fas fa-hashtag"></i>
+                                    Task ID: <strong>#${task.taskID}</strong> | Request ID: <strong>#${task.request.requestID}</strong>
+                                </div>
+                                <c:if test="${not empty task.deadline}">
+                                    <div class="assignment-meta" style="margin-top: 4px;">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Deadline: <strong style="color: #f59e0b;">${task.deadline}</strong>
                                     </div>
-                                </div>
-                                <div>
-                                    <span class="status-badge">
-                                        <i class="fas fa-check-circle"></i>
-                                        ${req.requestStatus}
-                                    </span>
-                                </div>
+                                </c:if>
                             </div>
-                            
-                            <c:if test="${not empty req.note}">
-                                <div class="assignment-note">
-                                    <i class="fas fa-sticky-note"></i> ${req.note}
-                                </div>
-                            </c:if>
-                            
-                            <div class="assignment-actions">
-                                <a class="btn btn-primary" href="${pageContext.request.contextPath}/task/assignmentDecision?requestId=${req.requestID}&amp;action=accept">
-                                    <i class="fas fa-check-circle"></i>
-                                    Review & Accept
-                                </a>
-                                <a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/task/assignmentDecision?requestId=${req.requestID}&amp;action=decline">
-                                    <i class="fas fa-times-circle"></i>
-                                    Review & Decline
-                                </a>
-                                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/task/viewAssignedTasks">
-                                    <i class="fas fa-arrow-left"></i>
-                                    My Tasks
-                                </a>
+                            <div>
+                                <span class="status-badge">
+                                    <i class="fas fa-clock"></i>
+                                    ${task.status}
+                                </span>
                             </div>
                         </div>
-                    </c:if>
+                        
+                        <c:if test="${not empty task.request.note}">
+                            <div class="assignment-note">
+                                <i class="fas fa-sticky-note"></i> <strong>Request Note:</strong> ${task.request.note}
+                            </div>
+                        </c:if>
+                        
+                        <div class="assignment-actions">
+                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/task/assignmentDecision?taskId=${task.taskID}&amp;action=accept">
+                                <i class="fas fa-check-circle"></i>
+                                Review
+                            </a>
+                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/task/viewAssignedTasks">
+                                <i class="fas fa-arrow-left"></i>
+                                My Tasks
+                            </a>
+                        </div>
+                    </div>
                 </c:forEach>
             </c:otherwise>
         </c:choose>

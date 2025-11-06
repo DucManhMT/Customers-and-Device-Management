@@ -154,7 +154,7 @@ CREATE TABLE Feedback (
                           Description NVARCHAR(255),
                           Response NVARCHAR(255),
                           FeedbackDate DATETIME NOT NULL,
-                          ResponseDate DATETIME NOT NULL,
+                          ResponseDate DATETIME,
                           CustomerID NVARCHAR(100),
                           FOREIGN KEY (CustomerID) REFERENCES Account(Username)
 );

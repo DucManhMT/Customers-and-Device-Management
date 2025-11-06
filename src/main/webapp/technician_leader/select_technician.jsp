@@ -1,9 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="crm.common.model.Staff" %>
-<%@ page import="crm.common.model.Request" %>
-<%@ page import="crm.common.model.Customer" %>
-<%@ page import="crm.common.model.Contract" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,34 +88,24 @@
                         <div class="col-md-4">
                             <h6 class="text-muted">Selected Tasks (${selectedRequests.size()} tasks)</h6>
                             <div class="selected-tasks-list" style="max-height: 300px; overflow-y: auto;">
-                                <%
-                                    List<Request> selectedRequests = (List<Request>) request.getAttribute("selectedRequests");
-                                    if (selectedRequests != null) {
-                                        for (Request req : selectedRequests) {
-                                            Customer customer = req.getContract() != null ? req.getContract().getCustomer() : null;
-                                            String customerName = customer != null ? customer.getCustomerName() : "N/A";
-                                            String customerPhone = customer != null ? customer.getPhone() : "N/A";
-                                %>
-                                <div class="card mb-2">
-                                    <div class="card-body py-2">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <strong>Request #<%= req.getRequestID() %>
-                                                </strong><br>
-                                                <small class="text-muted">
-                                                    Customer: <%= customerName %> | Phone: <%= customerPhone %>
-                                                </small>
-                                            </div>
-                                            <div class="col-md-4 text-end">
-                                                <span class="badge bg-success">Approved</span>
+                                <c:forEach var="req" items="${selectedRequests}">
+                                    <div class="card mb-2">
+                                        <div class="card-body py-2">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <strong>Request #${req.requestID}</strong><br>
+                                                    <small class="text-muted">
+                                                        Customer: ${req.contract != null ? req.contract.customer.customerName : 'N/A'} | 
+                                                        Phone: ${req.contract != null ? req.contract.customer.phone : 'N/A'}
+                                                    </small>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <span class="badge bg-success">Approved</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <%
-                                        }
-                                    }
-                                %>
+                                </c:forEach>
                             </div>
                         </div>
 
@@ -140,91 +125,79 @@
                             </div>
 
                             <form action="${pageContext.request.contextPath}/task/processAssignment" method="post">
-                                <%
-                                    String[] selectedTaskIds = (String[]) request.getAttribute("selectedTaskIds");
-                                    if (selectedTaskIds != null) {
-                                        for (String taskId : selectedTaskIds) {
-                                %>
-                                <input type="hidden" name="selectedTasks" value="<%= taskId %>">
-                                <%
-                                        }
-                                    }
-                                %>
+                                <c:forEach var="taskId" items="${selectedTaskIds}">
+                                    <input type="hidden" name="selectedTasks" value="${taskId}">
+                                </c:forEach>
 
                                 <div class="technician-list" style="max-height: 400px; overflow-y: auto;">
-                                    <%
-                                        List<Staff> technicians = (List<Staff>) request.getAttribute("technicians");
-                                        if (technicians != null && !technicians.isEmpty()) {
-                                    %>
-                                    <table class="table table-bordered table-hover align-middle">
-                                        <thead class="table-light">
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Email</th>
-                                            <th>Address</th>
-                                            <th>Date of Birth</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <% for (Staff tech : technicians) { %>
-                                        <tr>
-                                            <td class="text-center">
-                                                <input class="form-check-input" type="radio" name="selectedTechnician"
-                                                       value="<%= tech.getAccount().getUsername() %>"
-                                                       id="tech_<%= tech.getStaffID() %>">
-                                            </td>
-                                            <td><%= tech.getStaffID() %>
-                                            </td>
-                                            <td><%= tech.getStaffName() %>
-                                            </td>
-                                            <td><a href="tel:<%= tech.getPhone() %>"><%= tech.getPhone() %>
-                                            </a></td>
-                                            <td><a href="mailto:<%= tech.getEmail() %>"><%= tech.getEmail() %>
-                                            </a></td>
-                                            <td><%= tech.getAddress() != null ? tech.getAddress() : "" %>
-                                            </td>
-                                            <td><%= tech.getDateOfBirth() != null ? tech.getDateOfBirth() : "" %>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                                        onclick="viewTech('<%= tech.getStaffID() %>')">
-                                                    View
-                                                </button>
-                                            </td>
-
-                                        </tr>
-                                        <% } %>
-                                        </tbody>
-                                    </table>
-                                    <%
-                                    } else {
-                                    %>
-                                    <div class="alert alert-warning text-center py-4">
-                                        <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
-                                        <h5 class="alert-heading">No Technicians Available</h5>
-                                        <p class="mb-0">There are currently no technicians available for task
-                                            assignment.</p>
-                                    </div>
-                                    <%
-                                        }
-                                    %>
+                                    <c:choose>
+                                        <c:when test="${not empty technicians}">
+                                            <table class="table table-bordered table-hover align-middle">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th width="50">
+                                                        <input class="form-check-input" type="checkbox" id="selectAllTechs">
+                                                    </th>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Email</th>
+                                                    <th>Address</th>
+                                                    <th>Date of Birth</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var="tech" items="${technicians}">
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <input class="form-check-input tech-checkbox" type="checkbox" 
+                                                                   name="selectedTechnicians" 
+                                                                   value="${tech.account.username}"
+                                                                   id="tech_${tech.staffID}">
+                                                        </td>
+                                                        <td>${tech.staffID}</td>
+                                                        <td>${tech.staffName}</td>
+                                                        <td><a href="tel:${tech.phone}">${tech.phone}</a></td>
+                                                        <td><a href="mailto:${tech.email}">${tech.email}</a></td>
+                                                        <td>${tech.address != null ? tech.address : ''}</td>
+                                                        <td>${tech.dateOfBirth != null ? tech.dateOfBirth : ''}</td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                                    onclick="viewTech('${tech.staffID}')">
+                                                                View
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="alert alert-warning text-center py-4">
+                                                <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
+                                                <h5 class="alert-heading">No Technicians Available</h5>
+                                                <p class="mb-0">There are currently no technicians available for task assignment.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
 
-                                <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-                                        <i class="bi bi-arrow-left"></i> Back
-                                    </button>
-                                    <button type="submit" class="btn btn-primary" id="assignBtn">
-                                        <i class="bi bi-check-circle"></i> Assign Tasks
-                                    </button>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div id="selectedCount" class="text-muted">
+                                        <i class="bi bi-check-square"></i> Selected: <strong>0</strong> technician(s)
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                                            <i class="bi bi-arrow-left"></i> Back
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" id="assignBtn">
+                                            <i class="bi bi-check-circle"></i> Assign Tasks
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
 
-                            <!-- Pagination -->
                             <div class="d-flex justify-content-between align-items-center mt-4">
                                 <div class="text-muted">
                                     Showing <span id="showingStart">${((currentPage - 1) * recordsPerPage) + 1}</span>
@@ -298,48 +271,57 @@
         });
     });
 
-            document.getElementById('assignBtn').addEventListener('click', function(e) {
-            const selectedTechnician = document.querySelector('input[name="selectedTechnician"]:checked');
-            if (!selectedTechnician) {
-                e.preventDefault();
-                alert('Please select a technician to assign the tasks.');
-                return false;
-            }
+    // Validate form - require at least one technician selected
+    document.getElementById('assignBtn').addEventListener('click', function(e) {
+        const selectedTechs = document.querySelectorAll('input[name="selectedTechnicians"]:checked');
+        if (selectedTechs.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one technician to assign the tasks.');
+            return false;
+        }
+    });
+    
+    // Select All / Deselect All functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAllCheckbox = document.getElementById('selectAllTechs');
+        const techCheckboxes = document.querySelectorAll('.tech-checkbox');
+        const selectedCountSpan = document.querySelector('#selectedCount strong');
+        
+        // Update selected count
+        function updateSelectedCount() {
+            const checkedCount = document.querySelectorAll('.tech-checkbox:checked').length;
+            selectedCountSpan.textContent = checkedCount;
+        }
+        
+        // Select All functionality
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                techCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateSelectedCount();
+            });
+        }
+        
+        // Individual checkbox change
+        techCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Update Select All checkbox state
+                const allChecked = Array.from(techCheckboxes).every(cb => cb.checked);
+                const someChecked = Array.from(techCheckboxes).some(cb => cb.checked);
+                
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = someChecked && !allChecked;
+                }
+                
+                updateSelectedCount();
+            });
         });
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const technicianCards = document.querySelectorAll('.technician-card');
-            const radioButtons = document.querySelectorAll('input[name="selectedTechnician"]');
-            
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    technicianCards.forEach(card => {
-                        card.classList.remove('selected');
-                    });
-                    
-                    if (this.checked) {
-                        const card = this.closest('.form-check').querySelector('.technician-card');
-                        card.classList.add('selected');
-                        
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                });
-            });
-            
-            technicianCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    if (!this.classList.contains('selected')) {
-                        this.style.transform = 'translateY(-2px)';
-                    }
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    if (!this.classList.contains('selected')) {
-                        this.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-        });
+        // Initial count
+        updateSelectedCount();
+    });
         
         function clearFilters() {
             document.getElementById('searchName').value = '';

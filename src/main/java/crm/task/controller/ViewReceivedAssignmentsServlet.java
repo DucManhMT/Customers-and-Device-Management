@@ -2,9 +2,10 @@ package crm.task.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.Account;
-import crm.common.model.AccountRequest;
+import crm.common.model.Staff;
+import crm.common.model.Task;
 import crm.common.model.Request;
-import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.TaskStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 
@@ -48,19 +49,67 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
         try (Connection conn = DBcontext.getConnection()) {
             EntityManager em = new EntityManager(conn);
 
-            List<AccountRequest> allAccountRequests = em.findAll(AccountRequest.class);
+            // Find current tech's Staff record to get StaffID
+            List<Staff> allStaff = em.findAll(Staff.class);
+            Staff currentStaff = allStaff.stream()
+                    .filter(s -> s.getAccount() != null && account.getUsername().equals(s.getAccount().getUsername()))
+                    .findFirst()
+                    .orElse(null);
 
-            // Filter assignments that belong to the current technician
-            List<AccountRequest> myAssignments = allAccountRequests.stream()
-                    .filter(ar -> ar.getAccount() != null && account.getUsername().equals(ar.getAccount().getUsername()))
-                    .collect(Collectors.toList());
+            if (currentStaff == null) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Staff profile not found");
+                return;
+            }
 
-            // Extract the Request objects for these assignments and show only those with Approved status
-            // Technicians can accept or decline approved tasks assigned to them
-            List<Request> pendingRequests = myAssignments.stream()
-                    .map(AccountRequest::getRequest)
-                    .filter(r -> r != null && RequestStatus.Approved.equals(r.getRequestStatus()))
+            // Get all Task records where assignTo = current tech and status = Pending
+            List<Task> allTasks = em.findAll(Task.class);
+            
+            // Debug logging
+            System.out.println("=== DEBUG ViewReceivedAssignments ===");
+            System.out.println("Total tasks in DB: " + allTasks.size());
+            System.out.println("Current Staff ID: " + currentStaff.getStaffID());
+            System.out.println("Current Staff Name: " + currentStaff.getStaffName());
+            
+            // Filter out null tasks first (caused by EntityMapper errors)
+            allTasks = allTasks.stream()
+                    .filter(task -> {
+                        if (task == null) {
+                            System.out.println("WARNING: Found null task - skipping");
+                            return false;
+                        }
+                        return true;
+                    })
                     .collect(Collectors.toList());
+            
+            System.out.println("Non-null tasks: " + allTasks.size());
+            
+            List<Task> pendingTasks = allTasks.stream()
+                    .filter(task -> {
+                        try {
+                            if (task.getAssignTo() == null) {
+                                System.out.println("Task #" + task.getTaskID() + " has null AssignTo");
+                                return false;
+                            }
+                            if (!currentStaff.getStaffID().equals(task.getAssignTo().getStaffID())) {
+                                System.out.println("Task #" + task.getTaskID() + " assigned to StaffID=" + task.getAssignTo().getStaffID() + ", not for me");
+                                return false;
+                            }
+                            if (!TaskStatus.Pending.equals(task.getStatus())) {
+                                System.out.println("Task #" + task.getTaskID() + " status=" + task.getStatus() + ", not Pending");
+                                return false;
+                            }
+                            System.out.println("✓ Task #" + task.getTaskID() + " is valid for current tech");
+                            return true;
+                        } catch (Exception e) {
+                            System.out.println("ERROR processing Task #" + (task != null ? task.getTaskID() : "unknown") + ": " + e.getMessage());
+                            e.printStackTrace();
+                            return false;
+                        }
+                    })
+                    .collect(Collectors.toList());
+            
+            System.out.println("Filtered pending tasks: " + pendingTasks.size());
+            System.out.println("=================================");
 
             // Apply optional filters from query params: customerFilter (name), phoneFilter, fromDate, toDate, sort by time
             String customerFilter = request.getParameter("customerFilter");
@@ -92,8 +141,13 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
                     || (fromDateFinal != null) || (toDateFinal != null);
 
             if (hasAnyFilter) {
-                pendingRequests = pendingRequests.stream().filter(r -> {
+                pendingTasks = pendingTasks.stream().filter(task -> {
+                    if (task == null) return false;  // Null check
+                    
                     boolean ok = true;
+                    Request r = task.getRequest();
+                    if (r == null) return false;
+                    
                     if (custLow != null && !custLow.isEmpty()) {
                         try {
                             if (r.getContract() != null && r.getContract().getCustomer() != null
@@ -131,21 +185,31 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
                 }).collect(Collectors.toList());
             }
 
-            // sort by startDate
+            // sort by startDate of Request
             if ("time_asc".equals(sort)) {
-                pendingRequests.sort((a, b) -> {
-                    if (a.getStartDate() == null && b.getStartDate() == null) return 0;
-                    if (a.getStartDate() == null) return -1;
-                    if (b.getStartDate() == null) return 1;
-                    return a.getStartDate().compareTo(b.getStartDate());
+                pendingTasks.sort((a, b) -> {
+                    if (a == null && b == null) return 0;
+                    if (a == null) return -1;
+                    if (b == null) return 1;
+                    LocalDateTime aDate = a.getRequest() != null ? a.getRequest().getStartDate() : null;
+                    LocalDateTime bDate = b.getRequest() != null ? b.getRequest().getStartDate() : null;
+                    if (aDate == null && bDate == null) return 0;
+                    if (aDate == null) return -1;
+                    if (bDate == null) return 1;
+                    return aDate.compareTo(bDate);
                 });
             } else {
                 // default newest first
-                pendingRequests.sort((a, b) -> {
-                    if (a.getStartDate() == null && b.getStartDate() == null) return 0;
-                    if (a.getStartDate() == null) return 1;
-                    if (b.getStartDate() == null) return -1;
-                    return b.getStartDate().compareTo(a.getStartDate());
+                pendingTasks.sort((a, b) -> {
+                    if (a == null && b == null) return 0;
+                    if (a == null) return 1;
+                    if (b == null) return -1;
+                    LocalDateTime aDate = a.getRequest() != null ? a.getRequest().getStartDate() : null;
+                    LocalDateTime bDate = b.getRequest() != null ? b.getRequest().getStartDate() : null;
+                    if (aDate == null && bDate == null) return 0;
+                    if (aDate == null) return 1;
+                    if (bDate == null) return -1;
+                    return bDate.compareTo(aDate);
                 });
             }
 
@@ -156,8 +220,7 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
             request.setAttribute("toDate", toDateStr);
             request.setAttribute("sort", sort);
 
-            request.setAttribute("assignments", myAssignments);
-            request.setAttribute("pendingRequests", pendingRequests);
+            request.setAttribute("pendingTasks", pendingTasks);
             request.getRequestDispatcher("/technician_employee/view_received_assignments.jsp").forward(request, response);
 
         } catch (Exception e) {
