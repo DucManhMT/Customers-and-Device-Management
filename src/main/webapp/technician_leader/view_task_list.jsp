@@ -24,7 +24,7 @@
         <h2 class="mt-1">Task List</h2>
 
         <!-- Bộ lọc & sắp xếp -->
-        <form method="get" action="${pageContext.request.contextPath}/tasks/list">
+        <form method="get" action="${pageContext.request.contextPath}/technician_leader/tasks/list">
             <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
                 <!-- Sort -->
                 <div class="d-flex align-items-center gap-2">
@@ -61,9 +61,10 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="nearDue"
                                name="nearDue" ${nearDue ? 'checked' : ''}>
-                        <label class="form-check-label" for="nearDue">Sắp quá hạn</label>
+                        <label class="form-check-label" for="nearDue">
+                            Near Due</label>
                     </div>
-                    <label class="form-label mb-0" for="nearDueDays">(Ngày):</label>
+                    <label class="form-label mb-0" for="nearDueDays">(Day):</label>
                     <input type="number" class="form-control" id="nearDueDays" name="nearDueDays" placeholder="days"
                            min="1" max="30"
                            value="${empty nearDueHours ? 1 : nearDueHours}" style="width: 90px;">
@@ -72,12 +73,13 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="overdue"
                                name="overdue" ${overdue ? 'checked' : ''}>
-                        <label class="form-check-label" for="overdue">Quá hạn</label>
+                        <label class="form-check-label" for="overdue">Overdue</label>
                     </div>
                 </div>
 
-                <div class="ms-auto d-flex align-items-center gap-2">
-                    <button type="submit" class="btn btn-primary">Lọc</button>
+                <div class="ms-auto d-flex align-items-center gap-2 flex-column">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="${pageContext.request.contextPath}/technician_leader/tasks/list" class="btn btn-danger">Rest</a>
                 </div>
             </div>
 
