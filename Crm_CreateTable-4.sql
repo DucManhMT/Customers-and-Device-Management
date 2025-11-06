@@ -230,8 +230,8 @@ INSERT INTO Role (RoleID, RoleName) VALUES
                                         (3, 'CustomerSupporter'),
                                         (4, 'WarehouseKeeper'),
                                         (5, 'TechnicianLeader'),
-                                        (6, 'TechnicianEmployee');
-
+                                        (6, 'TechnicianEmployee'),
+                                        (7, 'InventoryManager');
 
 CREATE TABLE Province (
                           ProvinceID INT PRIMARY KEY NOT NULL,

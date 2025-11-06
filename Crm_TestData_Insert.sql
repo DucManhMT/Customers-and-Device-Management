@@ -49,7 +49,8 @@
     ('user11', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 2),
     ('supporter1', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3),
     ('supporter2', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3),
-    ('supporter3', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3);
+    ('supporter3', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 3),
+    ('InventoryManager1','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Active', 7);
 
     -- Staff
     INSERT INTO Staff (StaffID, StaffName, Phone, Address, Email, Image, DateOfBirth, Username) VALUES

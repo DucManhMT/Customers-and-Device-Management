@@ -116,7 +116,6 @@
                         <c:if test="${not empty req.note}">
                             <p class="card-text small fst-italic"><strong>Note:</strong> ${req.note}</p>
                         </c:if>
-
                         <a href="${pageContext.request.contextPath}/warehouse_keeper/process_request?id=${req.warehouseRequestID}" class="btn btn-outline-primary w-100 mt-2">
                             <i class="fas fa-cogs me-2"></i>Process Request
                         </a>

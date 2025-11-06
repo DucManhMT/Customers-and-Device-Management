@@ -71,17 +71,15 @@
         }
 
         .cart-item .fw-bold {
-            /* Set the background and border */
-            display: inline-block; /* Makes the box wrap tightly around the text */
-            background-color: #e9ecef; /* Light gray background (Bootstrap's secondary light) */
-            color: #495057;           /* Dark gray text color */
-            padding: 3px 8px;         /* Padding inside the box */
-            border-radius: 8px;       /* Rounded corners */
-            font-size: 0.9rem;        /* Slightly smaller font */
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 600;
         }
 
-        /* Optional: Ensure the container doesn't have extra margin pushing the box */
         .cart-item .me-2.flex-grow-1 {
             margin-top: 0 !important;
             margin-bottom: 0 !important;
@@ -116,6 +114,30 @@
                         <h2 class="h5 mb-0">Products</h2>
                     </div>
                     <div class="card-body">
+                        <%-- Filter Form --%>
+                        <form action="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
+                              method="GET" class="row g-3 align-items-center mb-4">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="productName"
+                                       placeholder="Filter by product name..." value="${productName}">
+                            </div>
+                            <div class="col-md-4">
+                                <select name="productType" class="form-select">
+                                    <option value="">All Types</option>
+                                    <c:forEach var="type" items="${uniqueProductTypes}">
+                                        <option value="${type.typeID}" ${type.typeID == productType ? 'selected' : ''}>
+                                                ${type.typeName}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex">
+                                <button type="submit" class="btn btn-primary me-2 flex-grow-1">Filter</button>
+                                <a href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
+                                   class="btn btn-secondary flex-grow-1">Clear</a>
+                            </div>
+                        </form>
+                        <hr/>
                         <%-- Product Grid --%>
                         <div class="product-grid">
                             <c:forEach var="p" items="${products}">
@@ -126,6 +148,9 @@
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <span class="badge bg-secondary">${p.type.typeName}</span>
                                         </div>
+                                        <c:forEach var="spec" items="${p.productSpecifications}">
+                                            <p class="card-text small mb-2"><strong>${spec.specification.specificationName} :</strong> ${spec.specification.specificationValue}</p>
+                                        </c:forEach>
                                         <button class="btn btn-outline-primary btn-sm btn-add-to-cart"
                                                 data-product-id="${p.productID}"
                                                 data-product-name="${p.productName}">
