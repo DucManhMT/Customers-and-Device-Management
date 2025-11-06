@@ -15,77 +15,82 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-    .sidebar {
-        width: 260px;
-        background: rgba(255, 255, 255, 0.25); /* semi-transparent white background */
-        backdrop-filter: blur(12px); /* glass blur effect */
-        -webkit-backdrop-filter: blur(12px);
-        border-right: 1px solid rgba(0, 0, 0, 0.15); /* subtle border to separate */
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* soft shadow */
-        color: #1a1a1a; /* darker text */
-        position: fixed;
-        height: calc(100vh - 70px);
-        top: 70px;
-        left: 0;
-        z-index: 1020;
-        overflow-y: auto;
-        overflow-x: hidden;
-        transition: all 0.3s ease;
-    }
+  .sidebar {
+    width: 260px;
+    background: rgba(
+      255,
+      255,
+      255,
+      0.25
+    ); /* semi-transparent white background */
+    backdrop-filter: blur(12px); /* glass blur effect */
+    -webkit-backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(0, 0, 0, 0.15); /* subtle border to separate */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* soft shadow */
+    color: #1a1a1a; /* darker text */
+    position: fixed;
+    height: calc(100vh - 70px);
+    top: 70px;
+    left: 0;
+    z-index: 1020;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+  }
 
-    .sidebar-inner {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        padding-top: 20px;
-    }
+  .sidebar-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+  }
 
-    .sidebar-nav {
-        margin-top: 20px;
-    }
+  .sidebar-nav {
+    margin-top: 20px;
+  }
 
-    .sidebar-nav .nav-link {
-        color: #2b2b2b; /* darker neutral text */
-        padding: 10px;
-        margin-left: 20px;
-        margin-bottom: 5px;
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        font-weight: 500;
-        width: 75%;
-        transition: all 180ms ease;
-        text-decoration: none;
-        background-color: transparent;
-    }
+  .sidebar-nav .nav-link {
+    color: #2b2b2b; /* darker neutral text */
+    padding: 10px;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    width: 75%;
+    transition: all 180ms ease;
+    text-decoration: none;
+    background-color: transparent;
+  }
 
-    .sidebar-nav .nav-link i {
-        width: 24px;
-        margin-right: 15px;
-        text-align: center;
-        color: #3a3a3a;
-    }
+  .sidebar-nav .nav-link i {
+    width: 24px;
+    margin-right: 15px;
+    text-align: center;
+    color: #3a3a3a;
+  }
 
-    .sidebar-nav .nav-link:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-        color: #000;
-    }
+  .sidebar-nav .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000;
+  }
 
-    .sidebar-nav .nav-link.active {
-        background-color: rgba(249, 201, 65, 0.9);
-        color: #1A3A4A;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+  .sidebar-nav .nav-link.active {
+    background-color: rgba(249, 201, 65, 0.9);
+    color: #1a3a4a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
 
-    .sidebar-nav .nav-link.active i {
-        color: #1A3A4A;
-    }
+  .sidebar-nav .nav-link.active i {
+    color: #1a3a4a;
+  }
 
-    body {
-        margin-left: 260px;
-        padding-top: 70px;
-        background-color: #f5f6f7;
-    }
+  body {
+    margin-left: 260px;
+    padding-top: 70px;
+    background-color: #f5f6f7;
+  }
 </style>
 
 <div id="sidebar" class="sidebar">
@@ -112,5 +117,3 @@
         </ul>
     </div>
 </div>
-
-

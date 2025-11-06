@@ -27,7 +27,7 @@
 </head>
 
 <body>
-<c:set var="activePage" value="viewContractHistory" scope="request" />
+<c:set var="activePage" value="viewContractHistory" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container-fluid">
@@ -184,6 +184,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
+
                 <embed id="contractPDF" type="application/pdf" width="100%" height="600px" style="display: none;">
 
                 <div id="noPDFNotice" class="alert alert-warning mt-3" style="display: none;">
@@ -193,12 +194,13 @@
                 <a id="downloadContractBtn" class="btn btn-success mt-3" href="#" download style="display: none;">
                     <i class="bi bi-download"></i> Download Contract
                 </a>
+
             </div>
         </div>
     </div>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/view-contract-detail.js" ></script>
+<script src="${pageContext.request.contextPath}/js/view-contract-detail.js"></script>
 </body>
 
 </html>
