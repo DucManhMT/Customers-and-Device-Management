@@ -12,7 +12,7 @@ public class SelectQueryBuilder<E> extends AbstractQueryBuilder {
     private List<String> columns;
     private boolean isDistinct;
     private String whereClause;
-    List<Order> orderByColumns;
+    private List<Order> orderByColumns;
     private String alias;
     private Integer limit;
     private Integer offset;
@@ -141,6 +141,5 @@ public class SelectQueryBuilder<E> extends AbstractQueryBuilder {
         }
         return query.toString();
     }
-
 
 }
