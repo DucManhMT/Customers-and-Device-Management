@@ -203,27 +203,7 @@ CREATE TABLE RequestLog (
                             FOREIGN KEY (Username) REFERENCES Account(Username)
 );
 
--- ======================
--- PRODUCT REQUEST
--- ======================
 
-CREATE TABLE WarehouseLog (
-                              WarehouseLogID INT PRIMARY KEY,
-                              LogDate DATE NOT NULL,
-                              Description NVARCHAR(255),
-                              WarehouseID INT NOT NULL,
-                              ProductRequestID INT NOT NULL,
-                              FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
-                              FOREIGN KEY (ProductRequestID) REFERENCES ProductRequest(ProductRequestID)
-);
-
-
-CREATE TABLE ProductExported (
-                                 ProductWarehouseID INT PRIMARY KEY,
-                                 WarehouseLogID INT NOT NULL,
-                                 FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
-                                 FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
-);
 
 -- ======================
 -- DEVICE
@@ -270,19 +250,13 @@ CREATE TABLE WarehouseRequest(
                                  Date DATETIME,
                                  WarehouseRequestStatus ENUM('Pending','Accepted','Rejected'),
                                  Note nvarchar(255),
+                                 ProductID INT,
+                                 Quantity INT,
                                  SourceWarehouse INT,
                                  DestinationWarehouse INT,
+                                 FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
                                  FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
                                  FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
-);
-
-CREATE TABLE WarehouseRequestProduct(
-                                        WarehouseRequestProductID INT NOT NULL PRIMARY KEY,
-                                        Quantity INT NOT NULL,
-                                        ProductID int not null,
-                                        WarehouseRequestID int not null,
-                                        FOREIGN KEY (WarehouseRequestID) REFERENCES WarehouseRequest(WarehouseRequestID),
-                                        FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 CREATE TABLE ProductImportedLog(
 										ProductImportedLogID INT NOT NULL PRIMARY KEY,
@@ -310,6 +284,10 @@ CREATE TABLE Task (
                       FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
 );
 
+-- ======================
+-- PRODUCT REQUEST
+-- ======================
+
 CREATE TABLE ProductRequest (
                                 ProductRequestID INT PRIMARY KEY,
                                 Quantity INT NOT NULL,
@@ -318,26 +296,29 @@ CREATE TABLE ProductRequest (
                                 Description NVARCHAR(255),
                                 TaskID INT NOT NULL,
                                 ProductID INT NOT NULL,
-                                WarehouseID INT NOT NULL,
+                                WarehouseID INT,
                                 FOREIGN KEY (TaskID) REFERENCES Task(TaskID),
                                 FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
                                 FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
 );
 
-CREATE TABLE Cart(
-			CartID INT PRIMARY KEY,
-            TaskID INT NOT NULL,
-            FOREIGN KEY (TaskID) REFERENCES Task(TaskID)
+CREATE TABLE WarehouseLog (
+                              WarehouseLogID INT PRIMARY KEY,
+                              LogDate DATE NOT NULL,
+                              Description NVARCHAR(255),
+                              WarehouseID INT NOT NULL,
+                              ProductRequestID INT NOT NULL,
+                              FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
+                              FOREIGN KEY (ProductRequestID) REFERENCES ProductRequest(ProductRequestID)
 );
 
-CREATE TABLE ProductCart(
-			ProductCartID INT PRIMARY KEY,
-            CartID INT NOT NULL,
-            
+
+CREATE TABLE ProductExported (
+                                 ProductWarehouseID INT PRIMARY KEY,
+                                 WarehouseLogID INT NOT NULL,
+                                 FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
+                                 FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
 );
-
-
-
 
 
 -- Generated INSERTs for Province and Village tables

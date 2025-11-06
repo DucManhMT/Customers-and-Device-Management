@@ -5,6 +5,7 @@ import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(tableName = "WarehouseRequest")
 public class WarehouseRequest {
@@ -23,7 +24,13 @@ public class WarehouseRequest {
     @Column(name = "Note", length = 255)
     private String note;
 
-    @ManyToOne(joinColumn = "SourceWarehouse")
+    @Column(name = "Quantity", type = "INT", nullable = false)
+    private int quantity;
+
+    @OneToOne(joinColumn = "ProductID", mappedBy = "productID")
+    private LazyReference<Product> product;
+
+    @ManyToOne(joinColumn = "SourceWarehouse", nullable = true)
     private LazyReference<Warehouse> sourceWarehouse;
 
     @ManyToOne(joinColumn = "DestinationWarehouse")
@@ -75,5 +82,21 @@ public class WarehouseRequest {
 
     public void setDestinationWarehouse(Warehouse destinationWarehouse) {
         this.destinationWarehouse = new LazyReference<>(Warehouse.class, destinationWarehouse.getWarehouseID());
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return product.get();
+    }
+
+    public void setProduct(Product product) {
+        this.product = new LazyReference<>(Product.class, product.getProductID());
     }
 }

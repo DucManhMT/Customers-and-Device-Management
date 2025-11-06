@@ -74,6 +74,7 @@ public class URLConstants {
     public static final String WAREHOUSE_VIEW_WAREHOUSE_DETAIL = "/warehouse_keeper/view_warehouse_detail";
     public static final String WAREHOUSE_VIEW_PRODUCT_REQUESTS = "/warehouse_keeper/view_warehouse_product_requests";
     public static final String WAREHOUSE_VIEW_PROFILE = "/warehouse_keeper/profile";
+    public static final String WAREHOUSE_VIEW_WAREHOUSE_REQUEST = "/warehouse_keeper/view_warehouse_request";
 
     // TASK
     public static final String TASK_PROCESS_ASSIGNMENT = "/task/processAssignment";

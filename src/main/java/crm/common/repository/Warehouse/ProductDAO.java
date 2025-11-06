@@ -30,4 +30,18 @@ public class ProductDAO extends FuntionalityDAO<Product> {
         return product;
     }
 
+    public List<Product> findAllIncludeSpec() {
+        List<Product> products = em.findAll(Product.class);
+
+        for (Product product : products) {
+            Map<String, Object> productConditions = new HashMap<>();
+
+            productConditions.put("product", product.getProductID());
+            List<ProductSpecification> specs = em.findWithConditions(ProductSpecification.class, productConditions);
+            product.setProductSpecifications(specs);
+        }
+
+        return products;
+    }
+
 }

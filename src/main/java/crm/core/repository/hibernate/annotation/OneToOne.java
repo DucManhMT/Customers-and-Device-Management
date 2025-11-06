@@ -39,4 +39,6 @@ public @interface OneToOne {
      * 
      * @return fetch mode
      */
+
+    boolean nullable() default false;
 }

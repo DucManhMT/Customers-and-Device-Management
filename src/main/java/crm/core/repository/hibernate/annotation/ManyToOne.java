@@ -16,5 +16,6 @@ public @interface ManyToOne {
      */
     String joinColumn();
 
+    boolean nullable() default false;
 
 }
