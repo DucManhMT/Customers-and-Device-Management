@@ -31,6 +31,10 @@
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" autocomplete="true" required>
                 <h6 class="text-danger">
                     ${sessionScope.error != null ? sessionScope.error : ""}
+                    <%
+                        session.removeAttribute("error");
+                    %>
+                </h6>
             </div>
 
             <div class="mb-3">

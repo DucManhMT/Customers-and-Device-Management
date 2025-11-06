@@ -6,11 +6,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
     .sidebar {
         width: 260px;
@@ -89,20 +92,20 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'cusProfile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile?id=${account.username}">My Profile </a>
+                <a class="nav-link ${activePage == 'cusProfile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile?id=${account.username}"><i class="bi bi-person-circle"></i>My Profile </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewContractHistory' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/contract_history"> Contract History </a>
+                <a class="nav-link ${activePage == 'viewContractHistory' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/contract_history"><i class="bi bi-clock-history"></i> Contract History </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'createRequest' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/requests/create"> Create Request</a>
+                <a class="nav-link ${activePage == 'createRequest' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/requests/create"><i class="bi bi-clipboard2-plus"></i> Create Request</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/requests"> My Request</a>
+                <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/requests"><i class="bi bi-person-lines-fill"></i> My Request</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/list">My Feedback</a>
+                <a class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/list"><i class="bi bi-person-lines-fill"></i> My Feedback</a>
             </li>
 
 

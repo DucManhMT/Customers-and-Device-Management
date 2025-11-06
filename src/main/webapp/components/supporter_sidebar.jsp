@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     .sidebar {
         width: 260px;
@@ -89,20 +90,20 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile">My Profile </a>
+                <a class="nav-link ${activePage == 'supporterProfile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'createContract' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/create_contract"> Upload Contract </a>
+                <a class="nav-link ${activePage == 'createContract' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/create_contract"><i class="bi bi-upload"></i> Upload Contract </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'requestList' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"> Request List</a>
+                <a class="nav-link ${activePage == 'requestList' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"><i class="bi bi-card-checklist"></i> Request List</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'requestDashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/dashboard"> Request Dashboard</a>
+                <a class="nav-link ${activePage == 'requestDashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/dashboard"><i class="bi bi-three-dots"></i> Request Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'feedbackManagement' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"> Feedback Management</a>
+                <a class="nav-link ${activePage == 'feedbackManagement' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><i class="bi bi-kanban"></i> Feedback Management</a>
             </li>
 
 

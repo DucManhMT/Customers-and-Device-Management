@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: FPT SHOP
@@ -6,7 +8,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <html>
 <head>
     <title>Profile</title>
@@ -151,8 +152,29 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
-<%--<jsp:include page="../components/techem_sidebar.jsp"/>--%>
+<%-- TE CHEM --%>
+<c:if test="${sessionScope.account.role.roleName == 'TechnicianEmployee'}">
+    <c:set var="activePage" value="techemProfile" scope="request"/>
+    <jsp:include page="../components/techem_sidebar.jsp"/>
+</c:if>
 
+<%-- TECH LEAD --%>
+<c:if test="${sessionScope.account.role.roleName == 'TechnicianLeader'}">
+    <c:set var="activePage" value="techleadProfile" scope="request"/>
+    <jsp:include page="../components/techlead_sidebar.jsp"/>
+</c:if>
+
+<%-- SUPPORTER --%>
+<c:if test="${sessionScope.account.role.roleName == 'CustomerSupporter'}">
+    <c:set var="activePage" value="supporterProfile" scope="request"/>
+    <jsp:include page="../components/supporter_sidebar.jsp"/>
+</c:if>
+
+<%-- CUSTOMER --%>
+<c:if test="${sessionScope.account.role.roleName == 'Customer'}">
+    <c:set var="activePage" value="cusProfile" scope="request"/>
+    <jsp:include page="../components/customer_sidebar.jsp"/>
+</c:if>
 <div class="profile-container">
     <div class="profile-content">
         <div class="profile-header">

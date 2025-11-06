@@ -21,7 +21,8 @@ CREATE TABLE Type (
 
 CREATE TABLE Role (
                       RoleID INT PRIMARY KEY,
-                      RoleName NVARCHAR(50) UNIQUE
+                      RoleName NVARCHAR(50) UNIQUE,
+                      RoleStatus ENUM('Active', 'Deactive')
 );
 
 CREATE TABLE Account (

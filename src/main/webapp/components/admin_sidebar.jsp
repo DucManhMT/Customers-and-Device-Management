@@ -15,14 +15,13 @@
 <style>
     .sidebar {
         width: 260px;
-        background: rgba(255, 255, 255, 0.25); /* semi-transparent white background */
-        backdrop-filter: blur(12px); /* glass blur effect */
+        background-color: #fafafa;
         -webkit-backdrop-filter: blur(12px);
         border-right: 1px solid rgba(0, 0, 0, 0.15); /* subtle border to separate */
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* soft shadow */
         color: #1a1a1a; /* darker text */
-        position: fixed;
         height: calc(100vh - 70px);
+        position: fixed;
         top: 70px;
         left: 0;
         z-index: 1020;
@@ -82,6 +81,7 @@
     body {
         padding-top: 70px;
         background-color: #f5f6f7;
+        margin-left: 260px;
     }
 </style>
 
