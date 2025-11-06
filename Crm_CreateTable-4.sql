@@ -206,19 +206,6 @@ CREATE TABLE RequestLog (
 -- ======================
 -- PRODUCT REQUEST
 -- ======================
-CREATE TABLE ProductRequest (
-                                ProductRequestID INT PRIMARY KEY,
-                                Quantity INT NOT NULL,
-                                RequestDate DATE NOT NULL,
-                                Status ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
-                                Description NVARCHAR(255),
-                                RequestID INT NOT NULL,
-                                ProductID INT NOT NULL,
-                                WarehouseID INT NOT NULL,
-                                FOREIGN KEY (RequestID) REFERENCES Request(RequestID),
-                                FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
-                                FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
-);
 
 CREATE TABLE WarehouseLog (
                               WarehouseLogID INT PRIMARY KEY,
@@ -322,6 +309,34 @@ CREATE TABLE Task (
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
                       FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
 );
+
+CREATE TABLE ProductRequest (
+                                ProductRequestID INT PRIMARY KEY,
+                                Quantity INT NOT NULL,
+                                RequestDate DATE NOT NULL,
+                                Status ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+                                Description NVARCHAR(255),
+                                TaskID INT NOT NULL,
+                                ProductID INT NOT NULL,
+                                WarehouseID INT NOT NULL,
+                                FOREIGN KEY (TaskID) REFERENCES Task(TaskID),
+                                FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+                                FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
+);
+
+CREATE TABLE Cart(
+			CartID INT PRIMARY KEY,
+            TaskID INT NOT NULL,
+            FOREIGN KEY (TaskID) REFERENCES Task(TaskID)
+);
+
+CREATE TABLE ProductCart(
+			ProductCartID INT PRIMARY KEY,
+            CartID INT NOT NULL,
+            
+);
+
+
 
 
 

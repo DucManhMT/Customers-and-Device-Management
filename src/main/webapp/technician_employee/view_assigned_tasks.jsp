@@ -167,10 +167,14 @@
                                     </button>
                                 </form>
                                 <form method="GET" action="${pageContext.request.contextPath}/tech/employees/createProductRequests" class="link">
-                                    <input type="hidden" name="requestID" value="${req.requestID}">
-                                    <button type="submit" class="btn-sm finish-btn">
-                                        Create Product Request
-                                    </button>
+                                    <c:choose>
+                                        <c:when test="${req.requestStatus == 'Processing'}">
+                                            <input type="hidden" name="requestID" value="${req.requestID}">
+                                            <button type="submit" class="btn-sm finish-btn">
+                                                Create Product Request
+                                            </button>
+                                        </c:when>
+                                    </c:choose>
                                 </form>
                                 <c:choose>
                                     <c:when test="${req.requestStatus == 'Finished'}">
@@ -188,7 +192,6 @@
                                                 <i class="fas fa-check"></i> Mark as Finished
                                             </button>
                                         </form>
-                                        <!-- Pending assignments are handled on Pending Assignments page -->
                                     </c:otherwise>
                                 </c:choose>
                             </div>
