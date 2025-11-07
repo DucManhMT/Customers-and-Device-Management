@@ -4,9 +4,12 @@
 <head>
     <title>Add New Product</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -20,7 +23,7 @@
                                 ${errorMessage}
                         </div>
                     </c:if>
-                    
+
                     <c:if test="${not empty successMessage}">
                         <div class="alert alert-success text-center m-3" role="alert">
                                 ${successMessage}
@@ -28,7 +31,6 @@
                     </c:if>
                 </div>
                 <div class="card-body">
-
                     <%-- Product Type --%>
                     <div class="mb-3">
                         <label for="type" class="form-label">Product Type</label>
@@ -42,7 +44,6 @@
                         </form>
                     </div>
 
-                    <c:if test="${not empty selectedType}">
                         <form action="${pageContext.request.contextPath}/warehouse_keeper/add_product" method="post"
                               enctype="multipart/form-data">
                             <input type="hidden" name="typeID" value="${selectedType.typeID}">
@@ -82,7 +83,6 @@
                                 <button type="submit" class="btn btn-primary">Add Product</button>
                             </div>
                         </form>
-                    </c:if>
                 </div>
             </div>
         </div>

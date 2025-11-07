@@ -1,25 +1,33 @@
 package crm;
 
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
-import crm.common.model.enums.RequestStatus;
-import crm.service_request.repository.ContractRepository;
-import crm.service_request.repository.RequestRepository;
-import crm.service_request.service.RequestService;
+import crm.common.model.Account;
+import crm.common.model.Warehouse;
+import crm.common.model.WarehouseRequest;
+import crm.common.repository.Warehouse.WarehouseDAO;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 
 public class Main {
     public static void main(String[] args) {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
 
-        // Inject fake repository vào service
-        RequestService service = new RequestService();
+        List<WarehouseRequest> warehouseRequests = em.findAll(WarehouseRequest.class);
 
-        // Test 2: Có from/to
-        System.out.println("=== TEST WITH DATE RANGE ===");
-        LocalDateTime from = LocalDateTime.now().minusDays(70);
-        LocalDateTime to = LocalDateTime.now();
-        Map<String, Integer> result2 = service.statisticRequestsByStatus(from, to);
-        System.out.println(result2);
+        Warehouse userWarehouse = em.find(Warehouse.class, 2);
+
+        warehouseRequests = warehouseRequests.stream()
+                .filter(wr -> wr.getSourceWarehouse() != null)
+                .filter(wr -> wr.getSourceWarehouse().getWarehouseID() == userWarehouse.getWarehouseID())
+                .toList();
+
+        for (WarehouseRequest wr : warehouseRequests) {
+            System.out.println("Warehouse Request ID: " + wr.getWarehouseRequestID());
+            System.out.println("Source Warehouse ID: " + wr.getSourceWarehouse().getWarehouseID());
+            System.out.println("Destination Warehouse ID: " + wr.getDestinationWarehouse().getWarehouseID());
+        }
+
 
     }
 }

@@ -4,24 +4,20 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Product;
-import crm.common.model.ProductWarehouse;
 import crm.common.model.Type;
 import crm.common.model.Warehouse;
 import crm.common.model.WarehouseRequest;
-import crm.common.model.WarehouseRequestProduct;
 import crm.common.model.enums.WarehouseRequestStatus;
 import crm.common.repository.Warehouse.ProductDAO;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.common.repository.Warehouse.WarehouseRequestDAO;
-import crm.common.repository.Warehouse.WarehouseRequestProductDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
@@ -41,7 +37,6 @@ public class TransferRequestCreateController extends HttpServlet {
     TypeDAO typeDAO = new TypeDAO();
     ProductDAO productDAO = new ProductDAO();
     WarehouseRequestDAO warehouseRequestDAO = new WarehouseRequestDAO();
-    WarehouseRequestProductDAO warehouseRequestProductDAO = new WarehouseRequestProductDAO();
     EntityManager entityManager = new EntityManager(DBcontext.getConnection());
 
 
@@ -56,37 +51,7 @@ public class TransferRequestCreateController extends HttpServlet {
             req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
             return;
         }
-
-        //Get current login warehouseKeeper's warehouse
-        Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
-
-        if (managerWarehouse == null) {
-            req.setAttribute("errorMessage", "No warehouse associated with this account.");
-            req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
-            return;
-        }
-
-        //Get list of warehouses for dropdown
-        List<Warehouse> warehouses = warehouseDAO.findAll();
-        warehouses = warehouses.stream()
-                .filter(w -> !w.getWarehouseID().equals(managerWarehouse.getWarehouseID()))
-                .collect(Collectors.toList());
-
-        if (warehouses.isEmpty()) {
-            req.setAttribute("errorMessage", "No other warehouses available to transfer from.");
-            req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
-            return;
-        }
-
-        req.setAttribute("warehouses", warehouses);
-
-        req.setAttribute("managerWarehouse", managerWarehouse);
-
-        String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
-
-        if (req.getParameter("selectedWarehouseID") != null) {
-            processRequest(req, resp, selectedWarehouseIDStr);
-        }
+        processRequest(req, resp);
 
         req.getRequestDispatcher("/warehouse_keeper/create_transfer_request.jsp").forward(req, resp);
     }
@@ -96,7 +61,6 @@ public class TransferRequestCreateController extends HttpServlet {
 
         String allSelectedItemIDs = req.getParameter("allSelectedItemIDs");
         String allSelectedItemQuantities = req.getParameter("allSelectedItemQuantities");
-        String selectedWarehouseIDStr = req.getParameter("selectedWarehouseID");
         String note = req.getParameter("note");
 
         if (!Validator.isValidText(note)) {
@@ -120,27 +84,12 @@ public class TransferRequestCreateController extends HttpServlet {
         String[] selectedProductIDs = allSelectedItemIDs.split(",");
         String[] selectedProductQuantitiesStr = allSelectedItemQuantities.split(",");
 
-        int selectedWarehouseID = Integer.parseInt(selectedWarehouseIDStr);
-
         Account account = (Account) req.getSession().getAttribute("account");
 
         Warehouse managerWarehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
-        Warehouse sourceWarehouse = warehouseDAO.find(selectedWarehouseID);
+
         try {
             entityManager.beginTransaction();
-
-            WarehouseRequest warehouseRequest = new WarehouseRequest();
-
-            warehouseRequest.setWarehouseRequestID(IDGeneratorService.generateID(WarehouseRequest.class));
-            warehouseRequest.setDate(LocalDateTime.now());
-            warehouseRequest.setNote(note);
-            warehouseRequest.setSourceWarehouse(sourceWarehouse);
-            warehouseRequest.setDestinationWarehouse(managerWarehouse);
-            warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
-
-            warehouseRequestDAO.persist(warehouseRequest);
-
-
             for (int i = 0; i < selectedProductIDs.length; i++) {
                 String productIdStr = selectedProductIDs[i];
                 String quantityStr = selectedProductQuantitiesStr[i];
@@ -157,18 +106,23 @@ public class TransferRequestCreateController extends HttpServlet {
 
                 Product product = productDAO.find(productID);
 
-                WarehouseRequestProduct warehouseRequestProduct = new WarehouseRequestProduct();
+                WarehouseRequest warehouseRequest = new WarehouseRequest();
 
-                warehouseRequestProduct.setWarehouseRequestProductID(IDGeneratorService.generateID(WarehouseRequestProduct.class));
-                warehouseRequestProduct.setProduct(product);
-                warehouseRequestProduct.setQuantity(quantity);
-                warehouseRequestProduct.setWarehouseRequest(warehouseRequest);
+                warehouseRequest.setWarehouseRequestID(IDGeneratorService.generateID(WarehouseRequest.class));
+                warehouseRequest.setDate(LocalDateTime.now());
+                warehouseRequest.setNote(note);
+                warehouseRequest.setDestinationWarehouse(managerWarehouse);
+                warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
+                warehouseRequest.setProduct(product);
+                warehouseRequest.setQuantity(quantity);
 
-                warehouseRequestProductDAO.persist(warehouseRequestProduct);
+                warehouseRequestDAO.persist(warehouseRequest);
             }
             entityManager.commit();
 
-            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_INVENTORY); // Redirect to a success or listing page
+            req.setAttribute("successMessage", "Warehouse request has been successfully created.");
+
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_WAREHOUSE_REQUEST);
 
         } catch (NumberFormatException e) {
             req.setAttribute("errorMessage", "Invalid data submitted. Please check product quantities.");
@@ -181,7 +135,7 @@ public class TransferRequestCreateController extends HttpServlet {
         }
     }
 
-    private void processRequest(HttpServletRequest req, HttpServletResponse resp, String selectedWarehouseIDStr) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Filter parameters
         String productNameFilter = req.getParameter("productName");
         String productTypeFilter = req.getParameter("productType");
@@ -211,42 +165,24 @@ public class TransferRequestCreateController extends HttpServlet {
             }
         }
 
-        int selectedWarehouseID;
-        try {
-            selectedWarehouseID = Integer.parseInt(selectedWarehouseIDStr);
-        } catch (NumberFormatException e) {
-            req.setAttribute("errorMessage", "Invalid warehouse ID.");
-            return;
-        }
-
-        //Product in selected Warehouse
-        List<Product> productsInSelectedWarehouse = warehouseDAO.getProductsInWarehouse(selectedWarehouseID);
-        List<ProductWarehouse> pw = productWarehouseDAO.findAll();
-
-        Map<Integer, Long> productCounts = pw.stream()
-                .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == selectedWarehouseID)
-                .collect(Collectors.groupingBy(
-                        pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
-                        Collectors.counting()
-                ));
-
+        List<Product> products = productDAO.findAllIncludeSpec();
 
         //filter by product type
         List<Type> ProductTypes = typeDAO.findAll();
 
         if (productNameFilter != null && !productNameFilter.isEmpty()) {
-            productsInSelectedWarehouse = productsInSelectedWarehouse.stream()
+            products = products.stream()
                     .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
                     .collect(Collectors.toCollection(LinkedList::new));
         }
 
         if (productTypeFilter != null && !productTypeFilter.isEmpty()) {
-            productsInSelectedWarehouse = productsInSelectedWarehouse.stream()
+            products = products.stream()
                     .filter(p -> p.getType().getTypeID() == Integer.parseInt(productTypeFilter))
                     .collect(Collectors.toCollection(LinkedList::new));
         }
 
-        int totalProducts = productsInSelectedWarehouse.size();
+        int totalProducts = products.size();
         int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
 
         if (currentPage > totalPages && totalPages > 0) {
@@ -255,14 +191,13 @@ public class TransferRequestCreateController extends HttpServlet {
 
         int offset = (currentPage - 1) * pageSize;
 
-        List<Product> paginatedProducts = productsInSelectedWarehouse.stream()
-                .skip(offset)
-                .limit(pageSize)
-                .toList();
+//        List<Product> paginatedProducts = products.stream()
+//                .skip(offset)
+//                .limit(pageSize)
+//                .toList();
 
         //Warehouse attributes
-        req.setAttribute("productsInSelectedWarehouse", paginatedProducts);
-        req.setAttribute("productCounts", productCounts);
+        req.setAttribute("products", products);
         req.setAttribute("uniqueProductTypes", ProductTypes);
 
         //Pagination attributes
@@ -270,9 +205,6 @@ public class TransferRequestCreateController extends HttpServlet {
         req.setAttribute("totalPages", totalPages);
         req.setAttribute("pageSize", pageSize);
         req.setAttribute("totalProducts", totalProducts);
-
-        //Selected warehouse attribute
-        req.setAttribute("selectedWarehouseID", selectedWarehouseIDStr);
 
         // Pass filter parameters for pagination links
         req.setAttribute("productName", productNameFilter);
