@@ -168,7 +168,7 @@
                                                 <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
                                                 <button type="submit" class="btn btn-sm btn-info">View</button>
                                             </form>
-                                            <form method="get" action="${pageContext.request.contextPath}/customer_supporter/feedback/respond">
+                                            <form method="get" action="${pageContext.request.contextPath}/feedback/respond">
                                                 <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
                                                 <button type="submit" class="btn btn-sm btn-success">Respond</button>
                                             </form>
