@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,6 +111,58 @@
                         </div>
 
                         <div class="col-md-8">
+                            <!-- Weekly calendar showing technicians' schedules -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0"><i class="bi bi-calendar-week"></i> Weekly Schedule</h6>
+                                        <div>
+                                            <a class="btn btn-sm btn-outline-secondary me-2" href="#" onclick="goToWeek('${prevWeekStart}'); return false;">Prev</a>
+                                            <a class="btn btn-sm btn-outline-secondary" href="#" onclick="goToWeek('${nextWeekStart}'); return false;">Next</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-2">
+                                    <c:if test="${not empty weekDays}">
+                                        <div style="overflow-x:auto;">
+                                            <table class="table table-sm table-bordered mb-0 align-middle schedule-table">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th style="min-width:200px">Technician</th>
+                                                    <c:forEach var="day" items="${weekDays}">
+                                                        <th style="min-width:120px">${day}</th>
+                                                    </c:forEach>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var="tech" items="${technicians}">
+                                                    <tr>
+                                                        <td><strong>${tech.staffName}</strong><br/><small>${tech.account.username}</small></td>
+                                                        <c:forEach var="i" begin="0" end="${fn:length(weekDays) - 1}">
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${not empty techSchedules[tech.account.username] and techSchedules[tech.account.username][i] != null}">
+                                                                        <div class="schedule-cell" data-full="${techSchedules[tech.account.username][i]}">
+                                                                            <c:out value="${techSchedules[tech.account.username][i]}" escapeXml="false" />
+                                                                        </div>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <div class="schedule-cell schedule-empty">—</div>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                        </c:forEach>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${empty weekDays}">
+                                        <div class="text-muted small">No schedule data for the selected week.</div>
+                                    </c:if>
+                                </div>
+                            </div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="text-muted mb-0">Available Technicians (${totalCount} total)</h6>
                                 <div class="d-flex align-items-center gap-2">
@@ -248,7 +301,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/task/select-technician.js"></script>
+<script src="${pageContext.request.contextPath}/js/select_technician.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const clearBtn = document.getElementById('clearFilterBtn');
@@ -370,12 +423,39 @@
             <c:forEach var="taskId" items="${selectedTaskIds}">
                 url += '&selectedTasks=${taskId}';
             </c:forEach>
+            <c:if test="${not empty param.weekStart}">
+                url += '&weekStart=${param.weekStart}';
+            </c:if>
             
             if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
             if (location) url += '&location=' + encodeURIComponent(location);
             if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
             if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
             
+            window.location.href = url;
+            return false;
+        }
+
+        function goToWeek(weekStart) {
+            const searchName = document.getElementById('searchName').value;
+            const location = document.getElementById('filterLocation').value;
+            const ageRange = document.getElementById('filterAge').value;
+            const recordsPerPage = document.getElementById('pageSize').value;
+
+            let url = '${pageContext.request.contextPath}/task/selectTechnician?weekStart=' + encodeURIComponent(weekStart);
+
+            <c:forEach var="taskId" items="${selectedTaskIds}">
+                url += '&selectedTasks=${taskId}';
+            </c:forEach>
+
+            if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+            if (location) url += '&location=' + encodeURIComponent(location);
+            if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+            if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
+
+            // reset to first page for new week
+            url += '&page=1';
+
             window.location.href = url;
             return false;
         }
@@ -391,6 +471,9 @@
             <c:forEach var="taskId" items="${selectedTaskIds}">
                 url += '&selectedTasks=${taskId}';
             </c:forEach>
+            <c:if test="${not empty param.weekStart}">
+                url += '&weekStart=${param.weekStart}';
+            </c:if>
             
             if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
             if (location) url += '&location=' + encodeURIComponent(location);
