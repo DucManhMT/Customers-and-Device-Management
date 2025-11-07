@@ -3,6 +3,7 @@ package crm.admin;
 import crm.common.URLConstants;
 import crm.common.model.Role;
 import crm.common.model.Account;
+import crm.common.model.enums.RoleStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
@@ -120,23 +121,61 @@ public class ViewRoleListServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        if ("delete".equals(action)) {
-            String roleIdParam = request.getParameter("id");
-            if (roleIdParam != null) {
-                try {
-                    int roleId = Integer.parseInt(roleIdParam);
-                    EntityManager em = new EntityManager(DBcontext.getConnection());
-                    Role roleToDelete = em.find(Role.class, roleId);
-                    if (roleToDelete != null) {
-                        em.remove(roleToDelete, Role.class);
-                        request.getSession().setAttribute("error", "Role deleted successfully.");
-                    }
-                } catch (Exception e) {
-                    request.getSession().setAttribute("error", "This role can't be delete because have assigned to one or more account.");
-                }
-            }
+        String roleIdParam = request.getParameter("id");
+
+        if (roleIdParam == null || action == null) {
+            request.getSession().setAttribute("error", "Invalid request parameters.");
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
             return;
         }
+
+        try {
+            int roleId = Integer.parseInt(roleIdParam);
+            EntityManager em = new EntityManager(DBcontext.getConnection());
+            Role role = em.find(Role.class, roleId);
+
+            if (role == null) {
+                request.getSession().setAttribute("error", "Role not found.");
+                response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
+                return;
+            }
+
+            // Lấy số lượng account đang dùng role này
+            Map<String, Object> roleCondition = new HashMap<>();
+            roleCondition.put("role", roleId);
+            int assignedAccountCount = em.findWithConditions(Account.class, roleCondition).size();
+
+            // Xử lý Deactivate
+            if ("deactivate".equals(action)) {
+                if (assignedAccountCount == 0) {
+                    role.setRoleStatus(RoleStatus.Deactive);
+                    em.merge(role, Role.class);
+                    request.getSession().setAttribute("roleSuccess", "Role deactivated successfully.");
+                } else {
+                    request.getSession().setAttribute("error",
+                            "This role can't be deactivated because it is assigned to one or more accounts.");
+                }
+            }
+
+            // Xử lý Activate
+            else if ("activate".equals(action)) {
+                role.setRoleStatus(RoleStatus.Active);
+                em.merge(role, Role.class);
+                request.getSession().setAttribute("roleSuccess", "Role activated successfully.");
+            }
+
+            // Nếu action không hợp lệ
+            else {
+                request.getSession().setAttribute("error", "Invalid action.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error", "An unexpected error occurred.");
+        }
+
+        // Sau khi xử lý, luôn quay lại danh sách role
+        response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
     }
+
 }

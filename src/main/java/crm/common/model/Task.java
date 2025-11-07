@@ -35,11 +35,20 @@ public class Task {
     @Column(name = "Description", length = 255)
     private String description;
 
-
-
     @Enumerated
     @Column(name = "Status")
     private TaskStatus status;
+
+    @Column(name = "TaskNote", length = 255)
+    private String taskNote;
+
+    public String getTaskNote() {
+        return taskNote;
+    }
+
+    public void setTaskNote(String taskNote) {
+        this.taskNote = taskNote;
+    }
 
     public Task() {
         // Initialize LazyReferences to prevent NPE during EntityMapper mapping
@@ -49,8 +58,8 @@ public class Task {
     }
 
     public Task(Staff assignBy, Staff assignTo, Request request,
-                LocalDateTime startDate, LocalDateTime endDate, LocalDateTime deadline, 
-                String description, TaskStatus status) {
+            LocalDateTime startDate, LocalDateTime endDate, LocalDateTime deadline,
+            String description, TaskStatus status) {
         this.assignBy = new LazyReference<>(Staff.class, assignBy.getStaffID());
         this.assignTo = new LazyReference<>(Staff.class, assignTo.getStaffID());
         this.request = new LazyReference<>(Request.class, request.getRequestID());

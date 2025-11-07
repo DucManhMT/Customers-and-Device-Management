@@ -4,7 +4,10 @@ import crm.common.URLConstants;
 import crm.common.model.Request;
 import crm.common.model.Account;
 import crm.common.model.AccountRequest;
+import crm.common.model.Staff;
+import crm.common.model.Task;
 import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.TaskStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 
@@ -113,71 +116,83 @@ public class viewAssignedTask extends HttpServlet {
             if (pageSize == null)
                 pageSize = 6;
 
-            List<AccountRequest> allAccountRequests = entityManager.findAll(AccountRequest.class);
+            // Get current user's staff record
+            List<Staff> allStaff = entityManager.findAll(Staff.class);
+            Staff currentStaff = allStaff.stream()
+                    .filter(s -> s.getAccount() != null && username.equals(s.getAccount().getUsername()))
+                    .findFirst()
+                    .orElse(null);
 
-            List<AccountRequest> accountRequests = allAccountRequests.stream()
-                    .filter(ar -> ar.getAccount() != null && username.equals(ar.getAccount().getUsername()))
-                    .collect(Collectors.toList());
-
-            Set<Integer> assignedRequestIds = new HashSet<>();
-            for (AccountRequest ar : accountRequests) {
-                if (ar.getRequest() != null && ar.getRequest().getRequestID() != null) {
-                    assignedRequestIds.add(ar.getRequest().getRequestID());
-                }
-            }
-
-            if (assignedRequestIds.isEmpty()) {
-                request.setAttribute("assignedRequests", Collections.emptyList());
+            if (currentStaff == null) {
+                request.setAttribute("errorMessage", "Staff record not found for current user.");
+                request.setAttribute("assignedTasks", Collections.emptyList());
                 request.setAttribute("currentPage", currentPage);
                 request.setAttribute("pageSize", pageSize);
                 request.setAttribute("totalCount", 0);
                 request.setAttribute("totalPages", 1);
                 request.setAttribute("startItem", 0);
                 request.setAttribute("endItem", 0);
-
                 request.setAttribute("totalTasks", 0);
                 request.setAttribute("processingTasks", 0);
                 request.setAttribute("finishedTasks", 0);
-
                 request.getRequestDispatcher("/technician_employee/view_assigned_tasks.jsp").forward(request, response);
                 return;
             }
 
-            List<Request> allAssignedRequests = entityManager.findAll(Request.class);
+            // Get all tasks assigned TO current technician (not Pending or Rejected)
+            List<Task> allTasks = entityManager.findAll(Task.class);
+            System.out.println("DEBUG viewAssignedTask: Total tasks in DB: " + allTasks.size());
+            
+            List<Task> myTasks = allTasks.stream()
+                    .filter(task -> task != null)
+                    .filter(task -> task.getAssignTo() != null)
+                    .filter(task -> currentStaff.getStaffID().equals(task.getAssignTo().getStaffID()))
+                    .filter(task -> task.getStatus() == TaskStatus.Processing || task.getStatus() == TaskStatus.Finished)
+                    .collect(Collectors.toList());
+            
+            System.out.println("DEBUG viewAssignedTask: My tasks (Processing/Finished): " + myTasks.size());
 
-        List<Request> filteredByAssignment = allAssignedRequests.stream()
-            .filter(req -> assignedRequestIds.contains(req.getRequestID()))
-            .collect(Collectors.toList());
+            if (myTasks.isEmpty()) {
+                request.setAttribute("assignedTasks", Collections.emptyList());
+                request.setAttribute("currentPage", currentPage);
+                request.setAttribute("pageSize", pageSize);
+                request.setAttribute("totalCount", 0);
+                request.setAttribute("totalPages", 1);
+                request.setAttribute("startItem", 0);
+                request.setAttribute("endItem", 0);
+                request.setAttribute("totalTasks", 0);
+                request.setAttribute("processingTasks", 0);
+                request.setAttribute("finishedTasks", 0);
+                request.getRequestDispatcher("/technician_employee/view_assigned_tasks.jsp").forward(request, response);
+                return;
+            }
 
-        // By default (no explicit statusFilter), exclude Pending tasks here so that
-        // `viewAssignedTasks` shows tasks the technician has accepted (Processing/Finished).
-        if (statusFilter == null || statusFilter.isEmpty()) {
-        filteredByAssignment = filteredByAssignment.stream()
-            .filter(r -> r.getRequestStatus() != null && !r.getRequestStatus().name().equalsIgnoreCase("Pending"))
-            .collect(Collectors.toList());
-        }
-
-            List<Request> filteredRequests = filteredByAssignment;
+            // Filter by status
+            List<Task> filteredTasks = myTasks;
             if (statusFilter != null && !statusFilter.isEmpty() && !"all status".equalsIgnoreCase(statusFilter)) {
                 if ("processing".equals(statusFilter)) {
-                    filteredRequests = filteredByAssignment.stream()
-                            .filter(req -> RequestStatus.Processing.equals(req.getRequestStatus()))
+                    filteredTasks = myTasks.stream()
+                            .filter(task -> TaskStatus.Processing.equals(task.getStatus()))
                             .collect(Collectors.toList());
                 } else if ("finished".equals(statusFilter)) {
-                    filteredRequests = filteredByAssignment.stream()
-                            .filter(req -> RequestStatus.Finished.equals(req.getRequestStatus()))
+                    filteredTasks = myTasks.stream()
+                            .filter(task -> TaskStatus.Finished.equals(task.getStatus()))
                             .collect(Collectors.toList());
                 }
             }
 
+            // Filter by date range (using Task startDate or Request startDate)
             if ((fromDate != null && !fromDate.isEmpty()) || (toDate != null && !toDate.isEmpty())) {
-                filteredRequests = filteredRequests.stream()
-                        .filter(req -> {
-                            if (req.getStartDate() == null)
+                filteredTasks = filteredTasks.stream()
+                        .filter(task -> {
+                            LocalDateTime taskDateTime = task.getStartDate();
+                            if (taskDateTime == null && task.getRequest() != null) {
+                                taskDateTime = task.getRequest().getStartDate();
+                            }
+                            if (taskDateTime == null)
                                 return false;
 
-                            LocalDateTime requestDateTime = req.getStartDate();
-                            LocalDate requestDate = requestDateTime.toLocalDate();
+                            LocalDate taskDate = taskDateTime.toLocalDate();
                             boolean passFromDate = true;
                             boolean passToDate = true;
 
@@ -185,7 +200,7 @@ public class viewAssignedTask extends HttpServlet {
                                 try {
                                     LocalDate from = LocalDate.parse(fromDate,
                                             DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                                    passFromDate = !requestDate.isBefore(from);
+                                    passFromDate = !taskDate.isBefore(from);
                                 } catch (DateTimeParseException e) {
                                     passFromDate = true;
                                 }
@@ -194,7 +209,7 @@ public class viewAssignedTask extends HttpServlet {
                             if (toDate != null && !toDate.isEmpty()) {
                                 try {
                                     LocalDate to = LocalDate.parse(toDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                                    passToDate = !requestDate.isAfter(to);
+                                    passToDate = !taskDate.isAfter(to);
                                 } catch (DateTimeParseException e) {
                                     passToDate = true;
                                 }
@@ -205,39 +220,53 @@ public class viewAssignedTask extends HttpServlet {
                         .collect(Collectors.toList());
             }
 
+            // Sort tasks
             if (sortBy != null && !sortBy.isEmpty()) {
                 if ("newest".equals(sortBy)) {
-                    filteredRequests.sort((r1, r2) -> r2.getStartDate() != null && r1.getStartDate() != null
-                            ? r2.getStartDate().compareTo(r1.getStartDate())
-                            : 0);
+                    filteredTasks.sort((t1, t2) -> {
+                        LocalDateTime d1 = t1.getStartDate() != null ? t1.getStartDate() : 
+                                         (t1.getRequest() != null ? t1.getRequest().getStartDate() : null);
+                        LocalDateTime d2 = t2.getStartDate() != null ? t2.getStartDate() : 
+                                         (t2.getRequest() != null ? t2.getRequest().getStartDate() : null);
+                        if (d2 != null && d1 != null) return d2.compareTo(d1);
+                        return 0;
+                    });
                 } else if ("oldest".equals(sortBy)) {
-                    filteredRequests.sort((r1, r2) -> r1.getStartDate() != null && r2.getStartDate() != null
-                            ? r1.getStartDate().compareTo(r2.getStartDate())
-                            : 0);
+                    filteredTasks.sort((t1, t2) -> {
+                        LocalDateTime d1 = t1.getStartDate() != null ? t1.getStartDate() : 
+                                         (t1.getRequest() != null ? t1.getRequest().getStartDate() : null);
+                        LocalDateTime d2 = t2.getStartDate() != null ? t2.getStartDate() : 
+                                         (t2.getRequest() != null ? t2.getRequest().getStartDate() : null);
+                        if (d1 != null && d2 != null) return d1.compareTo(d2);
+                        return 0;
+                    });
                 }
             }
 
-            int totalCount = filteredRequests.size();
+            // Pagination
+            int totalCount = filteredTasks.size();
             int totalPages = (int) Math.ceil((double) totalCount / pageSize);
             int offset = (currentPage - 1) * pageSize;
             int startItem = totalCount > 0 ? offset + 1 : 0;
             int endItem = Math.min(offset + pageSize, totalCount);
 
-            List<Request> paginatedRequests = filteredRequests.stream()
+            List<Task> paginatedTasks = filteredTasks.stream()
                     .skip(offset)
                     .limit(pageSize)
                     .collect(Collectors.toList());
-            int totalTasks = filteredByAssignment.size();
-            int processingTasks = (int) filteredByAssignment.stream()
-                    .filter(req -> RequestStatus.Processing.equals(req.getRequestStatus()))
+                    
+            // Calculate statistics
+            int totalTasks = myTasks.size();
+            int processingTasks = (int) myTasks.stream()
+                    .filter(task -> TaskStatus.Processing.equals(task.getStatus()))
                     .count();
-            int finishedTasks = (int) filteredByAssignment.stream()
-                    .filter(req -> RequestStatus.Finished.equals(req.getRequestStatus()))
+            int finishedTasks = (int) myTasks.stream()
+                    .filter(task -> TaskStatus.Finished.equals(task.getStatus()))
                     .count();
 
             String statsNote = "";
             if (statusFilter != null && !statusFilter.isEmpty() && !"all status".equalsIgnoreCase(statusFilter)) {
-                statsNote = " (Filtered: " + filteredRequests.size() + " tasks)";
+                statsNote = " (Filtered: " + filteredTasks.size() + " tasks)";
             }
 
             request.setAttribute("currentPage", currentPage);
@@ -246,7 +275,7 @@ public class viewAssignedTask extends HttpServlet {
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("startItem", startItem);
             request.setAttribute("endItem", endItem);
-            request.setAttribute("assignedRequests", paginatedRequests);
+            request.setAttribute("assignedTasks", paginatedTasks);
 
             request.setAttribute("totalTasks", totalTasks);
             request.setAttribute("processingTasks", processingTasks);

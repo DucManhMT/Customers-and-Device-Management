@@ -1,9 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="crm.common.model.Staff" %>
-<%@ page import="crm.common.model.Request" %>
-<%@ page import="crm.common.model.Customer" %>
-<%@ page import="crm.common.model.Contract" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,34 +88,25 @@
                         <div class="col-md-4">
                             <h6 class="text-muted">Selected Tasks (${selectedRequests.size()} tasks)</h6>
                             <div class="selected-tasks-list" style="max-height: 300px; overflow-y: auto;">
-                                <%
-                                    List<Request> selectedRequests = (List<Request>) request.getAttribute("selectedRequests");
-                                    if (selectedRequests != null) {
-                                        for (Request req : selectedRequests) {
-                                            Customer customer = req.getContract() != null ? req.getContract().getCustomer() : null;
-                                            String customerName = customer != null ? customer.getCustomerName() : "N/A";
-                                            String customerPhone = customer != null ? customer.getPhone() : "N/A";
-                                %>
-                                <div class="card mb-2">
-                                    <div class="card-body py-2">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <strong>Request #<%= req.getRequestID() %>
-                                                </strong><br>
-                                                <small class="text-muted">
-                                                    Customer: <%= customerName %> | Phone: <%= customerPhone %>
-                                                </small>
-                                            </div>
-                                            <div class="col-md-4 text-end">
-                                                <span class="badge bg-success">Approved</span>
+                                <c:forEach var="req" items="${selectedRequests}">
+                                    <div class="card mb-2">
+                                        <div class="card-body py-2">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <strong>Request #${req.requestID}</strong><br>
+                                                    <small class="text-muted">
+                                                        Customer: ${req.contract != null ? req.contract.customer.customerName : 'N/A'}
+                                                        |
+                                                        Phone: ${req.contract != null ? req.contract.customer.phone : 'N/A'}
+                                                    </small>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <span class="badge bg-success">Approved</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <%
-                                        }
-                                    }
-                                %>
+                                </c:forEach>
                             </div>
                         </div>
 
@@ -140,91 +126,79 @@
                             </div>
 
                             <form action="${pageContext.request.contextPath}/task/processAssignment" method="post">
-                                <%
-                                    String[] selectedTaskIds = (String[]) request.getAttribute("selectedTaskIds");
-                                    if (selectedTaskIds != null) {
-                                        for (String taskId : selectedTaskIds) {
-                                %>
-                                <input type="hidden" name="selectedTasks" value="<%= taskId %>">
-                                <%
-                                        }
-                                    }
-                                %>
+                                <c:forEach var="taskId" items="${selectedTaskIds}">
+                                    <input type="hidden" name="selectedTasks" value="${taskId}">
+                                </c:forEach>
 
                                 <div class="technician-list" style="max-height: 400px; overflow-y: auto;">
-                                    <%
-                                        List<Staff> technicians = (List<Staff>) request.getAttribute("technicians");
-                                        if (technicians != null && !technicians.isEmpty()) {
-                                    %>
-                                    <table class="table table-bordered table-hover align-middle">
-                                        <thead class="table-light">
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Email</th>
-                                            <th>Address</th>
-                                            <th>Date of Birth</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <% for (Staff tech : technicians) { %>
-                                        <tr>
-                                            <td class="text-center">
-                                                <input class="form-check-input" type="radio" name="selectedTechnician"
-                                                       value="<%= tech.getAccount().getUsername() %>"
-                                                       id="tech_<%= tech.getStaffID() %>">
-                                            </td>
-                                            <td><%= tech.getStaffID() %>
-                                            </td>
-                                            <td><%= tech.getStaffName() %>
-                                            </td>
-                                            <td><a href="tel:<%= tech.getPhone() %>"><%= tech.getPhone() %>
-                                            </a></td>
-                                            <td><a href="mailto:<%= tech.getEmail() %>"><%= tech.getEmail() %>
-                                            </a></td>
-                                            <td><%= tech.getAddress() != null ? tech.getAddress() : "" %>
-                                            </td>
-                                            <td><%= tech.getDateOfBirth() != null ? tech.getDateOfBirth() : "" %>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                                        onclick="viewTech('<%= tech.getStaffID() %>')">
-                                                    View
-                                                </button>
-                                            </td>
+                                    <c:choose>
+                                        <c:when test="${not empty technicians}">
+                                            <table class="table table-bordered table-hover align-middle">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Email</th>
+                                                    <th>Address</th>
+                                                    <th>Date of Birth</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var="tech" items="${technicians}">
+                                                    <tr>
+                                                        <td>${tech.staffID}</td>
+                                                        <td>${tech.staffName}</td>
+                                                        <td><a href="tel:${tech.phone}">${tech.phone}</a></td>
+                                                        <td><a href="mailto:${tech.email}">${tech.email}</a></td>
+                                                        <td>${tech.address != null ? tech.address : ''}</td>
+                                                        <td>${tech.dateOfBirth != null ? tech.dateOfBirth : ''}</td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                                    onclick="viewTech('${tech.staffID}')">
+                                                                View
+                                                            </button>
+                                                            <a
+                                                                    class="btn btn-success btn-sm ms-2"
+                                                                    type="submit"
+                                                                    href="${pageContext.request.contextPath}/technician_leader/tasks/assign?assignTo=${tech.staffID}&requestId=${selectedTaskIds[0]}">
 
-                                        </tr>
-                                        <% } %>
-                                        </tbody>
-                                    </table>
-                                    <%
-                                    } else {
-                                    %>
-                                    <div class="alert alert-warning text-center py-4">
-                                        <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
-                                        <h5 class="alert-heading">No Technicians Available</h5>
-                                        <p class="mb-0">There are currently no technicians available for task
-                                            assignment.</p>
-                                    </div>
-                                    <%
-                                        }
-                                    %>
+                                                                <i class="bi bi-person-plus me-2"></i>
+                                                                Assign
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="alert alert-warning text-center py-4">
+                                                <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
+                                                <h5 class="alert-heading">No Technicians Available</h5>
+                                                <p class="mb-0">There are currently no technicians available for task
+                                                    assignment.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
 
-                                <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-                                        <i class="bi bi-arrow-left"></i> Back
-                                    </button>
-                                    <button type="submit" class="btn btn-primary" id="assignBtn">
-                                        <i class="bi bi-check-circle"></i> Assign Tasks
-                                    </button>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div id="selectedCount" class="text-muted">
+                                        <i class="bi bi-check-square"></i> Selected: <strong>0</strong> technician(s)
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                                            <i class="bi bi-arrow-left"></i> Back
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" id="assignBtn">
+                                            <i class="bi bi-check-circle"></i> Assign Tasks
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
 
-                            <!-- Pagination -->
                             <div class="d-flex justify-content-between align-items-center mt-4">
                                 <div class="text-muted">
                                     Showing <span id="showingStart">${((currentPage - 1) * recordsPerPage) + 1}</span>
@@ -298,206 +272,215 @@
         });
     });
 
-            document.getElementById('assignBtn').addEventListener('click', function(e) {
-            const selectedTechnician = document.querySelector('input[name="selectedTechnician"]:checked');
-            if (!selectedTechnician) {
-                e.preventDefault();
-                alert('Please select a technician to assign the tasks.');
-                return false;
-            }
-        });
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const technicianCards = document.querySelectorAll('.technician-card');
-            const radioButtons = document.querySelectorAll('input[name="selectedTechnician"]');
-            
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    technicianCards.forEach(card => {
-                        card.classList.remove('selected');
-                    });
-                    
-                    if (this.checked) {
-                        const card = this.closest('.form-check').querySelector('.technician-card');
-                        card.classList.add('selected');
-                        
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                });
-            });
-            
-            technicianCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    if (!this.classList.contains('selected')) {
-                        this.style.transform = 'translateY(-2px)';
-                    }
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    if (!this.classList.contains('selected')) {
-                        this.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-        });
-        
-        function clearFilters() {
-            document.getElementById('searchName').value = '';
-            document.getElementById('filterLocation').value = '';
-            document.getElementById('filterAge').value = '';
-            document.getElementById('filterForm').submit();
-        }
-        
-        function applyFilters() {
-            document.getElementById('filterForm').submit();
-        }
-        
-        function updatePageSize() {
-            const pageSize = document.getElementById('pageSize').value;
-            const form = document.getElementById('filterForm');
-            
-            let pageSizeInput = document.querySelector('input[name="recordsPerPage"]');
-            if (!pageSizeInput) {
-                pageSizeInput = document.createElement('input');
-                pageSizeInput.type = 'hidden';
-                pageSizeInput.name = 'recordsPerPage';
-                form.appendChild(pageSizeInput);
-            }
-            pageSizeInput.value = pageSize;
-            
-            let pageInput = document.querySelector('input[name="page"]');
-            if (!pageInput) {
-                pageInput = document.createElement('input');
-                pageInput.type = 'hidden';
-                pageInput.name = 'page';
-                form.appendChild(pageInput);
-            }
-            pageInput.value = '1';
-            
-            form.submit();
-        }
-        
-        function goToPage(page) {
-            const searchName = document.getElementById('searchName').value;
-            const location = document.getElementById('filterLocation').value;
-            const ageRange = document.getElementById('filterAge').value;
-            const recordsPerPage = document.getElementById('pageSize').value;
-            
-            let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
-            
-            <c:forEach var="taskId" items="${selectedTaskIds}">
-                url += '&selectedTasks=${taskId}';
-            </c:forEach>
-            
-            if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
-            if (location) url += '&location=' + encodeURIComponent(location);
-            if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
-            if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-            
-            window.location.href = url;
+    // Validate form - require at least one technician selected
+    document.getElementById('assignBtn').addEventListener('click', function (e) {
+        const selectedTechs = document.querySelectorAll('input[name="selectedTechnicians"]:checked');
+        if (selectedTechs.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one technician to assign the tasks.');
             return false;
         }
-        
-        function buildPaginationUrl(page) {
-            const searchName = document.getElementById('searchName').value;
-            const location = document.getElementById('filterLocation').value;
-            const ageRange = document.getElementById('filterAge').value;
-            const recordsPerPage = document.getElementById('pageSize').value;
-            
-            let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
-            
-            <c:forEach var="taskId" items="${selectedTaskIds}">
-                url += '&selectedTasks=${taskId}';
-            </c:forEach>
-            
-            if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
-            if (location) url += '&location=' + encodeURIComponent(location);
-            if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
-            if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-            
-            return url;
+    });
+
+    // Select All / Deselect All functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAllCheckbox = document.getElementById('selectAllTechs');
+        const techCheckboxes = document.querySelectorAll('.tech-checkbox');
+        const selectedCountSpan = document.querySelector('#selectedCount strong');
+
+        // Update selected count
+        function updateSelectedCount() {
+            const checkedCount = document.querySelectorAll('.tech-checkbox:checked').length;
+            selectedCountSpan.textContent = checkedCount;
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Technicians loaded: ${totalCount}');
-            
-            document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
-            document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
-            
-            const pageSizeSelector = document.getElementById('pageSize');
-            if (pageSizeSelector) {
-                pageSizeSelector.addEventListener('change', updatePageSize);
-                
-                <c:if test="${not empty recordsPerPage}">
-                    pageSizeSelector.value = '${recordsPerPage}';
-                </c:if>
-            }
-            
-            const paginationLinks = document.querySelectorAll('.pagination .page-link[data-page]');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    goToPage(parseInt(page));
+
+        // Select All functionality
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function () {
+                techCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
                 });
+                updateSelectedCount();
             });
-            
-            showFilterSummary();
-        });
-        
-     
-        function viewTech(staffId) {
-            const form = document.createElement('form');
-            form.method = 'post';
-            form.action = '${pageContext.request.contextPath}/tech/employees/view';
-
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'id';
-            input.value = staffId;
-            form.appendChild(input);
-
-            document.body.appendChild(form);
-            form.submit();
         }
 
+        // Individual checkbox change
+        techCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                // Update Select All checkbox state
+                const allChecked = Array.from(techCheckboxes).every(cb => cb.checked);
+                const someChecked = Array.from(techCheckboxes).some(cb => cb.checked);
 
-        function showFilterSummary() {
-            const searchName = document.getElementById('searchName').value;
-            const location = document.getElementById('filterLocation').value;
-            const ageRange = document.getElementById('filterAge').value;
-            
-            if (searchName || location || ageRange) {
-                let summary = 'Active filters: ';
-                const filters = [];
-                
-                if (searchName) filters.push('Search: "' + searchName + '"');
-                if (location) filters.push('Location: "' + location + '"');
-                if (ageRange) {
-                    const ageText = document.querySelector('#filterAge option[value="' + ageRange + '"]').textContent;
-                    filters.push('Age: "' + ageText + '"');
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = someChecked && !allChecked;
                 }
-                
-                summary += filters.join(', ');
-                
-                let filterSummary = document.getElementById('filterSummary');
-                if (!filterSummary) {
-                    filterSummary = document.createElement('div');
-                    filterSummary.id = 'filterSummary';
-                    filterSummary.className = 'alert alert-info alert-dismissible fade show mt-2';
-                    filterSummary.innerHTML = '<i class="bi bi-info-circle me-2"></i><span id="filterSummaryText"></span>';
-                    document.querySelector('.filter-section').appendChild(filterSummary);
-                }
-                
-                document.getElementById('filterSummaryText').textContent = summary;
-                filterSummary.style.display = 'block';
-            } else {
-                const filterSummary = document.getElementById('filterSummary');
-                if (filterSummary) {
-                    filterSummary.style.display = 'none';
-                }
+
+                updateSelectedCount();
+            });
+        });
+
+        // Initial count
+        updateSelectedCount();
+    });
+
+    function clearFilters() {
+        document.getElementById('searchName').value = '';
+        document.getElementById('filterLocation').value = '';
+        document.getElementById('filterAge').value = '';
+        document.getElementById('filterForm').submit();
+    }
+
+    function applyFilters() {
+        document.getElementById('filterForm').submit();
+    }
+
+    function updatePageSize() {
+        const pageSize = document.getElementById('pageSize').value;
+        const form = document.getElementById('filterForm');
+
+        let pageSizeInput = document.querySelector('input[name="recordsPerPage"]');
+        if (!pageSizeInput) {
+            pageSizeInput = document.createElement('input');
+            pageSizeInput.type = 'hidden';
+            pageSizeInput.name = 'recordsPerPage';
+            form.appendChild(pageSizeInput);
+        }
+        pageSizeInput.value = pageSize;
+
+        let pageInput = document.querySelector('input[name="page"]');
+        if (!pageInput) {
+            pageInput = document.createElement('input');
+            pageInput.type = 'hidden';
+            pageInput.name = 'page';
+            form.appendChild(pageInput);
+        }
+        pageInput.value = '1';
+
+        form.submit();
+    }
+
+    function goToPage(page) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
+
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
+
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
+
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
+
+        window.location.href = url;
+        return false;
+    }
+
+    function buildPaginationUrl(page) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
+
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
+
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
+
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
+
+        return url;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Technicians loaded: ${totalCount}');
+
+        document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
+        document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
+
+        const pageSizeSelector = document.getElementById('pageSize');
+        if (pageSizeSelector) {
+            pageSizeSelector.addEventListener('change', updatePageSize);
+
+            <c:if test="${not empty recordsPerPage}">
+            pageSizeSelector.value = '${recordsPerPage}';
+            </c:if>
+        }
+
+        const paginationLinks = document.querySelectorAll('.pagination .page-link[data-page]');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const page = this.getAttribute('data-page');
+                goToPage(parseInt(page));
+            });
+        });
+
+        showFilterSummary();
+    });
+
+
+    function viewTech(staffId) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '${pageContext.request.contextPath}/tech/employees/view';
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'id';
+        input.value = staffId;
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+
+    function showFilterSummary() {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+
+        if (searchName || location || ageRange) {
+            let summary = 'Active filters: ';
+            const filters = [];
+
+            if (searchName) filters.push('Search: "' + searchName + '"');
+            if (location) filters.push('Location: "' + location + '"');
+            if (ageRange) {
+                const ageText = document.querySelector('#filterAge option[value="' + ageRange + '"]').textContent;
+                filters.push('Age: "' + ageText + '"');
+            }
+
+            summary += filters.join(', ');
+
+            let filterSummary = document.getElementById('filterSummary');
+            if (!filterSummary) {
+                filterSummary = document.createElement('div');
+                filterSummary.id = 'filterSummary';
+                filterSummary.className = 'alert alert-info alert-dismissible fade show mt-2';
+                filterSummary.innerHTML = '<i class="bi bi-info-circle me-2"></i><span id="filterSummaryText"></span>';
+                document.querySelector('.filter-section').appendChild(filterSummary);
+            }
+
+            document.getElementById('filterSummaryText').textContent = summary;
+            filterSummary.style.display = 'block';
+        } else {
+            const filterSummary = document.getElementById('filterSummary');
+            if (filterSummary) {
+                filterSummary.style.display = 'none';
             }
         }
+    }
 </script>
 </body>
 </html>

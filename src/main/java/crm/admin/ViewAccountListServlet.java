@@ -6,6 +6,7 @@ import crm.common.model.Customer;
 import crm.common.model.Role;
 import crm.common.model.Staff;
 import crm.common.model.enums.AccountStatus;
+import crm.common.model.enums.RoleStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
@@ -85,7 +86,7 @@ public class ViewAccountListServlet extends HttpServlet {
         List<Role> roleList = em.findAll(Role.class);
         List<Role> filteredRoleList = new ArrayList<>();
         for (Role r : roleList) {
-            if (r != null && r.getRoleID() != 1) { // Skip role ID 1
+            if (r != null && r.getRoleID() != 1 && r.getRoleStatus()== RoleStatus.Active) { // Skip role ID 1
                 filteredRoleList.add(r);
             }
         }

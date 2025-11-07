@@ -154,7 +154,7 @@ CREATE TABLE Feedback (
                           Description NVARCHAR(255),
                           Response NVARCHAR(255),
                           FeedbackDate DATETIME NOT NULL,
-                          ResponseDate DATETIME NOT NULL,
+                          ResponseDate DATETIME,
                           CustomerID NVARCHAR(100),
                           FOREIGN KEY (CustomerID) REFERENCES Account(Username)
 );
@@ -278,6 +278,7 @@ CREATE TABLE Task (
                       EndDate DATETIME,
                       Deadline DATETIME NOT NULL,
                       Description NVARCHAR(255),
+                      TaskNote NVARCHAR(255)
                       Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),

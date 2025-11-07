@@ -2,7 +2,9 @@ package crm.task.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.Request;
+import crm.common.model.Task;
 import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.TaskStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 
@@ -25,54 +27,75 @@ public class UpdateTaskStatusServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String requestIdStr = request.getParameter("requestId");
+        String taskIdStr = request.getParameter("taskId");
         String newStatus = request.getParameter("status");
 
-        if (requestIdStr == null || newStatus == null) {
+        if (taskIdStr == null || newStatus == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
             return;
         }
 
         Connection connection = null;
-        EntityManager entityManager = null;
 
         try {
-            int requestId = Integer.parseInt(requestIdStr);
+            int taskId = Integer.parseInt(taskIdStr);
             connection = DBcontext.getConnection();
-            entityManager = new EntityManager(connection);
+            connection.setAutoCommit(false);
+            EntityManager entityManager = new EntityManager(connection);
 
-            Request req = entityManager.find(Request.class, requestId);
-            if (req == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
+            Task task = entityManager.find(Task.class, taskId);
+            if (task == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
                 return;
             }
 
-            if (RequestStatus.Finished.equals(req.getRequestStatus())) {
+            if (TaskStatus.Finished.equals(task.getStatus())) {
                 request.getSession().setAttribute("errorMessage", "Task is already finished");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
                 return;
             }
 
             if ("finished".equals(newStatus)) {
+                // Force load lazy references to avoid merge issues
+                task.getAssignBy();
+                task.getAssignTo();
+                Request req = task.getRequest();
 
-                req.setRequestStatus(RequestStatus.Finished);
-                req.setFinishedDate(LocalDateTime.now());
+                // Update task status to Finished
+                task.setStatus(TaskStatus.Finished);
+                task.setEndDate(LocalDateTime.now());
+                entityManager.merge(task, Task.class);
 
-                entityManager.merge(req, Request.class);
+                // Also update the Request status to Finished if not already
+                if (req != null && !RequestStatus.Finished.equals(req.getRequestStatus())) {
+                    req.setRequestStatus(RequestStatus.Finished);
+                    req.setFinishedDate(LocalDateTime.now());
+                    entityManager.merge(req, Request.class);
+                }
 
-                request.getSession().setAttribute("successMessage", "Task #" + requestId + " has been marked as finished successfully!");
+                connection.commit();
+
+                request.getSession().setAttribute("successMessage", "Task #" + taskId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
             }
 
         } catch (NumberFormatException e) {
-
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID");
+            if (connection != null) {
+                try { connection.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+            }
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         } catch (Exception e) {
-
+            if (connection != null) {
+                try { connection.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+            }
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
+        } finally {
+            if (connection != null) {
+                try { connection.setAutoCommit(true); connection.close(); } catch (Exception ignore) {}
+            }
         }
     }
 }

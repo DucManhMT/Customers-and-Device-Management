@@ -31,7 +31,7 @@ public class Feedback {
     @Column(name = "FeedbackDate", type = "DATETIME", nullable = false)
     private LocalDateTime feedbackDate;
 
-    @Column(name = "ResponseDate", type = "DATETIME", nullable = false)
+    @Column(name = "ResponseDate", type = "DATETIME")
     private LocalDateTime responseDate;
 
     @Column(name = "CustomerID")
