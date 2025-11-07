@@ -23,6 +23,7 @@ public class CustomerLoginController extends HttpServlet {
             if (account != null && account.getRole().getRoleName().equals("Customer")) {
                 HttpSession session = request.getSession();
                 session.setAttribute("account", account);
+                session.setAttribute("role", account.getRole());
                 response.sendRedirect(request.getContextPath() + "/customer/customer_actioncenter");
                 return;
                 // ✅ stop after redirect

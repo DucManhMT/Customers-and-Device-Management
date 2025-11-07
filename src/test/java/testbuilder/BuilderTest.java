@@ -60,6 +60,7 @@ package testbuilder;// //package testbuilder;
 // import crm.core.validator.Validator;
 // import org.glassfish.json.JsonUtil;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Customer;
 import crm.common.model.Role;
@@ -75,9 +76,7 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-        String dateString = "2024-06-15";
-        LocalDate date = LocalDate.parse(dateString);
-        System.out.println("Parsed date: " + date);
+        URLConstants.addToDataBase();
     }
 }
 
