@@ -69,7 +69,7 @@ public class WarehouseRequest {
     }
 
     public Warehouse getSourceWarehouse() {
-        return sourceWarehouse.get();
+        return (sourceWarehouse != null) ? sourceWarehouse.get() : null;
     }
 
     public void setSourceWarehouse(Warehouse sourceWarehouse) {

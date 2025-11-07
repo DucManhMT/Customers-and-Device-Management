@@ -13,5 +13,8 @@ public class Main {
     public static void main(String[] args) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
+        WarehouseRequest firstRequest = em.findAll(WarehouseRequest.class).get(1);
+
+        System.out.println("First Warehouse source destination: " + firstRequest.getSourceWarehouse());
     }
 }

@@ -82,9 +82,14 @@
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
                         <span>Request Date: ${req.date}</span>
                         <c:set var="statusClass" value="bg-secondary"/>
-                        <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
-                        <c:if test="${req.warehouseRequestStatus == 'Approved'}"><c:set var="statusClass" value="bg-success"/></c:if>
-                        <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
+                        <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass"
+                                                                                       value="bg-warning text-dark"/></c:if>
+                        <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass"
+                                                                                          value="bg-info text-dark"/></c:if>
+                        <c:if test="${req.warehouseRequestStatus == 'Approved'}"><c:set var="statusClass"
+                                                                                        value="bg-success"/></c:if>
+                        <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass"
+                                                                                        value="bg-danger"/></c:if>
                         <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
                     </div>
                     <div class="card-body">
@@ -92,6 +97,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <small class="text-muted">From</small>
+                                    <p class="fw-bold mb-0">${req.sourceWarehouse != null ? req.sourceWarehouse.warehouseName : 'Not Assigned'}</p>
                                 </div>
                                 <div class="align-self-center px-2">
                                     <i class="fas fa-arrow-right text-primary"></i>
