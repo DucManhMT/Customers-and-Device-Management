@@ -95,7 +95,8 @@
                                                 <div class="col-md-8">
                                                     <strong>Request #${req.requestID}</strong><br>
                                                     <small class="text-muted">
-                                                        Customer: ${req.contract != null ? req.contract.customer.customerName : 'N/A'} | 
+                                                        Customer: ${req.contract != null ? req.contract.customer.customerName : 'N/A'}
+                                                        |
                                                         Phone: ${req.contract != null ? req.contract.customer.phone : 'N/A'}
                                                     </small>
                                                 </div>
@@ -135,9 +136,6 @@
                                             <table class="table table-bordered table-hover align-middle">
                                                 <thead class="table-light">
                                                 <tr>
-                                                    <th width="50">
-                                                        <input class="form-check-input" type="checkbox" id="selectAllTechs">
-                                                    </th>
                                                     <th>ID</th>
                                                     <th>Name</th>
                                                     <th>Phone</th>
@@ -150,12 +148,6 @@
                                                 <tbody>
                                                 <c:forEach var="tech" items="${technicians}">
                                                     <tr>
-                                                        <td class="text-center">
-                                                            <input class="form-check-input tech-checkbox" type="checkbox" 
-                                                                   name="selectedTechnicians" 
-                                                                   value="${tech.account.username}"
-                                                                   id="tech_${tech.staffID}">
-                                                        </td>
                                                         <td>${tech.staffID}</td>
                                                         <td>${tech.staffName}</td>
                                                         <td><a href="tel:${tech.phone}">${tech.phone}</a></td>
@@ -167,6 +159,14 @@
                                                                     onclick="viewTech('${tech.staffID}')">
                                                                 View
                                                             </button>
+                                                            <a
+                                                                    class="btn btn-success btn-sm ms-2"
+                                                                    type="submit"
+                                                                    href="${pageContext.request.contextPath}/technician_leader/tasks/assign?assignTo=${tech.staffID}&requestId=${selectedTaskIds[0]}">
+
+                                                                <i class="bi bi-person-plus me-2"></i>
+                                                                Assign
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -177,7 +177,8 @@
                                             <div class="alert alert-warning text-center py-4">
                                                 <i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
                                                 <h5 class="alert-heading">No Technicians Available</h5>
-                                                <p class="mb-0">There are currently no technicians available for task assignment.</p>
+                                                <p class="mb-0">There are currently no technicians available for task
+                                                    assignment.</p>
                                             </div>
                                         </c:otherwise>
                                     </c:choose>
@@ -272,7 +273,7 @@
     });
 
     // Validate form - require at least one technician selected
-    document.getElementById('assignBtn').addEventListener('click', function(e) {
+    document.getElementById('assignBtn').addEventListener('click', function (e) {
         const selectedTechs = document.querySelectorAll('input[name="selectedTechnicians"]:checked');
         if (selectedTechs.length === 0) {
             e.preventDefault();
@@ -280,206 +281,206 @@
             return false;
         }
     });
-    
+
     // Select All / Deselect All functionality
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const selectAllCheckbox = document.getElementById('selectAllTechs');
         const techCheckboxes = document.querySelectorAll('.tech-checkbox');
         const selectedCountSpan = document.querySelector('#selectedCount strong');
-        
+
         // Update selected count
         function updateSelectedCount() {
             const checkedCount = document.querySelectorAll('.tech-checkbox:checked').length;
             selectedCountSpan.textContent = checkedCount;
         }
-        
+
         // Select All functionality
         if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function() {
+            selectAllCheckbox.addEventListener('change', function () {
                 techCheckboxes.forEach(checkbox => {
                     checkbox.checked = this.checked;
                 });
                 updateSelectedCount();
             });
         }
-        
+
         // Individual checkbox change
         techCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 // Update Select All checkbox state
                 const allChecked = Array.from(techCheckboxes).every(cb => cb.checked);
                 const someChecked = Array.from(techCheckboxes).some(cb => cb.checked);
-                
+
                 if (selectAllCheckbox) {
                     selectAllCheckbox.checked = allChecked;
                     selectAllCheckbox.indeterminate = someChecked && !allChecked;
                 }
-                
+
                 updateSelectedCount();
             });
         });
-        
+
         // Initial count
         updateSelectedCount();
     });
-        
-        function clearFilters() {
-            document.getElementById('searchName').value = '';
-            document.getElementById('filterLocation').value = '';
-            document.getElementById('filterAge').value = '';
-            document.getElementById('filterForm').submit();
+
+    function clearFilters() {
+        document.getElementById('searchName').value = '';
+        document.getElementById('filterLocation').value = '';
+        document.getElementById('filterAge').value = '';
+        document.getElementById('filterForm').submit();
+    }
+
+    function applyFilters() {
+        document.getElementById('filterForm').submit();
+    }
+
+    function updatePageSize() {
+        const pageSize = document.getElementById('pageSize').value;
+        const form = document.getElementById('filterForm');
+
+        let pageSizeInput = document.querySelector('input[name="recordsPerPage"]');
+        if (!pageSizeInput) {
+            pageSizeInput = document.createElement('input');
+            pageSizeInput.type = 'hidden';
+            pageSizeInput.name = 'recordsPerPage';
+            form.appendChild(pageSizeInput);
         }
-        
-        function applyFilters() {
-            document.getElementById('filterForm').submit();
+        pageSizeInput.value = pageSize;
+
+        let pageInput = document.querySelector('input[name="page"]');
+        if (!pageInput) {
+            pageInput = document.createElement('input');
+            pageInput.type = 'hidden';
+            pageInput.name = 'page';
+            form.appendChild(pageInput);
         }
-        
-        function updatePageSize() {
-            const pageSize = document.getElementById('pageSize').value;
-            const form = document.getElementById('filterForm');
-            
-            let pageSizeInput = document.querySelector('input[name="recordsPerPage"]');
-            if (!pageSizeInput) {
-                pageSizeInput = document.createElement('input');
-                pageSizeInput.type = 'hidden';
-                pageSizeInput.name = 'recordsPerPage';
-                form.appendChild(pageSizeInput);
-            }
-            pageSizeInput.value = pageSize;
-            
-            let pageInput = document.querySelector('input[name="page"]');
-            if (!pageInput) {
-                pageInput = document.createElement('input');
-                pageInput.type = 'hidden';
-                pageInput.name = 'page';
-                form.appendChild(pageInput);
-            }
-            pageInput.value = '1';
-            
-            form.submit();
+        pageInput.value = '1';
+
+        form.submit();
+    }
+
+    function goToPage(page) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
+
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
+
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
+
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
+
+        window.location.href = url;
+        return false;
+    }
+
+    function buildPaginationUrl(page) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
+
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
+
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
+
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
+
+        return url;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Technicians loaded: ${totalCount}');
+
+        document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
+        document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
+
+        const pageSizeSelector = document.getElementById('pageSize');
+        if (pageSizeSelector) {
+            pageSizeSelector.addEventListener('change', updatePageSize);
+
+            <c:if test="${not empty recordsPerPage}">
+            pageSizeSelector.value = '${recordsPerPage}';
+            </c:if>
         }
-        
-        function goToPage(page) {
-            const searchName = document.getElementById('searchName').value;
-            const location = document.getElementById('filterLocation').value;
-            const ageRange = document.getElementById('filterAge').value;
-            const recordsPerPage = document.getElementById('pageSize').value;
-            
-            let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
-            
-            <c:forEach var="taskId" items="${selectedTaskIds}">
-                url += '&selectedTasks=${taskId}';
-            </c:forEach>
-            
-            if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
-            if (location) url += '&location=' + encodeURIComponent(location);
-            if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
-            if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-            
-            window.location.href = url;
-            return false;
-        }
-        
-        function buildPaginationUrl(page) {
-            const searchName = document.getElementById('searchName').value;
-            const location = document.getElementById('filterLocation').value;
-            const ageRange = document.getElementById('filterAge').value;
-            const recordsPerPage = document.getElementById('pageSize').value;
-            
-            let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
-            
-            <c:forEach var="taskId" items="${selectedTaskIds}">
-                url += '&selectedTasks=${taskId}';
-            </c:forEach>
-            
-            if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
-            if (location) url += '&location=' + encodeURIComponent(location);
-            if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
-            if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-            
-            return url;
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Technicians loaded: ${totalCount}');
-            
-            document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
-            document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
-            
-            const pageSizeSelector = document.getElementById('pageSize');
-            if (pageSizeSelector) {
-                pageSizeSelector.addEventListener('change', updatePageSize);
-                
-                <c:if test="${not empty recordsPerPage}">
-                    pageSizeSelector.value = '${recordsPerPage}';
-                </c:if>
-            }
-            
-            const paginationLinks = document.querySelectorAll('.pagination .page-link[data-page]');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    goToPage(parseInt(page));
-                });
+
+        const paginationLinks = document.querySelectorAll('.pagination .page-link[data-page]');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const page = this.getAttribute('data-page');
+                goToPage(parseInt(page));
             });
-            
-            showFilterSummary();
         });
-        
-     
-        function viewTech(staffId) {
-            const form = document.createElement('form');
-            form.method = 'post';
-            form.action = '${pageContext.request.contextPath}/tech/employees/view';
 
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'id';
-            input.value = staffId;
-            form.appendChild(input);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
+        showFilterSummary();
+    });
 
 
-        function showFilterSummary() {
-            const searchName = document.getElementById('searchName').value;
-            const location = document.getElementById('filterLocation').value;
-            const ageRange = document.getElementById('filterAge').value;
-            
-            if (searchName || location || ageRange) {
-                let summary = 'Active filters: ';
-                const filters = [];
-                
-                if (searchName) filters.push('Search: "' + searchName + '"');
-                if (location) filters.push('Location: "' + location + '"');
-                if (ageRange) {
-                    const ageText = document.querySelector('#filterAge option[value="' + ageRange + '"]').textContent;
-                    filters.push('Age: "' + ageText + '"');
-                }
-                
-                summary += filters.join(', ');
-                
-                let filterSummary = document.getElementById('filterSummary');
-                if (!filterSummary) {
-                    filterSummary = document.createElement('div');
-                    filterSummary.id = 'filterSummary';
-                    filterSummary.className = 'alert alert-info alert-dismissible fade show mt-2';
-                    filterSummary.innerHTML = '<i class="bi bi-info-circle me-2"></i><span id="filterSummaryText"></span>';
-                    document.querySelector('.filter-section').appendChild(filterSummary);
-                }
-                
-                document.getElementById('filterSummaryText').textContent = summary;
-                filterSummary.style.display = 'block';
-            } else {
-                const filterSummary = document.getElementById('filterSummary');
-                if (filterSummary) {
-                    filterSummary.style.display = 'none';
-                }
+    function viewTech(staffId) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '${pageContext.request.contextPath}/tech/employees/view';
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'id';
+        input.value = staffId;
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+
+    function showFilterSummary() {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+
+        if (searchName || location || ageRange) {
+            let summary = 'Active filters: ';
+            const filters = [];
+
+            if (searchName) filters.push('Search: "' + searchName + '"');
+            if (location) filters.push('Location: "' + location + '"');
+            if (ageRange) {
+                const ageText = document.querySelector('#filterAge option[value="' + ageRange + '"]').textContent;
+                filters.push('Age: "' + ageText + '"');
+            }
+
+            summary += filters.join(', ');
+
+            let filterSummary = document.getElementById('filterSummary');
+            if (!filterSummary) {
+                filterSummary = document.createElement('div');
+                filterSummary.id = 'filterSummary';
+                filterSummary.className = 'alert alert-info alert-dismissible fade show mt-2';
+                filterSummary.innerHTML = '<i class="bi bi-info-circle me-2"></i><span id="filterSummaryText"></span>';
+                document.querySelector('.filter-section').appendChild(filterSummary);
+            }
+
+            document.getElementById('filterSummaryText').textContent = summary;
+            filterSummary.style.display = 'block';
+        } else {
+            const filterSummary = document.getElementById('filterSummary');
+            if (filterSummary) {
+                filterSummary.style.display = 'none';
             }
         }
+    }
 </script>
 </body>
 </html>

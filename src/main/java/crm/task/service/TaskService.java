@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import crm.common.model.Task;
+import crm.common.model.Request;
 import crm.common.model.Staff;
+import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.core.config.TransactionManager;
 import crm.core.utils.KeyGenerator;
@@ -13,6 +15,7 @@ import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.service_request.service.RequestService;
 import crm.service_request.repository.persistence.query.common.Order;
 import crm.task.dto.TaskFilter;
 import crm.task.repository.StaffRepository;
@@ -22,6 +25,7 @@ public class TaskService {
     private TaskRepository taskRepository = new TaskRepository();
     private RequestRepository requestRepository = new RequestRepository();
     private StaffRepository staffRepository = new StaffRepository();
+    private RequestService requestService = new RequestService();
 
     // Column name constants to avoid duplication & magic strings
     private static final String COL_REQUEST_ID = "RequestID";
@@ -134,6 +138,7 @@ public class TaskService {
     public Task createTask(int assignBy, int assignTo, int requestId, LocalDateTime startDate, LocalDateTime deadline,
             String description) {
         Task task = new Task();
+        Request request = requestRepository.findById(requestId);
         task.setTaskID(taskRepository.getNewId());
         task.setAssignBy(staffRepository.findById(assignBy));
         task.setAssignTo(staffRepository.findById(assignTo));
@@ -145,6 +150,10 @@ public class TaskService {
         try {
             TransactionManager.beginTransaction();
             taskRepository.save(task);
+            if (request.getRequestStatus().equals(RequestStatus.Approved)) {
+                request.setRequestStatus(RequestStatus.Processing);
+                requestRepository.update(request);
+            }
             TransactionManager.commit();
         } catch (SQLException e) {
 
