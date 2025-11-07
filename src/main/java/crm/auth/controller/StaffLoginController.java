@@ -25,22 +25,31 @@ public class StaffLoginController extends HttpServlet {
                 session.setAttribute("account", account);
                 switch (account.getRole().getRoleName()) {
                     case "TechnicianLeader":
+                        session.removeAttribute("error");
                         resp.sendRedirect(req.getContextPath() + "/technician_leader/techlead_actioncenter");
                         return; // ✅ stop after redirect
                     case "TechnicianEmployee":
+                        session.removeAttribute("error");
                         resp.sendRedirect(req.getContextPath() + "/technician_employee/techemployee_actioncenter");
                         return; // ✅ stop after redirect
                     case "CustomerSupporter":
+                        session.removeAttribute("error");
                         resp.sendRedirect(req.getContextPath() + "/customer_supporter/customersupporter_actioncenter");
                         return; // ✅ stop after redirect
                     case "WarehouseKeeper":
+                        session.removeAttribute("error");
                         resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/warehousekeeper_actioncenter");
                         return; // ✅ stop after redirect
                     case "Admin":
+                        session.removeAttribute("error");
                         resp.sendRedirect(req.getContextPath() + "/admin/admin_actioncenter");
                         return; // ✅ stop after redirect
+                    default:
+                        session.setAttribute("error", "Invalid username or password.");
+                        resp.sendRedirect(req.getContextPath() + "/auth/staff_login");
+                        return; // ✅ stop after forward
                 }
-                return; // ✅ stop after redirect
+
             } else {
                 session.setAttribute("error", "Invalid username or password.");
                 resp.sendRedirect(req.getContextPath() + "/auth/staff_login");

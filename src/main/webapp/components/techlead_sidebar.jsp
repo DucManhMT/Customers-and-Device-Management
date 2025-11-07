@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     .sidebar {
         width: 260px;
@@ -89,13 +90,25 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile">My Profile </a>
+                <a class="nav-link ${activePage == 'techleadProfile' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees"> View Technician List</a>
+                <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/tech/employees"><i class="bi bi-eye"></i> View Technician
+                    List</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAprovedTask"> View Aproved Tasks</a>
+                <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/task/viewAprovedTask"><i class="bi bi-eye"></i> View Aproved
+                    Request</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/technician_leader/tasks/list">
+                    <i class="bi bi-list-task"></i> View Task
+                </a>
             </li>
 
 

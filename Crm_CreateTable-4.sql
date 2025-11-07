@@ -21,7 +21,8 @@ CREATE TABLE Type (
 
 CREATE TABLE Role (
                       RoleID INT PRIMARY KEY,
-                      RoleName NVARCHAR(50) UNIQUE
+                      RoleName NVARCHAR(50) UNIQUE,
+                      RoleStatus ENUM('Active', 'Deactive')
 );
 
 CREATE TABLE Account (
@@ -316,6 +317,7 @@ CREATE TABLE Task (
                       EndDate DATETIME,
                       Deadline DATETIME NOT NULL,
                       Description NVARCHAR(255),
+                      TaskNote NVARCHAR(255)
                       Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
