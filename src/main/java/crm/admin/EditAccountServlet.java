@@ -5,6 +5,7 @@ import crm.common.model.Account;
 import crm.common.model.Customer;
 import crm.common.model.Role;
 import crm.common.model.Staff;
+import crm.common.model.enums.RoleStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.validator.Validator;
@@ -51,6 +52,7 @@ public class EditAccountServlet extends HttpServlet {
 
         List<Role> filteredRoles = allRoles.stream()
                 .filter(r -> r.getRoleID() != 1)
+                .filter(r-> r.getRoleStatus() == RoleStatus.Active)
                 .filter(r -> {
                     if (Integer.parseInt(role) != 2) {
                         return r.getRoleID() != 2;
@@ -89,17 +91,32 @@ public class EditAccountServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
             return;
         }
-        if (Integer.parseInt(role) == 2) {
-            List<Customer> cusPhoneList = em.findWithConditions(Customer.class, Map.of("phone", accountPhone));
-            if (!cusPhoneList.isEmpty() && !cusPhoneList.get(0).getAccount().equals(username)) {
+        if (Integer.parseInt(role) == 2) { // Customer
+
+            Customer currentCustomer = em.findWithConditions(Customer.class, Map.of("account", username)).get(0);
+
+// Tìm tất cả có cùng số điện thoại, trừ chính mình
+            List<Customer> existingPhones = em.findWithConditions(Customer.class, Map.of("phone", accountPhone))
+                    .stream()
+                    .filter(c -> !c.getCustomerID().equals(currentCustomer.getCustomerID()))
+                    .toList();
+
+            if (!existingPhones.isEmpty()) {
                 request.getSession().setAttribute("error", "Phone number already in use by another customer.");
                 response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
                 return;
             }
         } else { // Staff
-            List<Staff> staffPhoneList = em.findWithConditions(Staff.class, Map.of("phone", accountPhone));
-            if (!staffPhoneList.isEmpty() && !staffPhoneList.get(0).getAccount().equals(username)) {
-                request.getSession().setAttribute("error", "Phone number already in use by another staff member.");
+            Map<String, Object> cond = new HashMap<>();
+            cond.put("account", username);
+            Staff currentStaff = em.findWithConditions(Staff.class, cond).get(0);
+            List<Staff> existingPhones = em.findWithConditions(Staff.class, Map.of("phone", accountPhone))
+                    .stream()
+                    .filter(s -> !s.getStaffID().equals(currentStaff.getStaffID()))
+                    .toList();
+
+            if (!existingPhones.isEmpty()) {
+                request.setAttribute("error", "Phone number already in use by another staff.");
                 response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
                 return;
             }

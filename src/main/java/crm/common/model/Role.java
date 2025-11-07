@@ -14,9 +14,9 @@ public class Role {
     @Column(name = "RoleName", length = 50, unique = true)
     private String roleName;
 
-//    @Enumerated
-//    @Column(name = "RoleStatus")
-//    private RoleStatus roleStatus;
+    @Enumerated
+    @Column(name = "RoleStatus")
+    private RoleStatus roleStatus;
 
     @OneToMany(mappedBy = "roleID", joinColumn = "RoleID", targetEntity = Account.class)
     List<Account> accounts;
@@ -29,13 +29,13 @@ public class Role {
         this.roleName = roleName;
     }
 
-//    public RoleStatus getRoleStatus() {
-//        return roleStatus;
-//    }
-//
-//    public void setRoleStatus(RoleStatus roleStatus) {
-//        this.roleStatus = roleStatus;
-//    }
+    public RoleStatus getRoleStatus() {
+        return roleStatus;
+    }
+
+    public void setRoleStatus(RoleStatus roleStatus) {
+        this.roleStatus = roleStatus;
+    }
 
     public Integer getRoleID() {
         return roleID;

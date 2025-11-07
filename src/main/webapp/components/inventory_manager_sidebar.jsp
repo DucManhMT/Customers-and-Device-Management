@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: Admin
-  Date: 11/3/2025
-  Time: 12:42 AM
+  Date: 11/7/2025
+  Time: 7:04 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -89,28 +89,13 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
+                <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_actioncenter"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'warehouses' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><i class="fas fa-warehouse"></i><span> Warehouses</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'transfers' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"><i class="fas fa-box-open"></i><span> TransferRequest</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'shipments' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/export_internal"><i class="fas fa-truck"></i><span> ExportInternal</span></a>
+                <a class="nav-link ${activePage == 'transfers' ? 'active' : ''}" href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><i class="fas fa-box-open"></i><span> TransferRequest</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><i class="fas fa-boxes-stacked"></i><span> Inventory</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'finance' ? 'active' : ''}" href="#"><i class="fas fa-file-invoice-dollar"></i><span> Finance</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'customers' ? 'active' : ''}" href="#"><i class="fas fa-users"></i><span> Customers</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'tracking' ? 'active' : ''}" href="#"><i class="fas fa-map-marker-alt"></i><span> Tracking</span></a>
             </li>
         </ul>
     </div>

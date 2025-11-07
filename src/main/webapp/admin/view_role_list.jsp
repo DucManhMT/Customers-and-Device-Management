@@ -25,7 +25,10 @@
 
 
     <c:if test="${not empty error}">
-        <div class="alert alert-danger">${error}</div>
+        <div class="alert alert-danger" id="errorMessage">${error}</div>
+    </c:if>
+    <c:if test="${not empty roleSuccess}">
+        <div class="alert alert-success" id="successMessage">${roleSuccess}</div>
     </c:if>
     <!-- Stats Cards -->
     <div class="row mb-4">
@@ -95,6 +98,7 @@
                 <th>Role ID</th>
                 <th>Role Name</th>
                 <th>Users</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -104,6 +108,7 @@
                     <td>${role.roleID}</td>
                     <td>${role.roleName}</td>
                     <td>${userCountPerRole[role.roleID]}</td>
+                    <td>${role.roleStatus}</td>
                     <td>
                         <a href="${pageContext.request.contextPath}/admin/role_list/view_role_detail?id=${role.roleID}"
                            class="btn btn-sm btn-info me-2 text-white">
@@ -113,13 +118,16 @@
                            class="btn btn-sm btn-primary me-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <form action="${pageContext.request.contextPath}/admin/role_list" method="post"
-                              style="display:inline;">
-                            <input type="hidden" name="action" value="delete"/>
-                            <input type="hidden" name="id" value="${role.roleID}"/>
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure you want to delete this role?');">
-                                <i class="bi bi-trash"></i> Delete
+                        <form action="${pageContext.request.contextPath}/admin/role_list" method="post" class="d-inline">
+                            <input type="hidden" name="action"
+                                   value="${role.roleStatus == 'Active' ? 'deactivate' : 'activate'}">
+                            <input type="hidden" name="id" value="${role.roleID}">
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-${role.roleStatus == 'Active' ? 'danger' : 'success'}"
+                                    onclick="return confirm('Are you sure you want to ${role.roleStatus == 'Active' ? 'deactivate' : 'activate'} this role?')">
+                                <i class="bi ${role.roleStatus == 'Active' ? 'bi-trash' : 'bi-check-circle'}"></i>
+                                    ${role.roleStatus == 'Active' ? 'Deactivate' : 'Activate'}
                             </button>
                         </form>
                     </td>
@@ -177,5 +185,17 @@
         </ul>
     </nav>
 </div>
+<script>
+    ['errorMessage', 'successMessage'].forEach(id => {
+        const box = document.getElementById(id);
+        if (box) {
+            setTimeout(() => {
+                box.style.transition = "opacity 0.5s ease";
+                box.style.opacity = "0";
+                setTimeout(() => box.remove(), 500);
+            }, 3000);
+        }
+    });
+</script>
 </body>
 </html>
