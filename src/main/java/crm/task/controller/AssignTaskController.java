@@ -20,7 +20,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/tasks/assign", name = "AssignTaskController")
+@WebServlet(urlPatterns = "/technician_leader/tasks/assign", name = "AssignTaskController")
 public class AssignTaskController extends HttpServlet {
 
     private final transient RequestRepository requestRepository = new RequestRepository();
@@ -83,8 +83,7 @@ public class AssignTaskController extends HttpServlet {
         String startDateStr = req.getParameter(PARAM_START_DATE);
         String deadlineStr = req.getParameter(PARAM_DEADLINE);
         String description = req.getParameter(PARAM_DESCRIPTION);
-        System.out.println("Assign Task POST: requestId=" + requestId + ", assignToId=" + assignToId +
-                ", startDate=" + startDateStr + ", deadline=" + deadlineStr + ", description=" + description);
+
         // Validate existence of request & staff
         Request request = null;
         if (requestId == null) {
@@ -167,7 +166,7 @@ public class AssignTaskController extends HttpServlet {
         }
         // Redirect về danh sách task theo request để xem
         try {
-            resp.sendRedirect(req.getContextPath() + "/tasks/viewRequest?requestId=" + requestId);
+            resp.sendRedirect(req.getContextPath() + "/task/selectTechnician?selectedTasks=" + requestId);
         } catch (IOException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

@@ -21,7 +21,7 @@ public class URLConstants {
     public static final String ADMIN_CREATE_ACCOUNT = "/admin/create_account";
     public static final String ADMIN_VIEW_ACCOUNT_DETAIL = "/admin/account_list/view_account_detail";
     //STAFF
-    
+
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
     public static final String STAFF_EDIT_PROFILE = "/staff/profile/edit";
     public static final String STAFF_VIEW_PROFILE = "/staff/profile";
@@ -74,6 +74,12 @@ public class URLConstants {
     public static final String WAREHOUSE_VIEW_WAREHOUSE_DETAIL = "/warehouse_keeper/view_warehouse_detail";
     public static final String WAREHOUSE_VIEW_PRODUCT_REQUESTS = "/warehouse_keeper/view_warehouse_product_requests";
     public static final String WAREHOUSE_VIEW_PROFILE = "/warehouse_keeper/profile";
+    public static final String WAREHOUSE_VIEW_WAREHOUSE_REQUEST = "/warehouse_keeper/view_warehouse_request";
+    public static final String WAREHOUSE_EXPORT_INTERNAL = "/warehouse_keeper/export_internal";
+
+    // INVENTORY MANAGER
+    public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
+    public static final String INVENTORY_VIEW_TRANSFER_REQUESTS = "/inventory_manager/view_transfer_requests";
 
     // TASK
     public static final String TASK_PROCESS_ASSIGNMENT = "/task/processAssignment";

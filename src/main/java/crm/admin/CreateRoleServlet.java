@@ -2,6 +2,7 @@ package crm.admin;
 
 import crm.common.URLConstants;
 import crm.common.model.Role;
+import crm.common.model.enums.RoleStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
@@ -75,7 +76,7 @@ public class CreateRoleServlet extends HttpServlet {
             Role role = new Role();
             role.setRoleID(roleID);
             role.setRoleName(roleName);
-
+            role.setRoleStatus(RoleStatus.Active);
             em.persist(role, Role.class);
             session.setAttribute("success", "Role created successfully.");
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);

@@ -37,6 +37,7 @@
         .page-header h1 {
             font-weight: 700;
             color: var(--sidebar-bg);
+            margin: 20px;
         }
 
         .filter-buttons .btn {
@@ -44,6 +45,7 @@
             font-weight: 500;
             background-color: var(--main-bg);
             color: var(--sidebar-bg);
+            margin: 20px;
         }
 
         .inventory-card {
@@ -52,6 +54,7 @@
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: none;
+            margin: 20px;
         }
 
         /* --- STYLES FOR PRODUCT GRID --- */
@@ -227,12 +230,12 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="grid-top d-flex justify-content-between align-items-center w-100">
                     <span>Total Product (${totalProducts})</span>
-                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
+                    <a href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
                        class="btn btn-light border"><i
-                            class="fas fa-plus me-1"></i> Add Product</a>
+                            class="fas fa-plus me-1"></i> Create Transfer Request</a>
                 </div>
             </div>
-            <!-- NEW PRODUCT GRID LAYOUT -->
+
             <div class="product-grid">
                 <c:forEach var="product" items="${products}">
                     <div class="product-card">

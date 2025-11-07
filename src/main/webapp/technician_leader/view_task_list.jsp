@@ -41,9 +41,9 @@
                     <select id="status" name="status" class="form-select" style="width: 180px;">
                         <option value="">All</option>
                         <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Pending</option>
-                        <option value="InProgress" ${status == 'InProgress' ? 'selected' : ''}>InProgress</option>
-                        <option value="Completed" ${status == 'Completed' ? 'selected' : ''}>Completed</option>
-                        <option value="Cancelled" ${status == 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
+                        <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
+                        <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
                     </select>
                 </div>
 
@@ -131,7 +131,6 @@
                 <thead class="table-light">
                 <tr>
                     <th>No</th>
-                    <th>Task ID</th>
                     <th>Request ID</th>
                     <th>Assign To</th>
                     <th>Status</th>
@@ -147,10 +146,23 @@
                             <c:set var="isOverdue" value="${overdueMap[task.taskID]}"/>
                             <tr class="${isOverdue ? 'table-danger' : (isNearDue ? 'table-warning' : '')}">
                                 <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                                <td>${task.taskID}</td>
                                 <td><c:out value="${task.request != null ? task.request.requestID : '-'}"/></td>
                                 <td><c:out value="${task.assignTo != null ? task.assignTo.staffName : '-'}"/></td>
-                                <td>${task.status}</td>
+                                <td>
+    <span class="
+        badge
+        <c:choose>
+            <c:when test='${task.status == "Pending"}'>bg-secondary</c:when>
+            <c:when test='${task.status == "Processing"}'>bg-primary</c:when>
+            <c:when test='${task.status == "Finished"}'>bg-success</c:when>
+            <c:when test='${task.status == "Reject"}'>bg-danger</c:when>
+            <c:otherwise>bg-light text-dark</c:otherwise>
+        </c:choose>
+    ">
+            ${task.status}
+    </span>
+                                </td>
+
                                 <td><c:out value="${empty task.startDate ? '-' : task.startDate}"/></td>
                                 <td>
                                     <c:choose>

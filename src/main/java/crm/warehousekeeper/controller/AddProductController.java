@@ -2,7 +2,6 @@ package crm.warehousekeeper.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.*;
-import crm.common.model.enums.ProductStatus;
 import crm.common.repository.Warehouse.TypeDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -20,9 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet(urlPatterns = URLConstants.WAREHOUSE_ADD_PRODUCT)
 @MultipartConfig(

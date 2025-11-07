@@ -8,6 +8,7 @@
     <title>Warehouse Product Requests</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -32,6 +33,7 @@
 <body class="bg-light">
 <jsp:include page="../components/header.jsp"/>
 <div class="container py-4">
+    <jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
     <!-- Header -->
     <div class="card shadow-sm p-3 mb-4">
         <h1 class="h3 fw-bold text-dark mb-0">Incoming Product Requests</h1>
