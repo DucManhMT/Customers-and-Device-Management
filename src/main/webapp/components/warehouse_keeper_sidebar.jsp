@@ -98,7 +98,7 @@
                 <a class="nav-link ${activePage == 'transfers' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"><i class="fas fa-box-open"></i><span> TransferRequest</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'shipments' ? 'active' : ''}" href="#"><i class="fas fa-truck"></i><span> Shipments</span></a>
+                <a class="nav-link ${activePage == 'shipments' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/export_internal"><i class="fas fa-truck"></i><span> ExportInternal</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><i class="fas fa-boxes-stacked"></i><span> Inventory</span></a>

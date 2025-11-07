@@ -13,8 +13,21 @@ public class Main {
     public static void main(String[] args) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
-        WarehouseRequest firstRequest = em.findAll(WarehouseRequest.class).get(1);
+        List<WarehouseRequest> warehouseRequests = em.findAll(WarehouseRequest.class);
 
-        System.out.println("First Warehouse source destination: " + firstRequest.getSourceWarehouse());
+        Warehouse userWarehouse = em.find(Warehouse.class, 2);
+
+        warehouseRequests = warehouseRequests.stream()
+                .filter(wr -> wr.getSourceWarehouse() != null)
+                .filter(wr -> wr.getSourceWarehouse().getWarehouseID() == userWarehouse.getWarehouseID())
+                .toList();
+
+        for (WarehouseRequest wr : warehouseRequests) {
+            System.out.println("Warehouse Request ID: " + wr.getWarehouseRequestID());
+            System.out.println("Source Warehouse ID: " + wr.getSourceWarehouse().getWarehouseID());
+            System.out.println("Destination Warehouse ID: " + wr.getDestinationWarehouse().getWarehouseID());
+        }
+
+
     }
 }

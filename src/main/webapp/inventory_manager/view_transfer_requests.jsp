@@ -86,7 +86,7 @@
                                                                                        value="bg-warning text-dark"/></c:if>
                         <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass"
                                                                                           value="bg-info text-dark"/></c:if>
-                        <c:if test="${req.warehouseRequestStatus == 'Approved'}"><c:set var="statusClass"
+                        <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass"
                                                                                         value="bg-success"/></c:if>
                         <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass"
                                                                                         value="bg-danger"/></c:if>

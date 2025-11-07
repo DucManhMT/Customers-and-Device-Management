@@ -4,6 +4,7 @@ import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Warehouse;
 import crm.common.model.WarehouseRequest;
+import crm.common.model.enums.WarehouseRequestStatus;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -51,6 +52,7 @@ public class InventoryTransferRequestController extends HttpServlet {
 
                 if (requestToUpdate != null && sourceWarehouse != null) {
                     requestToUpdate.setSourceWarehouse(sourceWarehouse);
+                    requestToUpdate.setWarehouseRequestStatus(WarehouseRequestStatus.Accepted);
                     em.merge(requestToUpdate, WarehouseRequest.class);
                 }
             } catch (NumberFormatException e) {

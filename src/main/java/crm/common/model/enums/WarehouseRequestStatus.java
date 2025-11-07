@@ -2,7 +2,7 @@ package crm.common.model.enums;
 
 public enum WarehouseRequestStatus {
     Pending,
-    Approved,
+    Accepted,
     Rejected,
     Processing,
     Completed

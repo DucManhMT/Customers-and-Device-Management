@@ -75,6 +75,7 @@ public class URLConstants {
     public static final String WAREHOUSE_VIEW_PRODUCT_REQUESTS = "/warehouse_keeper/view_warehouse_product_requests";
     public static final String WAREHOUSE_VIEW_PROFILE = "/warehouse_keeper/profile";
     public static final String WAREHOUSE_VIEW_WAREHOUSE_REQUEST = "/warehouse_keeper/view_warehouse_request";
+    public static final String WAREHOUSE_EXPORT_INTERNAL = "/warehouse_keeper/export_internal";
 
     // INVENTORY MANAGER
     public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
