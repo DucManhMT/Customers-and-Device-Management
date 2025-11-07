@@ -75,7 +75,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <small class="text-muted">From</small>
-                                    <p class="fw-bold mb-0">${req.sourceWarehouse.warehouseName}</p>
+                                    <p class="fw-bold mb-0">${req.sourceWarehouse != null ? req.sourceWarehouse.warehouseName : 'Not Assigned'}</p>
                                 </div>
                                 <div class="align-self-center px-2">
                                     <i class="fas fa-arrow-right text-primary"></i>
@@ -97,13 +97,13 @@
                             <p class="card-text small fst-italic"><strong>Note:</strong> ${req.note}</p>
                         </c:if>
 
-                        <c:if test="${req.warehouseRequestStatus == 'Approved'}">
+                        <c:if test="${req.warehouseRequestStatus == 'Accepted'}">
                             <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
                                     data-bs-target="#exportModal-${req.warehouseRequestID}">
                                 <i class="fas fa-dolly-flatbed me-2"></i>Prepare for Export
                             </button>
                         </c:if>
-                        <c:if test="${req.warehouseRequestStatus != 'Approved'}">
+                        <c:if test="${req.warehouseRequestStatus != 'Accepted'}">
                             <button type="button" class="btn btn-outline-secondary w-100" disabled>
                                 Awaiting Approval
                             </button>
@@ -132,7 +132,7 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center">Select</th>
-                                                <th>Serial Number (ID)</th>
+                                                <th>Serial Number</th>
                                                 <th>Item Name</th>
                                             </tr>
                                             </thead>
