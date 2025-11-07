@@ -161,6 +161,7 @@ public class EntityFieldMapper {
 
                 if (isColumn(field)) {
                     Object value = extractValueFromResultSet(field, rs);
+                    field.getAnnotation(Column.class).nullable();
                     field.set(entity, value);
                 }
                 if (isManyToOne(field)) {

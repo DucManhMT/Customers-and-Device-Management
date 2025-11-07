@@ -13,7 +13,6 @@
 <div class="container-fluid">
 
 
-
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -22,8 +21,10 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="..">Home</a></li>
                         <li class="breadcrumb-item">
-                            <form method="get" action="${pageContext.request.contextPath}/customer/requests" style="display:inline;">
-                                <button type="submit" class="btn btn-link p-0 text-decoration-none">Feedback List</button>
+                            <form method="get" action="${pageContext.request.contextPath}/customer/requests"
+                                  style="display:inline;">
+                                <button type="submit" class="btn btn-link p-0 text-decoration-none">Feedback List
+                                </button>
                             </form>
                         </li>
                         <li class="breadcrumb-item active">Feedback #${feedback.feedbackID}</li>
@@ -31,7 +32,8 @@
                 </nav>
             </div>
             <div>
-                <form method="get" action="${pageContext.request.contextPath}/customer/requests" style="display:inline;">
+                <form method="get" action="${pageContext.request.contextPath}/customer/requests"
+                      style="display:inline;">
                     <button type="submit" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Back to Request List
                     </button>
@@ -45,7 +47,7 @@
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="bi bi-chat-square-text"></i>
-                            Feedback 
+                            Feedback
                         </h5>
                     </div>
                     <div class="card-body">
@@ -62,8 +64,11 @@
                                 <div class="info-item">
                                     <div class="info-label">Request ID</div>
                                     <div class="info-value">
-                                        <form method="get" action="${pageContext.request.contextPath}/customer/requests/detail" style="display:inline;">
-                                            <input type="hidden" name="requestId" value="${feedback.requestID.foreignKeyValue}" />
+                                        <form method="get"
+                                              action="${pageContext.request.contextPath}/customer/requests/detail"
+                                              style="display:inline;">
+                                            <input type="hidden" name="requestId"
+                                                   value="${feedback.requestID.foreignKeyValue}"/>
                                             <button type="submit" class="btn btn-link p-0 text-decoration-none">
                                                 <span class="badge bg-info fs-6">#${feedback.requestID.foreignKeyValue}</span>
                                             </button>
@@ -148,16 +153,19 @@
                     <div class="card-body">
                         <h6 class="card-title">Actions</h6>
                         <div class="d-flex gap-2 flex-wrap">
-                            <form method="get" action="${pageContext.request.contextPath}/feedback/edit" style="display: inline;">
+                            <form method="get" action="${pageContext.request.contextPath}/feedback/edit"
+                                  style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
                                 <button type="submit" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit Feedback
                                 </button>
                             </form>
 
-                            <form method="post" action="${pageContext.request.contextPath}/feedback/delete" style="display: inline;">
+                            <form method="post" action="${pageContext.request.contextPath}/feedback/delete"
+                                  style="display: inline;">
                                 <input type="hidden" name="feedbackId" value="${feedback.feedbackID}">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete (hide) this feedback?');">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete (hide) this feedback?');">
                                     <i class="bi bi-trash"></i> Delete Feedback
                                 </button>
                             </form>
@@ -189,5 +197,7 @@
             </div>
         </div>
     </div>
+</div>
 </body>
+
 </html>

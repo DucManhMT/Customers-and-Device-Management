@@ -18,78 +18,10 @@
             color: #1e293b;
         }
 
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 260px;
-            background: linear-gradient(180deg, #0d47a1 0%, #1976d2 100%);
-            color: #fff;
-            padding-top: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-        }
 
-        .sidebar .brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar .brand i {
-            margin-right: 8px;
-        }
-
-        .sidebar .nav-link {
-            color: #e3f2fd;
-            font-size: 1.05rem;
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin: 4px 14px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar .nav-link i {
-            font-size: 1.2rem;
-            margin-right: 10px;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: rgba(255,255,255,0.2);
-            transform: translateX(5px);
-            color: #fff;
-        }
-
-        .sidebar .logout {
-            margin-top: auto;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .sidebar .logout .btn {
-            border-radius: 25px;
-            background-color: #fff;
-            color: #1976d2;
-            border: none;
-            transition: 0.3s;
-        }
-
-        .sidebar .logout .btn:hover {
-            background-color: #e3f2fd;
-        }
 
         /* ===== MAIN CONTENT ===== */
         .main-content {
-            margin-left: 260px;
             padding: 2rem 3rem;
             min-height: 100vh;
             background: #f1f5f9;
@@ -149,27 +81,10 @@
             margin-bottom: 8px;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                justify-content: space-around;
-                position: relative;
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-top: 20px;
-                padding: 1.5rem;
-            }
-        }
     </style>
 
 </head>
 <body>
-<c:set var="activePage" value="warehouses" scope="request" />
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/admin_sidebar.jsp"/>
 
@@ -185,7 +100,6 @@
         <ul>
             <li><strong>Role Management:</strong> View and edit user roles.</li>
             <li><strong>Account Management:</strong> Manage user accounts and permissions.</li>
-            <li><strong>System Settings:</strong> Configure application parameters.</li>
         </ul>
     </div>
 </div>

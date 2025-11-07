@@ -15,14 +15,13 @@
 <style>
     .sidebar {
         width: 260px;
-        background: rgba(255, 255, 255, 0.25); /* semi-transparent white background */
-        backdrop-filter: blur(12px); /* glass blur effect */
+        background-color: #fafafa;
         -webkit-backdrop-filter: blur(12px);
         border-right: 1px solid rgba(0, 0, 0, 0.15); /* subtle border to separate */
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* soft shadow */
         color: #1a1a1a; /* darker text */
-        position: fixed;
         height: calc(100vh - 70px);
+        position: fixed;
         top: 70px;
         left: 0;
         z-index: 1020;
@@ -80,24 +79,24 @@
     }
 
     body {
-        margin-left: 260px;
         padding-top: 70px;
         background-color: #f5f6f7;
+        margin-left: 260px;
     }
 </style>
 
 <div id="sidebar" class="sidebar">
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'rolemanage' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/role_list"><i class="bi bi-person-gear"></i> Role Management </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'accountmanage' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/account_list"><i class="bi bi-people-fill"></i> Account Management</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'featuremanage' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/assign_feature"><i class="bi bi-shield-lock-fill"></i> Feature Management</a>
 
         </ul>
     </div>

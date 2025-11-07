@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     .sidebar {
         width: 260px;
@@ -89,16 +90,16 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile">My Profile </a>
+                <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_employee/create_product_request"> Create export request </a>
+                <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_employee/create_product_request"><i class="bi bi-clipboard-plus-fill"></i> Create export request </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAssignedTasks"> View Assigned Tasks</a>
+                <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAssignedTasks"><i class="bi bi-eye"></i> View Assigned Tasks</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewReceivedAssignments"> View Received Assignments</a>
+                <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewReceivedAssignments"><i class="bi bi-eye"></i> View Received Assignments</a>
             </li>
 
 

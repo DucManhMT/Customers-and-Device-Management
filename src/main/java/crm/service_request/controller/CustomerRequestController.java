@@ -24,7 +24,6 @@ public class CustomerRequestController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ContractRepository contractRepository = new ContractRepository();
         Account account = (Account) req.getSession().getAttribute("account");
-        CustomerRepository customerRepository = new CustomerRepository();
         RequestService requestService = new RequestService();
         if (account == null) {
             resp.sendRedirect(req.getContextPath() + "/auth/customer_login");

@@ -25,7 +25,7 @@
             background-color: #fff;
             border-radius: 10px;
             padding: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .profile-header {
@@ -84,6 +84,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="account-container">
     <a href="${pageContext.request.contextPath}/customer/profile?id=${account.username}" class="btn btn-link mb-3">
         <i class="bi bi-arrow-left-circle me-2"></i> Back to Profile
@@ -102,7 +103,7 @@
             session.removeAttribute("success");
         %>
         <script>
-            setTimeout(function() {
+            setTimeout(function () {
                 window.location.href = '${pageContext.request.contextPath}/customer/profile?id=${account.username}';
             }, 3000); // 3 giây
         </script>
@@ -159,8 +160,6 @@
                        required value="${accountAddress}">
             </div>
         </div>
-
-
 
 
         <!-- Buttons -->

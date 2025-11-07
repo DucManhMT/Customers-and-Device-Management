@@ -24,7 +24,7 @@
 <jsp:include page="../components/supporter_sidebar.jsp"/>
 <div class="container-fluid">
     <div class="container-fluid">
-        <h2 class="mt-1">Service Request List</h2>
+        <h2 class="mt-1">Request List</h2>
         <form method="get" action="../requests/list" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
             <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
 

@@ -42,7 +42,7 @@
                                     <i class="bi bi-person-badge"></i>
                                 </span>
                                 <input type="text" class="form-control border-start-0 search-box"
-                                       placeholder="Search by username..."
+                                       placeholder="Username"
                                        id="searchUsernameInput"
                                        name="searchUsername"
                                        value="${searchUsername}">
@@ -54,7 +54,7 @@
                                     <i class="bi bi-person"></i>
                                 </span>
                                 <input type="text" class="form-control border-start-0 search-box"
-                                       placeholder="Search by name..."
+                                       placeholder="Name"
                                        id="searchNameInput"
                                        name="searchName"
                                        value="${searchName}">
@@ -66,7 +66,7 @@
                                     <i class="bi bi-envelope"></i>
                                 </span>
                                 <input type="text" class="form-control border-start-0 search-box"
-                                       placeholder="Search by email..."
+                                       placeholder="Email"
                                        id="searchEmailInput"
                                        name="searchEmail"
                                        value="${searchEmail}">
