@@ -23,6 +23,7 @@ public class StaffLoginController extends HttpServlet {
             if (account != null){
                 session.removeAttribute("error");
                 session.setAttribute("account", account);
+                session.setAttribute("role", account.getRole());
                 switch (account.getRole().getRoleName()) {
                     case "TechnicianLeader":
                         session.removeAttribute("error");

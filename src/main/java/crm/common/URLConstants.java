@@ -1,5 +1,15 @@
 package crm.common;
 
+import crm.common.model.Feature;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.service.IDGeneratorService;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class URLConstants {
 
     // REGISTRATION
@@ -20,6 +30,7 @@ public class URLConstants {
     public static final String ADMIN_EDIT_ACCOUNT = "/admin/account_list/edit_account";
     public static final String ADMIN_CREATE_ACCOUNT = "/admin/create_account";
     public static final String ADMIN_VIEW_ACCOUNT_DETAIL = "/admin/account_list/view_account_detail";
+    public static final String ADMIN_ASSIGN_FEATURE = "/admin/assign_feature";
     //STAFF
 
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
@@ -47,7 +58,6 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_PROCESS_REQUEST = "/supporter/requests/process";
     public static final String CUSTOMER_SUPPORTER_REQUEST_DETAIL = "/supporter/requests/detail";
     public static final String CUSTOMER_SUPPORTER_REQUEST_LIST = "/supporter/requests/list";
-    public static final String CUSTOMER_SUPPORTER_VIEW_PROFILE = "/customer_supporter/profile";
 
     // TECHNICAL LEADER
     public static final String TECHLEAD_ACTION_CENTER = "/technician_leader/techlead_actioncenter";
@@ -55,14 +65,12 @@ public class URLConstants {
     public static final String TECHLEAD_VIEW_APROVED_TASK = "/task/viewAprovedTask";
     public static final String TECHLEAD_VIEW_TECHEM_LIST = "/tech/employees";
     public static final String TECHLEAD_VIEW_TECHEM_DETAIL = "/tech/employees/view";
-    public static final String TECHLEAD_VIEW_PROFILE = "/technician_leader/profile";
 
     // TECHNICAL EMPLOYEE
     public static final String TECHEM_ACTION_CENTER = "/technician_employee/techemployee_actioncenter";
     public static final String TECHEM_UPDATE_TASK_STATUS = "/task/updateStatus";
     public static final String TECHEM_VIEW_ASSIGNED_TASK = "/task/viewAssignedTasks";
     public static final String CREATE_PRODUCT_REQUEST = "/tech/employees/create_product_requests";
-    public static final String TECHEM_VIEW_PROFILE = "/technician_employee/profile";
 
     // WAREHOUSE KEEPER
     public static final String WAREHOUSE_ACTION_CENTER = "/warehouse_keeper/warehousekeeper_actioncenter";
@@ -86,5 +94,72 @@ public class URLConstants {
     public static final String TASK_ASSIGNMENT_DECISION = "/task/assignmentDecision";
     public static final String TASK_VIEW_RECEIVED_ASSIGNMENTS = "/task/viewReceivedAssignments";
     public static final String TASK_DETAIL = "/task/detail";
+
+
+    public static void addToDataBase(){
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try{
+            em.beginTransaction();
+            Field[] fields = URLConstants.class.getDeclaredFields();
+            clearData();
+            for (Field field : fields) {
+                if (field.getType() == String.class) {
+                    String url = (String) field.get(null);
+                    Map<String, Object> params = Map.of("featureURL", url);
+                    boolean exists = !em.findWithConditions(Feature.class ,params).isEmpty();
+
+                    if (exists) {
+                        continue;
+                    }
+                    Feature feature = new Feature();
+                    feature.setFeatureID(IDGeneratorService.generateID(Feature.class));
+                    feature.setFeatureURL((String) field.get(null));
+                    feature.setDescription(field.getName());
+                    em.persist(feature, Feature.class);
+                }
+            }
+            em.commit();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }       em.rollback();
+    }
+
+    private static void clearData() {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try {
+            em.beginTransaction();
+            List<Feature> features = em.findAll(Feature.class);
+            List<String> urls = getAllUrls();
+            for (Feature feature : features) {
+                if (!urls.contains(feature.getFeatureURL())) {
+                    em.remove(feature, Feature.class);
+                }
+            }
+            em.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.rollback();
+        }
+
+    }
+
+    public static List<String> getAllUrls(){
+        try {
+            Field[] fields = URLConstants.class.getDeclaredFields();
+            List<String> urls = new ArrayList<>();
+            for (Field field : fields) {
+                if (field.getType() == String.class) {
+                    String url = (String) field.get(null);
+                    urls.add(url);
+                }
+            }
+            return urls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 
 }
