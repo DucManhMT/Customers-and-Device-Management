@@ -310,6 +310,19 @@ public class EntityManager implements IEntityManager {
         }
     }
 
+    public boolean deleteAll(Class<?> entityClass) {
+        try {
+            SqlAndParamsDTO sqlParams = queryUtils.buildDeleteAll(entityClass);
+            try (PreparedStatement ps = connection.prepareStatement(sqlParams.getSql())) {
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // -------------COUNT-------------
     public <T> int count(Class<T> entityClass) {
         try {
@@ -349,6 +362,8 @@ public class EntityManager implements IEntityManager {
             e.printStackTrace();
         }
     }
+
+
 
     // ---------- COUNT WITH CONDITIONS ----------
     public <T> int countWithConditions(Class<T> entityClass, Map<String, Object> conditions) {

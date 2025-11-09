@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.admin.service.AssignFeatureService;
 import crm.common.model.Feature;
 import crm.common.model.Role;
 import crm.common.model.RoleFeature;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet("/admin/assign_feature_controller")
 public class AssignFeatureController extends HttpServlet {
@@ -48,12 +48,19 @@ public class AssignFeatureController extends HttpServlet {
 
         // Bây giờ bạn có List<RoleFeature> để xử lý
         // ... your database logic here ...
-
+        boolean success = true;
         for(RoleFeature rf : roleFeatures){
             System.out.println("RoleID: " + rf.getRole().getRoleName() + ", FeatureID: " + rf.getFeature().getFeatureURL());
+            success = AssignFeatureService.assignFeatureToRole(rf.getRole(), rf.getFeature());
+            System.out.println("Assignment success: " + success);
+        }
+        if (success){
+            req.setAttribute("successMessage", "");
+            resp.sendRedirect(req.getContextPath() + "/admin/assign_feature");
+        } else {
+            req.setAttribute("errorMessage", "");
+            resp.sendRedirect(req.getContextPath() + "/admin/assign_feature");
         }
 
-        req.setAttribute("successMessage", "Cập nhật phân quyền thành công!");
-        resp.sendRedirect(req.getContextPath() + "/admin/assign_feature");
     }
 }

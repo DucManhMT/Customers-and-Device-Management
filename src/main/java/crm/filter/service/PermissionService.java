@@ -8,21 +8,16 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PermissionService {
-    private static Map<Role, List<Feature>> roleFeatureMap;
+    private static Map<Integer, List<Feature>> roleFeatureMap = new HashMap<>();
 
     public PermissionService(){
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
-        for (RoleFeature rf : roleFeatures) {
-            Role role = rf.getRole();
-            Feature feature = rf.getFeature();
-            roleFeatureMap.computeIfAbsent(role, k -> new ArrayList<>()).add(feature);
-        }
+
     }
 
     public static boolean isPublicUrl(String uri){
@@ -45,6 +40,14 @@ public class PermissionService {
     }
 
     public static boolean hasAccess(Role role, String uri){
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
+        for (RoleFeature rf : roleFeatures) {
+            Role accRole = rf.getRole();
+            Feature feature = rf.getFeature();
+            roleFeatureMap.computeIfAbsent(accRole.getRoleID(), k -> new ArrayList<>()).add(feature);
+        }
+
         List<Feature> features = roleFeatureMap.get(role);
         if (features != null) {
             for (Feature feature : features) {
@@ -63,11 +66,18 @@ public class PermissionService {
         for (RoleFeature rf : roleFeatures) {
             Role role = rf.getRole();
             Feature feature = rf.getFeature();
-            roleFeatureMap.computeIfAbsent(role, k -> new ArrayList<>()).add(feature);
+            roleFeatureMap.computeIfAbsent(role.getRoleID(), k -> new ArrayList<>()).add(feature);
         }
     }
 
-    public static Map<Role, List<Feature>> getRoleFeatureMap() {
+    public static Map<Integer, List<Feature>> getRoleFeatureMap() {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
+        for (RoleFeature rf : roleFeatures) {
+            Role accRole = rf.getRole();
+            Feature feature = rf.getFeature();
+            roleFeatureMap.computeIfAbsent(accRole.getRoleID(), k -> new ArrayList<>()).add(feature);
+        }
         return roleFeatureMap;
     }
 }

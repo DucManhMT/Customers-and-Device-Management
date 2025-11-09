@@ -32,7 +32,7 @@ public class toAssignFeature extends HttpServlet {
 
         req.setAttribute("features", features);
 
-        Map<Role, List<Feature>> roleFeatureMap = PermissionService.getRoleFeatureMap();
+        Map<Integer, List<Feature>> roleFeatureMap = PermissionService.getRoleFeatureMap();
         req.setAttribute("roleFeatureMap", roleFeatureMap);
 
         req.getRequestDispatcher("/admin/assign_feature.jsp").forward(req, resp);
