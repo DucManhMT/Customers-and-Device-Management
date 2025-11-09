@@ -113,11 +113,10 @@
 
                 <!-- Export Modal -->
                 <div class="modal fade" id="exportModal-${req.warehouseRequestID}" tabindex="-1"
-                     aria-labelledby="exportModalLabel-${req.warehouseRequestID}" aria-hidden="true">
+                     aria-labelledby="exportModalLabel-${req.warehouseRequestID}" aria-hidden="true" data-required-qty="${req.quantity}">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_internal" method="post"
-                                  id="exportForm-${req.warehouseRequestID}" onsubmit="return validateSelection(this, ${req.quantity})">
+                            <form action="${pageContext.request.contextPath}/warehouse_keeper/export_internal" method="post">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exportModalLabel-${req.warehouseRequestID}">
                                         Export: ${req.product.productName} (Qty: ${req.quantity})
@@ -141,7 +140,7 @@
                                                 <c:if test="${productInStock.inventoryItem.product.productID == req.product.productID}">
                                                     <tr>
                                                         <td class="text-center">
-                                                            <input class="form-check-input" type="checkbox" name="selectedProducts"
+                                                            <input class="form-check-input product-checkbox" type="checkbox" name="selectedProducts"
                                                                    value="${productInStock.productWarehouseID}">
                                                         </td>
                                                         <td>${productInStock.inventoryItem.serialNumber}</td>
@@ -152,13 +151,13 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="alert alert-warning mt-2 d-none" id="selectionAlert-${req.warehouseRequestID}">
-                                        Please select exactly ${req.quantity} item(s).
+                                    <div class="mt-2">
+                                        Selected: <span class="fw-bold current-selection">0</span> / ${req.quantity}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-success">
+                                    <button type="submit" class="btn btn-success confirm-export-btn" disabled>
                                         <i class="fas fa-check-circle me-2"></i>Confirm Export
                                     </button>
                                 </div>
@@ -174,17 +173,53 @@
 <%-- Bootstrap 5 JS Bundle --%>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function validateSelection(form, requiredQty) {
-        const checkedBoxes = form.querySelectorAll('input[name="selectedProducts"]:checked');
-        const alertBox = form.querySelector('.alert');
+    document.addEventListener('DOMContentLoaded', function () {
+        const exportModals = document.querySelectorAll('.modal[id^="exportModal-"]');
 
-        if (checkedBoxes.length !== requiredQty) {
-            alertBox.classList.remove('d-none');
-            return false; // Prevent form submission
-        }
-        alertBox.classList.add('d-none');
-        return true; // Allow form submission
-    }
+        exportModals.forEach(modal => {
+            const requiredQty = parseInt(modal.dataset.requiredQty, 10);
+            const checkboxes = modal.querySelectorAll('.product-checkbox');
+            const confirmBtn = modal.querySelector('.confirm-export-btn');
+            const selectionCounter = modal.querySelector('.current-selection');
+
+            modal.addEventListener('change', function (e) {
+                if (e.target.classList.contains('product-checkbox')) {
+                    const checkedBoxes = modal.querySelectorAll('.product-checkbox:checked');
+                    const selectedCount = checkedBoxes.length;
+
+                    // Update counter
+                    selectionCounter.textContent = selectedCount;
+
+                    // Enable/disable confirm button
+                    confirmBtn.disabled = (selectedCount !== requiredQty);
+
+                    // Disable other checkboxes if limit is reached
+                    if (selectedCount >= requiredQty) {
+                        checkboxes.forEach(cb => {
+                            if (!cb.checked) {
+                                cb.disabled = true;
+                            }
+                        });
+                    } else {
+                        // Re-enable all checkboxes if selection is below limit
+                        checkboxes.forEach(cb => {
+                            cb.disabled = false;
+                        });
+                    }
+                }
+            });
+
+            // Reset on modal close
+            modal.addEventListener('hidden.bs.modal', function () {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    cb.disabled = false;
+                });
+                confirmBtn.disabled = true;
+                selectionCounter.textContent = '0';
+            });
+        });
+    });
 </script>
 </body>
 </html>
