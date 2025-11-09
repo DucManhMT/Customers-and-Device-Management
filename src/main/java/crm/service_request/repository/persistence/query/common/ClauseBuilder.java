@@ -119,18 +119,17 @@ public class ClauseBuilder {
         return this;
     }
 
-    public ClauseBuilder group(Consumer<ClauseBuilder> consumer) {
+    public ClauseBuilder group(ClauseBuilder builder) {
         if (hasCondition) {
             whereClause.append(" AND ");
             hasCondition = false;
         }
         whereClause.append("(");
-        ClauseBuilder nested = new ClauseBuilder();
-        consumer.accept(nested);
-        whereClause.append(nested.build());
-        parameters.addAll(nested.getParameters());
+        whereClause.append(builder.build());
+        parameters.addAll(builder.getParameters());
         whereClause.append(")");
         hasCondition = true;
+        pendingOperator = null;
         return this;
     }
 

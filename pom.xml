@@ -30,6 +30,13 @@
             <artifactId>jakarta.json</artifactId>
             <version>2.0.1</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>6.0.0</version>
+    <scope>test</scope>
+</dependency>
 
         <!--  MySQL Connector (temporarily kept; production config commented in RepositoryConfig)  -->
         <dependency>

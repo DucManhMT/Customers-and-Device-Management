@@ -90,13 +90,25 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'techleadProfile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile </a>
+                <a class="nav-link ${activePage == 'techleadProfile' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees"><i class="bi bi-eye"></i> View Technician List</a>
+                <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/tech/employees"><i class="bi bi-eye"></i> View Technician
+                    List</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAprovedTask"><i class="bi bi-eye"></i> View Aproved Tasks</a>
+                <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/task/viewAprovedTask"><i class="bi bi-eye"></i> View Aproved
+                    Request</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/technician_leader/tasks/list">
+                    <i class="bi bi-list-task"></i> View Task
+                </a>
             </li>
 
 

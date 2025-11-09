@@ -4,6 +4,7 @@ import crm.common.model.enums.TransactionStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
+import javax.sql.rowset.Joinable;
 import java.time.LocalDateTime;
 
 @Entity(tableName = "ProductTransaction")
@@ -30,6 +31,9 @@ public class ProductTransaction {
 
     @ManyToOne(joinColumn = "DestinationWarehouse")
     private LazyReference<Warehouse> destinationWarehouse;
+
+    @OneToOne(joinColumn = "WarehouseRequestID", mappedBy = "warehouseRequestID")
+    private LazyReference<WarehouseRequest> warehouseRequest;
 
     public Integer getTransactionID() {
         return transactionID;
@@ -86,5 +90,13 @@ public class ProductTransaction {
 
     public void setDestinationWarehouseEntity(Warehouse destinationWarehouse) {
         this.destinationWarehouse = new LazyReference<>(Warehouse.class, destinationWarehouse.getWarehouseID());
+    }
+
+    public WarehouseRequest getWarehouseRequest() {
+        return warehouseRequest != null ? warehouseRequest.get() : null;
+    }
+
+    public void setWarehouseRequest(WarehouseRequest warehouseRequest) {
+        this.warehouseRequest = new LazyReference<>(WarehouseRequest.class, warehouseRequest.getWarehouseRequestID());
     }
 }

@@ -116,43 +116,62 @@
         </c:if>
         <div class="tasks-grid">
             <c:choose>
-                <c:when test="${not empty assignedRequests}">
-                    <c:forEach var="req" items="${assignedRequests}">
+                <c:when test="${not empty assignedTasks}">
+                    <c:forEach var="task" items="${assignedTasks}">
+                        <c:set var="req" value="${task.request}" />
                         <div class="task-card">
                             <div class="task-header">
                                 <h3 class="task-title">
                                     <c:choose>
+                                        <c:when test="${not empty task.description}">
+                                            ${task.description}
+                                        </c:when>
                                         <c:when test="${not empty req.requestDescription}">
                                             ${req.requestDescription}
                                         </c:when>
-                                        <c:otherwise>Service Request</c:otherwise>
+                                        <c:otherwise>Task Assignment</c:otherwise>
                                     </c:choose>
                                 </h3>
-                                <span class="badge badge-progress">${req.requestStatus}</span>
+                                <span class="badge badge-progress">${task.status}</span>
                             </div>
                             <p class="task-description">
-                                <c:choose>
-                                    <c:when test="${not empty req.note}">
-                                        ${req.note}
-                                    </c:when>
-                                    <c:otherwise>No additional details available</c:otherwise>
-                                </c:choose>
+                                <c:if test="${not empty req}">
+                                    <strong>Request:</strong> ${not empty req.requestDescription ? req.requestDescription : 'No description'}<br/>
+                                </c:if>
+                                <c:if test="${not empty req.note}">
+                                    <strong>Notes:</strong> ${req.note}
+                                </c:if>
                             </p>
                             <div class="task-details">
+                                <div class="task-detail">
+                                    <span class="task-detail-label">Task ID:</span>
+                                    <span class="task-detail-value">#${task.taskID}</span>
+                                </div>
                                 <div class="task-detail">
                                     <span class="task-detail-label">Request ID:</span>
                                     <span class="task-detail-value">#${req.requestID}</span>
                                 </div>
                                 <div class="task-detail">
                                     <span class="task-detail-label">Status:</span>
-                                    <span class="task-detail-value">${req.requestStatus}</span>
+                                    <span class="task-detail-value">${task.status}</span>
                                 </div>
                                 <div class="task-detail">
                                     <span class="task-detail-label">Start Date:</span>
                                     <span class="task-detail-value">
                                         <c:choose>
-                                            <c:when test="${not empty req.startDate}">
-                                                ${req.startDate}
+                                            <c:when test="${not empty task.startDate}">
+                                                ${task.startDate}
+                                            </c:when>
+                                            <c:otherwise>Not started yet</c:otherwise>
+                                        </c:choose>
+                                    </span>
+                                </div>
+                                <div class="task-detail">
+                                    <span class="task-detail-label">Deadline:</span>
+                                    <span class="task-detail-value">
+                                        <c:choose>
+                                            <c:when test="${not empty task.deadline}">
+                                                ${task.deadline}
                                             </c:when>
                                             <c:otherwise>Not set</c:otherwise>
                                         </c:choose>
@@ -163,17 +182,21 @@
                                 <form method="POST" action="${pageContext.request.contextPath}/task/detail" class="link">
                                     <input type="hidden" name="id" value="${req.requestID}">
                                     <button type="submit" class="btn-sm finish-btn">
-                                        View details
+                                        View Request Details
                                     </button>
                                 </form>
                                 <form method="GET" action="${pageContext.request.contextPath}/tech/employees/createProductRequests" class="link">
-                                    <input type="hidden" name="requestID" value="${req.requestID}">
-                                    <button type="submit" class="btn-sm finish-btn">
-                                        Create Product Request
-                                    </button>
+                                    <c:choose>
+                                        <c:when test="${req.requestStatus == 'Processing'}">
+                                            <input type="hidden" name="requestID" value="${req.requestID}">
+                                            <button type="submit" class="btn-sm finish-btn">
+                                                Create Product Request
+                                            </button>
+                                        </c:when>
+                                    </c:choose>
                                 </form>
                                 <c:choose>
-                                    <c:when test="${req.requestStatus == 'Finished'}">
+                                    <c:when test="${task.status == 'Finished'}">
                                         <button class="btn btn-secondary btn-sm finish-btn" disabled>
                                             <i class="fas fa-check"></i> Finished
                                         </button>
@@ -182,13 +205,12 @@
                                         <form method="POST" action="${pageContext.request.contextPath}/task/updateStatus"
                                               style="display: inline;"
                                               onsubmit="return confirm('Are you sure you want to mark this task as finished?')">
-                                            <input type="hidden" name="requestId" value="${req.requestID}">
+                                            <input type="hidden" name="taskId" value="${task.taskID}">
                                             <input type="hidden" name="status" value="finished">
                                             <button type="submit" class="btn btn-success btn-sm finish-btn">
                                                 <i class="fas fa-check"></i> Mark as Finished
                                             </button>
                                         </form>
-                                        <!-- Pending assignments are handled on Pending Assignments page -->
                                     </c:otherwise>
                                 </c:choose>
                             </div>

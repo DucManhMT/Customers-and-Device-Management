@@ -154,7 +154,7 @@ CREATE TABLE Feedback (
                           Description NVARCHAR(255),
                           Response NVARCHAR(255),
                           FeedbackDate DATETIME NOT NULL,
-                          ResponseDate DATETIME NOT NULL,
+                          ResponseDate DATETIME,
                           CustomerID NVARCHAR(100),
                           FOREIGN KEY (CustomerID) REFERENCES Account(Username)
 );
@@ -203,40 +203,7 @@ CREATE TABLE RequestLog (
                             FOREIGN KEY (Username) REFERENCES Account(Username)
 );
 
--- ======================
--- PRODUCT REQUEST
--- ======================
-CREATE TABLE ProductRequest (
-                                ProductRequestID INT PRIMARY KEY,
-                                Quantity INT NOT NULL,
-                                RequestDate DATE NOT NULL,
-                                Status ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
-                                Description NVARCHAR(255),
-                                RequestID INT NOT NULL,
-                                ProductID INT NOT NULL,
-                                WarehouseID INT NOT NULL,
-                                FOREIGN KEY (RequestID) REFERENCES Request(RequestID),
-                                FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
-                                FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
-);
 
-CREATE TABLE WarehouseLog (
-                              WarehouseLogID INT PRIMARY KEY,
-                              LogDate DATE NOT NULL,
-                              Description NVARCHAR(255),
-                              WarehouseID INT NOT NULL,
-                              ProductRequestID INT NOT NULL,
-                              FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
-                              FOREIGN KEY (ProductRequestID) REFERENCES ProductRequest(ProductRequestID)
-);
-
-
-CREATE TABLE ProductExported (
-                                 ProductWarehouseID INT PRIMARY KEY,
-                                 WarehouseLogID INT NOT NULL,
-                                 FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
-                                 FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
-);
 
 -- ======================
 -- DEVICE
@@ -263,8 +230,8 @@ INSERT INTO Role (RoleID, RoleName) VALUES
                                         (3, 'CustomerSupporter'),
                                         (4, 'WarehouseKeeper'),
                                         (5, 'TechnicianLeader'),
-                                        (6, 'TechnicianEmployee');
-
+                                        (6, 'TechnicianEmployee'),
+                                        (7, 'InventoryManager');
 
 CREATE TABLE Province (
                           ProvinceID INT PRIMARY KEY NOT NULL,
@@ -281,21 +248,15 @@ CREATE TABLE Village (
 CREATE TABLE WarehouseRequest(
                                  WarehouseRequestID int NOT NULL PRIMARY KEY ,
                                  Date DATETIME,
-                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected'),
+                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Processing'),
                                  Note nvarchar(255),
+                                 ProductID INT,
+                                 Quantity INT,
                                  SourceWarehouse INT,
                                  DestinationWarehouse INT,
+                                 FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
                                  FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
                                  FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
-);
-
-CREATE TABLE WarehouseRequestProduct(
-                                        WarehouseRequestProductID INT NOT NULL PRIMARY KEY,
-                                        Quantity INT NOT NULL,
-                                        ProductID int not null,
-                                        WarehouseRequestID int not null,
-                                        FOREIGN KEY (WarehouseRequestID) REFERENCES WarehouseRequest(WarehouseRequestID),
-                                        FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 CREATE TABLE ProductImportedLog(
 										ProductImportedLogID INT NOT NULL PRIMARY KEY,
@@ -317,12 +278,48 @@ CREATE TABLE Task (
                       EndDate DATETIME,
                       Deadline DATETIME NOT NULL,
                       Description NVARCHAR(255),
+                      TaskNote NVARCHAR(255)
                       Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
                       FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
 );
 
+-- ======================
+-- PRODUCT REQUEST
+-- ======================
+
+CREATE TABLE ProductRequest (
+                                ProductRequestID INT PRIMARY KEY,
+                                Quantity INT NOT NULL,
+                                RequestDate DATE NOT NULL,
+                                Status ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+                                Description NVARCHAR(255),
+                                TaskID INT NOT NULL,
+                                ProductID INT NOT NULL,
+                                WarehouseID INT,
+                                FOREIGN KEY (TaskID) REFERENCES Task(TaskID),
+                                FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+                                FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
+);
+
+CREATE TABLE WarehouseLog (
+                              WarehouseLogID INT PRIMARY KEY,
+                              LogDate DATE NOT NULL,
+                              Description NVARCHAR(255),
+                              WarehouseID INT NOT NULL,
+                              ProductRequestID INT NOT NULL,
+                              FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID),
+                              FOREIGN KEY (ProductRequestID) REFERENCES ProductRequest(ProductRequestID)
+);
+
+
+CREATE TABLE ProductExported (
+                                 ProductWarehouseID INT PRIMARY KEY,
+                                 WarehouseLogID INT NOT NULL,
+                                 FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
+                                 FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
+);
 
 
 -- Generated INSERTs for Province and Village tables

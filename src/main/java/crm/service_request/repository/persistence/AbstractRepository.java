@@ -102,7 +102,10 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             int offset = (pageRequest.getPageNumber() - 1) * pageRequest.getPageSize();
             // Apply pagination and sorting to the original query
             builder.limit(pageRequest.getPageSize()).offset(offset);
-            if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) {
+            if (pageRequest.getOrders() != null && !pageRequest.getOrders().isEmpty()) {
+                builder.orderBy(pageRequest.getOrders());
+            } else if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) { // backward
+                                                                                                        // compat
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
             try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
@@ -176,7 +179,10 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             total = countRecord(builder, connection);
             int offset = (pageRequest.getPageNumber() - 1) * pageRequest.getPageSize();
             builder.limit(pageRequest.getPageSize()).offset(offset);
-            if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) {
+            if (pageRequest.getOrders() != null && !pageRequest.getOrders().isEmpty()) {
+                builder.orderBy(pageRequest.getOrders());
+            } else if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) { // backward
+                                                                                                        // compat
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
             try (PreparedStatement statement = connection.prepareStatement(builder.build());) {

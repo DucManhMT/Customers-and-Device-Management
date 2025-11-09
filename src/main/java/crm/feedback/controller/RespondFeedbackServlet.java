@@ -44,6 +44,10 @@ public class RespondFeedbackServlet extends HttpServlet {
                 if (requestIdStr != null && !requestIdStr.trim().isEmpty()) {
                     int reqId = Integer.parseInt(requestIdStr.trim());
                     for (Feedback fb : em.findAll(Feedback.class)) {
+                        // Skip deleted feedbacks
+                        if (fb.getFeedbackStatus() != null && fb.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                            continue;
+                        }
                         Object fk = null;
                         if (fb.getRequestID() != null) fk = fb.getRequestID().getForeignKeyValue();
                         Integer fkInt = null;
@@ -62,6 +66,11 @@ public class RespondFeedbackServlet extends HttpServlet {
                     Integer fid = Integer.parseInt(feedbackIdStr.trim());
                     feedback = em.find(Feedback.class, fid);
                     if (feedback == null) {
+                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Feedback not found");
+                        return;
+                    }
+                    // Check if feedback is deleted
+                    if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
                         resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Feedback not found");
                         return;
                     }
@@ -111,6 +120,10 @@ public class RespondFeedbackServlet extends HttpServlet {
                 if (requestIdStr != null && !requestIdStr.trim().isEmpty()) {
                     int reqId = Integer.parseInt(requestIdStr.trim());
                     for (Feedback fb : em.findAll(Feedback.class)) {
+                        // Skip deleted feedbacks
+                        if (fb.getFeedbackStatus() != null && fb.getFeedbackStatus() == FeedbackStatus.Deleted) {
+                            continue;
+                        }
                         Object fk = null;
                         if (fb.getRequestID() != null) fk = fb.getRequestID().getForeignKeyValue();
                         Integer fkInt = null;
@@ -130,6 +143,12 @@ public class RespondFeedbackServlet extends HttpServlet {
                     Integer fid = Integer.parseInt(feedbackIdStr.trim());
                     feedback = em.find(Feedback.class, fid);
                     if (feedback == null) {
+                        req.getSession().setAttribute("errorMessage", "Feedback not found");
+                        resp.sendRedirect(req.getContextPath() + "/feedback/list");
+                        return;
+                    }
+                    // Check if feedback is deleted
+                    if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
                         req.getSession().setAttribute("errorMessage", "Feedback not found");
                         resp.sendRedirect(req.getContextPath() + "/feedback/list");
                         return;

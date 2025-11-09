@@ -37,6 +37,7 @@
         .page-header h1 {
             font-weight: 700;
             color: var(--sidebar-bg);
+            margin: 20px;
         }
 
         .filter-buttons .btn {
@@ -44,6 +45,8 @@
             font-weight: 500;
             background-color: var(--main-bg);
             color: var(--sidebar-bg);
+            margin-right: 20px;
+
         }
 
         .inventory-card {
@@ -52,6 +55,7 @@
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: none;
+            margin: 20px;
         }
 
         /* --- STYLES FOR PRODUCT GRID --- */
@@ -158,10 +162,23 @@
             padding-top: 16px;
             border-top: 1px solid #f0f2f5;
         }
+
+        .grid-top span{
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--sidebar-bg);
+        }
+
+        .grid-top .btn{
+            border-radius: 20px;
+            font-weight: 400;
+            background-color: #fafafa;
+            color: var(--sidebar-bg);
+        }
     </style>
 </head>
 <body>
-<c:set var="activePage" value="inventory" scope="request" />
+<c:set var="activePage" value="inventory" scope="request"/>
 <jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
 
 <div class="main-content">
@@ -171,8 +188,6 @@
         <div class="page-header">
             <h1>Inventory (${totalProducts})</h1>
             <div class="filter-buttons d-flex gap-2">
-                <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product" class="btn btn-light border"><i
-                        class="fas fa-plus me-1"></i> Add Product</a>
                 <button class="btn btn-light border" data-bs-toggle="collapse" href="#filterCollapse"><i
                         class="fas fa-filter me-1"></i> Filter
                 </button>
@@ -216,13 +231,23 @@
 
         <div class="inventory-card">
 
+            <c:if test="${empty inventorySummary}">
+                <div class="alert alert-info w-100 text-center">
+                        ${empty errorMessage ? 'No products found in inventory.' : errorMessage}
+                </div>
+            </c:if>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="grid-top d-flex justify-content-between align-items-center w-100">
+                    <span>Total Product (${totalProducts})</span>
+                    <a href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
+                       class="btn btn-light border"><i
+                            class="fas fa-plus me-1"></i> Add Product</a>
+                </div>
+            </div>
             <!-- NEW PRODUCT GRID LAYOUT -->
             <div class="product-grid">
-                <c:if test="${empty inventorySummary}">
-                    <div class="alert alert-info w-100 text-center">
-                            ${empty errorMessage ? 'No products found in inventory.' : errorMessage}
-                    </div>
-                </c:if>
+
 
                 <c:forEach var="item" items="${inventorySummary}">
                     <div class="product-card">

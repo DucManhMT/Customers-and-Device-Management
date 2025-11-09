@@ -12,7 +12,7 @@
     <link href="${pageContext.request.contextPath}/assets/css/task-views.css" rel="stylesheet"/>
 </head>
 <body>
-<c:set var="activePage" value="viewAprovedTask" scope="request" />
+<c:set var="activePage" value="viewAprovedTask" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/techlead_sidebar.jsp"/>
 <div class="page-header">
@@ -37,10 +37,7 @@
 </div>
 
 <div class="container-fluid">
-    <a href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
-       class="btn btn-primary mb-2">
-        <span>Back to Action Center</span>
-    </a><br>
+
 
     <c:if test="${not empty sessionScope.successMessage}">
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -65,7 +62,7 @@
     </c:if>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="card card-custom filter-card mb-4">
                 <div class="card-header bg-transparent border-0">
                     <h5 class="card-title mb-0">
@@ -143,25 +140,25 @@
                 </div>
             </div>
 
-            <div class="card card-custom mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            <label class="form-check-label fw-semibold">
-                                Request List (<span id="visibleRequestsCount">${totalCount}</span> requests)
-                            </label>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                  <span class="badge badge-custom bg-primary me-2">
-                    <span id="selectedRequestsCount">0</span> selected
-                  </span>
-                            <button class="btn btn-outline-primary btn-sm" onclick="clearAllSelections()">
-                                <i class="bi bi-x-circle"></i> Clear Selection
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <%--            <div class="card card-custom mb-4">--%>
+            <%--                <div class="card-body">--%>
+            <%--                    <div class="d-flex justify-content-between align-items-center">--%>
+            <%--                        <div class="d-flex align-items-center">--%>
+            <%--                            <label class="form-check-label fw-semibold">--%>
+            <%--                                Request List (<span id="visibleRequestsCount">${totalCount}</span> requests)--%>
+            <%--                            </label>--%>
+            <%--                        </div>--%>
+            <%--                        <div class="d-flex align-items-center gap-3">--%>
+            <%--                  <span class="badge badge-custom bg-primary me-2">--%>
+            <%--                    <span id="selectedRequestsCount">0</span> selected--%>
+            <%--                  </span>--%>
+            <%--                            <button class="btn btn-outline-primary btn-sm" onclick="clearAllSelections()">--%>
+            <%--                                <i class="bi bi-x-circle"></i> Clear Selection--%>
+            <%--                            </button>--%>
+            <%--                        </div>--%>
+            <%--                    </div>--%>
+            <%--                </div>--%>
+            <%--            </div>--%>
 
             <div class="card">
                 <div
@@ -190,7 +187,7 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-dark">
                         <tr>
-                            <th width="40">Select</th>
+                            <%--                            <th width="40">Select</th>--%>
                             <th>Request Details</th>
                             <th>Customer Info</th>
                             <th>Date</th>
@@ -204,10 +201,10 @@
                             <c:when test="${not empty approvedRequests}">
                                 <c:forEach var="reqObj" items="${approvedRequests}">
                                     <tr>
-                                        <td>
-                                            <input type="checkbox" class="form-check-input request-checkbox"
-                                                   name="selectedTasks" value="${reqObj.requestID}"/>
-                                        </td>
+                                            <%--                                        <td>--%>
+                                            <%--                                            <input type="checkbox" class="form-check-input request-checkbox"--%>
+                                            <%--                                                   name="selectedTasks" value="${reqObj.requestID}"/>--%>
+                                            <%--                                        </td>   --%>
                                         <td>
                                             <div class="fw-bold text-primary mb-1">
                                                 <c:choose>
@@ -257,13 +254,32 @@
                                             <span class="badge bg-success">${reqObj.requestStatus}</span>
                                         </td>
                                         <td>
-                                            <form method="post" action="${pageContext.request.contextPath}/task/detail"
-                                                  style="display:inline-block;">
-                                                <input type="hidden" name="id" value="${reqObj.requestID}"/>
-                                                <button type="submit" class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-eye"></i> View
-                                                </button>
-                                            </form>
+                                            <div class="d-flex">
+                                                <form method="post"
+                                                      action="${pageContext.request.contextPath}/task/detail"
+                                                      style="display:inline-block;">
+                                                    <input type="hidden" name="id" value="${reqObj.requestID}"/>
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </button>
+
+                                                </form>
+                                                <form
+                                                        action="${pageContext.request.contextPath}/task/selectTechnician"
+                                                        style="display:inline-block;">
+                                                    <input type="hidden" name="selectedTasks"
+                                                           value="${reqObj.requestID}"/>
+                                                    <button
+                                                            class="btn btn-success btn-sm ms-2"
+                                                            type="submit"
+                                                    >
+                                                        <i class="bi bi-person-plus me-2"></i>
+                                                        Assign
+                                                    </button>
+                                                </form>
+
+                                            </div>
+
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -316,28 +332,28 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
-                <div class="card-body text-center">
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button
-                                class="btn btn-success btn-lg"
-                                id="quickAssignBtn"
-                                disabled
-                        >
-                            <i class="bi bi-person-plus me-2"></i>
-                            Assign Selected Tasks
-                            <span
-                                    class="badge bg-light text-dark ms-2"
-                                    id="quickAssignCount"
-                            >0</span
-                            >
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <%--            <div class="card mt-3">--%>
+            <%--                <div class="card-body text-center">--%>
+            <%--                    <div class="d-flex gap-2 justify-content-center">--%>
+            <%--                        <button--%>
+            <%--                                class="btn btn-success btn-lg"--%>
+            <%--                                id="quickAssignBtn"--%>
+            <%--                                disabled--%>
+            <%--                        >--%>
+            <%--                            <i class="bi bi-person-plus me-2"></i>--%>
+            <%--                            Assign Selected Tasks--%>
+            <%--                            <span--%>
+            <%--                                    class="badge bg-light text-dark ms-2"--%>
+            <%--                                    id="quickAssignCount"--%>
+            <%--                            >0</span--%>
+            <%--                            >--%>
+            <%--                        </button>--%>
+            <%--                    </div>--%>
+            <%--                </div>--%>
+            <%--            </div>--%>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-4" style="display:none ">
             <div class="floating-summary">
                 <div
                         class="assignment-summary mb-4"
@@ -536,7 +552,10 @@
             phoneInput.addEventListener('input', function () {
                 const cursor = this.selectionStart;
                 this.value = this.value.replace(/\D/g, '');
-                try { this.setSelectionRange(cursor, cursor); } catch (e) { /* ignore */ }
+                try {
+                    this.setSelectionRange(cursor, cursor);
+                } catch (e) { /* ignore */
+                }
             });
 
             // On paste: filter pasted content to digits only

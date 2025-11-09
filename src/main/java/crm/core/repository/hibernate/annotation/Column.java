@@ -46,7 +46,7 @@ public @interface Column {
      * 
      * @return true if nullable
      */
-    boolean nullable() default true;
+    boolean nullable() default false;
 
     /**
      * Length / size for variable length types (e.g. VARCHAR). Ignored for types

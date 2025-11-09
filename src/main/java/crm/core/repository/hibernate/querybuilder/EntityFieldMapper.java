@@ -161,15 +161,23 @@ public class EntityFieldMapper {
 
                 if (isColumn(field)) {
                     Object value = extractValueFromResultSet(field, rs);
-                    field.getAnnotation(Column.class).nullable();
+                    if(value == null && field.getAnnotation(Column.class).nullable()){
+                        continue;
+                    }
                     field.set(entity, value);
                 }
                 if (isManyToOne(field)) {
                     Object value = extractValueFromResultSet(field, rs);
+                    if(value == null && field.getAnnotation(ManyToOne.class).nullable()){
+                        continue;
+                    }
                     field.set(entity, value);
                 }
                 if (isOneToOne(field)) {
                     Object value = extractValueFromResultSet(field, rs);
+                    if(value == null && field.getAnnotation(OneToOne.class).nullable()){
+                        continue;
+                    }
                     field.set(entity, value);
                 }
                 if (isOneToMany(field)) {
