@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import crm.common.model.Contract;
+import crm.common.model.Customer;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.DBcontext;
@@ -21,11 +22,14 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
         super(Request.class);
     }
 
+    private CustomerRepository customerRepository = new CustomerRepository();
+    private final ContractRepository contractRepository = new ContractRepository();
+
     public Integer getNewId() {
         String sql = "SELECT MAX(RequestID) AS MaxID FROM Request";
         Connection connection = DBcontext.getConnection();
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+                ResultSet resultSet = statement.executeQuery(sql)) {
             if (resultSet.next()) {
                 int maxId = resultSet.getInt("MaxID");
                 return maxId + 1;
@@ -37,13 +41,32 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
         return 1;
     }
 
+    public Page<Request> getByCustomerConditionAndCondition(ClauseBuilder customerClause, ClauseBuilder clause,
+            PageRequest pageRequest) {
+        List<Integer> customerIds = customerRepository.findWithCondition(customerClause).stream()
+                .map((c) -> c.getCustomerID())
+                .toList();
+        if (customerIds == null || customerIds.isEmpty()) {
+            return new Page<>(0, pageRequest, List.of());
+        }
+
+        List<Integer> contractIds = contractRepository.findWithCondition(
+                ClauseBuilder.builder().in("CustomerID", customerIds)).stream().map((c) -> c.getContractID()).toList();
+        if (contractIds == null || contractIds.isEmpty()) {
+            return new Page<>(0, pageRequest, List.of());
+        }
+        clause.in("ContractID", contractIds);
+
+        return findWithCondtion(clause, pageRequest);
+    }
+
     public Integer countRequestByStatus(RequestStatus requestStatus) {
         String sql = "SELECT COUNT(*) AS Total " +
                 "FROM Request " +
                 "WHERE RequestStatus = '" + requestStatus.toString() + "'";
         Connection connection = DBcontext.getConnection();
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+                ResultSet resultSet = statement.executeQuery(sql)) {
             if (resultSet.next()) {
                 return resultSet.getInt("Total");
             }
@@ -62,7 +85,7 @@ public class RequestRepository extends AbstractRepository<Request, Integer> {
                 "AND StartDate <= '" + to + "'";
         Connection connection = DBcontext.getConnection();
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+                ResultSet resultSet = statement.executeQuery(sql)) {
             if (resultSet.next()) {
                 return resultSet.getInt("Total");
             }

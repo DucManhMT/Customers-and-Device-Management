@@ -23,173 +23,202 @@
     <div class="container-fluid">
         <h2 class="mt-1">Task List</h2>
 
-        <!-- Bộ lọc & sắp xếp -->
-        <form method="get" action="${pageContext.request.contextPath}/technician_leader/tasks/list">
-            <div class="d-flex align-items-center gap-3 bg-light p-3 mb-1">
-                <!-- Sort -->
-                <div class="d-flex align-items-center gap-2">
-                    <label class="form-label mb-0" for="sortDir">Sort Deadline:</label>
-                    <select id="sortDir" name="sortDir" class="form-select" style="width: 140px;">
-                        <option value="asc" ${sortDir == 'asc' ? 'selected' : ''}>ASC</option>
-                        <option value="desc" ${sortDir == 'desc' ? 'selected' : ''}>DESC</option>
-                    </select>
+        <!-- Filter & Sort -->
+        <div class="col-lg-12">
+            <div class="card card-custom filter-card mb-4">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-funnel me-2"></i>Filter & Sort Tasks
+                    </h5>
                 </div>
 
-                <!-- Status filter -->
-                <div class="d-flex align-items-center gap-2">
-                    <label class="form-label mb-0" for="status">Status:</label>
-                    <select id="status" name="status" class="form-select" style="width: 180px;">
-                        <option value="">All</option>
-                        <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Pending</option>
-                        <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
-                        <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
-                        <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
-                    </select>
-                </div>
+                <div class="card-body">
+                    <form method="get" action="${pageContext.request.contextPath}/technician_leader/tasks/list"
+                          id="filterForm">
+                        <div class="row align-items-center flex-wrap gap-3 bg-light p-3 rounded">
 
-                <!-- StaffName search -->
-                <div class="d-flex align-items-center gap-2">
-                    <label for="staffName" class="form-label mb-0">AssignTo:</label>
-                    <input class="form-control" type="text" name="staffName" id="staffName"
-                           placeholder="Search by Staff Name" value="${staffName}"
-                           style="width: 240px; display: inline-block;">
-                </div>
+                            <!-- Sort -->
+                            <div class="col-2 gap-2">
+                                <label class="form-label  fw-semibold" for="sortDir">Sort Deadline</label>
+                                <select id="sortDir" name="sortDir" class="form-select">
+                                    <option value="asc" ${sortDir == 'asc' ? 'selected' : ''}>ASC</option>
+                                    <option value="desc" ${sortDir == 'desc' ? 'selected' : ''}>DESC</option>
+                                </select>
+                            </div>
 
+                            <!-- Status -->
+                            <div class="col-3 gap-2">
+                                <label class="form-label mb-0 fw-semibold" for="status">Status:</label>
+                                <select id="status" name="status" class="form-select">
+                                    <option value="">All</option>
+                                    <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing
+                                    </option>
+                                    <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
+                                    <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
+                                </select>
+                            </div>
 
-                <!-- Near due & Overdue (nearDueDays) -->
-                <div class="d-flex align-items-center gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="nearDue"
-                               name="nearDue" ${nearDue ? 'checked' : ''}>
-                        <label class="form-check-label" for="nearDue">
-                            Near Due</label>
-                    </div>
-                    <label class="form-label mb-0" for="nearDueDays">(Day):</label>
-                    <input type="number" class="form-control" id="nearDueDays" name="nearDueDays" placeholder="days"
-                           min="1" max="30"
-                           value="${empty nearDueHours ? 1 : nearDueHours}" style="width: 90px;">
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="overdue"
-                               name="overdue" ${overdue ? 'checked' : ''}>
-                        <label class="form-check-label" for="overdue">Overdue</label>
-                    </div>
-                </div>
+                            <!-- StaffName -->
+                            <div class="col-3 gap-2">
+                                <label for="staffName" class="form-label mb-0 fw-semibold">AssignTo:</label>
+                                <input class="form-control" type="text" name="staffName" id="staffName"
+                                       placeholder="Search by Staff Name" value="${staffName}"
+                                >
+                            </div>
 
-                <div class="ms-auto d-flex align-items-center gap-2 flex-column">
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="${pageContext.request.contextPath}/technician_leader/tasks/list" class="btn btn-danger">Rest</a>
+                            <!-- Near Due -->
+                            <div class="d-flex col-2 align-items-center gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="nearDue"
+                                           name="nearDue" ${nearDue ? 'checked' : ''}>
+                                    <label class="form-check-label fw-semibold" for="nearDue">Near Due</label>
+                                </div>
+                                <label class="form-label mb-0" for="nearDueDays">(Day):</label>
+                                <input type="number" class="form-control" id="nearDueDays" name="nearDueDays"
+                                       placeholder="days" min="1" max="30"
+                                       value="${empty nearDueHours ? 1 : nearDueHours}" style="width: 90px;">
+                            </div>
+
+                            <!-- Overdue -->
+                            <div class="col-1 align-items-center gap-1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="overdue"
+                                           name="overdue" ${overdue ? 'checked' : ''}>
+                                    <label class="form-check-label" for="overdue">Overdue</label>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="row">
+                                <div class=" gap-2 flex-column">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search"></i> Filter
+                                    </button>
+                                    <a href="${pageContext.request.contextPath}/technician_leader/tasks/list"
+                                       class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-clockwise"></i> Reset
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <!-- Mini dashboard -->
-            <div class="row g-3 mb-2">
-                <div class="col-md-3">
-                    <div class="card border-secondary">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-secondary">Matched Total</span>
-                                <strong>${dashboardTotalMatched}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card border-primary">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary">On Page</span>
-                                <strong>${dashboardPageCount}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card border-warning">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-warning">Near Due</span>
-                                <strong>${dashboardNearDueCount}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card border-danger">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-danger">Overdue</span>
-                                <strong>${dashboardOverdueCount}</strong>
-                            </div>
+        <!-- Mini dashboard -->
+        <div class="row g-3 mb-2">
+            <div class="col-md-3">
+                <div class="card border-secondary">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-secondary">Matched Total</span>
+                            <strong>${dashboardTotalMatched}</strong>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="card border-primary">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary">On Page</span>
+                            <strong>${dashboardPageCount}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-warning">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-warning">Near Due</span>
+                            <strong>${dashboardNearDueCount}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-danger">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-danger">Overdue</span>
+                            <strong>${dashboardOverdueCount}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <table class="table table-bordered">
-                <thead class="table-light">
-                <tr>
-                    <th>No</th>
-                    <th>Request ID</th>
-                    <th>Assign To</th>
-                    <th>Status</th>
-                    <th>Start Date</th>
-                    <th>Deadline</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:choose>
-                    <c:when test="${not empty tasks}">
-                        <c:forEach items="${tasks}" var="task" varStatus="status">
-                            <c:set var="isNearDue" value="${nearDueMap[task.taskID]}"/>
-                            <c:set var="isOverdue" value="${overdueMap[task.taskID]}"/>
-                            <tr class="${isOverdue ? 'table-danger' : (isNearDue ? 'table-warning' : '')}">
-                                <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                                <td><c:out value="${task.request != null ? task.request.requestID : '-'}"/></td>
-                                <td><c:out value="${task.assignTo != null ? task.assignTo.staffName : '-'}"/></td>
-                                <td>
-    <span class="
-        badge
-        <c:choose>
-            <c:when test='${task.status == "Pending"}'>bg-secondary</c:when>
-            <c:when test='${task.status == "Processing"}'>bg-primary</c:when>
-            <c:when test='${task.status == "Finished"}'>bg-success</c:when>
-            <c:when test='${task.status == "Reject"}'>bg-danger</c:when>
-            <c:otherwise>bg-light text-dark</c:otherwise>
-        </c:choose>
-    ">
-            ${task.status}
-    </span>
-                                </td>
-
-                                <td><c:out value="${empty task.startDate ? '-' : task.startDate}"/></td>
-                                <td>
+        <!-- Task table -->
+        <table class="table table-bordered">
+            <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Request ID</th>
+                <th>Assign To</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>Deadline</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:choose>
+                <c:when test="${not empty tasks}">
+                    <c:forEach items="${tasks}" var="task" varStatus="status">
+                        <c:set var="isNearDue" value="${nearDueMap[task.taskID]}"/>
+                        <c:set var="isOverdue" value="${overdueMap[task.taskID]}"/>
+                        <tr class="${isOverdue ? 'table-danger' : (isNearDue ? 'table-warning' : '')}">
+                            <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
+                            <td><c:out value="${task.request != null ? task.request.requestID : '-'}"/></td>
+                            <td><c:out value="${task.assignTo != null ? task.assignTo.staffName : '-'}"/></td>
+                            <td>
+                                <span class="
+                                    badge
                                     <c:choose>
-                                        <c:when test="${not empty task.deadline}">
-                                            ${task.deadline}
-                                        </c:when>
-                                        <c:otherwise>-</c:otherwise>
+                                        <c:when test='${task.status == "Pending"}'>bg-secondary</c:when>
+                                        <c:when test='${task.status == "Processing"}'>bg-primary</c:when>
+                                        <c:when test='${task.status == "Finished"}'>bg-success</c:when>
+                                        <c:when test='${task.status == "Reject"}'>bg-danger</c:when>
+                                        <c:otherwise>bg-light text-dark</c:otherwise>
                                     </c:choose>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">Không có dữ liệu.</td>
+                                ">
+                                        ${task.status}
+                                </span>
+                            </td>
+                            <td><c:out value="${empty task.startDate ? '-' : task.startDate}"/></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${not empty task.deadline}">
+                                        ${task.deadline}
+                                    </c:when>
+                                    <c:otherwise>-</c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-primary"
+                                   href="${pageContext.request.contextPath}/technician_leader/tasks/detail?taskId=${task.taskID}">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
                         </tr>
-                    </c:otherwise>
-                </c:choose>
-                </tbody>
-            </table>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No data.</td>
+                    </tr>
+                </c:otherwise>
+            </c:choose>
+            </tbody>
+        </table>
 
-            <jsp:include page="../components/paging-bottom.jsp"/>
-        </form>
-
+        <jsp:include page="../components/paging-bottom.jsp"/>
         <jsp:include page="../components/scroll-button.jsp"/>
     </div>
-
 </div>
 
 </body>

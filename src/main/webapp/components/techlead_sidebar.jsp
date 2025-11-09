@@ -96,12 +96,14 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/tech/employees"><i class="bi bi-eye"></i> View Technician
+                   href="${pageContext.request.contextPath}/technician_leader/employees"><i class="bi bi-eye"></i>
+                    View Technician
                     List</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/task/viewAprovedTask"><i class="bi bi-eye"></i> View Aproved
+                   href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"><i
+                        class="bi bi-eye"></i> View Aproved
                     Request</a>
             </li>
             <li class="nav-item">
