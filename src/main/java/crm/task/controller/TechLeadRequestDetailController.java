@@ -45,6 +45,12 @@ public class TechLeadRequestDetailController extends HttpServlet {
             requestIdParam = req.getParameter("id");
         }
         if (requestIdParam == null || requestIdParam.isBlank()) {
+            Object attr = req.getAttribute("requestId");
+            if (attr != null) {
+                requestIdParam = String.valueOf(attr);
+            }
+        }
+        if (requestIdParam == null || requestIdParam.isBlank()) {
             req.setAttribute(ATTR_ERROR, "requestId is required");
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;

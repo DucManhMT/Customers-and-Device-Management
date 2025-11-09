@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "TaskDetailServlet", urlPatterns = {URLConstants.REQUSET_DETAIL})
+@WebServlet(name = "RequestDetailServlet", urlPatterns = {URLConstants.REQUSET_DETAIL})
 public class TaskDetailServlet extends HttpServlet {
 
     @Override
@@ -45,7 +45,7 @@ public class TaskDetailServlet extends HttpServlet {
         }
 
         if (requestIdStr == null || requestIdStr.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Task ID is required");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Request ID is required");
             return;
         }
 
@@ -55,7 +55,7 @@ public class TaskDetailServlet extends HttpServlet {
 
             Request task = entityManager.find(Request.class, requestId);
             if (task == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
                 return;
             }
 
@@ -84,7 +84,7 @@ public class TaskDetailServlet extends HttpServlet {
             request.getRequestDispatcher("/technician_employee/task_detail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

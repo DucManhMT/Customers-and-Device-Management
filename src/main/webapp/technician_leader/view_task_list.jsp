@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: anhtu
-  Date: 11/7/2025
-  Time: 4:45 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
@@ -39,7 +32,7 @@
 
                             <!-- Sort -->
                             <div class="col-2 gap-2">
-                                <label class="form-label  fw-semibold" for="sortDir">Sort Deadline</label>
+                                <label class="form-label fw-semibold" for="sortDir">Sort Deadline</label>
                                 <select id="sortDir" name="sortDir" class="form-select">
                                     <option value="asc" ${sortDir == 'asc' ? 'selected' : ''}>ASC</option>
                                     <option value="desc" ${sortDir == 'desc' ? 'selected' : ''}>DESC</option>
@@ -52,8 +45,7 @@
                                 <select id="status" name="status" class="form-select">
                                     <option value="">All</option>
                                     <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing
-                                    </option>
+                                    <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
                                     <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
                                     <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
                                 </select>
@@ -63,8 +55,7 @@
                             <div class="col-3 gap-2">
                                 <label for="staffName" class="form-label mb-0 fw-semibold">AssignTo:</label>
                                 <input class="form-control" type="text" name="staffName" id="staffName"
-                                       placeholder="Search by Staff Name" value="${staffName}"
-                                >
+                                       placeholder="Search by Staff Name" value="${staffName}">
                             </div>
 
                             <!-- Near Due -->
@@ -91,7 +82,7 @@
 
                             <!-- Buttons -->
                             <div class="row">
-                                <div class=" gap-2 flex-column">
+                                <div class="gap-2 flex-column">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="bi bi-search"></i> Filter
                                     </button>
@@ -186,7 +177,7 @@
                                         <c:otherwise>bg-light text-dark</c:otherwise>
                                     </c:choose>
                                 ">
-                                        ${task.status}
+                                    ${task.status}
                                 </span>
                             </td>
                             <td><c:out value="${empty task.startDate ? '-' : task.startDate}"/></td>
@@ -198,11 +189,20 @@
                                     <c:otherwise>-</c:otherwise>
                                 </c:choose>
                             </td>
-                            <td>
+                            <td class="d-flex gap-2">
                                 <a class="btn btn-sm btn-outline-primary"
-                                   href="${pageContext.request.contextPath}/technician_leader/tasks/detail?taskId=${task.taskID}">
+                                   href="${pageContext.request.contextPath}/staff/task/detail?taskId=${task.taskID}">
                                     <i class="bi bi-eye"></i> View
                                 </a>
+
+                                <!-- Delete via fetch JSON -->
+                                <c:if test='${task.status == "Pending" || task.status == "Processing"}'>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger btn-delete-task"
+                                            data-task-id="${task.taskID}">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>
@@ -221,5 +221,57 @@
     </div>
 </div>
 
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="errorModalLabel">Delete Failed</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="errorModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.btn-delete-task');
+    const modalElement = document.getElementById('errorModal');
+    const modalBody = document.getElementById('errorModalBody');
+    const errorModal = new bootstrap.Modal(modalElement);
+
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', async function() {
+            if (!confirm('Are you sure you want to delete this task?')) return;
+            const taskId = this.dataset.taskId;
+
+            try {
+                const response = await fetch('${pageContext.request.contextPath}/api/technician_leader/tasks/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ taskId })
+                });
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    window.location.reload();
+                } else {
+                    modalBody.textContent = data.message || data.error || 'Delete failed.';
+                    errorModal.show();
+                }
+            } catch (err) {
+                modalBody.textContent = 'Server not responding.';
+                errorModal.show();
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

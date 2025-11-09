@@ -16,7 +16,7 @@
 <div class="container">
     <jsp:include page="../components/header.jsp"/>
     <div class="header">
-        <h1><i class="fas fa-tasks"></i> Task Detail</h1>
+        <h1><i class="fas fa-tasks"></i> Request Detail</h1>
         <p class="subtitle">Detailed information about your assigned task</p>
     </div>
 

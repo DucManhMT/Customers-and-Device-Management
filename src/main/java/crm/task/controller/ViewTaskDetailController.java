@@ -1,5 +1,7 @@
 package crm.task.controller;
 
+import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.common.model.Request;
@@ -14,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/technician_leader/tasks/detail", name = "ViewTaskDetailController")
+@WebServlet(urlPatterns = URLConstants.TECH_TASK_DETAIL, name = "ViewTaskDetailController")
 public class ViewTaskDetailController extends HttpServlet {
 
     private static final String ATTR_ERROR = "error";

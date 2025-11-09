@@ -24,6 +24,7 @@ public class URLConstants {
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
     public static final String STAFF_EDIT_PROFILE = "/staff/profile/edit";
     public static final String STAFF_VIEW_PROFILE = "/staff/profile";
+    public static final String TECH_TASK_DETAIL = "/staff/task/detail";
 
     // CUSTOMER
     public static final String CUSTOMER_ACTION_CENTER = "/customer/customer_actioncenter";
@@ -57,6 +58,7 @@ public class URLConstants {
     public static final String TECHLEAD_VIEW_TECHEM_DETAIL = "/technician_leader/tech/employees/view";
     public static final String TECHLEAD_VIEW_PROFILE = "/technician_leader/profile";
 
+    //
 
     // TECHNICAL EMPLOYEE
     public static final String TECHEM_ACTION_CENTER = "/technician_employee/techemployee_actioncenter";
@@ -68,7 +70,7 @@ public class URLConstants {
     public static final String TASK_PROCESS_ASSIGNMENT = "/technician_employee/task/processAssignment";
     public static final String TASK_ASSIGNMENT_DECISION = "/technician_employee/task/assignmentDecision";
     public static final String TASK_VIEW_RECEIVED_ASSIGNMENTS = "/technician_employee/task/viewReceivedAssignments";
-    public static final String REQUSET_DETAIL = "/tech/request/detail";
+    public static final String REQUSET_DETAIL = "/technician_employee/request/detail";
 
     // WAREHOUSE KEEPER
     public static final String WAREHOUSE_ACTION_CENTER = "/warehouse_keeper/warehousekeeper_actioncenter";
@@ -86,6 +88,5 @@ public class URLConstants {
     // INVENTORY MANAGER
     public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
     public static final String INVENTORY_VIEW_TRANSFER_REQUESTS = "/inventory_manager/view_transfer_requests";
-
 
 }
