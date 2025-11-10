@@ -309,9 +309,9 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'customer-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile"><span>View Profile</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile/edit"><span>Edit Profile</span></a>
-                    </li>
+<%--                    <li class="nav-item">--%>
+<%--                        <a class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile/edit"><span>Edit Profile</span></a>--%>
+<%--                    </li>--%>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'create-feedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/create"><span>Create Feedback</span></a>
                     </li>

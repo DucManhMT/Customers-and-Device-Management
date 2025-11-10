@@ -34,7 +34,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 <div class="main-content" style="margin-left: 0px;">
     <div class="container ">
