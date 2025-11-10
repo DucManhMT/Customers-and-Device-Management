@@ -582,7 +582,7 @@
 </head>
 <body>
 
-<jsp:include page="../components/header.jsp" />
+<jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
 
 <div class="approved-container">
@@ -621,7 +621,7 @@
         </div>
         <c:remove var="successMessage" scope="session"/>
     </c:if>
-    
+
     <c:if test="${not empty sessionScope.warningMessage}">
         <div class="alert alert-warning">
             <i class="fas fa-exclamation-triangle"></i>
@@ -629,7 +629,7 @@
         </div>
         <c:remove var="warningMessage" scope="session"/>
     </c:if>
-    
+
     <c:if test="${not empty sessionScope.errorMessage}">
         <div class="alert alert-danger">
             <i class="fas fa-times-circle"></i>
@@ -644,30 +644,31 @@
             <i class="fas fa-filter"></i>
             Filter Requests
         </div>
-        <form method="POST" action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask" id="filterForm">
+        <form method="POST" action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+              id="filterForm">
             <input type="hidden" name="page" value="1">
             <input type="hidden" name="pageSize" value="${pageSize}">
 
             <div class="filter-grid">
                 <div class="form-group">
                     <label class="form-label">Search by Phone</label>
-                    <input type="text" class="form-control" name="phoneFilter" 
+                    <input type="text" class="form-control" name="phoneFilter"
                            value="${phoneFilter}" placeholder="Enter phone number..."
                            inputmode="numeric">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Customer Name</label>
-                    <input type="text" class="form-control" name="customerFilter" 
+                    <input type="text" class="form-control" name="customerFilter"
                            value="${customerFilter}" placeholder="Search customer...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">From Date</label>
-                    <input type="date" class="form-control" name="fromDate" 
+                    <input type="date" class="form-control" name="fromDate"
                            value="${fromDate}" id="fromDate">
                 </div>
                 <div class="form-group">
                     <label class="form-label">To Date</label>
-                    <input type="date" class="form-control" name="toDate" 
+                    <input type="date" class="form-control" name="toDate"
                            value="${toDate}" id="toDate">
                 </div>
             </div>
@@ -691,14 +692,15 @@
                 Request List
                 <span style="color: var(--gray-600); font-weight: 500;">
                     (<c:choose>
-                        <c:when test="${not empty totalCount}">${totalCount}</c:when>
-                        <c:otherwise>0</c:otherwise>
-                    </c:choose> requests)
+                    <c:when test="${not empty totalCount}">${totalCount}</c:when>
+                    <c:otherwise>0</c:otherwise>
+                </c:choose> requests)
                 </span>
             </div>
             <div class="table-controls">
                 <label>Show:</label>
-                <form method="POST" action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+                <form method="POST"
+                      action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
                       style="display: inline;" id="pageSizeForm">
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="phoneFilter" value="${phoneFilter}">
@@ -718,92 +720,94 @@
         <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr>
-                        <th>Request Details</th>
-                        <th>Customer Info</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
+                <tr>
+                    <th>Request Details</th>
+                    <th>Customer Info</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <c:choose>
-                        <c:when test="${not empty approvedRequests}">
-                            <c:forEach var="reqObj" items="${approvedRequests}">
-                                <tr>
-                                    <td>
-                                        <div class="request-info">
-                                            <div class="request-title">
-                                                <c:choose>
-                                                    <c:when test="${not empty reqObj.requestDescription}">
-                                                        ${reqObj.requestDescription}
-                                                    </c:when>
-                                                    <c:otherwise>Service Request</c:otherwise>
-                                                </c:choose>
-                                            </div>
-                                            <c:if test="${not empty reqObj.note}">
-                                                <div class="request-note">${reqObj.note}</div>
-                                            </c:if>
-                                            <span class="request-id">REQ-${reqObj.requestID}</span>
+                <c:choose>
+                    <c:when test="${not empty approvedRequests}">
+                        <c:forEach var="reqObj" items="${approvedRequests}">
+                            <tr>
+                                <td>
+                                    <div class="request-info">
+                                        <div class="request-title">
+                                            <c:choose>
+                                                <c:when test="${not empty reqObj.requestDescription}">
+                                                    ${reqObj.requestDescription}
+                                                </c:when>
+                                                <c:otherwise>Service Request</c:otherwise>
+                                            </c:choose>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div class="customer-info">
-                                            <div class="customer-name">
-                                                <c:choose>
-                                                    <c:when test="${not empty reqObj.contract.customer.customerName}">
-                                                        ${reqObj.contract.customer.customerName}
-                                                    </c:when>
-                                                    <c:otherwise>N/A</c:otherwise>
-                                                </c:choose>
-                                            </div>
-                                            <c:if test="${not empty reqObj.contract.customer.phone}">
-                                                <div class="customer-contact">
-                                                    <i class="fas fa-phone"></i>
+                                        <c:if test="${not empty reqObj.note}">
+                                            <div class="request-note">${reqObj.note}</div>
+                                        </c:if>
+                                        <span class="request-id">REQ-${reqObj.requestID}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="customer-info">
+                                        <div class="customer-name">
+                                            <c:choose>
+                                                <c:when test="${not empty reqObj.contract.customer.customerName}">
+                                                    ${reqObj.contract.customer.customerName}
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                        <c:if test="${not empty reqObj.contract.customer.phone}">
+                                            <div class="customer-contact">
+                                                <i class="fas fa-phone"></i>
                                                     ${reqObj.contract.customer.phone}
-                                                </div>
-                                            </c:if>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${not empty reqObj.startDate}">
-                                                <i class="fas fa-calendar" style="color: var(--gray-500); margin-right: 0.375rem;"></i>
-                                                ${reqObj.startDate}
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span style="color: var(--gray-500);">No date</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${reqObj.requestStatus == 'Approved'}">
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty reqObj.startDate}">
+                                            <i class="fas fa-calendar"
+                                               style="color: var(--gray-500); margin-right: 0.375rem;"></i>
+                                            ${reqObj.startDate}
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="color: var(--gray-500);">No date</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${reqObj.requestStatus == 'Approved'}">
                                                 <span class="badge badge-success">
                                                     <i class="fas fa-check-circle"></i> ${reqObj.requestStatus}
                                                 </span>
-                                            </c:when>
-                                            <c:when test="${reqObj.requestStatus == 'Processing'}">
+                                        </c:when>
+                                        <c:when test="${reqObj.requestStatus == 'Processing'}">
                                                 <span class="badge badge-processing">
                                                     <i class="fas fa-spinner"></i> ${reqObj.requestStatus}
                                                 </span>
-                                            </c:when>
-                                            <c:when test="${reqObj.requestStatus == 'Finished'}">
+                                        </c:when>
+                                        <c:when test="${reqObj.requestStatus == 'Finished'}">
                                                 <span class="badge badge-finished">
                                                     <i class="fas fa-check"></i> ${reqObj.requestStatus}
                                                 </span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="badge">${reqObj.requestStatus}</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="${pageContext.request.contextPath}/technician_leader/requests/detail?requestId=${reqObj.requestID}"
-                                               class="btn btn-outline btn-sm">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge">${reqObj.requestStatus}</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="${pageContext.request.contextPath}/technician_leader/requests/detail?requestId=${reqObj.requestID}"
+                                           class="btn btn-outline btn-sm">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <c:if test="${reqObj.requestStatus != 'Finished'}">
                                             <form action="${pageContext.request.contextPath}/task/selectTechnician"
                                                   method="POST" style="display: inline;">
                                                 <input type="hidden" name="selectedTasks" value="${reqObj.requestID}">
@@ -811,30 +815,32 @@
                                                     <i class="fas fa-user-plus"></i> Assign
                                                 </button>
                                             </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <tr>
-                                <td colspan="5">
-                                    <div class="empty-state">
-                                        <i class="fas fa-clipboard-list"></i>
-                                        <h3>No Approved Requests Found</h3>
-                                        <p>There are currently no approved requests matching your criteria.</p>
+                                        </c:if>
+
                                     </div>
                                 </td>
                             </tr>
-                        </c:otherwise>
-                    </c:choose>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <h3>No Approved Requests Found</h3>
+                                    <p>There are currently no approved requests matching your criteria.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
                 </tbody>
             </table>
         </div>
 
         <div class="table-footer">
             <div class="pagination-info">
-                Showing 
+                Showing
                 <c:choose>
                     <c:when test="${not empty totalCount and totalCount > 0}">
                         ${startItem} - ${endItem} of ${totalCount}
@@ -848,7 +854,8 @@
                 <c:set var="currentPage" value="${currentPage != null ? currentPage : 1}"/>
                 <c:set var="totalPages" value="${totalPages != null ? totalPages : 1}"/>
 
-                <form method="POST" action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+                <form method="POST"
+                      action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
                       style="display: inline;" id="paginationForm">
                     <input type="hidden" name="page" id="pageInput" value="${currentPage}">
                     <input type="hidden" name="phoneFilter" value="${phoneFilter}">
@@ -934,7 +941,7 @@
     }
 
     // Date validation
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const fromDate = document.getElementById('fromDate');
         const toDate = document.getElementById('toDate');
         const today = new Date().toISOString().split('T')[0];
@@ -942,13 +949,13 @@
         fromDate.setAttribute('max', today);
         toDate.setAttribute('max', today);
 
-        fromDate.addEventListener('change', function() {
+        fromDate.addEventListener('change', function () {
             if (this.value) {
                 toDate.setAttribute('min', this.value);
             }
         });
 
-        toDate.addEventListener('change', function() {
+        toDate.addEventListener('change', function () {
             if (this.value) {
                 fromDate.setAttribute('max', this.value);
             }
@@ -957,7 +964,7 @@
         // Phone filter - only digits
         const phoneFilter = document.querySelector('input[name="phoneFilter"]');
         if (phoneFilter) {
-            phoneFilter.addEventListener('input', function() {
+            phoneFilter.addEventListener('input', function () {
                 this.value = this.value.replace(/\D/g, '');
             });
         }

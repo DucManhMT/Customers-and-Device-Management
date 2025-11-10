@@ -10,136 +10,159 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/task/taskDetail.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <style>
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      .header h1 {
-        margin: 0;
-        font-size: 28px;
-      }
-      .subtitle {
-        color: #666;
-        margin-top: 4px;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 18px;
-        margin-top: 20px;
-      }
-      .card {
-        background: #fff;
-        border: 1px solid #e3e3e3;
-        border-radius: 10px;
-        padding: 18px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
-      }
-      .card h3 {
-        margin-top: 0;
-        font-size: 18px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .item {
-        display: flex;
-        justify-content: space-between;
-        padding: 6px 0;
-        border-bottom: 1px dashed #eee;
-      }
-      .item:last-child {
-        border-bottom: none;
-      }
-      .label {
-        font-weight: 600;
-        color: #444;
-      }
-      .value {
-        color: #222;
-        text-align: right;
-      }
-      .muted {
-        color: #999;
-        font-style: italic;
-      }
-      .actions {
-        margin-top: 20px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .btn {
-        padding: 10px 18px;
-        border-radius: 6px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        text-decoration: none;
-        border: none;
-      }
-      .btn-success {
-        background: #28a745;
-        color: #fff;
-      }
-      .btn-secondary {
-        background: #6c757d;
-        color: #fff;
-      }
-      .btn-danger {
-        background: #dc3545;
-        color: #fff;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-      }
-      th,
-      td {
-        border: 1px solid #e3e3e3;
-        padding: 10px;
-        vertical-align: middle;
-        text-align: left;
-      }
-      th {
-        background: #f8f9fa;
-      }
-      .badge {
-        display: inline-block;
-        padding: 4px 10px;
-        font-size: 12px;
-        border-radius: 14px;
-        font-weight: 600;
-      }
-      .status-Pending {
-        background: #fff3cd;
-        color: #856404;
-      }
-      .status-Processing {
-        background: #cce5ff;
-        color: #004085;
-      }
-      .status-Finished {
-        background: #d4edda;
-        color: #155724;
-      }
-      .status-Reject,
-      .status-Rejected {
-        background: #f8d7da;
-        color: #721c24;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-        <jsp:include page="../components/header.jsp" />
-        <jsp:include page="../components/sidebar.jsp"/>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-        <div class="header">
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .value {
+            color: #222;
+            text-align: right;
+        }
+
+        .muted {
+            color: #999;
+            font-style: italic;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #e3e3e3;
+            padding: 10px;
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        th {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 14px;
+            font-weight: 600;
+        }
+
+        .status-Pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-Processing {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-Finished {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-Reject,
+        .status-Rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <jsp:include page="../components/header.jsp"/>
+    <jsp:include page="../components/sidebar.jsp"/>
+
+    <div class="header">
         <h1><i class="fas fa-clipboard-list"></i> Request Detail</h1>
         <p class="subtitle">Full information and related tasks</p>
     </div>
@@ -252,7 +275,7 @@
                                         </a>
                                         <c:if test='${t.status == "Pending" || t.status == "Processing"}'>
                                             <button class="btn btn-danger delete-btn" data-task-id="${t.taskID}">
-                                                <i class="fas fa-trash"></i> Delete
+                                                <i class="fas fa-trash"></i> Deactive
                                             </button>
                                         </c:if>
                                     </div>
