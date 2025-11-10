@@ -65,8 +65,7 @@
 <body>
 <%-- Include Header and Sidebar --%>
 <jsp:include page="../components/header.jsp"/>
-<c:set var="activePage" value="transfers" scope="request"/>
-<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 <div class="main-content">
     <div class="container-fluid">

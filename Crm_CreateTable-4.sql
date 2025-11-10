@@ -1,10 +1,5 @@
 use crm;
 
-ALTER TABLE Feedback
-ADD RequestID INT NULL,
-ADD FeedbackStatus ENUM('Pending', 'Responded', 'Deleted') DEFAULT 'Pending',
-ADD CONSTRAINT FK_Feedback_Request FOREIGN KEY (RequestID) REFERENCES Request(RequestID);
-
 -- ======================
 -- TYPE
 -- ======================

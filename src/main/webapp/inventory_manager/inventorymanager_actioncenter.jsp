@@ -16,9 +16,9 @@
 </head>
 
 <body>
-<c:set var="activePage" value="dashboard" scope="request" />
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/inventory_manager_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
+
 <p>THIS IS WAREHOUSEKEEPER</p>
 <a href="${pageContext.request.contextPath}/inventory_manager/view_warehouse_product_requests">View Product Request</a>
 <a href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory">View Inventory</a>

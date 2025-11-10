@@ -8,7 +8,8 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
+
 
 <div class="container my-5">
     <div class="row justify-content-center">

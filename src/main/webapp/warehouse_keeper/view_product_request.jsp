@@ -33,7 +33,7 @@
 <body class="bg-light">
 <jsp:include page="../components/header.jsp"/>
 <div class="container py-4">
-    <jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
+    <jsp:include page="../components/sidebar.jsp"/>
     <!-- Header -->
     <div class="card shadow-sm p-3 mb-4">
         <h1 class="h3 fw-bold text-dark mb-0">Incoming Product Requests</h1>

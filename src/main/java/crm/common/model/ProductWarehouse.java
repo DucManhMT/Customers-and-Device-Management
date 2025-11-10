@@ -21,8 +21,6 @@ public class ProductWarehouse {
     @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    // Inverse side of one-to-one to ProductExported (optional / may be null until
-    // exported)
     @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID")
     private LazyReference<ProductExported> productExported;
 

@@ -428,7 +428,7 @@
                         <a class="nav-link ${activePage == 'update-task-status' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/updateStatus"><span>Update Task Status</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-assigned-tasks' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAssignedTasks"><span>View Assigned Tasks</span></a>
+                        <a class="nav-link ${activePage == 'view-assigned-tasks' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'create-product-request' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees/create_product_requests"><span>Create Product Request</span></a>
@@ -459,9 +459,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><span>Product Warehouse</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'product-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail"><span>Product Detail</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><span>View Inventory</span></a>

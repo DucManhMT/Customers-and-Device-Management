@@ -179,9 +179,7 @@
     </style>
 </head>
 <body>
-<c:set var="activePage" value="warehouses" scope="request"/>
-<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
-
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="main-content">
     <jsp:include page="../components/header.jsp"/>
 

@@ -89,10 +89,7 @@
 <body>
 <%-- Include Header --%>
 <jsp:include page="../components/header.jsp"/>
-
-<%-- Include Warehouse Keeper Sidebar --%>
-<c:set var="activePage" value="warehouses" scope="request"/>
-<jsp:include page="../components/warehouse_keeper_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 <div class="main-content">
     <div class="container-fluid">

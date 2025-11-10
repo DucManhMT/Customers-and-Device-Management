@@ -21,20 +21,10 @@
         }
     </style>
 </head>
+<jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <body class="bg-light">
 <div class="container py-3">
-    <!-- Navigation breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-2">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a
-                    href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter">Home</a>
-            </li>
-            <li class="breadcrumb-item"><a
-                    href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse">Products</a></li>
-            <li class="breadcrumb-item active">${product.productName}</li>
-        </ol>
-    </nav>
-
     <c:if test="${not empty errorMessage}">
         <div class="alert alert-info alert-dismissible fade show" role="alert">
                 ${errorMessage}
