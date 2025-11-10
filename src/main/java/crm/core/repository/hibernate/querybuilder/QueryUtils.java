@@ -38,6 +38,10 @@ public class QueryUtils {
         DeleteBuilder <T> deleteBuilder = new DeleteBuilder<>(entity);
         return deleteBuilder.build();
     }
+    public <T> SqlAndParamsDTO buildDeleteAll(Class<T> clazz) {
+        String tableName = EntityFieldMapper.getTableName(clazz);
+        return new SqlAndParamsDTO("Delete FROM " + tableName, Collections.emptyList());
+    }
 
     // ---------- SELECT BY ID ----------
     public <T> SqlAndParamsDTO buildSelectById(Class<T> clazz, Object id) {

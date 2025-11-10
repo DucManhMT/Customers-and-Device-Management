@@ -1,5 +1,15 @@
 package crm.common;
 
+import crm.common.model.Feature;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.core.service.IDGeneratorService;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class URLConstants {
 
     // REGISTRATION
@@ -20,7 +30,9 @@ public class URLConstants {
     public static final String ADMIN_EDIT_ACCOUNT = "/admin/account_list/edit_account";
     public static final String ADMIN_CREATE_ACCOUNT = "/admin/create_account";
     public static final String ADMIN_VIEW_ACCOUNT_DETAIL = "/admin/account_list/view_account_detail";
+    public static final String ADMIN_ASSIGN_FEATURE = "/admin/assign_feature";
     // STAFF
+
     public static final String STAFF_REQUEST_TIMELINE = "/staff/requests/timeline";
     public static final String STAFF_EDIT_PROFILE = "/staff/profile/edit";
     public static final String STAFF_VIEW_PROFILE = "/staff/profile";
@@ -88,5 +100,75 @@ public class URLConstants {
     // INVENTORY MANAGER
     public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
     public static final String INVENTORY_VIEW_TRANSFER_REQUESTS = "/inventory_manager/view_transfer_requests";
+
+    // OTHERs
+    public static final String UNAUTHORIZED = "/unauthorized";
+
+    public static void addToDataBase() {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try {
+            em.beginTransaction();
+            Field[] fields = URLConstants.class.getDeclaredFields();
+            clearData();
+            for (Field field : fields) {
+                if (field.getType() == String.class) {
+                    String url = (String) field.get(null);
+                    Map<String, Object> params = Map.of("featureURL", url);
+                    boolean exists = !em.findWithConditions(Feature.class, params).isEmpty();
+
+                    if (exists) {
+                        continue;
+                    }
+                    Feature feature = new Feature();
+                    feature.setFeatureID(IDGeneratorService.generateID(Feature.class));
+                    feature.setFeatureURL((String) field.get(null));
+                    feature.setDescription(field.getName());
+                    em.persist(feature, Feature.class);
+                }
+            }
+            em.commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        em.rollback();
+    }
+
+    private static void clearData() {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try {
+            em.beginTransaction();
+            List<Feature> features = em.findAll(Feature.class);
+            List<String> urls = getAllUrls();
+            for (Feature feature : features) {
+                if (!urls.contains(feature.getFeatureURL())) {
+                    em.remove(feature, Feature.class);
+                }
+            }
+            em.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.rollback();
+        }
+
+    }
+
+    public static List<String> getAllUrls() {
+        try {
+            Field[] fields = URLConstants.class.getDeclaredFields();
+            List<String> urls = new ArrayList<>();
+            for (Field field : fields) {
+                if (field.getType() == String.class) {
+                    String url = (String) field.get(null);
+                    urls.add(url);
+                }
+            }
+            return urls;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 
 }

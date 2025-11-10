@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "StaffProfileServlet", value = "/staff/profile")
+@WebServlet(name = "StaffProfileServlet", value = URLConstants.STAFF_VIEW_PROFILE)
 public class ViewProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
