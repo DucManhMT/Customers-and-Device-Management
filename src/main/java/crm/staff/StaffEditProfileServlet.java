@@ -1,5 +1,6 @@
 package crm.staff;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Staff;
 import crm.core.config.DBcontext;
@@ -20,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(name = "StaffEditProfileServlet", value = "/staff/profile/edit")
+@WebServlet(name = "StaffEditProfileServlet", value = URLConstants.STAFF_EDIT_PROFILE)
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2,  // 2MB
         maxFileSize = 1024 * 1024 * 5,         // 5MB
