@@ -1,6 +1,7 @@
 package crm.common;
 
 import crm.common.model.Feature;
+import crm.common.model.RoleFeature;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
@@ -147,9 +148,17 @@ public class URLConstants {
         try {
             em.beginTransaction();
             List<Feature> features = em.findAll(Feature.class);
+            List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
             List<String> urls = getAllUrls();
             for (Feature feature : features) {
-                if (!urls.contains(feature.getFeatureURL())) {
+                if (urls!=null && !urls.contains(feature.getFeatureURL())) {
+                    if (roleFeatures != null) {
+                        for (RoleFeature rf : roleFeatures) {
+                            if (rf.getFeature().getFeatureID().equals(feature.getFeatureID())) {
+                                em.remove(rf, RoleFeature.class);
+                            }
+                        }
+                    }
                     em.remove(feature, Feature.class);
                 }
             }

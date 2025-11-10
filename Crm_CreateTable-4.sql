@@ -128,7 +128,6 @@ CREATE TABLE ProductWarehouse (
 );
 
 
-
 -- ======================
 -- CONTRACT & REQUEST
 -- ======================
@@ -152,6 +151,9 @@ CREATE TABLE Request (
                          ContractID INT NOT NULL,
                          FOREIGN KEY (ContractID) REFERENCES Contract(ContractID)
 );
+
+
+
 
 CREATE TABLE AccountRequest(
                                AccountRequestID INT PRIMARY KEY,

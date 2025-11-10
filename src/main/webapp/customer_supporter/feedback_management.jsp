@@ -144,9 +144,50 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:choose>
-                        <c:when test="${not empty feedbacks}">
-                            <c:forEach var="f" items="${feedbacks}">
+                        <c:choose>
+                            <c:when test="${not empty feedbacks}">
+                                <c:forEach var="f" items="${feedbacks}">
+                                    <tr>
+                                        <td>#${f.feedbackID}</td>
+                                        <td>
+                                            <form method="get" action="${pageContext.request.contextPath}${URLConstants.CUSTOMER_SUPPORTER_REQUEST_DETAIL}" style="display:inline;">
+                                                <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
+                                                <button class="btn btn-link p-0">#${f.requestID.foreignKeyValue}</button>
+                                            </form>
+                                        </td>
+                                        <td>${f.customerID}</td>
+                                        <td>${f.rating}</td>
+                                        <td>${f.feedbackDate}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${f.feedbackStatus.name() == 'Pending'}">
+                                                    <span class="badge bg-warning">Pending</span>
+                                                </c:when>
+                                                <c:when test="${f.feedbackStatus.name() == 'Responded'}">
+                                                    <span class="badge bg-success">Responded</span>
+                                                </c:when>
+                                                <c:when test="${f.feedbackStatus.name() == 'Deleted'}">
+                                                    <span class="badge bg-danger">Deleted</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${f.feedbackStatus}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td class="table-actions">
+                                            <form method="get" action="${pageContext.request.contextPath}${URLConstants.CUSTOMER_VIEW_FEEDBACK}">
+                                                <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
+                                                <button type="submit" class="btn btn-sm btn-info">View</button>
+                                            </form>
+                                            <form method="get" action="${pageContext.request.contextPath}/feedback/respond">
+                                                <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
+                                                <button type="submit" class="btn btn-sm btn-success">Respond</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
                                 <tr>
                                     <td>#${f.feedbackID}</td>
                                     <td>

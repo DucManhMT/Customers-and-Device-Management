@@ -1,0 +1,43 @@
+/* Styles for select_technician calendar */
+.schedule-table th,
+.schedule-table td {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.schedule-table thead th {
+    text-align: center;
+}
+.schedule-table td {
+    min-width: 120px;
+    height: 56px;
+}
+.schedule-cell {
+    padding: 4px;
+    font-size: 0.9rem;
+}
+.schedule-badge {
+    display: inline-block;
+    background: #e9f2ff;
+    border: 1px solid #cfe0ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+}
+
+.schedule-start {
+    background: #e6f9ea; /* light green */
+    border: 1px solid #bde8bd;
+    color: #0b6623;
+}
+.schedule-deadline {
+    background: #ffe6e6; /* light red */
+    border: 1px solid #ffbdbd;
+    color: #9a1b1b;
+}
+.schedule-empty {
+    color: #9aa0a6;
+}
+/* responsive: allow horizontal scroll on small screens */
+@media (max-width: 768px) {
+    .schedule-table th, .schedule-table td { min-width: 140px; }
+}

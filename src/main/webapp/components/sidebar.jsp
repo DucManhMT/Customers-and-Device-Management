@@ -285,29 +285,18 @@
             </div>
         </div>
 
-        <!-- Staff Category -->
-        <div class="sidebar-category">
-            <div class="category-header" onclick="toggleCategory('staff')">
-                <span><i class="fas fa-users category-icon"></i>Staff</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <div class="category-items" id="category-staff">
-                <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-request-timeline' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/requests/timeline"><span>Request Timeline</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-edit-profile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/profile/edit"><span>Edit Profile</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<%--        <!-- Staff Category -->--%>
+<%--        <div class="sidebar-category">--%>
+<%--            <div class="category-header" onclick="toggleCategory('staff')">--%>
+<%--                <span><i class="fas fa-users category-icon"></i>Staff</span>--%>
+<%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
+<%--            </div>--%>
+<%--            <div class="category-items" id="category-staff">--%>
+<%--                <ul class="sidebar-nav">--%>
+
+<%--                </ul>--%>
+<%--            </div>--%>
+<%--        </div>--%>
 
         <!-- Customer Category -->
         <div class="sidebar-category">
@@ -345,18 +334,6 @@
                         <a class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/customer/profile/edit"><span>Edit Profile</span></a>
                     </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Feedback Category -->
-        <div class="sidebar-category">
-            <div class="category-header" onclick="toggleCategory('feedback')">
-                <span><i class="fas fa-comment-dots category-icon"></i>Feedback</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <div class="category-items" id="category-feedback">
-                <ul class="sidebar-nav">
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'create-feedback' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/feedback/create"><span>Create Feedback</span></a>
@@ -372,6 +349,19 @@
                 </ul>
             </div>
         </div>
+
+<%--        <!-- Feedback Category -->--%>
+<%--        <div class="sidebar-category">--%>
+<%--            <div class="category-header" onclick="toggleCategory('feedback')">--%>
+<%--                <span><i class="fas fa-comment-dots category-icon"></i>Feedback</span>--%>
+<%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
+<%--            </div>--%>
+<%--            <div class="category-items" id="category-feedback">--%>
+<%--                <ul class="sidebar-nav">--%>
+
+<%--                </ul>--%>
+<%--            </div>--%>
+<%--        </div>--%>
 
         <!-- Customer Supporter Category -->
         <div class="sidebar-category">
@@ -440,37 +430,53 @@
                             <span>   View Task</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'process-assignment' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/processAssignment"><span>Process Assignment</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'assignment-decision' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/assignmentDecision"><span>Assignment Decision</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'received-assignments' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewReceivedAssignments"><span>Received Assignments</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'task-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/detail"><span>Task Detail</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
 
         <!-- Technical Employee Category -->
-        <div class="sidebar-category">
+          <div class="sidebar-category">
             <div class="category-header" onclick="toggleCategory('techem')">
                 <span><i class="fas fa-wrench category-icon"></i>Technical Employee</span>
                 <i class="fas fa-chevron-down toggle-icon"></i>
             </div>
+
             <div class="category-items" id="category-techem">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
+                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techem-action-center' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><span>Action Center</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'update-task-status' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/task/updateStatus"><span>Update Task Status</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-assigned-tasks' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/task/viewAssignedTasks"><span>View Assigned Tasks</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'create-product-request' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/tech/employees/create_product_requests"><span>Create Product Request</span></a>
-                    </li>
+                     <li class="nav-item">
+                <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/staff/profile"><span>My Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span> </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"> View
+                   <span> Received Assignments</span></a>
+            </li>
                 </ul>
             </div>
         </div>
+
 
         <!-- Warehouse Keeper Category -->
         <div class="sidebar-category">
@@ -552,33 +558,18 @@
             </div>
         </div>
 
-        <!-- Task Management Category -->
-        <div class="sidebar-category">
-            <div class="category-header" onclick="toggleCategory('task')">
-                <span><i class="fas fa-tasks category-icon"></i>Task Management</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <div class="category-items" id="category-task">
-                <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'process-assignment' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/task/processAssignment"><span>Process Assignment</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'assignment-decision' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/task/assignmentDecision"><span>Assignment Decision</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'received-assignments' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/task/viewReceivedAssignments"><span>Received Assignments</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'task-detail' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/task/detail"><span>Task Detail</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<%--        <!-- Task Management Category -->--%>
+<%--        <div class="sidebar-category">--%>
+<%--            <div class="category-header" onclick="toggleCategory('task')">--%>
+<%--                <span><i class="fas fa-tasks category-icon"></i>Task Management</span>--%>
+<%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
+<%--            </div>--%>
+<%--            <div class="category-items" id="category-task">--%>
+<%--                <ul class="sidebar-nav">--%>
+<%--                    --%>
+<%--                </ul>--%>
+<%--            </div>--%>
+<%--        </div>--%>
 
         <!-- Footer with Logout -->
         <div class="sidebar-footer">
