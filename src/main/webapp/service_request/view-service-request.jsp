@@ -14,7 +14,7 @@
           rel="stylesheet"/>
 </head>
 <body>
-<c:set var="activePage" value="myRequest" scope="request" />
+<c:set var="activePage" value="myRequest" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/customer_sidebar.jsp"/>
 <div class=" container-fluid">
@@ -67,7 +67,7 @@
                         <a href="./requests/detail?requestId=${request.requestID}" class="btn btn-info btn-sm">View</a>
                         <a href="./requests/timeline?requestId=${request.requestID}"
                            class="btn btn-primary btn-sm">Timeline</a>
-                        <a href="./../feedback/create?requestId=${request.requestID}" class="btn btn-primary btn-sm">Feedback</a>
+                        <a href="./feedback/create?requestId=${request.requestID}" class="btn btn-primary btn-sm">Feedback</a>
                     </td>
                 </tr>
             </c:forEach>

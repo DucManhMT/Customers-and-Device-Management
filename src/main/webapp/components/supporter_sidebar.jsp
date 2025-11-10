@@ -90,20 +90,30 @@
     <div class="sidebar-inner">
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'supporterProfile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile </a>
+                <a class="nav-link ${activePage == 'supporterProfile' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'createContract' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/create_contract"><i class="bi bi-upload"></i> Upload Contract </a>
+                <a class="nav-link ${activePage == 'createContract' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/customer_supporter/create_contract"><i
+                        class="bi bi-upload"></i> Upload Contract </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'requestList' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"><i class="bi bi-card-checklist"></i> Request List</a>
+                <a class="nav-link ${activePage == 'requestList' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/customer_supporter/requests/list"><i
+                        class="bi bi-card-checklist"></i> Request List</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'requestDashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/dashboard"><i class="bi bi-three-dots"></i> Request Dashboard</a>
+                <a class="nav-link ${activePage == 'requestDashboard' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"><i
+                        class="bi bi-three-dots"></i> Request Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'feedbackManagement' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><i class="bi bi-kanban"></i> Feedback Management</a>
+                <a class="nav-link ${activePage == 'feedbackManagement' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><i
+                        class="bi bi-kanban"></i> Feedback Management</a>
             </li>
 
 
