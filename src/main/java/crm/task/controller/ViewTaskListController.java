@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Task;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.task.dto.TaskFilter;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/technician_leader/tasks/list", name = "ViewTaskListController")
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_TASK_LIST, name = "ViewTaskListController")
 public class ViewTaskListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

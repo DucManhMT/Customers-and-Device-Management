@@ -84,6 +84,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="account-container">
     <a href="${pageContext.request.contextPath}/admin/account_list" class="btn btn-link mb-3">
         <i class="bi bi-arrow-left-circle me-2"></i> Back to Account List

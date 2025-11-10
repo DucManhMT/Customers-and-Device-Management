@@ -1,5 +1,6 @@
 package crm.tech.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.*;
 import crm.common.model.enums.ProductRequestStatus;
 import crm.common.repository.Request.RequestDAO;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/tech/employees/createProductRequests")
+@WebServlet(urlPatterns = URLConstants.TECHEM_CREATE_PRODUCT_REQUEST)
 public class ProductRequestController extends HttpServlet {
 
     WarehouseDAO warehouseDAO = new WarehouseDAO();
@@ -35,7 +36,7 @@ public class ProductRequestController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Get list of warehouses for dropdown
+        // Get list of warehouses for dropdown
         List<Warehouse> warehouses = warehouseDAO.findAll();
 
         req.setAttribute("warehouses", warehouses);
@@ -65,7 +66,7 @@ public class ProductRequestController extends HttpServlet {
 
         String note = req.getParameter("note");
 
-        if(!Validator.isValidText(note)) {
+        if (!Validator.isValidText(note)) {
             req.setAttribute("errorMessage", "Invalid note. Please check again.");
             doGet(req, resp);
             return;
@@ -149,13 +150,13 @@ public class ProductRequestController extends HttpServlet {
         }
     }
 
-    private void processRequest(HttpServletRequest req, HttpServletResponse resp, String selectedWarehouseIDStr) throws
-            ServletException, IOException {
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp, String selectedWarehouseIDStr)
+            throws ServletException, IOException {
         // Filter parameters
         String productNameFilter = req.getParameter("productName");
         String productTypeFilter = req.getParameter("productType");
 
-        //Take request ID
+        // Take request ID
         String requestIDStr = req.getParameter("requestIDStr");
 
         // Pagination parameters
@@ -177,7 +178,8 @@ public class ProductRequestController extends HttpServlet {
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
                 currentPage = Integer.parseInt(pageParam);
-                if (currentPage < 1) currentPage = 1;
+                if (currentPage < 1)
+                    currentPage = 1;
             } catch (NumberFormatException e) {
                 // Use default if invalid
             }
@@ -191,7 +193,7 @@ public class ProductRequestController extends HttpServlet {
             return;
         }
 
-        //Product in selected Warehouse
+        // Product in selected Warehouse
         List<Product> productsInSelectedWarehouse = warehouseDAO.getProductsInWarehouse(selectedWarehouseID);
         List<ProductWarehouse> pw = productWarehouseDAO.findAll();
 
@@ -199,11 +201,9 @@ public class ProductRequestController extends HttpServlet {
                 .filter(pw1 -> pw1.getWarehouse().getWarehouseID() == selectedWarehouseID)
                 .collect(Collectors.groupingBy(
                         pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
-                        Collectors.counting()
-                ));
+                        Collectors.counting()));
 
-
-        //filter by product type
+        // filter by product type
         List<Type> ProductTypes = typeDAO.findAll();
 
         if (productNameFilter != null && !productNameFilter.isEmpty()) {
@@ -232,21 +232,21 @@ public class ProductRequestController extends HttpServlet {
                 .limit(pageSize)
                 .toList();
 
-        //Warehouse attributes
+        // Warehouse attributes
         req.setAttribute("productsInSelectedWarehouse", paginatedProducts);
         req.setAttribute("productCounts", productCounts);
         req.setAttribute("uniqueProductTypes", ProductTypes);
 
-        //Request ID attribute
+        // Request ID attribute
         req.setAttribute("requestIDStr", requestIDStr);
 
-        //Pagination attributes
+        // Pagination attributes
         req.setAttribute("currentPage", currentPage);
         req.setAttribute("totalPages", totalPages);
         req.setAttribute("pageSize", pageSize);
         req.setAttribute("totalProducts", totalProducts);
 
-        //Selected warehouse attribute
+        // Selected warehouse attribute
         req.setAttribute("selectedWarehouseID", selectedWarehouseIDStr);
 
         // Pass filter parameters for pagination links

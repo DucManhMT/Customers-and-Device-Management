@@ -152,29 +152,31 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <%-- TE CHEM --%>
-<c:if test="${sessionScope.account.role.roleName == 'TechnicianEmployee'}">
-    <c:set var="activePage" value="techemProfile" scope="request"/>
-    <jsp:include page="../components/techem_sidebar.jsp"/>
-</c:if>
+<%--<c:if test="${sessionScope.account.role.roleName == 'TechnicianEmployee'}">--%>
+<%--    <c:set var="activePage" value="techemProfile" scope="request"/>--%>
+<%--    <jsp:include page="../components/techem_sidebar.jsp"/>--%>
+<%--</c:if>--%>
 
-<%-- TECH LEAD --%>
-<c:if test="${sessionScope.account.role.roleName == 'TechnicianLeader'}">
-    <c:set var="activePage" value="techleadProfile" scope="request"/>
-    <jsp:include page="../components/techlead_sidebar.jsp"/>
-</c:if>
+<%--&lt;%&ndash; TECH LEAD &ndash;%&gt;--%>
+<%--<c:if test="${sessionScope.account.role.roleName == 'TechnicianLeader'}">--%>
+<%--    <c:set var="activePage" value="techleadProfile" scope="request"/>--%>
+<%--    <jsp:include page="../components/techlead_sidebar.jsp"/>--%>
+<%--</c:if>--%>
 
-<%-- SUPPORTER --%>
-<c:if test="${sessionScope.account.role.roleName == 'CustomerSupporter'}">
-    <c:set var="activePage" value="supporterProfile" scope="request"/>
-    <jsp:include page="../components/supporter_sidebar.jsp"/>
-</c:if>
+<%--&lt;%&ndash; SUPPORTER &ndash;%&gt;--%>
+<%--<c:if test="${sessionScope.account.role.roleName == 'CustomerSupporter'}">--%>
+<%--    <c:set var="activePage" value="supporterProfile" scope="request"/>--%>
+<%--    <jsp:include page="../components/supporter_sidebar.jsp"/>--%>
+<%--</c:if>--%>
 
-<%-- CUSTOMER --%>
-<c:if test="${sessionScope.account.role.roleName == 'Customer'}">
-    <c:set var="activePage" value="cusProfile" scope="request"/>
-    <jsp:include page="../components/customer_sidebar.jsp"/>
-</c:if>
+<%--&lt;%&ndash; CUSTOMER &ndash;%&gt;--%>
+<%--<c:if test="${sessionScope.account.role.roleName == 'Customer'}">--%>
+<%--    <c:set var="activePage" value="cusProfile" scope="request"/>--%>
+<%--    <jsp:include page="../components/customer_sidebar.jsp"/>--%>
+<%--</c:if>--%>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="profile-container">
     <div class="profile-content">
         <div class="profile-header">
@@ -249,7 +251,8 @@
 
             </div>
             <div class="text-center mt-4">
-                <a href="${pageContext.request.contextPath}/staff/profile/edit" class="btn btn-primary btn-lg px-5 py-3">
+                <a href="${pageContext.request.contextPath}/staff/profile/edit"
+                   class="btn btn-primary btn-lg px-5 py-3">
                     <i
                             class="bi bi-pencil-square me-2"></i> Edit Profile
                 </a>

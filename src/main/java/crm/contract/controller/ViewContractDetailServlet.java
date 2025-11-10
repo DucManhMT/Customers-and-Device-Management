@@ -1,5 +1,6 @@
 package crm.contract.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.core.config.DBcontext;
@@ -15,9 +16,9 @@ import java.io.IOException;
 /**
  * View detailed information about a single contract (for customer side).
  * Expects contractId as query parameter.
- * URL: /customer/contract/detail?contractId=123
+ * URL: /contract/detail?contractId=123
  */
-@WebServlet(urlPatterns = "/customer/contract/detail", name = "ViewContractDetailServlet")
+@WebServlet(urlPatterns = URLConstants.CONTRACT_DETAIL, name = "ViewContractDetailServlet")
 public class ViewContractDetailServlet extends HttpServlet {
     private static final String ATTR_ERROR = "error";
     private static final String VIEW = "/customer/view_contract_detail.jsp";

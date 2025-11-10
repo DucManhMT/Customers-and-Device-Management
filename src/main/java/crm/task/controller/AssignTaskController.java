@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.common.model.Staff;
@@ -21,7 +22,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/technician_leader/tasks/assign", name = "AssignTaskController")
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_ASSIGN_TASK, name = "AssignTaskController")
 public class AssignTaskController extends HttpServlet {
 
     private final transient RequestRepository requestRepository = new RequestRepository();

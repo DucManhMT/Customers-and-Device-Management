@@ -11,7 +11,9 @@
     />
 </head>
 <body>
+
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container my-3">
     <div class="row g-3">
         <!-- Info sidebar -->
@@ -116,15 +118,9 @@
                             <label for="description" class="form-label"
                             >Description</label
                             >
-                            <textarea
-                                    id="description"
-                                    name="description"
-                                    class="form-control"
-                                    rows="4"
-                                    required
-                            >
-                                ${description}</textarea
-                            >
+                            <textarea id="description" name="description" class="form-control" rows="4"
+                                      required>${description}</textarea>
+
                         </div>
 
                         <div class="d-flex gap-2">

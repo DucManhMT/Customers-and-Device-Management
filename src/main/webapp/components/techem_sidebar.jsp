@@ -95,11 +95,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/technician_employee/create_product_request"><i
-                        class="bi bi-clipboard-plus-fill"></i> Create export request </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
                    href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><i
                         class="bi bi-eye"></i> View Assigned Tasks</a>
@@ -110,8 +105,6 @@
                         class="bi bi-eye"></i> View
                     Received Assignments</a>
             </li>
-
-
         </ul>
     </div>
 </div>

@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.common.model.Request;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/technician_leader/requests/detail", name = "TechLeadRequestDetailController")
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_REQUEST_DETAIL, name = "TechLeadRequestDetailController")
 public class TechLeadRequestDetailController extends HttpServlet {
     private static final String ATTR_ERROR = "error";
     private static final String VIEW = "/technician_leader/view_request_detail.jsp";

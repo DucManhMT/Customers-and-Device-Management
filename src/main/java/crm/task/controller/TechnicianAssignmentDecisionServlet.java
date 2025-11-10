@@ -31,6 +31,7 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
         String taskIdStr = request.getParameter("taskId");
         String decision = request.getParameter("decision");
+        String taskNote = request.getParameter("taskNote");
 
         if (taskIdStr == null || taskIdStr.trim().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing taskId");
@@ -40,6 +41,20 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
         if (decision == null || decision.trim().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing decision");
             return;
+        }
+
+        // Validate: taskNote is required when declining
+        if ("decline".equalsIgnoreCase(decision)) {
+            if (taskNote == null || taskNote.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "You must provide a reason when declining the task.");
+                response.sendRedirect(request.getContextPath() + URLConstants.TASK_ASSIGNMENT_DECISION + "?taskId=" + taskIdStr);
+                return;
+            }
+            if (taskNote.trim().length() < 10) {
+                request.getSession().setAttribute("errorMessage", "Please provide at least 10 characters for the decline reason.");
+                response.sendRedirect(request.getContextPath() + URLConstants.TASK_ASSIGNMENT_DECISION + "?taskId=" + taskIdStr);
+                return;
+            }
         }
 
         Account account = (Account) request.getSession().getAttribute("account");
@@ -87,6 +102,12 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 
                 task.setStatus(TaskStatus.Processing);
                 task.setStartDate(LocalDateTime.now());
+                
+                // Save taskNote if provided (optional for accept)
+                if (taskNote != null && !taskNote.trim().isEmpty()) {
+                    task.setTaskNote(taskNote.trim());
+                }
+                
                 em.merge(task, Task.class);
 
                 // Update Request status to Processing
@@ -118,17 +139,19 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
                 conn.commit();
                 request.getSession().setAttribute("successMessage", "You have accepted the task. Status is now Processing.");
-            } else {
-                // Reject task - set status to Reject
+            } else if ("decline".equalsIgnoreCase(decision)) {
+                // Decline task - set status to Reject and save taskNote (required)
                 task.getAssignBy();
                 task.getAssignTo();
                 task.getRequest();
                 
                 task.setStatus(TaskStatus.Reject);
+                task.setTaskNote(taskNote.trim());
+                
                 em.merge(task, Task.class);
 
                 conn.commit();
-                request.getSession().setAttribute("successMessage", "You declined the assigned task.");
+                request.getSession().setAttribute("successMessage", "You declined the assigned task. Your reason has been recorded.");
             }
 
             // Redirect to Pending Assignments page

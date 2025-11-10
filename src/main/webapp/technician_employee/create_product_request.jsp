@@ -16,7 +16,7 @@
 <body>
 <c:set var="activePage" value="createProductRequests" scope="request" />
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techem_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Create Product Request</h1>
 

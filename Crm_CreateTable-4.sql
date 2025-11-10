@@ -1,5 +1,6 @@
 use crm;
 
+
 -- ======================
 -- TYPE
 -- ======================
@@ -128,21 +129,6 @@ CREATE TABLE ProductWarehouse (
 
 
 -- ======================
--- CUSTOMER FEEDBACK
--- ======================
-CREATE TABLE Feedback (
-                          FeedbackID INT PRIMARY KEY,
-                          Content NVARCHAR(255),
-                          Rating INT,
-                          Description NVARCHAR(255),
-                          Response NVARCHAR(255),
-                          FeedbackDate DATETIME NOT NULL,
-                          ResponseDate DATETIME,
-                          CustomerID NVARCHAR(100),
-                          FOREIGN KEY (CustomerID) REFERENCES Account(Username)
-);
-
--- ======================
 -- CONTRACT & REQUEST
 -- ======================
 CREATE TABLE Contract (
@@ -165,6 +151,9 @@ CREATE TABLE Request (
                          ContractID INT NOT NULL,
                          FOREIGN KEY (ContractID) REFERENCES Contract(ContractID)
 );
+
+
+
 
 CREATE TABLE AccountRequest(
                                AccountRequestID INT PRIMARY KEY,
@@ -231,7 +220,7 @@ CREATE TABLE Village (
 CREATE TABLE WarehouseRequest(
                                  WarehouseRequestID int NOT NULL PRIMARY KEY ,
                                  Date DATETIME,
-                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Processing', 'Completed'),
+                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Processing'),
                                  Note nvarchar(255),
                                  ProductID INT,
                                  Quantity INT,
@@ -280,7 +269,7 @@ CREATE TABLE Task (
                       Deadline DATETIME NOT NULL,
                       Description NVARCHAR(255),
                       TaskNote NVARCHAR(255),
-                      Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
+                      Status ENUM('Pending', 'Reject', 'Processing', 'Finished','DeActived') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
                       FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
@@ -320,6 +309,24 @@ CREATE TABLE ProductExported (
                                  WarehouseLogID INT NOT NULL,
                                  FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
                                  FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
+);
+
+-- ======================
+-- CUSTOMER FEEDBACK
+-- ======================
+CREATE TABLE Feedback (
+    FeedbackID INT PRIMARY KEY,
+    Content NVARCHAR(255),
+    Rating INT,
+    Description NVARCHAR(255),
+    Response NVARCHAR(255),
+    FeedbackDate DATETIME NOT NULL,
+    ResponseDate DATETIME,
+    CustomerID NVARCHAR(100),
+    RequestID INT NULL,
+    FeedbackStatus VARCHAR(20) DEFAULT 'Pending',
+    CONSTRAINT FK_Feedback_Customer FOREIGN KEY (CustomerID) REFERENCES Account(Username),
+    CONSTRAINT FK_Feedback_Request FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
 );
 
 
