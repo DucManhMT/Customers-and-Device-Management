@@ -1,6 +1,7 @@
 package crm.common.listener;
 
 
+import crm.common.URLConstants;
 import crm.common.model.Feature;
 import crm.filter.service.PermissionService;
 import jakarta.servlet.ServletContextEvent;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class PermissionContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        URLConstants.addToDataBase();
         try {
             PermissionService.reloadPermissions();
             Map<Integer, List<Feature>> roleFeatureMap = PermissionService.getRoleFeatureMap();
