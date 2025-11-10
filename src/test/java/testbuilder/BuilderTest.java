@@ -74,8 +74,17 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-//        System.out.println(PermissionService.getRoleFeatureMap().get(2));
-        URLConstants.addToDataBase();
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+
+        List<ProductImportedLog> importedProducts = em.findAll(ProductImportedLog.class);
+        for (ProductImportedLog log : importedProducts) {
+            System.out.println("Log ID: " + log.getProductImportedLogID());
+            System.out.println("Imported Date: " + log.getImportedDate());
+            System.out.println("Warehouse ID: " + log.getWarehouse().getWarehouseID());
+            System.out.println("Inventory Item ID: " + log.getInventoryItem().getSerialNumber());
+            System.out.println("-----");
+
+        }
     }
 }
 

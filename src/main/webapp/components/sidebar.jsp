@@ -197,6 +197,9 @@
         margin-right: 12px;
         text-align: center;
     }
+    .sidebar.sidebar-hidden {
+        transform: translateX(-280px);
+    }
 </style>
 
 <div id="sidebar" class="sidebar">
