@@ -131,18 +131,6 @@ CREATE TABLE ProductWarehouse (
                                   FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID)
 );
 
-CREATE TABLE ProductTransaction (
-                                    TransactionID INT PRIMARY KEY,
-                                    TransactionDate DATETIME NOT NULL,
-                                    SourceWarehouse INT,
-                                    DestinationWarehouse INT,
-                                    TransactionStatus ENUM('Export', 'Import'),
-                                    ItemID INT NOT NULL,
-                                    Note NVARCHAR(255),
-                                    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID),
-                                    FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
-                                    FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
-);
 
 -- ======================
 -- CUSTOMER FEEDBACK
@@ -258,6 +246,24 @@ CREATE TABLE WarehouseRequest(
                                  FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
                                  FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
 );
+
+CREATE TABLE ProductTransaction (
+                                    TransactionID INT PRIMARY KEY,
+                                    TransactionDate DATETIME NOT NULL,
+                                    SourceWarehouse INT,
+                                    DestinationWarehouse INT,
+                                    WarehouseRequestID INT,
+                                    TransactionStatus ENUM('Export', 'Import'),
+                                    ItemID INT NOT NULL,
+                                    Note NVARCHAR(255),
+                                    FOREIGN KEY (WarehouseRequestID) REFERENCES WarehouseRequest(WarehouseRequestID),
+                                    FOREIGN KEY (ItemID) REFERENCES InventoryItem(ItemID),
+                                    FOREIGN KEY (SourceWarehouse) REFERENCES Warehouse(WarehouseID),
+                                    FOREIGN KEY (DestinationWarehouse) REFERENCES Warehouse(WarehouseID)
+);
+
+
+
 CREATE TABLE ProductImportedLog(
 										ProductImportedLogID INT NOT NULL PRIMARY KEY,
                                         ItemID INT NOT NULL,
@@ -278,7 +284,7 @@ CREATE TABLE Task (
                       EndDate DATETIME,
                       Deadline DATETIME NOT NULL,
                       Description NVARCHAR(255),
-                      TaskNote NVARCHAR(255)
+                      TaskNote NVARCHAR(255),
                       Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),

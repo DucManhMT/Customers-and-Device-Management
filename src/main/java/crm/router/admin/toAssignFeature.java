@@ -31,6 +31,7 @@ public class toAssignFeature extends HttpServlet {
         List<Feature> features= allFeatures.stream().filter(f-> !isPublicUrl(f.getFeatureURL())).toList();
 
         req.setAttribute("features", features);
+        PermissionService.reloadPermissions();
 
         Map<Integer, List<Feature>> roleFeatureMap = PermissionService.getRoleFeatureMap();
         req.setAttribute("roleFeatureMap", roleFeatureMap);

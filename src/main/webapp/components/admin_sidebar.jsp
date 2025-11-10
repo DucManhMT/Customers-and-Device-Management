@@ -96,7 +96,7 @@
                 <a class="nav-link ${activePage == 'accountmanage' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/account_list"><i class="bi bi-people-fill"></i> Account Management</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'featuremanage' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/assign_feature"><i class="bi bi-shield-lock-fill"></i> Feature Management</a>
+                <a class="nav-link ${activePage == 'assignfeature' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/assign_feature"><i class="bi bi-shield-lock-fill"></i> Feature Management</a>
 
         </ul>
     </div>

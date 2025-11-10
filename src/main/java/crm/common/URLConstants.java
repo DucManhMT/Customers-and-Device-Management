@@ -96,6 +96,10 @@ public class URLConstants {
     public static final String TASK_DETAIL = "/task/detail";
 
 
+    //OTHERs
+    public static final String UNAUTHORIZED = "/unauthorized";
+
+
     public static void addToDataBase(){
         EntityManager em = new EntityManager(DBcontext.getConnection());
         try{
