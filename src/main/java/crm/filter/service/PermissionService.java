@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 public class PermissionService {
     private static Map<Integer, List<Feature>> roleFeatureMap = new HashMap<>();
 
-    public PermissionService(){
-
+    static {
+        loadPermissions();
     }
 
     public static boolean isPublicUrl(String uri){
@@ -27,7 +27,8 @@ public class PermissionService {
                 URLConstants.AUTH_CUSTOMER_REGISTER,
                 URLConstants.AUTH_STAFF_LOGIN,
                 URLConstants.AUTH_FORGOT_PASSWORD,
-                URLConstants.AUTH_LOGOUT
+                URLConstants.AUTH_LOGOUT,
+                URLConstants.UNAUTHORIZED
         );
         return publicURLs.contains(uri);
     }
@@ -40,14 +41,6 @@ public class PermissionService {
     }
 
     public static boolean hasAccess(Role role, String uri){
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
-        for (RoleFeature rf : roleFeatures) {
-            Role accRole = rf.getRole();
-            Feature feature = rf.getFeature();
-            roleFeatureMap.computeIfAbsent(accRole.getRoleID(), k -> new ArrayList<>()).add(feature);
-        }
-
         List<Feature> features = roleFeatureMap.get(role);
         if (features != null) {
             for (Feature feature : features) {
@@ -60,17 +53,12 @@ public class PermissionService {
     }
 
     public static void reloadPermissions(){
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
         roleFeatureMap.clear();
-        for (RoleFeature rf : roleFeatures) {
-            Role role = rf.getRole();
-            Feature feature = rf.getFeature();
-            roleFeatureMap.computeIfAbsent(role.getRoleID(), k -> new ArrayList<>()).add(feature);
-        }
+        loadPermissions();
     }
 
-    public static Map<Integer, List<Feature>> getRoleFeatureMap() {
+
+    private static void loadPermissions(){
         EntityManager em = new EntityManager(DBcontext.getConnection());
         List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
         for (RoleFeature rf : roleFeatures) {
@@ -78,6 +66,9 @@ public class PermissionService {
             Feature feature = rf.getFeature();
             roleFeatureMap.computeIfAbsent(accRole.getRoleID(), k -> new ArrayList<>()).add(feature);
         }
+    }
+
+    public static Map<Integer, List<Feature>> getRoleFeatureMap() {
         return roleFeatureMap;
     }
 }

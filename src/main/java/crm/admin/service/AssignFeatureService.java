@@ -20,23 +20,11 @@ public class AssignFeatureService {
             newRoleFeature.setRole(role);
             newRoleFeature.setFeature(feature);
 
+            em.persist(newRoleFeature, RoleFeature.class);
 
-            //Find existing RoleFeature
-            Map<String, Object> conditions = Map.of(
-                "role", role.getRoleID(),
-                "feature", feature.getFeatureID()
-            );
-
-            List<RoleFeature> roleFeature = em.findWithConditions(RoleFeature.class, conditions);
-
-            boolean exists = !(roleFeature == null) && !roleFeature.isEmpty();
-
-            if(!exists){
-                em.persist(newRoleFeature, RoleFeature.class);
-            }else{
-                em.remove(roleFeature.get(0), RoleFeature.class);
-            }
             System.out.println("Assigned Feature ID " + feature.getFeatureID() + " to Role ID " + role.getRoleID());
+
+
             em.commit();
             return true;
             // Tạo một RoleFeature mới
@@ -47,5 +35,16 @@ public class AssignFeatureService {
         }
 
 
+    }
+    public static void removeAllRoleFeatures(){
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try{
+            em.beginTransaction();
+            em.deleteAll(RoleFeature.class);
+            em.commit();
+        } catch(Exception e){
+            e.printStackTrace();
+            em.rollback();
+        }
     }
 }

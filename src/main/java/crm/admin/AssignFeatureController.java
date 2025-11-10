@@ -49,9 +49,10 @@ public class AssignFeatureController extends HttpServlet {
         // Bây giờ bạn có List<RoleFeature> để xử lý
         // ... your database logic here ...
         boolean success = true;
+        AssignFeatureService.removeAllRoleFeatures();
         for(RoleFeature rf : roleFeatures){
             System.out.println("RoleID: " + rf.getRole().getRoleName() + ", FeatureID: " + rf.getFeature().getFeatureURL());
-            success = AssignFeatureService.assignFeatureToRole(rf.getRole(), rf.getFeature());
+            success = success && AssignFeatureService.assignFeatureToRole(rf.getRole(), rf.getFeature());
             System.out.println("Assignment success: " + success);
         }
         if (success){
