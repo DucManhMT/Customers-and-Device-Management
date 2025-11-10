@@ -93,7 +93,7 @@
                         <div class="mb-3">
                             <label for="startDate" class="form-label">Start Date</label>
                             <input
-                                    type="datetime-local"
+                                    type="date"
                                     id="startDate"
                                     name="startDate"
                                     class="form-control"
@@ -104,7 +104,7 @@
                         <div class="mb-3">
                             <label for="deadline" class="form-label">Deadline</label>
                             <input
-                                    type="datetime-local"
+                                    type="date"
                                     id="deadline"
                                     name="deadline"
                                     class="form-control"

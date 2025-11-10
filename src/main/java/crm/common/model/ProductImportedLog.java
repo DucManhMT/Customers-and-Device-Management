@@ -20,7 +20,7 @@ public class ProductImportedLog {
     @ManyToOne(joinColumn = "WarehouseID")
     private LazyReference<Warehouse> warehouse;
 
-    @ManyToOne(joinColumn = "InventoryItemID")
+    @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
     public int getProductImportedLogID() {
@@ -39,19 +39,19 @@ public class ProductImportedLog {
         this.importedDate = importedDate;
     }
 
-    public LazyReference<Warehouse> getWarehouse() {
-        return warehouse;
+    public Warehouse getWarehouse() {
+        return warehouse.get();
     }
 
-    public void setWarehouse(LazyReference<Warehouse> warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = new LazyReference<>(Warehouse.class, warehouse.getWarehouseID());
     }
 
-    public LazyReference<InventoryItem> getInventoryItem() {
-        return inventoryItem;
+    public InventoryItem getInventoryItem() {
+        return inventoryItem.get();
     }
 
-    public void setInventoryItem(LazyReference<InventoryItem> inventoryItem) {
-        this.inventoryItem = inventoryItem;
+    public void setInventoryItem(InventoryItem inventoryItem) {
+        this.inventoryItem = new LazyReference<>(InventoryItem.class, inventoryItem.getItemId());
     }
 }

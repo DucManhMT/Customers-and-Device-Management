@@ -1,30 +1,13 @@
 package crm.task.dto;
 
-/**
- * Tìm kiếm & lọc Task với các điều kiện nâng cao.
- * 
- * @param requestId    lọc theo requestId (nullable)
- * @param status       lọc theo trạng thái (nullable)
- * @param staffName    tìm theo tên nhân viên được giao (LIKE, nullable)
- * @param nearDue      chỉ lấy task có deadline trong khoảng tới (nearDueHours)
- *                     tới
- * @param overdue      chỉ lấy task có deadline quá hạn (deadline < now)
- * @param nearDueHours số giờ xét "sắp quá hạn" (mặc định 24 nếu null)
- * @param sortDir      hướng sắp xếp deadline: "asc" hoặc "desc" (mặc định asc)
- * @param page         trang (1-index)
- * @param size         số bản ghi mỗi trang
- */
-/**
- * Wrapper tiện lợi gom nhóm các tham số filter nâng cao.
- */
 public class TaskFilter {
     private Integer requestId;
     private String status;
     private String staffName;
     private Boolean nearDue;
     private Boolean overdue;
-    private Integer nearDueHours; // TÁI DỤNG: coi như "nearDueDays" theo yêu cầu mới
-    private String sortDir; // asc | desc
+    private Integer nearDueHours;
+    private String sortDir;
     private int page = 1;
     private int size = 15;
 

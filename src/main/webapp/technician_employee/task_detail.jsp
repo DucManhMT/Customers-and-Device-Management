@@ -16,15 +16,22 @@
 <div class="container">
     <jsp:include page="../components/header.jsp"/>
     <div class="header">
-        <h1><i class="fas fa-tasks"></i> Task Detail</h1>
+        <h1><i class="fas fa-tasks"></i> Request Detail</h1>
         <p class="subtitle">Detailed information about your assigned task</p>
     </div>
+
+
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> ${errorMessage}
+        </div>
+    </c:if>
 
     <div class="content">
         <c:if test="${not empty task}">
             <div class="task-info-grid">
                 <div class="info-card">
-                    <h3><i class="fas fa-info-circle"></i> Task Information</h3>
+                    <h3><i class="fas fa-info-circle"></i> Request Information</h3>
                     <div class="info-item">
                         <span class="info-label">Request ID:</span>
                         <span class="info-value">#${task.requestID}</span>
@@ -162,9 +169,9 @@
             <div class="action-buttons">
                 <c:choose>
                     <c:when test="${task.requestStatus eq 'Approved'}">
-                        <form method="POST" action="${pageContext.request.contextPath}/task/updateStatus"
+                        <form method="POST" action="${pageContext.request.contextPath}/request/finish"
                               style="display: inline;"
-                              onsubmit="return confirm('Are you sure you want to mark this task as finished?')">
+                              onsubmit="return confirm('Are you sure you want to mark this request as finished?')">
                             <input type="hidden" name="requestId" value="${task.requestID}">
                             <input type="hidden" name="status" value="finished">
                             <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Mark as Finished

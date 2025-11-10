@@ -3,6 +3,7 @@ package crm.task.controller;
 import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.common.model.Staff;
+import crm.core.utils.DateTimeConverter;
 import crm.task.service.TaskService;
 import crm.task.repository.StaffRepository;
 import crm.service_request.repository.RequestRepository;
@@ -116,19 +117,19 @@ public class AssignTaskController extends HttpServlet {
         if (isBlank(description))
             errors.add("Description is required.");
 
-        LocalDateTime startDate = null;
-        LocalDateTime deadline = null;
-        LocalDateTime todayStart = LocalDate.now().atStartOfDay();
+        LocalDate startDate = null;
+        LocalDate deadline = null;
+        LocalDate todayStart = LocalDate.now();
         if (!isBlank(startDateStr)) {
             try {
-                startDate = LocalDateTime.parse(startDateStr);
+                startDate = LocalDate.parse(startDateStr);
             } catch (DateTimeParseException e) {
                 errors.add("Invalid startDate.");
             }
         }
         if (!isBlank(deadlineStr)) {
             try {
-                deadline = LocalDateTime.parse(deadlineStr);
+                deadline = LocalDate.parse(deadlineStr);
             } catch (DateTimeParseException e) {
                 errors.add("Invalid deadline.");
             }
@@ -140,7 +141,7 @@ public class AssignTaskController extends HttpServlet {
             errors.add("Deadline cannot be before today.");
         }
         if (startDate != null && deadline != null && deadline.isBefore(startDate)) {
-            errors.add("deadline can not before startDate.");
+            errors.add("Deadline can not before startDate.");
         }
 
         if (!errors.isEmpty()) {
@@ -161,7 +162,8 @@ public class AssignTaskController extends HttpServlet {
 
         // Create task
         if (assignBy != null && assignTo != null) {
-            taskService.createTask(assignBy.getStaffID(), assignTo.getStaffID(), requestId, startDate, deadline,
+            taskService.createTask(assignBy.getStaffID(), assignTo.getStaffID(), requestId,
+                    DateTimeConverter.toStartOfDay(startDate), DateTimeConverter.toEndOfDay(deadline),
                     description);
         }
         // Redirect về danh sách task theo request để xem

@@ -4,13 +4,16 @@ import java.sql.SQLException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import crm.common.model.Account;
 import crm.common.model.Contract;
 import crm.common.model.Request;
+import crm.common.model.Task;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.TaskStatus;
 import crm.core.config.TransactionManager;
 import crm.service_request.repository.ContractRepository;
 import crm.service_request.repository.RequestRepository;
@@ -19,11 +22,13 @@ import crm.service_request.repository.persistence.query.common.Order;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.repository.persistence.query.common.Sort;
+import crm.task.repository.TaskRepository;
 
 public class RequestService {
     RequestRepository requestRepository = new RequestRepository();
     RequestLogService requestLogService = new RequestLogService();
     ContractRepository contractRepository = new ContractRepository();
+    TaskRepository taskRepository = new TaskRepository();
 
     public Request createServiceRequest(String description, int contractId) throws SQLException {
         LocalDateTime currentTimestamp = LocalDateTime.now();
@@ -50,8 +55,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
-                                     String status, int contractId,
-                                     int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -84,8 +89,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
-                                              String status, int contractId,
-                                              int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -188,6 +193,64 @@ public class RequestService {
         map.put("All", total);
 
         return map;
+    }
+
+    public Page<Request> getRequestWithCondition(String customerName, LocalDateTime from, LocalDateTime to,
+            String phone, List<String> status, int page, int size) {
+        ClauseBuilder requestClause = new ClauseBuilder();
+        ClauseBuilder customerClause = new ClauseBuilder();
+        if (from != null) {
+            requestClause.greaterOrEqual("StartDate", from);
+        }
+        if (to != null) {
+            requestClause.lessOrEqual("StartDate", to);
+        }
+
+        if (phone != null && !phone.isEmpty()) {
+            customerClause.equal("Phone", phone);
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            customerClause.like("CustomerName", "%" + customerName + "%");
+        }
+        if (status != null && !status.isEmpty()) {
+            requestClause.in("RequestStatus", status);
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, List.of(Order.desc("StartDate")));
+
+        return requestRepository.getByCustomerConditionAndCondition(customerClause, requestClause, pageRequest);
+
+    }
+
+    public void finishRequest(int requestId, Account account) throws IllegalArgumentException {
+        Request request = getRequestById(requestId);
+        if (request == null) {
+            throw new IllegalArgumentException("Request not found");
+        }
+        List<Task> tasks = taskRepository.findWithCondition(ClauseBuilder.builder().equal("RequestID", requestId));
+        for (Task task : tasks) {
+            if (task.getStatus() == TaskStatus.Pending || task.getStatus() == TaskStatus.Processing) {
+                throw new IllegalArgumentException("Cannot finish request with incomplete tasks.");
+            }
+        }
+
+        try {
+            TransactionManager.beginTransaction();
+
+            request.setRequestStatus(RequestStatus.Finished);
+            request.setFinishedDate(LocalDateTime.now());
+            requestRepository.update(request);
+            requestLogService.createLog(request, "Request finished.", OldRequestStatus.Processing,
+                    RequestStatus.Finished, account);
+            TransactionManager.commit();
+        } catch (Exception e) {
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
     }
 
 }

@@ -104,10 +104,10 @@
                 <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><i class="fas fa-boxes-stacked"></i><span> Inventory</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'finance' ? 'active' : ''}" href="#"><i class="fas fa-file-invoice-dollar"></i><span> Finance</span></a>
+                <a class="nav-link ${activePage == 'importproduct' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/import_product"><i class="fas fa-file-invoice-dollar"></i><span> Import</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link ${activePage == 'customers' ? 'active' : ''}" href="#"><i class="fas fa-users"></i><span> Customers</span></a>
+                <a class="nav-link ${activePage == 'viewimported' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"><i class="fas fa-users"></i><span>View Imported Product</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'tracking' ? 'active' : ''}" href="#"><i class="fas fa-map-marker-alt"></i><span> Tracking</span></a>

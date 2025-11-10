@@ -3,7 +3,10 @@
 <html>
 <head>
     <title>Customer Feedback</title>
-    <link href="../css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link
+            href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
     <link href="../css/feedback/feedback.css" rel="stylesheet"/>
 
 </head>
@@ -28,96 +31,95 @@
                 </div>
             </c:if>
 
-                <form method="post" action="../feedback/create">
-                    <input type="hidden" name="username" value="${currentUsername}">
-                    <input type="hidden" name="requestId" value="${requestId}">
-                    
-                    <div class="row">
-                        <div class="col-md-8 mb-3">
-                            <label for="feedbackType" class="form-label">Service Type Evaluation</label>
-                            <select class="form-select" id="feedbackType" name="feedbackType" required
-                                    onchange="toggleCustomInput()">
-                                <option value="">-- Select service type to evaluate --</option>
-                                <option value="repair_quality">Repair and Warranty Quality</option>
-                                <option value="service_quality">Service Quality</option>
-                                <option value="staff_attitude">Staff Attitude</option>
-                                <option value="other">Other (custom input)</option>
-                            </select>
-                            <div class="form-text">
-                                Select the type of service you want to evaluate.
-                            </div>
-                        </div>
+            <form method="post" action="../feedback/create">
+                <input type="hidden" name="username" value="${currentUsername}">
+                <input type="hidden" name="requestId" value="${requestId}">
 
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Customer Information</label>
-                            <div class="form-control-plaintext border rounded bg-light p-2">
-                                <strong><i class="bi bi-person"></i> ${currentUsername}</strong><br>
-                                <small class="text-muted">Current user</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3" id="customContentDiv" style="display: none;">
-                        <label for="customContent" class="form-label">Custom Feedback Content</label>
-                        <input type="text" class="form-control" id="customContent" name="customContent"
-                            placeholder="Enter your feedback content..." maxlength="255">
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="feedbackType" class="form-label">Service Type Evaluation</label>
+                        <select class="form-select" id="feedbackType" name="feedbackType" required
+                                onchange="toggleCustomInput()">
+                            <option value="">-- Select service type to evaluate --</option>
+                            <option value="repair_quality">Repair and Warranty Quality</option>
+                            <option value="service_quality">Service Quality</option>
+                            <option value="staff_attitude">Staff Attitude</option>
+                            <option value="other">Other (custom input)</option>
+                        </select>
                         <div class="form-text">
-                            Enter specific content for "Other" option.
+                            Select the type of service you want to evaluate.
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Service Quality Rating</label>
-                        <div class="star-rating">
-                            <input type="radio" id="star5" name="rating" value="5" required>
-                            <label for="star5" title="Excellent">★</label>
-
-                            
-
-                            <input type="radio" id="star4" name="rating" value="4">
-                            <label for="star4" title="Good">★</label>
-
-                            <input type="radio" id="star3" name="rating" value="3">
-                            <label for="star3" title="Average">★</label>
-
-                            <input type="radio" id="star2" name="rating" value="2">
-                            <label for="star2" title="Poor">★</label>
-
-                            <input type="radio" id="star1" name="rating" value="1">
-                            <label for="star1" title="Very Poor">★</label>
-                        </div>
-                        <div class="rating-text">
-                            <span id="ratingText" class="text-muted">Please select rating</span>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Customer Information</label>
+                        <div class="form-control-plaintext border rounded bg-light p-2">
+                            <strong><i class="bi bi-person"></i> ${currentUsername}</strong><br>
+                            <small class="text-muted">Current user</small>
                         </div>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Your Detailed Review</label>
-                        <textarea class="form-control" id="description" name="description" rows="4"
-                                placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..."
-                                maxlength="255"></textarea>
-                        <div class="form-text">
-                            <span id="charCount">0 </span>/255 characters. Share your feelings and suggestions about the
-                            service.
-                        </div>
+                <div class="mb-3" id="customContentDiv" style="display: none;">
+                    <label for="customContent" class="form-label">Custom Feedback Content</label>
+                    <input type="text" class="form-control" id="customContent" name="customContent"
+                           placeholder="Enter your feedback content..." maxlength="255">
+                    <div class="form-text">
+                        Enter specific content for "Other" option.
                     </div>
+                </div>
 
-                    <div class="d-flex justify-content-between">
-                        <a href="${pageContext.request.contextPath}/customer/customer_actioncenter"
-                        class="btn btn-outline-secondary">
-                            Back to Customer Action Center
-                        </a>
+                <div class="mb-3">
+                    <label class="form-label">Service Quality Rating</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5" title="Excellent">★</label>
 
-                        <div>
-                            <button type="reset" class="btn btn-outline-warning me-2">
-                                Reset Form
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                Submit Feedback
-                            </button>
-                        </div>
+
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4" title="Good">★</label>
+
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3" title="Average">★</label>
+
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2" title="Poor">★</label>
+
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1" title="Very Poor">★</label>
                     </div>
-                </form>
+                    <div class="rating-text">
+                        <span id="ratingText" class="text-muted">Please select rating</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Your Detailed Review</label>
+                    <textarea class="form-control" id="description" name="description" rows="4"
+                              placeholder="Share your detailed experience about the service: what you're satisfied with, what needs improvement, suggestions for us to serve better..."
+                              maxlength="255"></textarea>
+                    <div class="form-text">
+                        <span id="charCount">0 </span>/255 characters. Share your feelings and suggestions about the
+                        service.
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="${pageContext.request.contextPath}/customer/customer_actioncenter"
+                       class="btn btn-outline-secondary">
+                        Back to Customer Action Center
+                    </a>
+
+                    <div>
+                        <button type="reset" class="btn btn-outline-warning me-2">
+                            Reset Form
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Submit Feedback
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -180,7 +182,8 @@
                             <td>${feedback.feedbackDate}</td>
                             <td>
                                 <form method="get" action="../feedback/view" style="display: inline;">
-                                    <input type="hidden" name="requestId" value="${feedback.requestID.getForeignKeyValue()}">
+                                    <input type="hidden" name="requestId"
+                                           value="${feedback.requestID.getForeignKeyValue()}">
                                     <button type="submit" class="btn btn-info btn-sm">
                                         View
                                     </button>
@@ -339,71 +342,72 @@
             alert("Vui lòng chọn mức đánh giá dịch vụ trước khi gửi phản hồi!");
         }
     });
-     function toggleCustomInput() {
-            const feedbackType = document.getElementById('feedbackType').value;
-            const customDiv = document.getElementById('customContentDiv');
-            const customInput = document.getElementById('customContent');
-            
-            if (feedbackType === 'other') {
-                customDiv.style.display = 'block';
-                customInput.required = true;
-            } else {
-                customDiv.style.display = 'none';
-                customInput.required = false;
-                customInput.value = '';
-            }
+
+    function toggleCustomInput() {
+        const feedbackType = document.getElementById('feedbackType').value;
+        const customDiv = document.getElementById('customContentDiv');
+        const customInput = document.getElementById('customContent');
+
+        if (feedbackType === 'other') {
+            customDiv.style.display = 'block';
+            customInput.required = true;
+        } else {
+            customDiv.style.display = 'none';
+            customInput.required = false;
+            customInput.value = '';
         }
+    }
 
-        const starInputs = document.querySelectorAll('input[name="rating"]');
-        const ratingText = document.getElementById('ratingText');
-        
-        const ratingTexts = {
-            5: { text: 'Excellent - Perfect service!', class: 'text-success' },
-            4: { text: 'Good - Quality service', class: 'text-primary' },
-            3: { text: 'Average - Acceptable service', class: 'text-warning' },
-            2: { text: 'Poor - Needs improvement', class: 'text-danger' },
-            1: { text: 'Very Poor - Unsatisfied', class: 'text-danger' }
-        };
-        
-        starInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                const rating = parseInt(this.value);
-                const ratingInfo = ratingTexts[rating];
-                
-                ratingText.textContent = ratingInfo.text;
-                ratingText.className = ratingInfo.class;
-            });
-        });
+    const starInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingText = document.getElementById('ratingText');
 
-        const responseTextarea = document.getElementById('response');
-        const charCount = document.getElementById('charCount');
-        
-        responseTextarea.addEventListener('input', function() {
-            const currentLength = this.value.length;
-            charCount.textContent = currentLength;
-            
-            charCount.classList.remove('warning', 'danger');
-            
-            if (currentLength > 450) {
-                charCount.classList.add('danger');
-            } else if (currentLength > 400) {
-                charCount.classList.add('warning');
-            }
-        });
+    const ratingTexts = {
+        5: {text: 'Excellent - Perfect service!', class: 'text-success'},
+        4: {text: 'Good - Quality service', class: 'text-primary'},
+        3: {text: 'Average - Acceptable service', class: 'text-warning'},
+        2: {text: 'Poor - Needs improvement', class: 'text-danger'},
+        1: {text: 'Very Poor - Unsatisfied', class: 'text-danger'}
+    };
 
-        document.querySelector('button[type="reset"]').addEventListener('click', function() {
-            ratingText.textContent = 'Please select rating';
-            ratingText.className = 'text-muted';
-            charCount.textContent = '0';
-            charCount.classList.remove('warning', 'danger');
-            toggleCustomInput();
+    starInputs.forEach(input => {
+        input.addEventListener('change', function () {
+            const rating = parseInt(this.value);
+            const ratingInfo = ratingTexts[rating];
+
+            ratingText.textContent = ratingInfo.text;
+            ratingText.className = ratingInfo.class;
         });
-        
-        function changePageSize() {
-            const recordsPerPage = document.getElementById('recordsPerPage').value;
-            const currentPage = 1;
-            window.location.href = `?page=${currentPage}&recordsPerPage=${recordsPerPage}`;
+    });
+
+    const responseTextarea = document.getElementById('response');
+    const charCount = document.getElementById('charCount');
+
+    responseTextarea.addEventListener('input', function () {
+        const currentLength = this.value.length;
+        charCount.textContent = currentLength;
+
+        charCount.classList.remove('warning', 'danger');
+
+        if (currentLength > 450) {
+            charCount.classList.add('danger');
+        } else if (currentLength > 400) {
+            charCount.classList.add('warning');
         }
+    });
+
+    document.querySelector('button[type="reset"]').addEventListener('click', function () {
+        ratingText.textContent = 'Please select rating';
+        ratingText.className = 'text-muted';
+        charCount.textContent = '0';
+        charCount.classList.remove('warning', 'danger');
+        toggleCustomInput();
+    });
+
+    function changePageSize() {
+        const recordsPerPage = document.getElementById('recordsPerPage').value;
+        const currentPage = 1;
+        window.location.href = `?page=${currentPage}&recordsPerPage=${recordsPerPage}`;
+    }
 </script>
 
 </body>
