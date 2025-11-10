@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.DayOfWeek;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 import crm.common.model.AccountRequest;
 import crm.common.model.Request;
@@ -67,6 +72,8 @@ public class SelectTechnicianService {
                .map(id -> entityManager.find(Request.class, id))
                .collect(Collectors.toList());
 
+           
+
            Page<Staff> technicianPage;
            int totalCount;
 
@@ -84,12 +91,104 @@ public class SelectTechnicianService {
 
            List<String> availableLocations = getAvailableLocations(entityManager);
 
+           // --- build weekly schedule data for calendar (after technicianPage is known) ---
+           // weekStart param (yyyy-MM-dd) optional; default to current week's Monday
+           LocalDate weekStartDate;
+           String weekStartParam = request.getParameter("weekStart");
+           if (weekStartParam != null && !weekStartParam.isEmpty()) {
+               try {
+                   weekStartDate = LocalDate.parse(weekStartParam);
+               } catch (Exception ex) {
+                   weekStartDate = LocalDate.now().with(DayOfWeek.MONDAY);
+               }
+           } else {
+               weekStartDate = LocalDate.now().with(DayOfWeek.MONDAY);
+           }
+
+           LocalDate weekEndDate = weekStartDate.plusDays(6);
+           LocalDateTime weekStartDateTime = weekStartDate.atStartOfDay();
+           LocalDateTime weekEndDateTime = weekEndDate.plusDays(1).atStartOfDay(); // exclusive end
+
+           DateTimeFormatter headerFmt = DateTimeFormatter.ofPattern("EEE dd-MM");
+           List<String> weekDays = new ArrayList<>();
+           for (int i = 0; i < 7; i++) {
+               weekDays.add(weekStartDate.plusDays(i).format(headerFmt));
+           }
+
+           // Fetch all tasks within the week (startDate or deadline inside range)
+           List<crm.common.model.Task> weekTasks = getTasksForWeek(entityManager, weekStartDateTime, weekEndDateTime);
+
+           // Build map username -> List<String>(7) for each day cell
+           Map<String, List<String>> techSchedules = new HashMap<>();
+           // initialize map entries for current page technicians
+           List<Staff> pageTechs = technicianPage.getContent();
+           for (Staff s : pageTechs) {
+               List<String> cells = new ArrayList<>();
+               for (int i = 0; i < 7; i++) cells.add(null);
+               String username = (s.getAccount() != null) ? s.getAccount().getUsername() : String.valueOf(s.getStaffID());
+               techSchedules.put(username, cells);
+           }
+
+           DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+           for (crm.common.model.Task t : weekTasks) {
+               Staff assigned = t.getAssignTo();
+               if (assigned == null) continue;
+               String username = (assigned.getAccount() != null) ? assigned.getAccount().getUsername() : String.valueOf(assigned.getStaffID());
+               if (!techSchedules.containsKey(username)) {
+                   List<String> cells = new ArrayList<>();
+                   for (int i = 0; i < 7; i++) cells.add(null);
+                   techSchedules.put(username, cells);
+               }
+
+               List<String> cells = techSchedules.get(username);
+
+               // If task has a start date, put a start badge into the corresponding day cell
+               if (t.getStartDate() != null) {
+                   LocalDateTime sdt = t.getStartDate();
+                   long sOffset = ChronoUnit.DAYS.between(weekStartDate, sdt.toLocalDate());
+                   if (sOffset >= 0 && sOffset <= 6) {
+                       int idx = (int) sOffset;
+                       String existing = cells.get(idx);
+                       String sTime = sdt.toLocalTime() != null ? sdt.toLocalTime().format(timeFmt) : "";
+                       String sBadge = "<span class=\"schedule-badge schedule-start\">Start " + sTime + " - Task #" + t.getTaskID() + "</span>";
+                       StringBuilder sb = new StringBuilder(existing != null ? existing : "");
+                       if (sb.length() > 0) sb.append("<br/>");
+                       sb.append(sBadge);
+                       cells.set(idx, sb.toString());
+                   }
+               }
+
+               // If task has a deadline, put a deadline badge into the corresponding day cell
+               if (t.getDeadline() != null) {
+                   LocalDateTime ddt = t.getDeadline();
+                   long dOffset = ChronoUnit.DAYS.between(weekStartDate, ddt.toLocalDate());
+                   if (dOffset >= 0 && dOffset <= 6) {
+                       int idx = (int) dOffset;
+                       String existing = cells.get(idx);
+                       String dTime = ddt.toLocalTime() != null ? ddt.toLocalTime().format(timeFmt) : "";
+                       String dBadge = "<span class=\"schedule-badge schedule-deadline\">Deadline " + dTime + " - Task #" + t.getTaskID() + "</span>";
+                       StringBuilder sb = new StringBuilder(existing != null ? existing : "");
+                       if (sb.length() > 0) sb.append("<br/>");
+                       sb.append(dBadge);
+                       cells.set(idx, sb.toString());
+                   }
+               }
+           }
+
+           // prev/next week params (iso date)
+           String prevWeekStart = weekStartDate.minusDays(7).toString();
+           String nextWeekStart = weekStartDate.plusDays(7).toString();
+
            System.out.println("SelectTechnicianServlet: Found " + technicianPage.getContent().size() + " technicians");
            System.out.println("SelectTechnicianServlet: Found " + selectedRequests.size() + " requests");
 
            request.setAttribute("technicians", technicianPage.getContent());
            request.setAttribute("selectedRequests", selectedRequests);
            request.setAttribute("selectedTaskIds", selectedTaskIds);
+           request.setAttribute("weekDays", weekDays);
+           request.setAttribute("techSchedules", techSchedules);
+           request.setAttribute("prevWeekStart", prevWeekStart);
+           request.setAttribute("nextWeekStart", nextWeekStart);
            request.setAttribute("currentPage", page);
            request.setAttribute("totalPages", technicianPage.getTotalPages());
            request.setAttribute("recordsPerPage", recordsPerPage);
@@ -280,4 +379,22 @@ public class SelectTechnicianService {
 
         return maxId + 1;
     }
+
+   private List<crm.common.model.Task> getTasksForWeek(EntityManager entityManager, LocalDateTime start, LocalDateTime end) throws SQLException {
+       try {
+           String sql = "SELECT t.* FROM Task t WHERE (t.StartDate >= ? AND t.StartDate < ?) OR (t.Deadline >= ? AND t.Deadline < ?)";
+           List<Object> params = new ArrayList<>();
+           params.add(start);
+           params.add(end);
+           params.add(start);
+           params.add(end);
+
+           crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO sqlParams = new crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO(sql, params);
+           List<crm.common.model.Task> tasks = entityManager.executeQuery(sqlParams, crm.common.model.Task.class);
+           return tasks != null ? tasks : new ArrayList<>();
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw new SQLException("Failed to retrieve tasks for week", e);
+       }
+   }
 }

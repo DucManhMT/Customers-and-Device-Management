@@ -198,3 +198,15 @@
                 }
             }
         }
+
+        // Small interaction: show full schedule cell content on click
+        document.addEventListener('click', function (e) {
+            const cell = e.target.closest('.schedule-cell');
+            if (!cell) return;
+            // use rendered plain text so HTML badges don't show raw markup
+            const text = (cell.innerText || cell.textContent || '').trim();
+            if (text && text !== '—') {
+                // simple modal replacement: alert (can be improved to use bootstrap modal)
+                alert(text);
+            }
+        });

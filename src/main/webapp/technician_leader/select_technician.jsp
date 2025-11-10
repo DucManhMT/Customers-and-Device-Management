@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,6 +113,58 @@
                         </div>
 
                         <div class="col-md-8">
+                            <!-- Weekly calendar showing technicians' schedules -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0"><i class="bi bi-calendar-week"></i> Weekly Schedule</h6>
+                                        <div>
+                                            <a class="btn btn-sm btn-outline-secondary me-2" href="#" onclick="goToWeek('${prevWeekStart}'); return false;">Prev</a>
+                                            <a class="btn btn-sm btn-outline-secondary" href="#" onclick="goToWeek('${nextWeekStart}'); return false;">Next</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-2">
+                                    <c:if test="${not empty weekDays}">
+                                        <div style="overflow-x:auto;">
+                                            <table class="table table-sm table-bordered mb-0 align-middle schedule-table">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th style="min-width:200px">Technician</th>
+                                                    <c:forEach var="day" items="${weekDays}">
+                                                        <th style="min-width:120px">${day}</th>
+                                                    </c:forEach>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var="tech" items="${technicians}">
+                                                    <tr>
+                                                        <td><strong>${tech.staffName}</strong><br/><small>${tech.account.username}</small></td>
+                                                        <c:forEach var="i" begin="0" end="${fn:length(weekDays) - 1}">
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${not empty techSchedules[tech.account.username] and techSchedules[tech.account.username][i] != null}">
+                                                                        <div class="schedule-cell" data-full="${techSchedules[tech.account.username][i]}">
+                                                                            <c:out value="${techSchedules[tech.account.username][i]}" escapeXml="false" />
+                                                                        </div>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <div class="schedule-cell schedule-empty">—</div>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                        </c:forEach>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${empty weekDays}">
+                                        <div class="text-muted small">No schedule data for the selected week.</div>
+                                    </c:if>
+                                </div>
+                            </div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="text-muted mb-0">Available Technicians (${totalCount} total)</h6>
                                 <div class="d-flex align-items-center gap-2">
@@ -248,80 +301,79 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/task/select-technician.js"></script>
+<script src="${pageContext.request.contextPath}/js/select_technician.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const clearBtn = document.getElementById('clearFilterBtn');
-        const form = document.getElementById('filterForm');
-        if (!clearBtn || !form) return;
+    // Global functions needed by inline onclick handlers
+    function goToPage(page) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
 
-        clearBtn.addEventListener('click', function () {
-            const searchName = document.getElementById('searchName');
-            const filterLocation = document.getElementById('filterLocation');
-            const filterAge = document.getElementById('filterAge');
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
 
-            if (searchName) searchName.value = '';
-            if (filterLocation) filterLocation.selectedIndex = 0;
-            if (filterAge) filterAge.selectedIndex = 0;
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
+        <c:if test="${not empty param.weekStart}">
+        url += '&weekStart=${param.weekStart}';
+        </c:if>
 
-            const pageInput = form.querySelector('input[name="page"]');
-            if (pageInput) pageInput.value = '1';
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
 
-            form.submit();
-        });
-    });
+        window.location.href = url;
+        return false;
+    }
 
-    // Validate form - require at least one technician selected
-    document.getElementById('assignBtn').addEventListener('click', function (e) {
-        const selectedTechs = document.querySelectorAll('input[name="selectedTechnicians"]:checked');
-        if (selectedTechs.length === 0) {
-            e.preventDefault();
-            alert('Please select at least one technician to assign the tasks.');
-            return false;
-        }
-    });
+    function goToWeek(weekStart) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
 
-    // Select All / Deselect All functionality
-    document.addEventListener('DOMContentLoaded', function () {
-        const selectAllCheckbox = document.getElementById('selectAllTechs');
-        const techCheckboxes = document.querySelectorAll('.tech-checkbox');
-        const selectedCountSpan = document.querySelector('#selectedCount strong');
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?weekStart=' + encodeURIComponent(weekStart);
 
-        // Update selected count
-        function updateSelectedCount() {
-            const checkedCount = document.querySelectorAll('.tech-checkbox:checked').length;
-            selectedCountSpan.textContent = checkedCount;
-        }
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
 
-        // Select All functionality
-        if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function () {
-                techCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-                updateSelectedCount();
-            });
-        }
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
 
-        // Individual checkbox change
-        techCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                // Update Select All checkbox state
-                const allChecked = Array.from(techCheckboxes).every(cb => cb.checked);
-                const someChecked = Array.from(techCheckboxes).some(cb => cb.checked);
+        // reset to first page for new week
+        url += '&page=1';
 
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.checked = allChecked;
-                    selectAllCheckbox.indeterminate = someChecked && !allChecked;
-                }
+        window.location.href = url;
+        return false;
+    }
 
-                updateSelectedCount();
-            });
-        });
+    function buildPaginationUrl(page) {
+        const searchName = document.getElementById('searchName').value;
+        const location = document.getElementById('filterLocation').value;
+        const ageRange = document.getElementById('filterAge').value;
+        const recordsPerPage = document.getElementById('pageSize').value;
 
-        // Initial count
-        updateSelectedCount();
-    });
+        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
+
+        <c:forEach var="taskId" items="${selectedTaskIds}">
+        url += '&selectedTasks=${taskId}';
+        </c:forEach>
+        <c:if test="${not empty param.weekStart}">
+        url += '&weekStart=${param.weekStart}';
+        </c:if>
+
+        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
+        if (location) url += '&location=' + encodeURIComponent(location);
+        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
+        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
+
+        return url;
+    }
 
     function clearFilters() {
         document.getElementById('searchName').value = '';
@@ -359,75 +411,6 @@
         form.submit();
     }
 
-    function goToPage(page) {
-        const searchName = document.getElementById('searchName').value;
-        const location = document.getElementById('filterLocation').value;
-        const ageRange = document.getElementById('filterAge').value;
-        const recordsPerPage = document.getElementById('pageSize').value;
-
-        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
-
-        <c:forEach var="taskId" items="${selectedTaskIds}">
-        url += '&selectedTasks=${taskId}';
-        </c:forEach>
-
-        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
-        if (location) url += '&location=' + encodeURIComponent(location);
-        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
-        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-
-        window.location.href = url;
-        return false;
-    }
-
-    function buildPaginationUrl(page) {
-        const searchName = document.getElementById('searchName').value;
-        const location = document.getElementById('filterLocation').value;
-        const ageRange = document.getElementById('filterAge').value;
-        const recordsPerPage = document.getElementById('pageSize').value;
-
-        let url = '${pageContext.request.contextPath}/task/selectTechnician?page=' + page;
-
-        <c:forEach var="taskId" items="${selectedTaskIds}">
-        url += '&selectedTasks=${taskId}';
-        </c:forEach>
-
-        if (searchName) url += '&searchName=' + encodeURIComponent(searchName);
-        if (location) url += '&location=' + encodeURIComponent(location);
-        if (ageRange) url += '&ageRange=' + encodeURIComponent(ageRange);
-        if (recordsPerPage) url += '&recordsPerPage=' + encodeURIComponent(recordsPerPage);
-
-        return url;
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log('Technicians loaded: ${totalCount}');
-
-        document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
-        document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
-
-        const pageSizeSelector = document.getElementById('pageSize');
-        if (pageSizeSelector) {
-            pageSizeSelector.addEventListener('change', updatePageSize);
-
-            <c:if test="${not empty recordsPerPage}">
-            pageSizeSelector.value = '${recordsPerPage}';
-            </c:if>
-        }
-
-        const paginationLinks = document.querySelectorAll('.pagination .page-link[data-page]');
-        paginationLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const page = this.getAttribute('data-page');
-                goToPage(parseInt(page));
-            });
-        });
-
-        showFilterSummary();
-    });
-
-
     function viewTech(staffId) {
         const form = document.createElement('form');
         form.method = 'post';
@@ -442,7 +425,6 @@
         document.body.appendChild(form);
         form.submit();
     }
-
 
     function showFilterSummary() {
         const searchName = document.getElementById('searchName').value;
@@ -480,6 +462,110 @@
             }
         }
     }
+
+    // Single DOMContentLoaded handler for all initialization
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Technicians loaded: ${totalCount}');
+
+        // Clear filter button
+        const clearBtn = document.getElementById('clearFilterBtn');
+        const form = document.getElementById('filterForm');
+        if (clearBtn && form) {
+            clearBtn.addEventListener('click', function () {
+                const searchName = document.getElementById('searchName');
+                const filterLocation = document.getElementById('filterLocation');
+                const filterAge = document.getElementById('filterAge');
+
+                if (searchName) searchName.value = '';
+                if (filterLocation) filterLocation.selectedIndex = 0;
+                if (filterAge) filterAge.selectedIndex = 0;
+
+                const pageInput = form.querySelector('input[name="page"]');
+                if (pageInput) pageInput.value = '1';
+
+                form.submit();
+            });
+        }
+
+        // Apply filter button
+        const applyBtn = document.getElementById('applyFilterBtn');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', applyFilters);
+        }
+
+        // Assign button validation
+        const assignBtn = document.getElementById('assignBtn');
+        if (assignBtn) {
+            assignBtn.addEventListener('click', function (e) {
+                const selectedTechs = document.querySelectorAll('input[name="selectedTechnicians"]:checked');
+                if (selectedTechs.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one technician to assign the tasks.');
+                    return false;
+                }
+            });
+        }
+
+        // Select All / Deselect All functionality
+        const selectAllCheckbox = document.getElementById('selectAllTechs');
+        const techCheckboxes = document.querySelectorAll('.tech-checkbox');
+        const selectedCountSpan = document.querySelector('#selectedCount strong');
+
+        function updateSelectedCount() {
+            const checkedCount = document.querySelectorAll('.tech-checkbox:checked').length;
+            if (selectedCountSpan) {
+                selectedCountSpan.textContent = checkedCount;
+            }
+        }
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function () {
+                techCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateSelectedCount();
+            });
+        }
+
+        techCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const allChecked = Array.from(techCheckboxes).every(cb => cb.checked);
+                const someChecked = Array.from(techCheckboxes).some(cb => cb.checked);
+
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = someChecked && !allChecked;
+                }
+
+                updateSelectedCount();
+            });
+        });
+
+        updateSelectedCount();
+
+        // Page size selector
+        const pageSizeSelector = document.getElementById('pageSize');
+        if (pageSizeSelector) {
+            pageSizeSelector.addEventListener('change', updatePageSize);
+
+            <c:if test="${not empty recordsPerPage}">
+            pageSizeSelector.value = '${recordsPerPage}';
+            </c:if>
+        }
+
+        // Pagination links
+        const paginationLinks = document.querySelectorAll('.pagination .page-link[data-page]');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.getAttribute('data-page');
+                goToPage(parseInt(page));
+            });
+        });
+
+        // Show filter summary
+        showFilterSummary();
+    });
 </script>
 </body>
 </html>
