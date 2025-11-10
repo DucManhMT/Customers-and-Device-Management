@@ -319,10 +319,14 @@
                         <a class="nav-link ${activePage == 'create-feedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/create"><span>Create Feedback</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-feedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/view"><span>View Feedback</span></a>
+                        <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer/requests"><i class="bi bi-person-lines-fill"></i>
+                            My Request</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'feedback-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/list"><span>Feedback List</span></a>
+                        <a class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer/feedback/list"><i
+                                class="bi bi-person-lines-fill"></i> My Feedback</a>
                     </li>
                 </ul>
             </div>
@@ -356,19 +360,16 @@
                         <a class="nav-link ${activePage == 'create-contract' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/create_contract"><span>Create Contract</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><span>Feedback Management</span></a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/dashboard"><span>Request Dashboard</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'process-request' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/process"><span>Process Request</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'supporter-request-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/detail"><span>Request Detail</span></a>
+                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"><span>Request List</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"><span>Request List</span></a>
+                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><span>Feedback Management</span></a>
                     </li>
                 </ul>
             </div>
@@ -383,31 +384,27 @@
             <div class="category-items" id="category-techlead">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'techleadProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'select-technician' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/selectTechnician"><span>Select Technician</span></a>
+                        <a class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_leader/employees"><i class="bi bi-eye"></i>
+                            View Technician
+                            List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-approved-task' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAprovedTask"><span>View Approved Tasks</span></a>
+                        <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"><i
+                                class="bi bi-eye"></i> View Aproved
+                            Request</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techem-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees"><span>Technician List</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techem-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees/view"><span>Technician Detail</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'process-assignment' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/processAssignment"><span>Process Assignment</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'assignment-decision' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/assignmentDecision"><span>Assignment Decision</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'received-assignments' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewReceivedAssignments"><span>Received Assignments</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'task-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/detail"><span>Task Detail</span></a>
+                        <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_leader/tasks/list">
+                            <i class="bi bi-list-task"></i> View Task
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -422,25 +419,25 @@
             <div class="category-items" id="category-techem">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techem-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'update-task-status' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/updateStatus"><span>Update Task Status</span></a>
+                        <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/create_product_request"><i
+                                class="bi bi-clipboard-plus-fill"></i> Create export request </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-assigned-tasks' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewAssignedTasks"><span>View Assigned Tasks</span></a>
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><i
+                                class="bi bi-eye"></i> View Assigned Tasks</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'create-product-request' ? 'active' : ''}" href="${pageContext.request.contextPath}/tech/employees/create_product_requests"><span>Create Product Request</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-request-timeline' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/requests/timeline"><span>Request Timeline</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile/edit"><span>Edit Profile</span></a>
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"><i
+                                class="bi bi-eye"></i> View
+                            Received Assignments</a>
                     </li>
                 </ul>
             </div>

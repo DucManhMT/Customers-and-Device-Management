@@ -170,8 +170,9 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
   </head>
   <body>
     <div class="container">
-      <jsp:include page="../components/header.jsp" />
-      <div class="header">
+        <jsp:include page="../components/header.jsp" />
+        <jsp:include page="../components/sidebar.jsp"/>
+        <div class="header">
         <h1><i class="fas fa-tasks"></i> Task Detail</h1>
         <p class="subtitle">Complete information for selected task</p>
       </div>
