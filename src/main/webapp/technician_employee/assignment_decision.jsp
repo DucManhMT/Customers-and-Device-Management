@@ -354,6 +354,7 @@
 
 <div class="decision-wrapper">
     <jsp:include page="../components/header.jsp"/>
+    <jsp:include page="../components/sidebar.jsp"/>
     <div class="decision-card">
         <div class="decision-header">
             <h3><i class="fas fa-clipboard-check"></i> Task Details & Decision</h3>

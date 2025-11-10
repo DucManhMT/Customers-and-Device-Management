@@ -297,7 +297,7 @@
 <div class="main-content">
     <c:set var="activePage" value="viewReceivedAssignments" scope="request"/>
     <jsp:include page="../components/header.jsp"/>
-    <jsp:include page="../components/techem_sidebar.jsp"/>
+    <jsp:include page="../components/sidebar.jsp"/>
     <div class="container mt-4">
         <div class="page-header">
             <h2>
