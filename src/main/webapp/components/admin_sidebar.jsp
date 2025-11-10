@@ -332,15 +332,7 @@
             </div>
             <div class="category-items" id="category-feedback">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'create-feedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/create"><span>Create Feedback</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-feedback' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/view"><span>View Feedback</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'feedback-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/feedback/list"><span>Feedback List</span></a>
-                    </li>
+
                 </ul>
             </div>
         </div>
