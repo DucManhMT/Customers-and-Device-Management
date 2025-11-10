@@ -22,31 +22,41 @@ public class StaffLoginController extends HttpServlet {
             Account account = LoginService.login(username, password);
             if (account != null){
                 session.removeAttribute("error");
-                session.setAttribute("account", account);
-                session.setAttribute("role", account.getRole());
                 switch (account.getRole().getRoleName()) {
                     case "TechnicianLeader":
                         session.removeAttribute("error");
+                        session.setAttribute("account", account);
+                        session.setAttribute("role", account.getRole());
                         resp.sendRedirect(req.getContextPath() + "/technician_leader/techlead_actioncenter");
                         return; // ✅ stop after redirect
                     case "TechnicianEmployee":
                         session.removeAttribute("error");
+                        session.setAttribute("account", account);
+                        session.setAttribute("role", account.getRole());
                         resp.sendRedirect(req.getContextPath() + "/technician_employee/techemployee_actioncenter");
                         return; // ✅ stop after redirect
                     case "CustomerSupporter":
                         session.removeAttribute("error");
+                        session.setAttribute("account", account);
+                        session.setAttribute("role", account.getRole());
                         resp.sendRedirect(req.getContextPath() + "/customer_supporter/customersupporter_actioncenter");
                         return; // ✅ stop after redirect
                     case "WarehouseKeeper":
                         session.removeAttribute("error");
+                        session.setAttribute("account", account);
+                        session.setAttribute("role", account.getRole());
                         resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/warehousekeeper_actioncenter");
                         return; // ✅ stop after redirect
                     case "Admin":
                         session.removeAttribute("error");
+                        session.setAttribute("account", account);
+                        session.setAttribute("role", account.getRole());
                         resp.sendRedirect(req.getContextPath() + "/admin/admin_actioncenter");
                         return; // ✅ stop after redirect
                     case "InventoryManager":
                         session.removeAttribute("error");
+                        session.setAttribute("account", account);
+                        session.setAttribute("role", account.getRole());
                         resp.sendRedirect(req.getContextPath() + "/inventory_manager/inventorymanager_actioncenter");
                         return; // ✅ stop after redirect
                     default:
