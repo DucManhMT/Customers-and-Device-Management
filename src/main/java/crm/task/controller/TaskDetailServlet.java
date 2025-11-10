@@ -6,8 +6,10 @@ import crm.common.model.AccountRequest;
 import crm.common.model.Customer;
 import crm.common.model.Account;
 import crm.common.model.Contract;
+import crm.common.model.Task;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.task.service.TaskService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -53,17 +55,24 @@ public class TaskDetailServlet extends HttpServlet {
             int requestId = Integer.parseInt(requestIdStr);
             EntityManager entityManager = new EntityManager(connection);
 
-            Request task = entityManager.find(Request.class, requestId);
-            if (task == null) {
+            Request requestObj = entityManager.find(Request.class, requestId);
+            if (requestObj == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
                 return;
             }
 
+            // Get Task associated with this Request
+            TaskService taskService = new TaskService();
+            List<Task> tasks = taskService.getTasksByRequestId(requestId);
+            Task taskObj = tasks.isEmpty() ? null : tasks.get(0);
+
             Customer customer = null;
             Contract contract = null;
-            if (task.getContract() != null) {
-                contract = task.getContract();
-                customer = (contract.getCustomer() != null) ? contract.getCustomer() : null;
+            if (requestObj.getContract() != null) {
+                contract = requestObj.getContract();
+                if (contract.getCustomer() != null) {
+                    customer = contract.getCustomer();
+                }
             }
 
             List<AccountRequest> allAccountRequests = entityManager.findAll(AccountRequest.class);
@@ -76,7 +85,8 @@ public class TaskDetailServlet extends HttpServlet {
                     .map(AccountRequest::getAccount)
                     .collect(Collectors.toList());
 
-            request.setAttribute("task", task);
+            request.setAttribute("requestObj", requestObj);
+            request.setAttribute("taskObj", taskObj);
             request.setAttribute("customer", customer);
             request.setAttribute("contract", contract);
             request.setAttribute("assignedAccounts", assignedAccounts);

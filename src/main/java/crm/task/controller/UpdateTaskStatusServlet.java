@@ -51,7 +51,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
             if (TaskStatus.Finished.equals(task.getStatus())) {
                 request.getSession().setAttribute("errorMessage", "Task is already finished");
-                response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
+                response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
                 return;
             }
 
@@ -76,7 +76,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 connection.commit();
 
                 request.getSession().setAttribute("successMessage", "Task #" + taskId + " has been marked as finished successfully!");
-                response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
+                response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
             }
