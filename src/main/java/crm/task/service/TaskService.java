@@ -180,12 +180,13 @@ public class TaskService {
         }
         TaskStatus status = task.getStatus();
         boolean allowed = (status == TaskStatus.Pending || status == TaskStatus.Processing);
-        task.setStatus(TaskStatus.DeActived);
+
         if (!allowed) {
             return false;
         }
         try {
             TransactionManager.beginTransaction();
+            task.setStatus(TaskStatus.DeActived);
             taskRepository.update(task);
             TransactionManager.commit();
             return true;

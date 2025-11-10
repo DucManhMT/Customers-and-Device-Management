@@ -49,6 +49,8 @@
                                     </option>
                                     <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
                                     <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
+                                    <option value="DeActived" ${status == 'DeActived' ? 'selected' : ''}>DeActived
+                                    </option>
                                 </select>
                             </div>
 
@@ -169,17 +171,19 @@
                             <td><c:out value="${task.assignTo != null ? task.assignTo.staffName : '-'}"/></td>
                             <td>
                                 <span class="
-                                    badge
-                                    <c:choose>
-                                        <c:when test='${task.status == "Pending"}'>bg-secondary</c:when>
-                                        <c:when test='${task.status == "Processing"}'>bg-primary</c:when>
-                                        <c:when test='${task.status == "Finished"}'>bg-success</c:when>
-                                        <c:when test='${task.status == "Reject"}'>bg-danger</c:when>
-                                        <c:otherwise>bg-light text-dark</c:otherwise>
-                                    </c:choose>
-                                ">
+    badge
+    <c:choose>
+        <c:when test='${task.status == "Pending"}'>bg-secondary</c:when>
+        <c:when test='${task.status == "Processing"}'>bg-primary</c:when>
+        <c:when test='${task.status == "Finished"}'>bg-success</c:when>
+        <c:when test='${task.status == "Reject"}'>bg-danger</c:when>
+        <c:when test='${task.status == "DeActived"}'>bg-dark text-white</c:when>
+        <c:otherwise>bg-light text-dark</c:otherwise>
+    </c:choose>
+">
                                         ${task.status}
                                 </span>
+
                             </td>
                             <td><c:out value="${empty task.startDate ? '-' : task.startDate}"/></td>
                             <td>
@@ -317,7 +321,7 @@
                 const taskId = this.dataset.taskId;
 
                 try {
-                    const response = await fetch('${pageContext.request.contextPath}/api/technician_leader/tasks/delete', {
+                    const response = await fetch('${pageContext.request.contextPath}/technician_leader/tasks/delete', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({taskId})

@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="row mb-4">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h6 class="text-muted">Selected Tasks (${selectedRequests.size()} tasks)</h6>
                             <div class="selected-tasks-list" style="max-height: 300px; overflow-y: auto;">
                                 <c:forEach var="req" items="${selectedRequests}">
@@ -111,7 +111,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="text-muted mb-0">Available Technicians (${totalCount} total)</h6>
                                 <div class="d-flex align-items-center gap-2">
@@ -137,7 +137,6 @@
                                             <table class="table table-bordered table-hover align-middle">
                                                 <thead class="table-light">
                                                 <tr>
-                                                    <th>ID</th>
                                                     <th>Name</th>
                                                     <th>Phone</th>
                                                     <th>Email</th>
@@ -149,7 +148,6 @@
                                                 <tbody>
                                                 <c:forEach var="tech" items="${technicians}">
                                                     <tr>
-                                                        <td>${tech.staffID}</td>
                                                         <td>${tech.staffName}</td>
                                                         <td><a href="tel:${tech.phone}">${tech.phone}</a></td>
                                                         <td><a href="mailto:${tech.email}">${tech.email}</a></td>
@@ -186,9 +184,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div id="selectedCount" class="text-muted">
-                                        <i class="bi bi-check-square"></i> Selected: <strong>0</strong> technician(s)
-                                    </div>
+
                                     <div class="d-flex gap-2">
                                         <button type="button" class="btn btn-secondary" onclick="window.history.back()">
                                             <i class="bi bi-arrow-left"></i> Back
@@ -431,7 +427,7 @@
     function viewTech(staffId) {
         const form = document.createElement('form');
         form.method = 'post';
-        form.action = '${pageContext.request.contextPath}/tech/employees/view';
+        form.action = '${pageContext.request.contextPath}/technician_leader/tech/employees/view';
 
         const input = document.createElement('input');
         input.type = 'hidden';

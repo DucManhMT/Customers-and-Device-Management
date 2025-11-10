@@ -14,9 +14,11 @@ import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.service.RequestService;
+import crm.task.service.TaskService;
 
 public class Main {
     public static void main(String[] args) {
-
+        TaskService taskService = new TaskService();
+        taskService.deleteTaskIfAllowed(1);
     }
 }

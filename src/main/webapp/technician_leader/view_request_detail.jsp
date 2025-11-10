@@ -1,24 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@
-        taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Request Detail</title>
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-            rel="stylesheet"
-            href="${pageContext.request.contextPath}/css/task/taskDetail.css"
-    />
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/task/taskDetail.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <style>
         .container {
             max-width: 1200px;
@@ -125,8 +115,7 @@
             margin-top: 20px;
         }
 
-        th,
-        td {
+        th, td {
             border: 1px solid #e3e3e3;
             padding: 10px;
             vertical-align: middle;
@@ -160,10 +149,16 @@
             color: #155724;
         }
 
-        .status-Reject,
-        .status-Rejected {
+        .status-Reject, .status-Rejected {
             background: #f8d7da;
             color: #721c24;
+        }
+
+        .status-DeActived {
+            background: #e2e3e5;
+            color: #6c757d;
+            text-decoration: line-through;
+            font-style: italic;
         }
     </style>
 </head>
@@ -176,8 +171,21 @@
         <p class="subtitle">Full information and related tasks</p>
     </div>
 
-    <!-- Alert Container -->
-    <div id="alert-container"></div>
+    <!-- Alert / Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalTitle">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <c:if test="${not empty requestObj}">
         <div class="grid">
@@ -191,39 +199,31 @@
                 <div class="item">
                     <span class="label">Status:</span>
                     <span class="value">
-                <c:choose>
-                    <c:when test="${not empty requestObj.requestStatus}">
-                    <span class="badge status-${requestObj.requestStatus}"
-                    >${requestObj.requestStatus}</span
-                    >
-                    </c:when>
-                    <c:otherwise><span class="muted">Unknown</span></c:otherwise>
-                </c:choose>
-              </span>
+                        <c:choose>
+                            <c:when test="${not empty requestObj.requestStatus}">
+                                <span class="badge status-${requestObj.requestStatus}">${requestObj.requestStatus}</span>
+                            </c:when>
+                            <c:otherwise><span class="muted">Unknown</span></c:otherwise>
+                        </c:choose>
+                    </span>
                 </div>
                 <div class="item">
                     <span class="label">Start Date:</span>
                     <span class="value">
-                <c:choose>
-                    <c:when test="${not empty requestObj.startDate}"
-                    >${requestObj.startDate}</c:when
-                    >
-                    <c:otherwise><span class="muted">Not set</span></c:otherwise>
-                </c:choose>
-              </span>
+                        <c:choose>
+                            <c:when test="${not empty requestObj.startDate}">${requestObj.startDate}</c:when>
+                            <c:otherwise><span class="muted">Not set</span></c:otherwise>
+                        </c:choose>
+                    </span>
                 </div>
                 <div class="item">
                     <span class="label">Finished Date:</span>
                     <span class="value">
-                <c:choose>
-                    <c:when test="${not empty requestObj.finishedDate}"
-                    >${requestObj.finishedDate}</c:when
-                    >
-                    <c:otherwise
-                    ><span class="muted">Not finished</span></c:otherwise
-                    >
-                </c:choose>
-              </span>
+                        <c:choose>
+                            <c:when test="${not empty requestObj.finishedDate}">${requestObj.finishedDate}</c:when>
+                            <c:otherwise><span class="muted">Not finished</span></c:otherwise>
+                        </c:choose>
+                    </span>
                 </div>
             </div>
 
@@ -265,35 +265,20 @@
                                 <td>#${t.taskID}</td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${not empty t.assignTo.staffName}"
-                                        >${t.assignTo.staffName}</c:when
-                                        >
-                                        <c:otherwise
-                                        ><span class="muted">N/A</span></c:otherwise
-                                        >
+                                        <c:when test="${not empty t.assignTo.staffName}">${t.assignTo.staffName}</c:when>
+                                        <c:otherwise><span class="muted">N/A</span></c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td>
-                        <span class="badge status-${t.status}"
-                        >${t.status}</span
-                        >
-                                </td>
+                                <td><span class="badge status-${t.status}">${t.status}</span></td>
                                 <td>${t.deadline}</td>
                                 <td>
                                     <div class="task-actions">
-                                        <a
-                                                class="btn btn-secondary"
-                                                href="${pageContext.request.contextPath}/staff/task/detail?taskId=${t.taskID}"
-                                        >
+                                        <a class="btn btn-secondary"
+                                           href="${pageContext.request.contextPath}/staff/task/detail?taskId=${t.taskID}">
                                             <i class="fas fa-eye"></i> View
                                         </a>
-                                        <c:if
-                                                test='${t.status == "Pending" || t.status == "Processing"}'
-                                        >
-                                            <button
-                                                    class="btn btn-danger delete-btn"
-                                                    data-task-id="${t.taskID}"
-                                            >
+                                        <c:if test='${t.status == "Pending" || t.status == "Processing"}'>
+                                            <button class="btn btn-danger delete-btn" data-task-id="${t.taskID}">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </c:if>
@@ -307,83 +292,74 @@
             </c:choose>
         </div>
 
-        <!-- Back button -->
+        <!-- Back & Finish Request -->
         <div class="actions mt-3">
-            <a
-                    href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
-                    class="btn btn-secondary"
-            >
+            <a href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+               class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Back to Request List
             </a>
+            <c:if test='${requestObj.requestStatus != "Finished"}'>
+                <button id="finishRequestBtn" class="btn btn-success" data-request-id="${requestObj.requestID}">
+                    <i class="fas fa-check-circle"></i> Finish Request
+                </button>
+            </c:if>
         </div>
     </c:if>
-
-    <!-- Error Modal -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Error</h5>
-                    <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                    ></button>
-                </div>
-                <div class="modal-body" id="modalBody"></div>
-                <div class="modal-footer">
-                    <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                    >
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");
+        const finishBtn = document.getElementById("finishRequestBtn");
         const modalEl = document.getElementById("errorModal");
         const modalBody = document.getElementById("modalBody");
+        const modalTitle = document.getElementById("modalTitle");
         const errorModal = new bootstrap.Modal(modalEl);
 
-        deleteButtons.forEach((btn) => {
-            btn.addEventListener("click", async function () {
+        async function handleFetch(url, payload, successMessage) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    alert(successMessage);
+                    window.location.reload();
+                } else {
+                    modalTitle.textContent = "Error";
+                    modalBody.textContent = data.message || data.error || "Operation failed.";
+                    errorModal.show();
+                }
+            } catch (err) {
+                modalTitle.textContent = "Error";
+                modalBody.textContent = "Server not responding.";
+                errorModal.show();
+            }
+        }
+
+        // Delete task
+        deleteButtons.forEach(btn => {
+            btn.addEventListener("click", function () {
                 if (!confirm("Are you sure you want to delete this task?")) return;
                 const taskId = this.dataset.taskId;
                 const requestId = "${requestObj.requestID}";
-
-                try {
-                    const response = await fetch(
-                        "${pageContext.request.contextPath}/api/technician_leader/tasks/delete",
-                        {
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({taskId, requestId}),
-                        }
-                    );
-                    const data = await response.json();
-
-                    if (response.ok && data.success) {
-                        window.location.reload();
-                    } else {
-                        modalBody.textContent =
-                            data.message || data.error || "Delete failed.";
-                        errorModal.show();
-                    }
-                } catch (err) {
-                    modalBody.textContent = "Server not responding.";
-                    errorModal.show();
-                }
+                handleFetch("${pageContext.request.contextPath}/technician_leader/tasks/delete",
+                    {taskId, requestId}, "Task deleted successfully.");
             });
         });
+
+        // Finish request
+        if (finishBtn) {
+            finishBtn.addEventListener("click", function () {
+                if (!confirm("Mark this request as finished?")) return;
+                const requestId = this.dataset.requestId;
+                handleFetch("${pageContext.request.contextPath}/technician_leader/request/finish",
+                    {requestId}, "Request marked as finished successfully.");
+            });
+        }
     });
 </script>
 </body>
