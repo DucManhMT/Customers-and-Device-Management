@@ -347,6 +347,9 @@
             <div class="category-items" id="category-supporter">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"><span>Action Center</span></a>
                     </li>
                     <li class="nav-item">
@@ -379,6 +382,9 @@
             </div>
             <div class="category-items" id="category-techlead">
                 <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"><span>Action Center</span></a>
                     </li>
@@ -451,6 +457,9 @@
             </div>
             <div class="category-items" id="category-warehouse">
                 <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'warehouse-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><span>Action Center</span></a>
                     </li>
