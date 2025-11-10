@@ -1,9 +1,5 @@
 use crm;
 
-ALTER TABLE Feedback
-ADD RequestID INT NULL,
-ADD FeedbackStatus ENUM('Pending', 'Responded', 'Deleted') DEFAULT 'Pending',
-ADD CONSTRAINT FK_Feedback_Request FOREIGN KEY (RequestID) REFERENCES Request(RequestID);
 
 -- ======================
 -- TYPE
@@ -132,20 +128,6 @@ CREATE TABLE ProductWarehouse (
 );
 
 
--- ======================
--- CUSTOMER FEEDBACK
--- ======================
-CREATE TABLE Feedback (
-                          FeedbackID INT PRIMARY KEY,
-                          Content NVARCHAR(255),
-                          Rating INT,
-                          Description NVARCHAR(255),
-                          Response NVARCHAR(255),
-                          FeedbackDate DATETIME NOT NULL,
-                          ResponseDate DATETIME,
-                          CustomerID NVARCHAR(100),
-                          FOREIGN KEY (CustomerID) REFERENCES Account(Username)
-);
 
 -- ======================
 -- CONTRACT & REQUEST
@@ -285,7 +267,7 @@ CREATE TABLE Task (
                       Deadline DATETIME NOT NULL,
                       Description NVARCHAR(255),
                       TaskNote NVARCHAR(255),
-                      Status ENUM('Pending', 'Reject', 'Processing', 'Finished') DEFAULT 'Pending',
+                      Status ENUM('Pending', 'Reject', 'Processing', 'Finished','DeActived') DEFAULT 'Pending',
                       FOREIGN KEY (AssignBy) REFERENCES Staff(StaffID),
                       FOREIGN KEY (AssignTo) REFERENCES Staff(StaffID),
                       FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
@@ -325,6 +307,24 @@ CREATE TABLE ProductExported (
                                  WarehouseLogID INT NOT NULL,
                                  FOREIGN KEY (ProductWarehouseID) REFERENCES ProductWarehouse(ProductWarehouseID),
                                  FOREIGN KEY (WarehouseLogID) REFERENCES WarehouseLog(WarehouseLogID)
+);
+
+-- ======================
+-- CUSTOMER FEEDBACK
+-- ======================
+CREATE TABLE Feedback (
+    FeedbackID INT PRIMARY KEY,
+    Content NVARCHAR(255),
+    Rating INT,
+    Description NVARCHAR(255),
+    Response NVARCHAR(255),
+    FeedbackDate DATETIME NOT NULL,
+    ResponseDate DATETIME,
+    CustomerID NVARCHAR(100),
+    RequestID INT NULL,
+    FeedbackStatus VARCHAR(20) DEFAULT 'Pending',
+    CONSTRAINT FK_Feedback_Customer FOREIGN KEY (CustomerID) REFERENCES Account(Username),
+    CONSTRAINT FK_Feedback_Request FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
 );
 
 

@@ -26,7 +26,7 @@
 <body>
 <c:set var="activePage" value="viewTechnicanList" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid">
     <div class="container-fluid">
         <h1 class="display-4 fw-bold mb-2">

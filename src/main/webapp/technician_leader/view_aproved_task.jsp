@@ -14,7 +14,7 @@
 <body>
 <c:set var="activePage" value="viewAprovedTask" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="page-header">
     <div>
         <div class="row align-items-center">

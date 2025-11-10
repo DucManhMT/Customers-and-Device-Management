@@ -46,6 +46,7 @@
 </head>
 <body class="bg-light">
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container py-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">

@@ -3,6 +3,7 @@ package crm.task.controller;
 import java.io.IOException;
 
 import crm.common.MessageConst;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
@@ -11,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/request/finish", name = "FinishRequestController")
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_FINISH_REQUEST, name = "FinishRequestController")
 public class FinishRequestController extends HttpServlet {
     private final RequestService requestService = new RequestService();
 

@@ -10,7 +10,7 @@
 <body>
 <c:set var="activePage" value="taskList" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 <div class="container-fluid">
     <div class="container-fluid">
@@ -45,7 +45,8 @@
                                 <select id="status" name="status" class="form-select">
                                     <option value="">All</option>
                                     <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
+                                    <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing
+                                    </option>
                                     <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
                                     <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
                                 </select>
@@ -177,7 +178,7 @@
                                         <c:otherwise>bg-light text-dark</c:otherwise>
                                     </c:choose>
                                 ">
-                                    ${task.status}
+                                        ${task.status}
                                 </span>
                             </td>
                             <td><c:out value="${empty task.startDate ? '-' : task.startDate}"/></td>
@@ -216,125 +217,126 @@
             </tbody>
         </table>
 
-       <!-- PAGINATION SECTION -->
-<div class="align-items-center d-flex flex-column gap-3 mt-3">
+        <!-- PAGINATION SECTION -->
+        <div class="align-items-center d-flex flex-column gap-3 mt-3">
 
-    <!-- Item per page -->
-    <form method="get" class="d-flex align-items-center gap-2">
+            <!-- Item per page -->
+            <form method="get" class="d-flex align-items-center gap-2">
 
-        <input type="hidden" name="sortDir" value="${param.sortDir}">
-        <input type="hidden" name="status" value="${param.status}">
-        <input type="hidden" name="staffName" value="${param.staffName}">
-        <input type="hidden" name="nearDue" value="${param.nearDue}">
-        <input type="hidden" name="nearDueDays" value="${param.nearDueDays}">
-        <input type="hidden" name="overdue" value="${param.overdue}">
-        <input type="hidden" name="page" value="${currentPage}">
+                <input type="hidden" name="sortDir" value="${param.sortDir}">
+                <input type="hidden" name="status" value="${param.status}">
+                <input type="hidden" name="staffName" value="${param.staffName}">
+                <input type="hidden" name="nearDue" value="${param.nearDue}">
+                <input type="hidden" name="nearDueDays" value="${param.nearDueDays}">
+                <input type="hidden" name="overdue" value="${param.overdue}">
+                <input type="hidden" name="page" value="${currentPage}">
 
-        <label for="recordsPerPage">Show:</label>
+                <label for="recordsPerPage">Show:</label>
 
-        <c:set var="computedRpp"
-               value="${empty totalRecords or totalRecords <= 0 ? 1 : (recordsPerPage>totalRecords?totalRecords:recordsPerPage)}"/>
-        <c:set var="computedMax"
-               value="${empty totalRecords or totalRecords <= 0 ? 1 : totalRecords}"/>
+                <c:set var="computedRpp"
+                       value="${empty totalRecords or totalRecords <= 0 ? 1 : (recordsPerPage>totalRecords?totalRecords:recordsPerPage)}"/>
+                <c:set var="computedMax"
+                       value="${empty totalRecords or totalRecords <= 0 ? 1 : totalRecords}"/>
 
-        <input type="number"
-               id="recordsPerPage"
-               name="recordsPerPage"
-               class="form-control"
-               step="1"
-               value="${computedRpp}"
-               min="1"
-               max="${computedMax}"
-               style="width: 70px; text-align: center;">
-        <button type="submit" class="btn btn-primary">Set</button>
-    </form>
+                <input type="number"
+                       id="recordsPerPage"
+                       name="recordsPerPage"
+                       class="form-control"
+                       step="1"
+                       value="${computedRpp}"
+                       min="1"
+                       max="${computedMax}"
+                       style="width: 70px; text-align: center;">
+                <button type="submit" class="btn btn-primary">Set</button>
+            </form>
 
-    <!-- Paging -->
-    <form method="get" class="d-flex justify-content-center align-items-center gap-3 mt-2">
-        
-        <input type="hidden" name="sortDir" value="${param.sortDir}">
-        <input type="hidden" name="status" value="${param.status}">
-        <input type="hidden" name="staffName" value="${param.staffName}">
-        <input type="hidden" name="nearDue" value="${param.nearDue}">
-        <input type="hidden" name="nearDueDays" value="${param.nearDueDays}">
-        <input type="hidden" name="overdue" value="${param.overdue}">
-        <input type="hidden" name="recordsPerPage" value="${computedRpp}">
+            <!-- Paging -->
+            <form method="get" class="d-flex justify-content-center align-items-center gap-3 mt-2">
 
-        <div class="d-flex justify-content-center align-items-center gap-3">
-            <!-- Previous -->
-            <c:if test="${currentPage gt 1}">
-                <button type="submit" name="page" value="${currentPage - 1}" class="btn btn-primary">
-                    Previous
-                </button>
-            </c:if>
+                <input type="hidden" name="sortDir" value="${param.sortDir}">
+                <input type="hidden" name="status" value="${param.status}">
+                <input type="hidden" name="staffName" value="${param.staffName}">
+                <input type="hidden" name="nearDue" value="${param.nearDue}">
+                <input type="hidden" name="nearDueDays" value="${param.nearDueDays}">
+                <input type="hidden" name="overdue" value="${param.overdue}">
+                <input type="hidden" name="recordsPerPage" value="${computedRpp}">
 
-            <span>Page ${currentPage} of ${totalPages}</span>
+                <div class="d-flex justify-content-center align-items-center gap-3">
+                    <!-- Previous -->
+                    <c:if test="${currentPage gt 1}">
+                        <button type="submit" name="page" value="${currentPage - 1}" class="btn btn-primary">
+                            Previous
+                        </button>
+                    </c:if>
 
-            <!-- Next -->
-            <c:if test="${currentPage lt totalPages}">
-                <button type="submit" name="page" value="${currentPage + 1}" class="btn btn-primary">
-                    Next
-                </button>
-            </c:if>
+                    <span>Page ${currentPage} of ${totalPages}</span>
+
+                    <!-- Next -->
+                    <c:if test="${currentPage lt totalPages}">
+                        <button type="submit" name="page" value="${currentPage + 1}" class="btn btn-primary">
+                            Next
+                        </button>
+                    </c:if>
+                </div>
+            </form>
+
         </div>
-    </form>
-
-</div>
 
     </div>
 </div>
 
 <!-- Error Modal -->
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-danger">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="errorModalLabel">Delete Failed</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="errorModalBody"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">Delete Failed</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="errorModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const deleteButtons = document.querySelectorAll('.btn-delete-task');
-    const modalElement = document.getElementById('errorModal');
-    const modalBody = document.getElementById('errorModalBody');
-    const errorModal = new bootstrap.Modal(modalElement);
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete-task');
+        const modalElement = document.getElementById('errorModal');
+        const modalBody = document.getElementById('errorModalBody');
+        const errorModal = new bootstrap.Modal(modalElement);
 
-    deleteButtons.forEach(btn => {
-        btn.addEventListener('click', async function() {
-            if (!confirm('Are you sure you want to delete this task?')) return;
-            const taskId = this.dataset.taskId;
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', async function () {
+                if (!confirm('Are you sure you want to delete this task?')) return;
+                const taskId = this.dataset.taskId;
 
-            try {
-                const response = await fetch('${pageContext.request.contextPath}/api/technician_leader/tasks/delete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ taskId })
-                });
-                const data = await response.json();
+                try {
+                    const response = await fetch('${pageContext.request.contextPath}/api/technician_leader/tasks/delete', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({taskId})
+                    });
+                    const data = await response.json();
 
-                if (response.ok && data.success) {
-                    window.location.reload();
-                } else {
-                    modalBody.textContent = data.message || data.error || 'Delete failed.';
+                    if (response.ok && data.success) {
+                        window.location.reload();
+                    } else {
+                        modalBody.textContent = data.message || data.error || 'Delete failed.';
+                        errorModal.show();
+                    }
+                } catch (err) {
+                    modalBody.textContent = 'Server not responding.';
                     errorModal.show();
                 }
-            } catch (err) {
-                modalBody.textContent = 'Server not responding.';
-                errorModal.show();
-            }
+            });
         });
     });
-});
 </script>
 </body>
 </html>
