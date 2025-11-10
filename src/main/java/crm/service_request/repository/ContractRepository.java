@@ -21,7 +21,7 @@ public class ContractRepository extends AbstractRepository<Contract, Integer> {
             return findAll(pageRequest);
         }
         CustomerRepository customerRepository = new CustomerRepository();
-        List<Customer> customers = (List<Customer>) customerRepository
+        List<Customer> customers = customerRepository
                 .findWithCondition(ClauseBuilder.builder().equal("Username", username));
         if (customers == null || customers.isEmpty()) {
             return new Page<>(0, pageRequest, null);
@@ -37,10 +37,10 @@ public class ContractRepository extends AbstractRepository<Contract, Integer> {
             return findAll();
         }
         CustomerRepository customerRepository = new CustomerRepository();
-        List<Customer> customers = (List<Customer>) customerRepository
+        List<Customer> customers = customerRepository
                 .findWithCondition(ClauseBuilder.builder().equal("Username", username));
         if (customers == null || customers.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         return findWithCondition(
@@ -54,15 +54,16 @@ public class ContractRepository extends AbstractRepository<Contract, Integer> {
             return findAll();
         }
         CustomerRepository customerRepository = new CustomerRepository();
-        List<Customer> customers = (List<Customer>) customerRepository
+        List<Customer> customers = customerRepository
                 .findWithCondition(ClauseBuilder.builder().equal("Username", username));
         if (customers == null || customers.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         return findWithCondition(
                 ClauseBuilder.builder().in("CustomerID",
-                        customers.stream().map(c -> c.getCustomerID()).toList()).lessOrEqual("ExpiredDate", LocalDate.now()));
+                        customers.stream().map(c -> c.getCustomerID()).toList())
+                        .greaterOrEqual("ExpiredDate", LocalDate.now()));
     }
 
     public List<Contract> findByCustomerName(String customerName) {
@@ -70,10 +71,10 @@ public class ContractRepository extends AbstractRepository<Contract, Integer> {
             return findAll();
         }
         CustomerRepository customerRepository = new CustomerRepository();
-        List<Customer> customers = (List<Customer>) customerRepository
+        List<Customer> customers = customerRepository
                 .findWithCondition(ClauseBuilder.builder().like("CustomerName", "%" + customerName + "%"));
         if (customers == null || customers.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         return findWithCondition(

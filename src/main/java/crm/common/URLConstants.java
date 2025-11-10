@@ -70,8 +70,6 @@ public class URLConstants {
     public static final String TECHLEAD_VIEW_TECHEM_DETAIL = "/technician_leader/tech/employees/view";
     public static final String TECHLEAD_VIEW_PROFILE = "/technician_leader/profile";
 
-    //
-
     // TECHNICAL EMPLOYEE
     public static final String TECHEM_ACTION_CENTER = "/technician_employee/techemployee_actioncenter";
     public static final String TECHEM_UPDATE_TASK_STATUS = "/technician_employee/task/updateStatus";

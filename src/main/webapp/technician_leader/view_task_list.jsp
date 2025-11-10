@@ -216,8 +216,71 @@
             </tbody>
         </table>
 
-        <jsp:include page="../components/paging-bottom.jsp"/>
-        <jsp:include page="../components/scroll-button.jsp"/>
+       <!-- PAGINATION SECTION -->
+<div class="align-items-center d-flex flex-column gap-3 mt-3">
+
+    <!-- Item per page -->
+    <form method="get" class="d-flex align-items-center gap-2">
+
+        <input type="hidden" name="sortDir" value="${param.sortDir}">
+        <input type="hidden" name="status" value="${param.status}">
+        <input type="hidden" name="staffName" value="${param.staffName}">
+        <input type="hidden" name="nearDue" value="${param.nearDue}">
+        <input type="hidden" name="nearDueDays" value="${param.nearDueDays}">
+        <input type="hidden" name="overdue" value="${param.overdue}">
+        <input type="hidden" name="page" value="${currentPage}">
+
+        <label for="recordsPerPage">Show:</label>
+
+        <c:set var="computedRpp"
+               value="${empty totalRecords or totalRecords <= 0 ? 1 : (recordsPerPage>totalRecords?totalRecords:recordsPerPage)}"/>
+        <c:set var="computedMax"
+               value="${empty totalRecords or totalRecords <= 0 ? 1 : totalRecords}"/>
+
+        <input type="number"
+               id="recordsPerPage"
+               name="recordsPerPage"
+               class="form-control"
+               step="1"
+               value="${computedRpp}"
+               min="1"
+               max="${computedMax}"
+               style="width: 70px; text-align: center;">
+        <button type="submit" class="btn btn-primary">Set</button>
+    </form>
+
+    <!-- Paging -->
+    <form method="get" class="d-flex justify-content-center align-items-center gap-3 mt-2">
+        
+        <input type="hidden" name="sortDir" value="${param.sortDir}">
+        <input type="hidden" name="status" value="${param.status}">
+        <input type="hidden" name="staffName" value="${param.staffName}">
+        <input type="hidden" name="nearDue" value="${param.nearDue}">
+        <input type="hidden" name="nearDueDays" value="${param.nearDueDays}">
+        <input type="hidden" name="overdue" value="${param.overdue}">
+        <input type="hidden" name="recordsPerPage" value="${computedRpp}">
+
+        <div class="d-flex justify-content-center align-items-center gap-3">
+            <!-- Previous -->
+            <c:if test="${currentPage gt 1}">
+                <button type="submit" name="page" value="${currentPage - 1}" class="btn btn-primary">
+                    Previous
+                </button>
+            </c:if>
+
+            <span>Page ${currentPage} of ${totalPages}</span>
+
+            <!-- Next -->
+            <c:if test="${currentPage lt totalPages}">
+                <button type="submit" name="page" value="${currentPage + 1}" class="btn btn-primary">
+                    Next
+                </button>
+            </c:if>
+        </div>
+    </form>
+
+</div>
+
     </div>
 </div>
 
