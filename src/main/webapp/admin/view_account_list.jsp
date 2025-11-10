@@ -124,7 +124,6 @@
 <c:set var="activePage" value="accountmanage" scope="request" />
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
-
 <div class="container-fluid">
     <div class="page-header d-flex justify-content-between align-items-center">
         <div>

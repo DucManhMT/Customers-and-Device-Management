@@ -1,14 +1,6 @@
 use crm;
 
 
-ALTER TABLE Role
-    ADD RoleStatus ENUM('Active', 'Deactive') DEFAULT 'Active';
--- ======================
-ALTER TABLE Feedback
-ADD RequestID INT NULL,
-ADD FeedbackStatus ENUM('Pending', 'Responded', 'Deleted') DEFAULT 'Pending',
-ADD CONSTRAINT FK_Feedback_Request FOREIGN KEY (RequestID) REFERENCES Request(RequestID);
-
 -- ======================
 -- TYPE
 -- ======================
@@ -137,21 +129,6 @@ CREATE TABLE ProductWarehouse (
 
 
 -- ======================
--- CUSTOMER FEEDBACK
--- ======================
-CREATE TABLE Feedback (
-                          FeedbackID INT PRIMARY KEY,
-                          Content NVARCHAR(255),
-                          Rating INT,
-                          Description NVARCHAR(255),
-                          Response NVARCHAR(255),
-                          FeedbackDate DATETIME NOT NULL,
-                          ResponseDate DATETIME,
-                          CustomerID NVARCHAR(100),
-                          FOREIGN KEY (CustomerID) REFERENCES Account(Username)
-);
-
--- ======================
 -- CONTRACT & REQUEST
 -- ======================
 CREATE TABLE Contract (
@@ -173,6 +150,25 @@ CREATE TABLE Request (
                          Note NVARCHAR(255),
                          ContractID INT NOT NULL,
                          FOREIGN KEY (ContractID) REFERENCES Contract(ContractID)
+);
+
+
+-- ======================
+-- CUSTOMER FEEDBACK
+-- ======================
+CREATE TABLE Feedback (
+                          FeedbackID INT PRIMARY KEY,
+                          Content NVARCHAR(255),
+                          Rating INT,
+                          RequestID INT,
+                          Description NVARCHAR(255),
+                          Response NVARCHAR(255),
+                          FeedbackDate DATETIME NOT NULL,
+                          ResponseDate DATETIME,
+                          CustomerID NVARCHAR(100),
+                          FeedbackStatus ENUM('Pending', 'Responded', 'Deleted') DEFAULT 'Pending',
+                          FOREIGN KEY (CustomerID) REFERENCES Account(Username),
+                          FOREIGN KEY (RequestID) REFERENCES Request(RequestID)
 );
 
 CREATE TABLE AccountRequest(
