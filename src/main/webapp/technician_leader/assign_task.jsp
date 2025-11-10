@@ -11,7 +11,9 @@
     />
 </head>
 <body>
+
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container my-3">
     <div class="row g-3">
         <!-- Info sidebar -->
