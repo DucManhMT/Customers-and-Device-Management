@@ -18,6 +18,7 @@ import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.service.RequestService;
 import crm.service_request.repository.persistence.query.common.Order;
 import crm.task.dto.TaskFilter;
+import crm.task.exception.TaskDeletionException;
 import crm.task.repository.StaffRepository;
 import crm.task.repository.TaskRepository;
 
@@ -166,5 +167,38 @@ public class TaskService {
         }
         return task;
     }
+
+    /**
+     * Delete a task only if its status is Pending or Processing.
+     * Returns true if deleted, false if not allowed.
+     * Throws IllegalArgumentException if task not found.
+     */
+    public boolean deleteTaskIfAllowed(int taskId) {
+        Task task = taskRepository.findById(taskId);
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found");
+        }
+        TaskStatus status = task.getStatus();
+        boolean allowed = (status == TaskStatus.Pending || status == TaskStatus.Processing);
+        if (!allowed) {
+            return false;
+        }
+        try {
+            TransactionManager.beginTransaction();
+            taskRepository.deleteById(taskId);
+            TransactionManager.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException ignored) {
+                // rollback failure intentionally ignored; original exception preserved
+            }
+            throw new TaskDeletionException("Failed to delete task with id=" + taskId, e);
+        }
+    }
+
+    // Custom exception for task deletion failures to avoid generic runtime
+    // exception
 
 }

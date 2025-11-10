@@ -12,15 +12,11 @@ public class Contract {
     @Column(name = "ContractID", type = "INT")
     private Integer contractID;
 
-    @Column(name="ContractCode", length=255, nullable=false, unique=true)
+    @Column(name = "ContractCode", length = 255, nullable = false, unique = true)
     private String contractCode;
-
-
 
     @Column(name = "ContractImage", length = 255, nullable = false)
     private String contractImage;
-
-
 
     @Column(name = "StartDate", type = "DATE", nullable = false)
     private LocalDate startDate;
@@ -50,7 +46,6 @@ public class Contract {
         this.contractImage = contractImage;
     }
 
-
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -74,6 +69,7 @@ public class Contract {
     public Customer getCustomer() {
         return this.customer.get();
     }
+
     public String getContractCode() {
         return contractCode;
     }
@@ -85,8 +81,6 @@ public class Contract {
     public void setCustomer(Customer customer) {
         this.customer = new LazyReference<>(Customer.class, customer.getCustomerID());
     }
-
-
 
     public List<Request> getRequests() {
         return requests;

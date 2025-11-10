@@ -192,9 +192,7 @@
                                         <button type="button" class="btn btn-secondary" onclick="window.history.back()">
                                             <i class="bi bi-arrow-left"></i> Back
                                         </button>
-                                        <button type="submit" class="btn btn-primary" id="assignBtn">
-                                            <i class="bi bi-check-circle"></i> Assign Tasks
-                                        </button>
+
                                     </div>
                                 </div>
                             </form>

@@ -6,69 +6,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assignment Decision</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/task/viewAssignedTasks.css">
     <style>
-        body{
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px 0;
         }
-        .decision-wrapper{
+
+        .decision-wrapper {
             max-width: 900px;
             margin: 0 auto;
             padding: 0 16px;
         }
-        .decision-card{
+
+        .decision-card {
             background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(16,24,40,0.12);
+            box-shadow: 0 20px 60px rgba(16, 24, 40, 0.12);
             padding: 32px;
             margin-top: 24px;
         }
-        .decision-header{
+
+        .decision-header {
             border-bottom: 2px solid #f1f5f9;
             padding-bottom: 20px;
             margin-bottom: 24px;
         }
-        .decision-header h3{
+
+        .decision-header h3 {
             color: #1e293b;
             font-size: 1.75rem;
             font-weight: 700;
             margin: 0 0 8px 0;
         }
-        .decision-header .subtitle{
+
+        .decision-header .subtitle {
             color: #64748b;
             font-size: 0.95rem;
         }
-        .task-detail-section{
-            background: linear-gradient(135deg, rgba(99,102,241,0.03) 0%, rgba(168,85,247,0.03) 100%);
-            border: 1px solid rgba(99,102,241,0.08);
+
+        .task-detail-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.08);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
         }
-        .task-detail-section h5{
+
+        .task-detail-section h5 {
             color: #1e293b;
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 12px;
         }
-        .detail-grid{
+
+        .detail-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 16px;
             margin-top: 16px;
         }
-        .detail-item{
+
+        .detail-item {
             background: white;
             padding: 14px;
             border-radius: 8px;
             border: 1px solid #e2e8f0;
         }
-        .detail-item .label{
+
+        .detail-item .label {
             color: #64748b;
             font-size: 0.85rem;
             font-weight: 600;
@@ -79,41 +89,49 @@
             align-items: center;
             gap: 6px;
         }
-        .detail-item .label i{
+
+        .detail-item .label i {
             color: #6366f1;
         }
-        .detail-item .value{
+
+        .detail-item .value {
             color: #1e293b;
             font-size: 1rem;
             font-weight: 600;
         }
-        .detail-item .value.secondary{
+
+        .detail-item .value.secondary {
             color: #64748b;
             font-weight: 500;
         }
-        .status-badge{
+
+        .status-badge {
             display: inline-block;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
         }
-        .status-badge.approved{
+
+        .status-badge.approved {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
-        .status-badge.pending{
+
+        .status-badge.pending {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
             color: white;
         }
-        .info-section{
+
+        .info-section {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 18px;
             margin-bottom: 20px;
         }
-        .info-section h6{
+
+        .info-section h6 {
             color: #1e293b;
             font-size: 1rem;
             font-weight: 600;
@@ -122,28 +140,34 @@
             align-items: center;
             gap: 8px;
         }
-        .info-section h6 i{
+
+        .info-section h6 i {
             color: #6366f1;
         }
-        .info-row{
+
+        .info-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             border-bottom: 1px solid #e2e8f0;
         }
-        .info-row:last-child{
+
+        .info-row:last-child {
             border-bottom: none;
         }
-        .info-row .info-label{
+
+        .info-row .info-label {
             color: #64748b;
             font-size: 0.9rem;
         }
-        .info-row .info-value{
+
+        .info-row .info-value {
             color: #1e293b;
             font-weight: 600;
             font-size: 0.9rem;
         }
-        .task-meta{
+
+        .task-meta {
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
@@ -151,18 +175,22 @@
             font-size: 0.9rem;
             margin-top: 10px;
         }
-        .task-meta .meta-item{
+
+        .task-meta .meta-item {
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        .task-meta .meta-item i{
+
+        .task-meta .meta-item i {
             color: #6366f1;
         }
-        .task-meta .meta-item strong{
+
+        .task-meta .meta-item strong {
             color: #1e293b;
         }
-        .note-box{
+
+        .note-box {
             background: #fef3c7;
             border: 1px solid #fbbf24;
             border-left: 4px solid #f59e0b;
@@ -170,43 +198,51 @@
             padding: 16px;
             margin-bottom: 24px;
         }
-        .note-box strong{
+
+        .note-box strong {
             color: #92400e;
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 8px;
         }
-        .note-box strong i{
+
+        .note-box strong i {
             color: #f59e0b;
         }
-        .note-box p{
+
+        .note-box p {
             color: #78350f;
             margin: 0;
             line-height: 1.6;
         }
-        .form-section{
+
+        .form-section {
             margin-bottom: 24px;
         }
-        .form-label{
+
+        .form-label {
             font-weight: 600;
             color: #334155;
             margin-bottom: 8px;
             display: block;
         }
-        .form-control{
+
+        .form-control {
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             padding: 12px;
             font-size: 0.95rem;
             transition: all 0.2s ease;
         }
-        .form-control:focus{
+
+        .form-control:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
             outline: none;
         }
-        .decision-actions{
+
+        .decision-actions {
             display: flex;
             gap: 12px;
             align-items: center;
@@ -214,7 +250,8 @@
             padding-top: 20px;
             border-top: 2px solid #f1f5f9;
         }
-        .btn{
+
+        .btn {
             padding: 12px 24px;
             font-weight: 600;
             font-size: 0.95rem;
@@ -224,37 +261,44 @@
             align-items: center;
             gap: 8px;
         }
-        .btn-primary{
+
+        .btn-primary {
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             border: none;
             color: white;
-            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
-        .btn-primary:hover{
+
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
-        .btn-outline-danger{
+
+        .btn-outline-danger {
             border: 2px solid #ef4444;
             color: #dc2626;
             background: white;
         }
-        .btn-outline-danger:hover{
+
+        .btn-outline-danger:hover {
             background: #ef4444;
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
-        .btn-secondary{
+
+        .btn-secondary {
             background: #e2e8f0;
             border: none;
             color: #475569;
         }
-        .btn-secondary:hover{
+
+        .btn-secondary:hover {
             background: #cbd5e1;
             color: #334155;
         }
-        .alert{
+
+        .alert {
             border-radius: 8px;
             padding: 14px 18px;
             margin-bottom: 20px;
@@ -262,36 +306,44 @@
             align-items: center;
             gap: 10px;
         }
-        .alert-danger{
+
+        .alert-danger {
             background: #fef2f2;
             border: 1px solid #fecaca;
             color: #991b1b;
         }
-        .alert-success{
+
+        .alert-success {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
             color: #166534;
         }
-        @media (max-width: 768px){
-            .decision-card{
+
+        @media (max-width: 768px) {
+            .decision-card {
                 padding: 20px;
                 border-radius: 12px;
             }
-            .decision-header h3{
+
+            .decision-header h3 {
                 font-size: 1.5rem;
             }
-            .decision-actions{
+
+            .decision-actions {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .btn{
+
+            .btn {
                 width: 100%;
                 justify-content: center;
             }
-            .detail-grid{
+
+            .detail-grid {
                 grid-template-columns: 1fr;
             }
-            .info-row{
+
+            .info-row {
                 flex-direction: column;
                 gap: 4px;
             }
@@ -301,32 +353,33 @@
 <body>
 
 <div class="decision-wrapper">
-    <jsp:include page="../components/header.jsp" />
+    <jsp:include page="../components/header.jsp"/>
     <div class="decision-card">
         <div class="decision-header">
             <h3><i class="fas fa-clipboard-check"></i> Task Details & Decision</h3>
-            <p class="subtitle">Please review the task details carefully and choose whether to accept or decline this assignment.</p>
+            <p class="subtitle">Please review the task details carefully and choose whether to accept or decline this
+                assignment.</p>
         </div>
 
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-circle"></i>
-                ${errorMessage}
+                    ${errorMessage}
             </div>
         </c:if>
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success">
                 <i class="fas fa-check-circle"></i>
-                ${successMessage}
+                    ${successMessage}
             </div>
         </c:if>
 
         <c:set var="task" value="${requestScope.taskItem}"/>
         <c:set var="req" value="${task.request}"/>
-        
+
         <div class="task-detail-section">
             <h5><i class="fas fa-tasks"></i> Task Assignment</h5>
-            
+
             <div class="task-meta">
                 <span class="meta-item">
                     <i class="fas fa-hashtag"></i>
@@ -341,7 +394,7 @@
                     Assigned by: <strong>${task.assignBy.staffName}</strong>
                 </span>
             </div>
-            
+
             <div class="detail-grid">
                 <div class="detail-item">
                     <div class="label">
@@ -354,7 +407,7 @@
                         </span>
                     </div>
                 </div>
-                
+
                 <div class="detail-item">
                     <div class="label">
                         <i class="fas fa-calendar-plus"></i>
@@ -364,7 +417,7 @@
                         ${not empty task.startDate ? task.startDate : 'Not started yet'}
                     </div>
                 </div>
-                
+
                 <div class="detail-item">
                     <div class="label">
                         <i class="fas fa-calendar-alt"></i>
@@ -379,10 +432,11 @@
 
         <!-- Customer Information Section -->
         <c:if test="${not empty req.contract and not empty req.contract.customer}">
-            <c:set var="customer" value="${req.contract.customer}" />
-            <div class="task-detail-section" style="background: linear-gradient(135deg, rgba(16,185,129,0.03) 0%, rgba(5,150,105,0.03) 100%); border-color: rgba(16,185,129,0.08);">
+            <c:set var="customer" value="${req.contract.customer}"/>
+            <div class="task-detail-section"
+                 style="background: linear-gradient(135deg, rgba(16,185,129,0.03) 0%, rgba(5,150,105,0.03) 100%); border-color: rgba(16,185,129,0.08);">
                 <h5><i class="fas fa-user-circle"></i> Customer Information</h5>
-                
+
                 <div class="detail-grid">
                     <div class="detail-item">
                         <div class="label">
@@ -390,27 +444,27 @@
                             Customer Name
                         </div>
                         <div class="value">
-                            ${not empty customer.customerName ? customer.customerName : 'N/A'}
+                                ${not empty customer.customerName ? customer.customerName : 'N/A'}
                         </div>
                     </div>
-                    
+
                     <div class="detail-item">
                         <div class="label">
                             <i class="fas fa-phone"></i>
                             Phone Number
                         </div>
                         <div class="value">
-                            ${not empty customer.phone ? customer.phone : 'N/A'}
+                                ${not empty customer.phone ? customer.phone : 'N/A'}
                         </div>
                     </div>
-                    
+
                     <div class="detail-item" style="grid-column: 1 / -1;">
                         <div class="label">
                             <i class="fas fa-map-marker-alt"></i>
                             Address
                         </div>
                         <div class="value secondary">
-                            ${not empty customer.address ? customer.address : 'N/A'}
+                                ${not empty customer.address ? customer.address : 'N/A'}
                         </div>
                     </div>
                 </div>
@@ -419,7 +473,8 @@
 
         <!-- Task Description Section -->
         <c:if test="${not empty task.description}">
-            <div class="info-section" style="background: linear-gradient(135deg, rgba(139,92,246,0.03) 0%, rgba(168,85,247,0.03) 100%); border-color: rgba(139,92,246,0.1);">
+            <div class="info-section"
+                 style="background: linear-gradient(135deg, rgba(139,92,246,0.03) 0%, rgba(168,85,247,0.03) 100%); border-color: rgba(139,92,246,0.1);">
                 <h6><i class="fas fa-file-alt"></i> Task Description</h6>
                 <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 12px;">
                     <p style="margin: 0; color: #1e293b; line-height: 1.6; white-space: pre-wrap;">${task.description}</p>
@@ -443,12 +498,13 @@
             </div>
         </div>
 
-        <form method="post" action="${pageContext.request.contextPath}/task/assignmentDecision">
-            <input type="hidden" name="taskId" value="${task.taskID}" />
-            
+        <form method="post" action="${pageContext.request.contextPath}/technician_employee/task/assignmentDecision">
+            <input type="hidden" name="taskId" value="${task.taskID}"/>
+
             <div class="form-section">
                 <label class="form-label"><i class="fas fa-comment"></i> Optional Comment</label>
-                <textarea name="comment" class="form-control" rows="3" placeholder="Add your reason for accepting or declining (optional)..."></textarea>
+                <textarea name="comment" class="form-control" rows="3"
+                          placeholder="Add your reason for accepting or declining (optional)..."></textarea>
             </div>
 
             <div class="decision-actions">
@@ -457,13 +513,14 @@
                     Accept & Start Processing
                 </button>
 
-                <button type="submit" name="decision" value="decline" class="btn btn-outline-danger" 
+                <button type="submit" name="decision" value="decline" class="btn btn-outline-danger"
                         onclick="return confirm('Are you sure you want to decline this task?')">
                     <i class="fas fa-times-circle"></i>
                     Decline Task
                 </button>
 
-                <a href="${pageContext.request.contextPath}/task/viewReceivedAssignments" class="btn btn-secondary">
+                <a href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
+                   class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i>
                     Back to Assignments
                 </a>
