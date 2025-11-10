@@ -236,12 +236,13 @@ public class RequestService {
 
         try {
             TransactionManager.beginTransaction();
+            // Capture old status for accurate logging before changing it
+            OldRequestStatus oldStatus = Request.toOldStatus(request.getRequestStatus());
 
             request.setRequestStatus(RequestStatus.Finished);
             request.setFinishedDate(LocalDateTime.now());
             requestRepository.update(request);
-            requestLogService.createLog(request, "Request finished.", OldRequestStatus.Processing,
-                    RequestStatus.Finished, account);
+            requestLogService.createLog(request, "Request finished.", oldStatus, RequestStatus.Finished, account);
             TransactionManager.commit();
         } catch (Exception e) {
             try {
@@ -250,6 +251,9 @@ public class RequestService {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            // Propagate the error so the controller can return a failure response instead
+            // of a false success
+            throw new RuntimeException("Failed to finish request", e);
         }
     }
 

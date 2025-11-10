@@ -118,15 +118,9 @@
                             <label for="description" class="form-label"
                             >Description</label
                             >
-                            <textarea
-                                    id="description"
-                                    name="description"
-                                    class="form-control"
-                                    rows="4"
-                                    required
-                            >
-                                ${description}</textarea
-                            >
+                            <textarea id="description" name="description" class="form-control" rows="4"
+                                      required>${description}</textarea>
+
                         </div>
 
                         <div class="d-flex gap-2">

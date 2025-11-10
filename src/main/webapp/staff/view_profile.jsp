@@ -152,6 +152,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <%-- TE CHEM --%>
 <%--<c:if test="${sessionScope.account.role.roleName == 'TechnicianEmployee'}">--%>
 <%--    <c:set var="activePage" value="techemProfile" scope="request"/>--%>
@@ -250,7 +251,8 @@
 
             </div>
             <div class="text-center mt-4">
-                <a href="${pageContext.request.contextPath}/staff/profile/edit" class="btn btn-primary btn-lg px-5 py-3">
+                <a href="${pageContext.request.contextPath}/staff/profile/edit"
+                   class="btn btn-primary btn-lg px-5 py-3">
                     <i
                             class="bi bi-pencil-square me-2"></i> Edit Profile
                 </a>

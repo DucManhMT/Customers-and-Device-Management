@@ -58,7 +58,10 @@
             <c:forEach items="${requests}" var="request" varStatus="status">
                 <tr>
                     <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                    <td><a href="./list">${request.contract.contractCode}</a></td>
+                    <td>
+                        <a href="../contract/detail?contractId=${request.contract.contractID}"
+                           class="text-decoration-none">${request.contract.contractCode}</a>
+                    </td>
                     <td>${request.requestDescription}</td>
                     <td>${request.requestStatus}</td>
                     <td>${request.startDate}</td>

@@ -14,7 +14,7 @@
 <body>
 <c:set var="activePage" value="viewAprovedTask" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="page-header">
     <div>
         <div class="row align-items-center">
@@ -226,7 +226,17 @@
                                             </small>
                                         </td>
                                         <td>
-                                            <span class="badge bg-success">${reqObj.requestStatus}</span>
+                                                <%-- ===== START: THAY ĐỔI THEO YÊU CẦU 1 ===== --%>
+                                            <c:set var="statusClass">
+                                                <c:choose>
+                                                    <c:when test="${reqObj.requestStatus == 'Approved'}">bg-success</c:when>
+                                                    <c:when test="${reqObj.requestStatus == 'Processing'}">bg-warning text-dark</c:when>
+                                                    <c:when test="${reqObj.requestStatus == 'Finished'}">bg-info text-dark</c:when>
+                                                    <c:otherwise>bg-secondary</c:otherwise>
+                                                </c:choose>
+                                            </c:set>
+                                            <span class="badge ${statusClass}">${reqObj.requestStatus}</span>
+                                                <%-- ===== END: THAY ĐỔI THEO YÊU CẦU 1 ===== --%>
                                         </td>
                                         <td>
                                             <div class="d-flex">
@@ -236,19 +246,23 @@
                                                     <i class="bi bi-eye"></i> View
                                                 </a>
 
-                                                <form
-                                                        action="${pageContext.request.contextPath}/task/selectTechnician"
-                                                        style="display:inline-block;">
-                                                    <input type="hidden" name="selectedTasks"
-                                                           value="${reqObj.requestID}"/>
-                                                    <button
-                                                            class="btn btn-success btn-sm ms-2"
-                                                            type="submit"
-                                                    >
-                                                        <i class="bi bi-person-plus me-2"></i>
-                                                        Assign
-                                                    </button>
-                                                </form>
+                                                    <%-- ===== START: THAY ĐỔI THEO YÊU CẦU 2 ===== --%>
+                                                <c:if test="${reqObj.requestStatus != 'Finished'}">
+                                                    <form
+                                                            action="${pageContext.request.contextPath}/task/selectTechnician"
+                                                            style="display:inline-block;">
+                                                        <input type="hidden" name="selectedTasks"
+                                                               value="${reqObj.requestID}"/>
+                                                        <button
+                                                                class="btn btn-success btn-sm ms-2"
+                                                                type="submit"
+                                                        >
+                                                            <i class="bi bi-person-plus me-2"></i>
+                                                            Assign
+                                                        </button>
+                                                    </form>
+                                                </c:if>
+                                                    <%-- ===== END: THAY ĐỔI THEO YÊU CẦU 2 ===== --%>
 
                                             </div>
 
@@ -768,9 +782,5 @@
 
 
     </script>
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/view_aproved_task.js"></script> -->
-
 </body>
 </html>

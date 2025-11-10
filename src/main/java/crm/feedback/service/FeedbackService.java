@@ -299,7 +299,6 @@ public class FeedbackService {
             List<Feedback> userFeedbacks = new ArrayList<>();
 
             for (Feedback feedback : allFeedbacks) {
-                // skip deleted feedbacks
                 if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
                     continue;
                 }
@@ -343,18 +342,13 @@ public class FeedbackService {
         return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, null, null, null, null, null);
     }
 
-    /**
-     * Extended filter that supports username (partial, case-insensitive), rating and status.
-     */
+
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
             String username, Integer rating, String status) throws SQLException {
-        // delegate to extended filter with no date-range, no free-text query and no role
         return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, status, null, null, null, null);
     }
 
-    /**
-     * Extended filter supporting username (partial), rating, status, date range (from/to in yyyy-MM-dd), and free-text q.
-     */
+
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
             String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
         try {
@@ -377,20 +371,17 @@ public class FeedbackService {
                     toDate = ld.atTime(LocalTime.MAX);
                 }
             } catch (Exception ex) {
-                // ignore parse errors and treat as no date filter
                 fromDate = null;
                 toDate = null;
             }
 
             for (Feedback feedback : allFeedbacks) {
-                // Skip deleted feedbacks - nobody can view or respond to deleted entries
                 if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
                     continue;
                 }
 
                 boolean matches = true;
 
-                // username: partial, case-insensitive
                 if (usernameNorm != null && !usernameNorm.isEmpty()) {
                     String cust = feedback.getCustomerID();
                     boolean customerMatch = (cust != null && cust.toLowerCase().contains(usernameNorm));
@@ -399,21 +390,18 @@ public class FeedbackService {
                     }
                 }
 
-                // rating: exact match
                 if (rating != null) {
                     if (feedback.getRating() == null || !feedback.getRating().equals(rating)) {
                         matches = false;
                     }
                 }
 
-                // status: compare enum name case-insensitive
                 if (statusNorm != null && !statusNorm.isEmpty()) {
                     if (feedback.getFeedbackStatus() == null || !feedback.getFeedbackStatus().name().toLowerCase().equals(statusNorm)) {
                         matches = false;
                     }
                 }
 
-                // date range
                 if ((fromDate != null || toDate != null) && feedback.getFeedbackDate() != null) {
                     LocalDateTime fd = feedback.getFeedbackDate();
                     if (fromDate != null && fd.isBefore(fromDate)) {
@@ -486,15 +474,15 @@ public class FeedbackService {
         }
     }
 
-    public void deleteFeedback(EntityManager entityManager, Integer feedbackId) throws SQLException {
-        try {
-            Feedback feedback = entityManager.find(Feedback.class, feedbackId);
-            if (feedback != null) {
-                entityManager.remove(feedback, Feedback.class);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to delete feedback", e);
-        }
-    }
+   public void deleteFeedback(EntityManager entityManager, Integer feedbackId) throws SQLException {
+       try {
+           Feedback feedback = entityManager.find(Feedback.class, feedbackId);
+           if (feedback != null) {
+               entityManager.remove(feedback, Feedback.class);
+           }
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw new SQLException("Failed to delete feedback", e);
+       }
+   }
 }

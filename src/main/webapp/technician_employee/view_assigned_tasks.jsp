@@ -191,7 +191,7 @@
                                 </button>
                             </form>
                             <form method="GET"
-                                  action="${pageContext.request.contextPath}/staff/employees/createProductRequests"
+                                  action="${pageContext.request.contextPath}/technician_employee/createProductRequests"
                                   class="link">
                                 <c:choose>
                                     <c:when test="${req.requestStatus == 'Processing'}">
@@ -209,7 +209,8 @@
                                     </button>
                                 </c:when>
                                 <c:otherwise>
-                                    <form method="POST" action="${pageContext.request.contextPath}/task/updateStatus"
+                                    <form method="POST"
+                                          action="${pageContext.request.contextPath}/technician_employee/task/updateStatus"
                                           style="display: inline;"
                                           onsubmit="return confirm('Are you sure you want to mark this task as finished?')">
                                         <input type="hidden" name="taskId" value="${task.taskID}">

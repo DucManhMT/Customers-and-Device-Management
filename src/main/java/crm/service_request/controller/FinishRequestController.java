@@ -1,7 +1,9 @@
-package crm.task.controller;
+package crm.service_request.controller;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
-import crm.task.service.TaskService;
+import crm.common.model.Account;
+import crm.service_request.service.RequestService;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -10,13 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(urlPatterns = URLConstants.TECHLEAD_DELETE_TASK, name = "DeleteTaskController")
-public class DeleteTaskController extends HttpServlet {
-
-    private static final TaskService taskService = new TaskService();
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_FINISH_REQUEST, name = "FinishRequestController")
+public class FinishRequestController extends HttpServlet {
+    private static final RequestService requestService = new RequestService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -25,42 +27,45 @@ public class DeleteTaskController extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
+        Account account = (Account) req.getSession().getAttribute("account");
+        if (account == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            writeJson(resp, false, "User not authenticated.");
+            return;
+        }
+
         JsonObject requestJson;
         try (JsonReader reader = Json.createReader(req.getReader())) {
             requestJson = reader.readObject();
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            writeJson(resp, false, "Invalid JSON input");
+            writeJson(resp, false, "Invalid JSON input.");
             return;
         }
 
-        String taskIdParam = requestJson.getString("taskId", null);
-        if (taskIdParam == null || taskIdParam.isBlank()) {
+        String requestIdParam = requestJson.getString("requestId", null);
+        if (requestIdParam == null || requestIdParam.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            writeJson(resp, false, "taskId is required");
+            writeJson(resp, false, "requestId is required.");
             return;
         }
 
         try {
-            int taskId = Integer.parseInt(taskIdParam.trim());
-            boolean deleted = taskService.deleteTaskIfAllowed(taskId);
+            int requestId = Integer.parseInt(requestIdParam.trim());
+            // Pass the authenticated account to ensure proper auditing and to avoid
+            // null-related failures
+            requestService.finishRequest(requestId, account);
 
-            if (deleted) {
-                writeJson(resp, true, "Task deleted successfully.");
-            } else {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                writeJson(resp, false, "Only Pending or Processing tasks can be deleted.");
-            }
-
+            writeJson(resp, true, "Request marked as finished successfully.");
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            writeJson(resp, false, "Invalid taskId format");
+            writeJson(resp, false, "Invalid requestId format.");
         } catch (IllegalArgumentException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             writeJson(resp, false, e.getMessage());
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            writeJson(resp, false, "Failed to delete task.");
+            writeJson(resp, false, "Failed to finish request.");
         }
     }
 

@@ -15,6 +15,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container py-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
@@ -26,7 +27,8 @@
             <div class="mb-4">
                 <h5 class="border-bottom pb-2 text-secondary">Customer Information</h5>
                 <p><strong>Customer Name:</strong>
-                    <a href="#">
+                    <a href="../../staff/customer/detail?customerId=${request.contract.customer.customerID}"
+                       class="text-decoration-none">
                         ${request.contract.customer.customerName}
                     </a>
                 </p>
@@ -39,7 +41,8 @@
             <div class="mb-4">
                 <h5 class="border-bottom pb-2 text-secondary">Request Information</h5>
                 <p><strong>Contract Code:</strong>
-                    <a href="#">
+                    <a href="../../contract/detail?contractId=${request.contract.contractID}"
+                       class="text-decoration-none">
                         ${request.contract.contractCode}
                     </a>
                 </p>

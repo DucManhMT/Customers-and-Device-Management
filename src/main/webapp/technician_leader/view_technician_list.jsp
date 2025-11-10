@@ -26,7 +26,7 @@
 <body>
 <c:set var="activePage" value="viewTechnicanList" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid">
     <div class="container-fluid">
         <h1 class="display-4 fw-bold mb-2">
@@ -281,7 +281,7 @@
                                     <td>
                                         <div class="d-flex gap-2">
                                             <form method="post"
-                                                  action="${pageContext.request.contextPath}/technician_leader/employees/view"
+                                                  action="${pageContext.request.contextPath}/technician_leader/tech/employees/view"
                                                   style="display:inline-block; margin:0;">
                                                 <input type="hidden" name="id" value="${employee.staffID}"/>
                                                 <button type="submit" class="btn btn-sm btn-outline-primary">
@@ -377,7 +377,8 @@
                         Please use the proper navigation to access the tech employee list.
                     </p>
                     <div class="mt-4">
-                        <a href="${pageContext.request.contextPath}/tech/employees" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/technician_leader/employees"
+                           class="btn btn-primary">
                             <i class="bi bi-arrow-right me-2"></i>
                             Load Tech Employees
                         </a>
