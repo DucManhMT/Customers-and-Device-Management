@@ -204,6 +204,12 @@
 
 <div id="sidebar" class="sidebar">
     <div class="sidebar-inner">
+        <c:if test="${not empty sessionScope.flashErrorMessage}">
+            <div class="alert alert-warning" role="alert">
+                <c:out value="${sessionScope.flashErrorMessage}" />
+            </div>
+            <c:remove var="flashErrorMessage" scope="session" />
+        </c:if>
         <!-- Authentication Category -->
         <div class="sidebar-category">
             <div class="category-header" onclick="toggleCategory('auth')">
@@ -242,27 +248,18 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'role-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/role_list"><span>Role List</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-role-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/role_list/view_role_detail"><span>View Role Detail</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'edit-role' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/role_list/edit_role"><span>Edit Role</span></a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'create-role' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/role_list/create_role"><span>Create Role</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'account-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/account_list"><span>Account List</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'edit-account' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/account_list/edit_account"><span>Edit Account</span></a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'create-account' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/create_account"><span>Create Account</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-account-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/account_list/view_account_detail"><span>View Account Detail</span></a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'assign-feature' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/assign_feature"><span>Assign Feature</span></a>
                     </li>
@@ -284,9 +281,9 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile/edit"><span>Edit Profile</span></a>
-                    </li>
+<%--                    <li class="nav-item">--%>
+<%--                        <a class="nav-link ${activePage == 'staff-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile/edit"><span>Edit Profile</span></a>--%>
+<%--                    </li>--%>
                 </ul>
             </div>
         </div>
@@ -320,9 +317,9 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'customer-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile"><span>View Profile</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile/edit"><span>Edit Profile</span></a>
-                    </li>
+<%--                    <li class="nav-item">--%>
+<%--                        <a class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer/profile/edit"><span>Edit Profile</span></a>--%>
+<%--                    </li>--%>
                 </ul>
             </div>
         </div>

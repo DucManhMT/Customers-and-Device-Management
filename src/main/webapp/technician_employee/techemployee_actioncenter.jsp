@@ -11,7 +11,7 @@ contentType="text/html;charset=UTF-8" language="java" %>
   </head>
   <body>
   <header>
-      <jsp:include page="../components/techem_sidebar.jsp"/>
+      <jsp:include page="../components/sidebar.jsp"/>
       <jsp:include page="../components/header.jsp"/>
 
   </header>

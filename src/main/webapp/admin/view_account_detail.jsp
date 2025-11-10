@@ -166,6 +166,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="breadcrumb-container">
     <a href="${pageContext.request.contextPath}/admin/account_list" class="crumb-link">
         Account Management

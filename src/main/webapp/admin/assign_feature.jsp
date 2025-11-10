@@ -509,7 +509,7 @@
 <!-- Include Header & Sidebar -->
 <c:set var="activePage" value="assignfeature" scope="request"/>
 <jsp:include page="/components/header.jsp" />
-<jsp:include page="/components/admin_sidebar.jsp" />
+<jsp:include page="/components/sidebar.jsp" />
 
 <!-- Success Banner -->
 <c:if test="${not empty sessionScope.successMessage}">

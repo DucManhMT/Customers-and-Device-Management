@@ -190,7 +190,7 @@
 <c:set var="activePage" value="rolemanage" scope="request" />
 
 <jsp:include page="/components/header.jsp" />
-<jsp:include page="/components/admin_sidebar.jsp" />
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="main-content">
     <div class="container">
         <!-- Alert messages -->
