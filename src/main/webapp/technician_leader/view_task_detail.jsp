@@ -169,12 +169,12 @@
             border: 1px solid #c3e6cb;
         }
     </style>
-</head>
-<body>
-<div class="container">
-    <jsp:include page="../components/header.jsp"/>
-    <jsp:include page="../components/sidebar.jsp"/>
-    <div class="header">
+  </head>
+  <body>
+    <div class="container">
+        <jsp:include page="../components/header.jsp" />
+        <jsp:include page="../components/sidebar.jsp"/>
+        <div class="header">
         <h1><i class="fas fa-tasks"></i> Task Detail</h1>
         <p class="subtitle">Complete information for selected task</p>
     </div>

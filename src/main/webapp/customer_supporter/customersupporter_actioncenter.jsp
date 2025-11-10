@@ -13,7 +13,7 @@ To change this template use File | Settings | File Templates. --%>
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/supporter_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 </body>
 </html>

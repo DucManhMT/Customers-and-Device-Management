@@ -333,8 +333,14 @@
                            href="${pageContext.request.contextPath}/feedback/view"><span>View Feedback</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'feedback-list' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/feedback/list"><span>Feedback List</span></a>
+                        <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer/requests"><i class="bi bi-person-lines-fill"></i>
+                            My Request</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer/feedback/list"><i
+                                class="bi bi-person-lines-fill"></i> My Feedback</a>
                     </li>
                 </ul>
             </div>
@@ -372,16 +378,16 @@
                            href="${pageContext.request.contextPath}/customer_supporter/create_contract"><span>Create Contract</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><span>Feedback Management</span></a>
+                        <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/dashboard"><span>Request Dashboard</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"><span>Request Dashboard</span></a>
+                        <a class="nav-link ${activePage == 'process-request' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/process"><span>Process Request</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer_supporter/requests/list"><span>Request List</span></a>
+                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"><span>Request List</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><span>Feedback Management</span></a>
                     </li>
                 </ul>
             </div>
@@ -449,9 +455,26 @@
 
             <div class="category-items" id="category-techem">
                 <ul class="sidebar-nav">
-                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techem-action-center' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><span>Action Center</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/create_product_request"><i
+                                class="bi bi-clipboard-plus-fill"></i> Create export request </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><i
+                                class="bi bi-eye"></i> View Assigned Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"><i
+                                class="bi bi-eye"></i> View
+                            Received Assignments</a>
                     </li>
                      <li class="nav-item">
                 <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"

@@ -8,8 +8,7 @@
           rel="stylesheet"/>
 </head>
 <body>
-<c:set var="activePage" value="taskList" scope="request"/>
-<jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/header.jsp" />
 <jsp:include page="../components/sidebar.jsp"/>
 
 <div class="container-fluid">
