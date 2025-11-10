@@ -17,7 +17,7 @@
 <body>
 <c:set var="activePage" value="accountmanage" scope="request" />
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/admin_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-content">

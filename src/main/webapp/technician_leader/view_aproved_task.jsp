@@ -140,26 +140,6 @@
                 </div>
             </div>
 
-            <%--            <div class="card card-custom mb-4">--%>
-            <%--                <div class="card-body">--%>
-            <%--                    <div class="d-flex justify-content-between align-items-center">--%>
-            <%--                        <div class="d-flex align-items-center">--%>
-            <%--                            <label class="form-check-label fw-semibold">--%>
-            <%--                                Request List (<span id="visibleRequestsCount">${totalCount}</span> requests)--%>
-            <%--                            </label>--%>
-            <%--                        </div>--%>
-            <%--                        <div class="d-flex align-items-center gap-3">--%>
-            <%--                  <span class="badge badge-custom bg-primary me-2">--%>
-            <%--                    <span id="selectedRequestsCount">0</span> selected--%>
-            <%--                  </span>--%>
-            <%--                            <button class="btn btn-outline-primary btn-sm" onclick="clearAllSelections()">--%>
-            <%--                                <i class="bi bi-x-circle"></i> Clear Selection--%>
-            <%--                            </button>--%>
-            <%--                        </div>--%>
-            <%--                    </div>--%>
-            <%--                </div>--%>
-            <%--            </div>--%>
-
             <div class="card">
                 <div
                         class="card-header d-flex justify-content-between align-items-center"
@@ -187,7 +167,6 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-dark">
                         <tr>
-                            <%--                            <th width="40">Select</th>--%>
                             <th>Request Details</th>
                             <th>Customer Info</th>
                             <th>Date</th>
@@ -201,10 +180,6 @@
                             <c:when test="${not empty approvedRequests}">
                                 <c:forEach var="reqObj" items="${approvedRequests}">
                                     <tr>
-                                            <%--                                        <td>--%>
-                                            <%--                                            <input type="checkbox" class="form-check-input request-checkbox"--%>
-                                            <%--                                                   name="selectedTasks" value="${reqObj.requestID}"/>--%>
-                                            <%--                                        </td>   --%>
                                         <td>
                                             <div class="fw-bold text-primary mb-1">
                                                 <c:choose>
@@ -255,15 +230,12 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                <form method="post"
-                                                      action="${pageContext.request.contextPath}/task/detail"
-                                                      style="display:inline-block;">
-                                                    <input type="hidden" name="id" value="${reqObj.requestID}"/>
-                                                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                                                        <i class="bi bi-eye"></i> View
-                                                    </button>
 
-                                                </form>
+                                                <a href="${pageContext.request.contextPath}/technician_leader/requests/detail?requestId=${reqObj.requestID}"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+
                                                 <form
                                                         action="${pageContext.request.contextPath}/task/selectTechnician"
                                                         style="display:inline-block;">

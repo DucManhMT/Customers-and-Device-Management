@@ -24,18 +24,14 @@
     <script src="${pageContext.request.contextPath}/js/view_technician_list.js"></script>
 </head>
 <body>
-<c:set var="activePage" value="viewTechnicanList" scope="request" />
+<c:set var="activePage" value="viewTechnicanList" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/techlead_sidebar.jsp"/>
 <div class="container-fluid">
-    <div class="container-fluid" >
+    <div class="container-fluid">
         <h1 class="display-4 fw-bold mb-2">
-                    <i class="bi bi-people-fill"></i> Technician list
-                </h1>
-        <a href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
-           class="btn btn-primary mb-3">
-            <span>Back to Action Center</span>
-        </a>
+            <i class="bi bi-people-fill"></i> Technician list
+        </h1>
         <div
                 class="alert alert-info mb-4"
                 id="assignmentModeAlert"
@@ -115,7 +111,8 @@
             <h5 class="mb-3">
                 <i class="bi bi-funnel"></i> Search & Filter Technicians
             </h5>
-            <form id="filterForm" method="POST" action="${pageContext.request.contextPath}/tech/employees">
+            <form id="filterForm" method="POST"
+                  action="${pageContext.request.contextPath}/technician_leader/tech/employees">
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label for="searchName" class="form-label"
@@ -284,20 +281,13 @@
                                     <td>
                                         <div class="d-flex gap-2">
                                             <form method="post"
-                                                  action="${pageContext.request.contextPath}/tech/employees/view"
+                                                  action="${pageContext.request.contextPath}/technician_leader/employees/view"
                                                   style="display:inline-block; margin:0;">
                                                 <input type="hidden" name="id" value="${employee.staffID}"/>
                                                 <button type="submit" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-eye"></i> View
                                                 </button>
                                             </form>
-                                            <button
-                                                    class="btn btn-sm btn-outline-success"
-                                                    id="assign-btn-${employee.staffID}"
-                                            >
-                                                <i class="bi bi-clipboard-plus"></i>
-                                                <span class="assign-text">Assign</span>
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>

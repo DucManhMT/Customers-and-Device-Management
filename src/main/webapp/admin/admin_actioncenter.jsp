@@ -86,7 +86,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/admin_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 <div class="main-content">
     <div class="main-header">

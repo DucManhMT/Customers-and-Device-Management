@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "RequestCreationController", urlPatterns = {URLConstants.CUSTOMER_CREATE_REQUEST})
+@WebServlet(name = "RequestCreationController", urlPatterns = { URLConstants.CUSTOMER_CREATE_REQUEST })
 public class RequestCreationController extends HttpServlet {
 
     @Override
@@ -70,6 +70,8 @@ public class RequestCreationController extends HttpServlet {
         }
 
         List<Contract> contracts = contractRepo.findNotExpiredByUserName(account.getUsername());
+        System.out.println(contracts);
+        System.out.println(account.getUsername());
         req.setAttribute("contracts", contracts);
 
         req.getRequestDispatcher("/service_request/request-creation.jsp").forward(req, resp);

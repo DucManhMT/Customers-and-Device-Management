@@ -13,6 +13,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-md-12">
@@ -245,9 +246,7 @@
                                         <button type="button" class="btn btn-secondary" onclick="window.history.back()">
                                             <i class="bi bi-arrow-left"></i> Back
                                         </button>
-                                        <button type="submit" class="btn btn-primary" id="assignBtn">
-                                            <i class="bi bi-check-circle"></i> Assign Tasks
-                                        </button>
+
                                     </div>
                                 </div>
                             </form>
