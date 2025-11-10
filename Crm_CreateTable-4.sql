@@ -231,7 +231,7 @@ CREATE TABLE Village (
 CREATE TABLE WarehouseRequest(
                                  WarehouseRequestID int NOT NULL PRIMARY KEY ,
                                  Date DATETIME,
-                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Processing'),
+                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Processing', 'Completed'),
                                  Note nvarchar(255),
                                  ProductID INT,
                                  Quantity INT,

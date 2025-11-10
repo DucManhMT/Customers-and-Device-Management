@@ -21,9 +21,6 @@ public class ProductWarehouse {
     @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    @OneToOne(mappedBy = "productWarehouse", joinColumn = "ProductWarehouseID")
-    private LazyReference<ProductExported> productExported;
-
     public Integer getProductWarehouseID() {
         return productWarehouseID;
     }
@@ -57,14 +54,5 @@ public class ProductWarehouse {
     public void setInventoryItem(InventoryItem inventoryItem) {
 
         this.inventoryItem = new LazyReference<>(InventoryItem.class, inventoryItem.getItemId());
-    }
-
-    public ProductExported getProductExported() {
-        return productExported.get();
-    }
-
-    public void setProductExported(ProductExported productExported) {
-
-        this.productExported = new LazyReference<>(ProductExported.class, productExported);
     }
 }

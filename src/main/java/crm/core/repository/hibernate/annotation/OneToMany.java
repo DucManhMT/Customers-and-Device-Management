@@ -45,5 +45,5 @@ public @interface OneToMany {
      *
      * @return target entity class
      */
-    Class<?> targetEntity() default void.class;
+    Class<?> targetEntity();
 }
