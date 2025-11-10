@@ -1,9 +1,13 @@
 package crm.warehousekeeper.controller;
+import crm.common.model.Account;
 import crm.common.model.InventoryItem;
 import crm.common.model.Product;
+import crm.common.model.Warehouse;
+import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.warehousekeeper.service.ImportProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,15 +43,9 @@ public class ProcessImportServlet extends HttpServlet {
             }
         }
 
-        if (!productSerialsMap.isEmpty()) {
-            for (Map.Entry<String, String[]> entry : productSerialsMap.entrySet()) {
-                String productId = entry.getKey();
-                String[] serials = entry.getValue();
-                System.out.println("Product ID: " + productId);
-                System.out.println("  Serials: " + (serials.length > 0 ? Arrays.toString(serials) : "No serials submitted"));
-            }
-        }
-
+        Account acc = (Account) req.getSession().getAttribute("account");
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        Warehouse warehouse = warehouseDAO.getWarehouseByUsername(acc.getUsername());
 
         boolean importSuccess = true;
         EntityManager em = new EntityManager(DBcontext.getConnection());
@@ -66,7 +64,7 @@ public class ProcessImportServlet extends HttpServlet {
                         item.setProduct(product);
                         item.setSerialNumber(serial.trim());
                         item.setItemId(IDGeneratorService.generateID(InventoryItem.class));
-                        importSuccess = importSuccess && em.persist(item , InventoryItem.class);
+                        importSuccess = importSuccess && ImportProductService.importProducts(item, warehouse);
                     }
                 }
             }
