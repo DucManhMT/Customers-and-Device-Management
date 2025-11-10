@@ -1,5 +1,9 @@
 use crm;
 
+
+ALTER TABLE Role
+    ADD RoleStatus ENUM('Active', 'Deactive') DEFAULT 'Active';
+-- ======================
 ALTER TABLE Feedback
 ADD RequestID INT NULL,
 ADD FeedbackStatus ENUM('Pending', 'Responded', 'Deleted') DEFAULT 'Pending',
