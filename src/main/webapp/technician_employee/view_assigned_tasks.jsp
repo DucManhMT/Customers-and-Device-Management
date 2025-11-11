@@ -646,16 +646,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>From Date (dd-MM-yyyy)</label>
-                    <input type="text" class="form-control" name="fromDate"
-                           placeholder="dd-MM-yyyy (VD: 06-10-2025)"
-                           value="${fromDate}">
+                    <label>From Date</label>
+                    <input type="date" class="form-control" name="fromDate"
+                           value="${fromDate}" id="fromDate">
                 </div>
                 <div class="form-group">
-                    <label>To Date (dd-MM-yyyy)</label>
-                    <input type="text" class="form-control" name="toDate"
-                           placeholder="dd-MM-yyyy (VD: 06-10-2025)"
-                           value="${toDate}">
+                    <label>To Date</label>
+                    <input type="date" class="form-control" name="toDate"
+                           value="${toDate}" id="toDate">
                 </div>
             </div>
             <div class="filter-buttons">
@@ -873,6 +871,36 @@
     </div>
 </div>
 
+<script>
+    // Date validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const fromDate = document.getElementById('fromDate');
+        const toDate = document.getElementById('toDate');
+        const today = new Date().toISOString().split('T')[0];
+
+        // Set max date to today (không cho chọn ngày trong tương lai)
+        if (fromDate) fromDate.setAttribute('max', today);
+        if (toDate) toDate.setAttribute('max', today);
+
+        // Khi chọn From Date, set min cho To Date
+        if (fromDate) {
+            fromDate.addEventListener('change', function() {
+                if (this.value && toDate) {
+                    toDate.setAttribute('min', this.value);
+                }
+            });
+        }
+
+        // Khi chọn To Date, set max cho From Date
+        if (toDate) {
+            toDate.addEventListener('change', function() {
+                if (this.value && fromDate) {
+                    fromDate.setAttribute('max', this.value);
+                }
+            });
+        }
+    });
+</script>
 <script src="${pageContext.request.contextPath}/js/view_assigned_tasks.js"></script>
 </body>
 </html>

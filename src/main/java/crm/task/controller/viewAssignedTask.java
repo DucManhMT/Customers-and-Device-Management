@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -198,8 +197,7 @@ public class viewAssignedTask extends HttpServlet {
 
                             if (fromDate != null && !fromDate.isEmpty()) {
                                 try {
-                                    LocalDate from = LocalDate.parse(fromDate,
-                                            DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                                    LocalDate from = LocalDate.parse(fromDate);
                                     passFromDate = !taskDate.isBefore(from);
                                 } catch (DateTimeParseException e) {
                                     passFromDate = true;
@@ -208,7 +206,7 @@ public class viewAssignedTask extends HttpServlet {
 
                             if (toDate != null && !toDate.isEmpty()) {
                                 try {
-                                    LocalDate to = LocalDate.parse(toDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                                    LocalDate to = LocalDate.parse(toDate);
                                     passToDate = !taskDate.isAfter(to);
                                 } catch (DateTimeParseException e) {
                                     passToDate = true;
