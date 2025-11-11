@@ -207,9 +207,9 @@
     <div class="sidebar-inner">
         <c:if test="${not empty sessionScope.flashErrorMessage}">
             <div class="alert alert-warning" role="alert">
-                <c:out value="${sessionScope.flashErrorMessage}" />
+                <c:out value="${sessionScope.flashErrorMessage}"/>
             </div>
-            <c:remove var="flashErrorMessage" scope="session" />
+            <c:remove var="flashErrorMessage" scope="session"/>
         </c:if>
         <!-- Authentication Category -->
         <div class="sidebar-category">
@@ -275,18 +275,18 @@
             </div>
         </div>
 
-<%--        <!-- Staff Category -->--%>
-<%--        <div class="sidebar-category">--%>
-<%--            <div class="category-header" onclick="toggleCategory('staff')">--%>
-<%--                <span><i class="fas fa-users category-icon"></i>Staff</span>--%>
-<%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
-<%--            </div>--%>
-<%--            <div class="category-items" id="category-staff">--%>
-<%--                <ul class="sidebar-nav">--%>
+        <%--        <!-- Staff Category -->--%>
+        <%--        <div class="sidebar-category">--%>
+        <%--            <div class="category-header" onclick="toggleCategory('staff')">--%>
+        <%--                <span><i class="fas fa-users category-icon"></i>Staff</span>--%>
+        <%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
+        <%--            </div>--%>
+        <%--            <div class="category-items" id="category-staff">--%>
+        <%--                <ul class="sidebar-nav">--%>
 
-<%--                </ul>--%>
-<%--            </div>--%>
-<%--        </div>--%>
+        <%--                </ul>--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
 
         <!-- Customer Category -->
         <div class="sidebar-category">
@@ -334,7 +334,8 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer/requests"><i class="bi bi-person-lines-fill"></i>
+                           href="${pageContext.request.contextPath}/customer/requests"><i
+                                class="bi bi-person-lines-fill"></i>
                             My Request</a>
                     </li>
                     <li class="nav-item">
@@ -346,18 +347,18 @@
             </div>
         </div>
 
-<%--        <!-- Feedback Category -->--%>
-<%--        <div class="sidebar-category">--%>
-<%--            <div class="category-header" onclick="toggleCategory('feedback')">--%>
-<%--                <span><i class="fas fa-comment-dots category-icon"></i>Feedback</span>--%>
-<%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
-<%--            </div>--%>
-<%--            <div class="category-items" id="category-feedback">--%>
-<%--                <ul class="sidebar-nav">--%>
+        <%--        <!-- Feedback Category -->--%>
+        <%--        <div class="sidebar-category">--%>
+        <%--            <div class="category-header" onclick="toggleCategory('feedback')">--%>
+        <%--                <span><i class="fas fa-comment-dots category-icon"></i>Feedback</span>--%>
+        <%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
+        <%--            </div>--%>
+        <%--            <div class="category-items" id="category-feedback">--%>
+        <%--                <ul class="sidebar-nav">--%>
 
-<%--                </ul>--%>
-<%--            </div>--%>
-<%--        </div>--%>
+        <%--                </ul>--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
 
         <!-- Customer Supporter Category -->
         <div class="sidebar-category">
@@ -368,26 +369,32 @@
             <div class="category-items" id="category-supporter">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
+                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"><span>Action Center</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'create-contract' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/customer_supporter/create_contract"><span>Create Contract</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/dashboard"><span>Request Dashboard</span></a>
+                        <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/supporter/requests/dashboard"><span>Request Dashboard</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'process-request' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/process"><span>Process Request</span></a>
+                        <a class="nav-link ${activePage == 'process-request' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/supporter/requests/process"><span>Process Request</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}" href="${pageContext.request.contextPath}/supporter/requests/list"><span>Request List</span></a>
+                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/supporter/requests/list"><span>Request List</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}" href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><span>Feedback Management</span></a>
+                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer_supporter/feedback/management"><span>Feedback Management</span></a>
                     </li>
                 </ul>
             </div>
@@ -402,10 +409,12 @@
             <div class="category-items" id="category-techlead">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
+                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"><span>Action Center</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techleadProfile' ? 'active' : ''}"
@@ -430,22 +439,26 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'process-assignment' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/processAssignment"><span>Process Assignment</span></a>
+                        <a class="nav-link ${activePage == 'process-assignment' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/task/processAssignment"><span>Process Assignment</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'assignment-decision' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/assignmentDecision"><span>Assignment Decision</span></a>
+                        <a class="nav-link ${activePage == 'assignment-decision' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/task/assignmentDecision"><span>Assignment Decision</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'received-assignments' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/viewReceivedAssignments"><span>Received Assignments</span></a>
+                        <a class="nav-link ${activePage == 'received-assignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/task/viewReceivedAssignments"><span>Received Assignments</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'task-detail' ? 'active' : ''}" href="${pageContext.request.contextPath}/task/detail"><span>Task Detail</span></a>
+                        <a class="nav-link ${activePage == 'task-detail' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/task/detail"><span>Task Detail</span></a>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <!-- Technical Employee Category --> 
+        <!-- Technical Employee Category -->
         <div class="sidebar-category">
             <div class="category-header" onclick="toggleCategory('techem')">
                 <span><i class="fas fa-wrench category-icon"></i>Technical Employee</span>
@@ -456,12 +469,14 @@
                 <ul class="sidebar-nav">
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><i class="bi bi-person-circle"></i>Action Center
+                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><i
+                                class="bi bi-person-circle"></i>Action Center
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
+                           href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My
+                            Profile
                         </a>
                     </li>
                     <li class="nav-item">
@@ -480,20 +495,27 @@
                                 class="bi bi-eye"></i> View
                             Received Assignments</a>
                     </li>
-                     <li class="nav-item">
-                <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/staff/profile"><span>My Profile</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span> </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"> View
-                   <span> Received Assignments</span></a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
+                            View
+                            <span> Received Assignments</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/view_product_requests"><span>View Product Requests</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -508,10 +530,12 @@
             <div class="category-items" id="category-warehouse">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
+                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'warehouse-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'warehouse-action-center' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><span>Action Center</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
@@ -585,18 +609,18 @@
             </div>
         </div>
 
-<%--        <!-- Task Management Category -->--%>
-<%--        <div class="sidebar-category">--%>
-<%--            <div class="category-header" onclick="toggleCategory('task')">--%>
-<%--                <span><i class="fas fa-tasks category-icon"></i>Task Management</span>--%>
-<%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
-<%--            </div>--%>
-<%--            <div class="category-items" id="category-task">--%>
-<%--                <ul class="sidebar-nav">--%>
-<%--                    --%>
-<%--                </ul>--%>
-<%--            </div>--%>
-<%--        </div>--%>
+        <%--        <!-- Task Management Category -->--%>
+        <%--        <div class="sidebar-category">--%>
+        <%--            <div class="category-header" onclick="toggleCategory('task')">--%>
+        <%--                <span><i class="fas fa-tasks category-icon"></i>Task Management</span>--%>
+        <%--                <i class="fas fa-chevron-down toggle-icon"></i>--%>
+        <%--            </div>--%>
+        <%--            <div class="category-items" id="category-task">--%>
+        <%--                <ul class="sidebar-nav">--%>
+        <%--                    --%>
+        <%--                </ul>--%>
+        <%--            </div>--%>
+        <%--        </div>--%>
 
         <!-- Footer with Logout -->
         <div class="sidebar-footer">

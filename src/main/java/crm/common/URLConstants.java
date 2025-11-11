@@ -82,6 +82,8 @@ public class URLConstants {
     public static final String TECHEM_VIEW_ASSIGNED_TASK = "/technician_employee/task/viewAssignedTasks";
     public static final String CREATE_PRODUCT_REQUEST = "/technician_employee/employees/create_product_requests";
     public static final String TECHEM_VIEW_PROFILE = "/technician_employee/profile";
+    public static final String TECHEM_VIEW_PRODUCT_REQUESTS = "/technician_employee/view_product_requests";
+
     // - TASK
     public static final String TASK_PROCESS_ASSIGNMENT = "/technician_employee/task/processAssignment";
     public static final String TASK_ASSIGNMENT_DECISION = "/technician_employee/task/assignmentDecision";

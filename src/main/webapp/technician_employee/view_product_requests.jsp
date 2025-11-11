@@ -551,7 +551,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-muted fw-medium">Items per page:</span>
-                    <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
+                    <form action="${pageContext.request.contextPath}/technician_employee/view_product_requests"
                           method="GET" class="mb-0">
                         <input type="hidden" name="page" value="${currentPage}">
                         <select name="pageSize" class="form-select form-select-sm" style="width: auto;"
@@ -565,8 +565,10 @@
                 </div>
                 <div class="text-muted">
                     <c:set var="startItem" value="${totalRequests == 0 ? 0 : (currentPage - 1) * pageSize + 1}"/>
-                    <c:set var="endItem" value="${currentPage * pageSize > totalRequests ? totalRequests : currentPage * pageSize}"/>
-                    Showing <span class="fw-bold text-primary">${startItem} - ${endItem}</span> of <span class="fw-bold">${totalRequests}</span>
+                    <c:set var="endItem"
+                           value="${currentPage * pageSize > totalRequests ? totalRequests : currentPage * pageSize}"/>
+                    Showing <span class="fw-bold text-primary">${startItem} - ${endItem}</span> of <span
+                        class="fw-bold">${totalRequests}</span>
                 </div>
             </div>
         </div>
@@ -610,26 +612,6 @@
                                 </div>
                             </div>
 
-                            <!-- Staff Section -->
-                            <div class="staff-section">
-                                <div class="staff-header">
-                                    <div class="staff-avatar">
-                                            ${pr.task.assignTo.staffName.substring(0, 1).toUpperCase()}
-                                    </div>
-                                    <div class="staff-details">
-                                        <div class="staff-name">${pr.task.assignTo.staffName}</div>
-                                        <div class="staff-contact">
-                                            <i class="fas fa-phone"></i>
-                                                ${pr.task.assignTo.phone}
-                                        </div>
-                                        <div class="staff-contact">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                                ${pr.task.assignTo.address}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Info Grid -->
                             <div class="info-grid">
                                 <div class="info-item">
@@ -648,24 +630,16 @@
 
                             <!-- Actions -->
                             <div class="action-buttons">
-                                <c:if test="${pr.status == 'Accepted'}">
-                                    <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product"
-                                          method="post" style="flex: 1;">
-                                        <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
-                                        <input type="hidden" name="taskID" value="${pr.task.taskID}">
-                                        <button type="submit" class="btn-action btn-export" style="width: 100%;">
-                                            <i class="fas fa-shipping-fast"></i>Export Product
-                                        </button>
-                                    </form>
-                                </c:if>
-                                <c:if test="${pr.status == 'Pending'}">
-                                    <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
+                                <c:if test="${pr.status == 'Processing'}">
+                                    <form action="${pageContext.request.contextPath}/technician_employee/view_product_requests"
                                           method="post" style="display: contents;">
                                         <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
-                                        <button type="submit" name="action" value="accept" class="btn-action btn-accept">
-                                            <i class="fas fa-check"></i>Accept
+                                        <button type="submit" name="action" value="finished"
+                                                class="btn-action btn-accept">
+                                            <i class="fas fa-check"></i>Finish
                                         </button>
-                                        <button type="submit" name="action" value="reject" class="btn-action btn-reject">
+                                        <button type="submit" name="action" value="reject"
+                                                class="btn-action btn-reject">
                                             <i class="fas fa-times"></i>Reject
                                         </button>
                                     </form>
@@ -688,7 +662,8 @@
             <div class="control-card mt-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="text-muted">
-                        Page <span class="fw-bold text-primary">${currentPage}</span> of <span class="fw-bold">${totalPages}</span>
+                        Page <span class="fw-bold text-primary">${currentPage}</span> of <span
+                            class="fw-bold">${totalPages}</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <nav aria-label="Page navigation">
@@ -737,7 +712,8 @@
                                         </li>
                                     </c:if>
                                     <li class="page-item">
-                                        <a class="page-link" href="?page=${totalPages}&pageSize=${pageSize}">${totalPages}</a>
+                                        <a class="page-link"
+                                           href="?page=${totalPages}&pageSize=${pageSize}">${totalPages}</a>
                                     </li>
                                 </c:if>
 
@@ -749,7 +725,7 @@
                             </ul>
                         </nav>
 
-                        <form action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
+                        <form action="${pageContext.request.contextPath}/technician_employee/view_product_requests"
                               method="GET" class="d-flex align-items-center gap-1 mb-0">
                             <input type="hidden" name="pageSize" value="${pageSize}">
                             <input type="number" name="page" min="1" max="${totalPages}"
