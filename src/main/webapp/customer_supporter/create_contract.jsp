@@ -135,7 +135,7 @@
 <body>
 <c:set var="activePage" value="createContract" scope="request" />
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/supporter_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 
 <main class="container">
     <div class="upload-container">

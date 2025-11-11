@@ -318,7 +318,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'customer-profile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer/profile"><span>View Profile</span></a>
+                           href="${pageContext.request.contextPath}/customer/profile?id=${account.username}"><span>View Profile</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}"
@@ -495,11 +495,7 @@
                                 class="bi bi-eye"></i> View
                             Received Assignments</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/profile"><span>My Profile</span>
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span>
@@ -516,6 +512,7 @@
                            href="${pageContext.request.contextPath}/technician_employee/view_product_requests"><span>View Product Requests</span>
                         </a>
                     </li>
+
                 </ul>
             </div>
         </div>
