@@ -1,4 +1,4 @@
-package crm.tech.controller;
+package crm.task.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.*;
