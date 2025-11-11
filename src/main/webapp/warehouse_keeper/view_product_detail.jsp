@@ -9,108 +9,442 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Link to your Global Stylesheet -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+
     <style>
-        .product-img {
-            max-height: 300px;
-            object-fit: contain;
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #10b981;
+            --info-color: #3b82f6;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
         }
 
-        .spec-table td, .spec-table th {
-            padding: 0.5rem;
+        .page-header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header-subtitle {
+            opacity: 0.9;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+
+        .product-id-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            border: none;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .product-image-section {
+            background: #f9fafb;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .product-img {
+            max-height: 350px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-img-placeholder {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            color: #9ca3af;
+        }
+
+        .product-img-placeholder i {
+            font-size: 5rem;
+        }
+
+        .product-info-section {
+            padding: 32px;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .product-description {
+            color: #6b7280;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .type-badge {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-action.btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        }
+
+        .btn-action.btn-info {
+            background: var(--info-color);
+        }
+
+        .btn-action.btn-secondary {
+            background: #6b7280;
+        }
+
+        .section-header {
+            background: linear-gradient(to right, #f9fafb, white);
+            padding: 20px 24px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .spec-table {
+            width: 100%;
+            margin: 0;
+        }
+
+        .spec-table thead {
+            background: #f9fafb;
+        }
+
+        .spec-table thead th {
+            padding: 16px 24px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .spec-table tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .spec-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .spec-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .spec-table td {
+            padding: 16px 24px;
+        }
+
+        .spec-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .spec-value {
+            color: #6b7280;
+        }
+
+        .empty-state {
+            padding: 48px 24px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .alert-custom {
+            background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+            border: none;
+            border-radius: 12px;
+            color: #4f46e5;
+            font-weight: 500;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-custom i {
+            font-size: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .main-content{
+            margin: 15px;
         }
     </style>
 </head>
-<jsp:include page="../components/header.jsp"/>
+<body>
 <jsp:include page="../components/sidebar.jsp"/>
-<body class="bg-light">
-<div class="container py-3">
-    <c:if test="${not empty errorMessage}">
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                ${errorMessage}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </c:if>
+<div class="main-content">
+    <jsp:include page="../components/header.jsp"/>
 
-    <!-- Product Detail Card -->
-    <div class="card shadow-sm mb-3">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h1 class="h5 mb-0">Product Details</h1>
-            <span class="badge bg-light text-primary">ID: ${product.productID}</span>
+    <div class="page-content">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="fas fa-box-open me-2"></i>Product Details</h1>
+                    <p class="page-header-subtitle mb-0">Complete information about this product</p>
+                </div>
+                <div class="product-id-badge">
+                    ID: ${product.productID}
+                </div>
+            </div>
         </div>
 
-        <div class="card-body">
-            <div class="row">
+        <c:if test="${not empty errorMessage}">
+            <div class="alert-custom">
+                <i class="fas fa-info-circle"></i>
+                <span>${errorMessage}</span>
+            </div>
+        </c:if>
+
+        <!-- Product Detail Card -->
+        <div class="detail-card">
+            <div class="row g-0">
                 <!-- Product Image -->
-                <div class="col-md-4 text-center mb-3">
-                    <c:choose>
-                        <c:when test="${not empty product.productImage}">
-                            <img src="${product.productImage}" alt="${product.productName}"
-                                 class="img-fluid product-img border rounded">
-                        </c:when>
-                        <c:otherwise>
-                            <div class="border rounded p-5 d-flex align-items-center justify-content-center bg-light"
-                                 style="height: 300px">
-                                <i class="fas fa-image fa-4x text-secondary"></i>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                <div class="col-lg-5">
+                    <div class="product-image-section">
+                        <c:choose>
+                            <c:when test="${not empty product.productImage}">
+                                <img src="${pageContext.request.contextPath}/assets/${product.productImage}"
+                                     alt="${product.productName}"
+                                     class="product-img">
+                            </c:when>
+                            <c:otherwise>
+                                <div class="product-img-placeholder">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
 
                 <!-- Product Information -->
-                <div class="col-md-8">
-                    <h2 class="h4 mb-3">${product.productName}</h2>
+                <div class="col-lg-7">
+                    <div class="product-info-section">
+                        <h2 class="product-title">${product.productName}</h2>
 
-                    <div class="mb-3">
-                        <h3 class="h6">Description:</h3>
-                        <p>${product.productDescription}</p>
-                    </div>
+                        <div class="mb-4">
+                            <span class="type-badge">${product.type.typeName}</span>
+                        </div>
 
-                    <!-- Quick Stats -->
-                    <div class="row g-2 mb-3">
-                        <div class="col-6 col-md-4">
-                            <div class="border rounded p-2 text-center">
-                                <div class="small text-muted">Product ID</div>
-                                <div class="fw-bold">${product.productID}</div>
+                        <div class="mb-4">
+                            <h5 class="fw-semibold mb-2">Description</h5>
+                            <p class="product-description">
+                                <c:choose>
+                                    <c:when test="${not empty product.productDescription}">
+                                        ${product.productDescription}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <em>No description available for this product.</em>
+                                    </c:otherwise>
+                                </c:choose>
+                            </p>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <span class="stat-label">Product ID</span>
+                                <div class="stat-value">${product.productID}</div>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Category</span>
+                                <div class="stat-value">${product.type.typeName}</div>
                             </div>
                         </div>
-                        <div class="col-6 col-md-4">
-                            <div class="border rounded p-2 text-center">
-                                <div class="small text-muted">Type</div>
-                                <div class="fw-bold">${product.type.typeName}</div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-2">
-                        <a href="${pageContext.request.contextPath}/warehouse/editProduct?productId=${product.productID}"
-                           class="btn btn-primary">
-                            <i class="fas fa-edit me-1"></i> Edit
-                        </a>
-                        <a href="${pageContext.request.contextPath}/warehouse/productInventory?productId=${product.productID}"
-                           class="btn btn-info">
-                            <i class="fas fa-boxes me-1"></i> View Inventory
-                        </a>
-                        <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
-                           class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-1"></i> Back
-                        </a>
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a href="${pageContext.request.contextPath}/warehouse/editProduct?productId=${product.productID}"
+                               class="btn btn-action btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit Product
+                            </a>
+                            <a href="${pageContext.request.contextPath}/warehouse/productInventory?productId=${product.productID}"
+                               class="btn btn-action btn-info">
+                                <i class="fas fa-boxes me-2"></i>View Inventory
+                            </a>
+                            <a href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
+                               class="btn btn-action btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Product Specifications -->
-    <div class="card shadow-sm mb-3">
-        <div class="card-header bg-light">
-            <h3 class="h6 mb-0"><i class="fas fa-list-ul me-1"></i> Product Specifications</h3>
-        </div>
-        <div class="card-body p-0">
+        <!-- Product Specifications -->
+        <div class="detail-card">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-list-ul"></i>
+                    Product Specifications
+                </h3>
+            </div>
             <c:choose>
                 <c:when test="${not empty product.productSpecifications}">
-                    <table class="table table-striped table-sm mb-0 spec-table">
+                    <table class="spec-table">
                         <thead>
                         <tr>
                             <th>Specification</th>
@@ -120,16 +454,17 @@
                         <tbody>
                         <c:forEach items="${product.productSpecifications}" var="spec">
                             <tr>
-                                <td>${spec.specification.specificationName}</td>
-                                <td>${spec.specification.specificationValue}</td>
+                                <td class="spec-name">${spec.specification.specificationName}</td>
+                                <td class="spec-value">${spec.specification.specificationValue}</td>
                             </tr>
                         </c:forEach>
                         </tbody>
                     </table>
                 </c:when>
                 <c:otherwise>
-                    <div class="p-3 text-center text-muted">
-                        <i class="fas fa-info-circle me-1"></i> No specifications available for this product.
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No specifications available for this product.</p>
                     </div>
                 </c:otherwise>
             </c:choose>
