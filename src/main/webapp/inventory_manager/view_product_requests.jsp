@@ -82,34 +82,34 @@
 
         <%-- Grid of Warehouse Requests --%>
         <div class="request-grid">
-            <c:forEach var="req" items="${warehouseRequests}">
+            <c:forEach var="req" items="${productRequests}">
                 <div class="card request-card">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <span>Request Date: ${req.date}</span>
+                        <span>Request Date: ${req.requestDate}</span>
                         <c:set var="statusClass" value="bg-secondary"/>
-                        <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass"
-                                                                                       value="bg-warning text-dark"/></c:if>
-                        <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass"
-                                                                                          value="bg-info text-dark"/></c:if>
-                        <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass"
-                                                                                        value="bg-success"/></c:if>
-                        <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass"
-                                                                                        value="bg-danger"/></c:if>
-                        <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
+                        <c:if test="${req.status == 'Pending'}"><c:set var="statusClass"
+                                                                       value="bg-warning text-dark"/></c:if>
+                        <c:if test="${req.status == 'Processing'}"><c:set var="statusClass"
+                                                                          value="bg-info text-dark"/></c:if>
+                        <c:if test="${req.status == 'Accepted'}"><c:set var="statusClass"
+                                                                        value="bg-success"/></c:if>
+                        <c:if test="${req.status == 'Rejected'}"><c:set var="statusClass"
+                                                                        value="bg-danger"/></c:if>
+                        <span class="badge ${statusClass} status-badge">${req.status}</span>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <small class="text-muted">From</small>
-                                    <p class="fw-bold mb-0">${req.sourceWarehouse != null ? req.sourceWarehouse.warehouseName : 'Not Assigned'}</p>
+                                    <p class="fw-bold mb-0">${req.warehouse != null ? req.warehouse.warehouseName : 'Not Assigned'}</p>
                                 </div>
                                 <div class="align-self-center px-2">
                                     <i class="fas fa-arrow-right text-primary"></i>
                                 </div>
                                 <div class="text-end">
                                     <small class="text-muted">To</small>
-                                    <p class="fw-bold mb-0">${req.destinationWarehouse.warehouseName}</p>
+                                    <p class="fw-bold mb-0">${req.task.assignTo.staffName}</p>
                                 </div>
                             </div>
                         </div>
@@ -124,14 +124,14 @@
                             </div>
                         </div>
 
-                        <c:if test="${not empty req.note}">
-                            <p class="card-text small fst-italic"><strong>Note:</strong> ${req.note}</p>
+                        <c:if test="${not empty req.description}">
+                            <p class="card-text small fst-italic"><strong>Note:</strong> ${req.description}</p>
                         </c:if>
 
                         <c:choose>
-                            <c:when test="${empty req.sourceWarehouse}">
+                            <c:when test="${empty req.warehouse}">
                                 <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal"
-                                        data-bs-target="#processRequestModal-${req.warehouseRequestID}">
+                                        data-bs-target="#processRequestModal-${req.productRequestID}">
                                     <i class="fas fa-cogs me-2"></i>Process Request
                                 </button>
                             </c:when>
@@ -145,12 +145,12 @@
                 </div>
 
                 <!-- Process Request Modal -->
-                <div class="modal fade" id="processRequestModal-${req.warehouseRequestID}" tabindex="-1"
-                     aria-labelledby="processModalLabel-${req.warehouseRequestID}" aria-hidden="true">
+                <div class="modal fade" id="processRequestModal-${req.productRequestID}" tabindex="-1"
+                     aria-labelledby="processModalLabel-${req.productRequestID}" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="processModalLabel-${req.warehouseRequestID}">
+                                <h5 class="modal-title" id="processModalLabel-${req.productRequestID}">
                                     Process Request for: ${req.product.productName}
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -174,17 +174,17 @@
                                     <tbody>
                                     <c:forEach var="stock" items="${inventorySummary}">
                                         <c:if test="${stock.product.productID == req.product.productID}">
-                                            <c:if test="${stock.warehouse.warehouseID != req.destinationWarehouse.warehouseID}">
+                                            <c:if test="${stock.warehouse.warehouseID != req.warehouse.warehouseID}">
                                                 <tr>
                                                     <td>${stock.warehouse.warehouseName}</td>
                                                     <td>${stock.warehouse.location}</td>
                                                     <td class="text-center">${stock.count}</td>
                                                     <td class="text-center">
-                                                        <form action="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"
+                                                        <form action="${pageContext.request.contextPath}/inventory_manager/view_product_requests"
                                                               method="post">
-                                                            <input type="hidden" name="warehouseRequestID"
-                                                                   value="${req.warehouseRequestID}">
-                                                            <input type="hidden" name="sourceWarehouseID"
+                                                            <input type="hidden" name="productRequestID"
+                                                                   value="${req.productRequestID}">
+                                                            <input type="hidden" name="warehouseID"
                                                                    value="${stock.warehouse.warehouseID}">
                                                             <button type="submit" class="btn btn-sm btn-success"
                                                                     <c:if test="${stock.count < req.quantity}">disabled</c:if>>
