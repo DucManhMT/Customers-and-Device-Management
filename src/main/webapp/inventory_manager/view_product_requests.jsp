@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>View Warehouse Requests</title>
@@ -19,8 +18,13 @@
             --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
+        body {
+            min-height: 100vh;
+        }
+
         .main-content {
             padding: 2rem;
+            margin-top: 60px;
         }
 
         .page-header {
@@ -223,25 +227,21 @@
             padding: 2rem;
         }
 
-        .serial-list {
-            max-height: 250px;
-            overflow-y: auto;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+        .stock-table {
+            border-radius: 12px;
+            overflow: hidden;
         }
 
-        .serial-list .list-group-item {
-            border: none;
-            border-bottom: 1px solid #e2e8f0;
+        .stock-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .stock-table tbody tr {
             transition: background-color 0.2s ease;
         }
 
-        .serial-list .list-group-item:hover {
+        .stock-table tbody tr:hover {
             background-color: #f8fafc;
-        }
-
-        .serial-list .list-group-item:last-child {
-            border-bottom: none;
         }
 
         .alert {
@@ -279,6 +279,7 @@
 
         @media (max-width: 768px) {
             .main-content {
+                margin-left: 0;
                 padding: 1rem;
             }
 
@@ -302,18 +303,11 @@
     <div class="container-fluid">
 
         <div class="page-header">
-            <h2><i class="fas fa-clipboard-list me-2"></i>Warehouse Transfer Requests</h2>
+            <h2><i class="fas fa-clipboard-list me-2"></i>Warehouse Product Requests</h2>
             <span class="stats-badge">
-                <i class="fas fa-box me-2"></i>${warehouseRequests.size()} Total Requests
+                <i class="fas fa-box me-2"></i>${productRequests.size()} Total Requests
             </span>
         </div>
-
-        <c:if test="${not empty sessionScope.successMessage}">
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle me-2"></i>${sessionScope.successMessage}
-            </div>
-            <c:remove var="successMessage" scope="session"/>
-        </c:if>
 
         <c:if test="${not empty sessionScope.errorMessage}">
             <div class="alert alert-danger">
@@ -322,49 +316,55 @@
             <c:remove var="errorMessage" scope="session"/>
         </c:if>
 
+        <c:if test="${not empty sessionScope.successMessage}">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>${sessionScope.successMessage}
+            </div>
+            <c:remove var="successMessage" scope="session"/>
+        </c:if>
+
         <c:choose>
-            <c:when test="${empty warehouseRequests}">
+            <c:when test="${empty productRequests}">
                 <div class="empty-state">
                     <i class="fas fa-inbox"></i>
-                    <h4>No Warehouse Requests</h4>
-                    <p class="text-muted">There are currently no warehouse transfer requests to display.</p>
+                    <h4>No Product Requests</h4>
+                    <p class="text-muted">There are currently no warehouse product requests to display.</p>
                 </div>
             </c:when>
             <c:otherwise>
                 <div class="request-grid">
-                    <c:forEach var="req" items="${warehouseRequests}">
+                    <c:forEach var="req" items="${productRequests}">
                         <div class="card request-card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <span class="date-badge">
-                                    <i class="far fa-calendar-alt"></i>${req.date}
+                                    <i class="far fa-calendar-alt"></i>${req.requestDate}
                                 </span>
                                 <c:set var="statusClass" value="bg-secondary"/>
-                                <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass" value="bg-info"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Completed'}"><c:set var="statusClass" value="bg-success"/></c:if>
-                                <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
+                                <c:if test="${req.status == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
+                                <c:if test="${req.status == 'Processing'}"><c:set var="statusClass" value="bg-info"/></c:if>
+                                <c:if test="${req.status == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
+                                <c:if test="${req.status == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
+                                <span class="badge ${statusClass} status-badge">${req.status}</span>
                             </div>
                             <div class="card-body p-4">
                                 <div class="warehouse-flow">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <div class="warehouse-box ${req.sourceWarehouse != null ? 'filled' : ''}">
+                                        <div class="warehouse-box ${req.warehouse != null ? 'filled' : ''}">
                                             <i class="fas fa-warehouse fa-2x mb-2 text-primary"></i>
                                             <div class="small text-muted">Source</div>
-                                            <div class="fw-bold">${req.sourceWarehouse != null ? req.sourceWarehouse.warehouseName : 'Not Assigned'}</div>
+                                            <div class="fw-bold">${req.warehouse != null ? req.warehouse.warehouseName : 'Not Assigned'}</div>
                                         </div>
                                         <i class="fas fa-arrow-right flow-arrow"></i>
                                         <div class="warehouse-box filled">
-                                            <i class="fas fa-warehouse fa-2x mb-2 text-primary"></i>
-                                            <div class="small text-muted">Destination</div>
-                                            <div class="fw-bold">${req.destinationWarehouse.warehouseName}</div>
+                                            <i class="fas fa-user-tie fa-2x mb-2 text-primary"></i>
+                                            <div class="small text-muted">Recipient</div>
+                                            <div class="fw-bold">${req.task.assignTo.staffName}</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <h6 class="fw-bold mb-3 mt-4">
-                                    <i class="fas fa-box-open me-2 text-primary"></i>Transfer Product
+                                    <i class="fas fa-box-open me-2 text-primary"></i>Requested Product
                                 </h6>
                                 <div class="product-list">
                                     <div class="product-item">
@@ -380,92 +380,97 @@
                                     </div>
                                 </div>
 
-                                <c:if test="${not empty req.note}">
+                                <c:if test="${not empty req.description}">
                                     <div class="note-section">
                                         <i class="fas fa-sticky-note me-2"></i>
-                                        <strong>Note:</strong> ${req.note}
+                                        <strong>Note:</strong> ${req.description}
                                     </div>
                                 </c:if>
 
                                 <div class="mt-4">
                                     <c:choose>
-                                        <c:when test="${req.warehouseRequestStatus == 'Processing'}">
+                                        <c:when test="${empty req.warehouse}">
                                             <button type="button" class="btn btn-process w-100" data-bs-toggle="modal"
-                                                    data-bs-target="#processRequestModal-${req.warehouseRequestID}">
+                                                    data-bs-target="#processRequestModal-${req.productRequestID}">
                                                 <i class="fas fa-cogs me-2"></i>Process Request
                                             </button>
                                         </c:when>
-                                        <c:when test="${req.warehouseRequestStatus == 'Completed' || req.warehouseRequestStatus == 'Accepted'}">
+                                        <c:otherwise>
                                             <button type="button" class="btn btn-processed w-100" disabled>
-                                                <i class="fas fa-check-circle me-2"></i>${req.warehouseRequestStatus}
+                                                <i class="fas fa-check-circle me-2"></i>Request Processed
                                             </button>
-                                        </c:when>
+                                        </c:otherwise>
                                     </c:choose>
                                 </div>
                             </div>
                         </div>
 
-                        <c:if test="${req.warehouseRequestStatus == 'Processing'}">
-                            <div class="modal fade" id="processRequestModal-${req.warehouseRequestID}" tabindex="-1"
-                                 aria-labelledby="processRequestModalLabel-${req.warehouseRequestID}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <form method="post"
-                                              action="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="processRequestModalLabel-${req.warehouseRequestID}">
-                                                    <i class="fas fa-cogs me-2"></i>Process Warehouse Request
-                                                </h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <input type="hidden" name="warehouseRequestId" value="${req.warehouseRequestID}">
-                                                <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
-                                                    <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i>Select the serial numbers to import for this request</p>
-                                                </div>
-                                                <c:choose>
-                                                    <c:when test="${not empty req.productTransactions}">
-                                                        <div class="list-group serial-list mb-3">
-                                                            <c:forEach var="item" items="${req.productTransactions}">
-                                                                <label class="list-group-item">
-                                                                    <input class="form-check-input me-1" type="checkbox"
-                                                                           name="selectedItems"
-                                                                           value="${item.inventoryItem.itemId}">
-                                                                        ${item.inventoryItem.serialNumber}
-                                                                </label>
-                                                            </c:forEach>
-                                                        </div>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="empty-state">
-                                                            <i class="fas fa-box-open"></i>
-                                                            <h5>No Available Products</h5>
-                                                            <p class="text-muted">No products found in the source warehouse.</p>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <div class="mb-3">
-                                                    <label for="importNote-${req.warehouseRequestID}" class="form-label">
-                                                        <i class="fas fa-sticky-note me-2"></i>Note (Optional)
-                                                    </label>
-                                                    <textarea class="form-control" id="importNote-${req.warehouseRequestID}"
-                                                              name="note" rows="3"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    <i class="fas fa-times me-2"></i>Close
-                                                </button>
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-file-import me-2"></i>Import Selected
-                                                </button>
-                                            </div>
-                                        </form>
+                        <!-- Process Request Modal -->
+                        <div class="modal fade" id="processRequestModal-${req.productRequestID}" tabindex="-1"
+                             aria-labelledby="processModalLabel-${req.productRequestID}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="processModalLabel-${req.productRequestID}">
+                                            <i class="fas fa-box-open me-2"></i>Process Request: ${req.product.productName}
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
+                                            <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i>Select a source warehouse based on available stock</p>
+                                            <span class="quantity-badge">
+                                                <i class="fas fa-cubes me-1"></i>Required: ${req.quantity}
+                                            </span>
+                                        </div>
+                                        <table class="table table-hover stock-table">
+                                            <thead>
+                                            <tr>
+                                                <th><i class="fas fa-warehouse me-2"></i>Warehouse</th>
+                                                <th><i class="fas fa-map-marker-alt me-2"></i>Location</th>
+                                                <th class="text-center"><i class="fas fa-boxes me-2"></i>Available</th>
+                                                <th class="text-center"><i class="fas fa-hand-pointer me-2"></i>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="stock" items="${inventorySummary}">
+                                                <c:if test="${stock.product.productID == req.product.productID}">
+                                                    <c:if test="${stock.warehouse.warehouseID != req.warehouse.warehouseID}">
+                                                        <tr>
+                                                            <td class="fw-bold">${stock.warehouse.warehouseName}</td>
+                                                            <td>${stock.warehouse.location}</td>
+                                                            <td class="text-center">
+                                                                <span class="badge ${stock.count >= req.quantity ? 'bg-success' : 'bg-warning text-dark'}">
+                                                                        ${stock.count}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <form action="${pageContext.request.contextPath}/inventory_manager/view_product_requests"
+                                                                      method="post">
+                                                                    <input type="hidden" name="productRequestID" value="${req.productRequestID}">
+                                                                    <input type="hidden" name="warehouseID" value="${stock.warehouse.warehouseID}">
+                                                                    <button type="submit" class="btn btn-sm ${stock.count >= req.quantity ? 'btn-success' : 'btn-secondary'}"
+                                                                            <c:if test="${stock.count < req.quantity}">disabled</c:if>>
+                                                                        <i class="fas fa-check me-1"></i>Choose
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    </c:if>
+                                                </c:if>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-2"></i>Close
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        </c:if>
+                        </div>
                     </c:forEach>
                 </div>
             </c:otherwise>
@@ -474,22 +479,5 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const modalForms = document.querySelectorAll('.modal form');
-
-        modalForms.forEach(form => {
-            form.addEventListener('submit', function (event) {
-                const checkboxes = form.querySelectorAll('input[name="selectedItems"]');
-                const checkedCheckboxes = form.querySelectorAll('input[name="selectedItems"]:checked');
-
-                if (checkboxes.length !== checkedCheckboxes.length) {
-                    event.preventDefault();
-                    alert('Please select all items to proceed.');
-                }
-            });
-        });
-    });
-</script>
 </body>
 </html>

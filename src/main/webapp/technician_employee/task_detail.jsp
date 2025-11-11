@@ -14,7 +14,7 @@
 <body>
 
 <div class="container">
-    <jsp:include page="../components/header.jsp"/>
+    <jsp:include page="../components/header.jsp" />
     <jsp:include page="../components/sidebar.jsp"/>
     <div class="header">
         <h1><i class="fas fa-tasks"></i> Request Detail</h1>
@@ -29,35 +29,60 @@
     </c:if>
 
     <div class="content">
-        <c:if test="${not empty task}">
+        <c:if test="${not empty requestObj}">
             <div class="task-info-grid">
                 <div class="info-card">
                     <h3><i class="fas fa-info-circle"></i> Request Information</h3>
                     <div class="info-item">
                         <span class="info-label">Request ID:</span>
-                        <span class="info-value">#${task.requestID}</span>
+                        <span class="info-value">#${requestObj.requestID}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Status:</span>
+                        <span class="info-label">Request Status:</span>
                         <span class="info-value">
                                 <c:choose>
-                                    <c:when test="${task.requestStatus eq 'Approved'}">
+                                    <c:when test="${requestObj.requestStatus eq 'Approved'}">
                                         <span class="status-badge status-approved">Approved</span>
                                     </c:when>
-                                    <c:when test="${task.requestStatus eq 'Finished'}">
+                                    <c:when test="${requestObj.requestStatus eq 'Finished'}">
                                         <span class="status-badge status-finished">Finished</span>
                                     </c:when>
                                     <c:otherwise>
-                                        <span class="status-badge status-default">${task.requestStatus}</span>
+                                        <span class="status-badge status-default">${requestObj.requestStatus}</span>
                                     </c:otherwise>
                                 </c:choose>
                             </span>
                     </div>
+                    <c:if test="${not empty taskObj}">
+                        <div class="info-item">
+                            <span class="info-label">Task ID:</span>
+                            <span class="info-value">#${taskObj.taskID}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Task Status:</span>
+                            <span class="info-value">
+                                <c:choose>
+                                    <c:when test="${taskObj.status eq 'Processing'}">
+                                        <span class="status-badge status-approved">Processing</span>
+                                    </c:when>
+                                    <c:when test="${taskObj.status eq 'Finished'}">
+                                        <span class="status-badge status-finished">Finished</span>
+                                    </c:when>
+                                    <c:when test="${taskObj.status eq 'Pending'}">
+                                        <span class="status-badge status-default">Pending</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="status-badge status-default">${taskObj.status}</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </span>
+                        </div>
+                    </c:if>
                     <div class="info-item">
                         <span class="info-label">Start Date:</span>
                         <span class="info-value">
                                 <c:choose>
-                                    <c:when test="${not empty task.startDate}">${task.startDate}</c:when>
+                                    <c:when test="${not empty requestObj.startDate}">${requestObj.startDate}</c:when>
                                     <c:otherwise>Not set</c:otherwise>
                                 </c:choose>
                             </span>
@@ -66,7 +91,7 @@
                         <span class="info-label">Finished Date:</span>
                         <span class="info-value">
                                 <c:choose>
-                                    <c:when test="${not empty task.finishedDate}">${task.finishedDate}</c:when>
+                                    <c:when test="${not empty requestObj.finishedDate}">${requestObj.finishedDate}</c:when>
                                     <c:otherwise>Not finished</c:otherwise>
                                 </c:choose>
                             </span>
@@ -140,17 +165,17 @@
                 <h3><i class="fas fa-file-alt"></i> Task Description</h3>
                 <div class="description-text">
                     <c:choose>
-                        <c:when test="${not empty task.requestDescription}">${task.requestDescription}</c:when>
+                        <c:when test="${not empty requestObj.requestDescription}">${requestObj.requestDescription}</c:when>
                         <c:otherwise>No description provided</c:otherwise>
                     </c:choose>
                 </div>
             </div>
 
-            <c:if test="${not empty task.note}">
+            <c:if test="${not empty requestObj.note}">
                 <div class="description-section">
                     <h3><i class="fas fa-sticky-note"></i> Additional Notes</h3>
                     <div class="description-text">
-                            ${task.note}
+                            ${requestObj.note}
                     </div>
                 </div>
             </c:if>
@@ -169,18 +194,22 @@
 
             <div class="action-buttons">
                 <c:choose>
-                    <c:when test="${task.requestStatus eq 'Approved'}">
-                        <form method="POST" action="${pageContext.request.contextPath}/request/finish"
+                    <c:when test="${not empty taskObj and taskObj.status eq 'Processing'}">
+                        <form method="POST" action="${pageContext.request.contextPath}/technician_employee/task/updateStatus"
                               style="display: inline;"
-                              onsubmit="return confirm('Are you sure you want to mark this request as finished?')">
-                            <input type="hidden" name="requestId" value="${task.requestID}">
+                              onsubmit="return confirm('Are you sure you want to mark this task as finished?')">
+                            <input type="hidden" name="taskId" value="${taskObj.taskID}">
                             <input type="hidden" name="status" value="finished">
                             <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Mark as Finished
                             </button>
                         </form>
                     </c:when>
-                    <c:when test="${task.requestStatus eq 'Finished'}">
+                    <c:when test="${not empty taskObj and taskObj.status eq 'Finished'}">
                         <button class="btn btn-secondary" disabled><i class="fas fa-check-circle"></i> Task Completed
+                        </button>
+                    </c:when>
+                    <c:when test="${empty taskObj}">
+                        <button class="btn btn-secondary" disabled><i class="fas fa-info-circle"></i> No Task Assigned
                         </button>
                     </c:when>
                 </c:choose>
@@ -191,7 +220,7 @@
             </div>
 
         </c:if>
-        <c:if test="${empty task}">
+        <c:if test="${empty requestObj}">
             <div class="empty-state">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Task Not Found</h3>

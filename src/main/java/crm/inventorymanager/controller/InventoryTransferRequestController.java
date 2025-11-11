@@ -59,6 +59,10 @@ public class InventoryTransferRequestController extends HttpServlet {
                 // Handle error if IDs are not valid numbers
                 e.printStackTrace();
             }
+        } else {
+            req.getSession().setAttribute("errorMessage", "Invalid warehouse request or source warehouse ID.");
+            resp.sendRedirect(req.getContextPath()+ URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);
+            return;
         }
 
         resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);

@@ -7,6 +7,9 @@ import crm.common.model.Warehouse;
 import crm.common.model.enums.ProductRequestStatus;
 import crm.common.repository.Warehouse.ProductRequestDAO;
 import crm.common.repository.Warehouse.WarehouseDAO;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,14 +17,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS)
 public class WarehouseProductRequestController extends HttpServlet {
 
-    ProductRequestDAO productRequestDAO = new ProductRequestDAO();
-    WarehouseDAO warehouseDAO = new WarehouseDAO();
+    EntityManager em;
+    ProductRequestDAO productRequestDAO;
+    WarehouseDAO warehouseDAO;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        em = new EntityManager(DBcontext.getConnection());
+        productRequestDAO = new ProductRequestDAO();
+        warehouseDAO = new WarehouseDAO();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -52,8 +65,8 @@ public class WarehouseProductRequestController extends HttpServlet {
 
         Account account = (Account) req.getSession().getAttribute("account");
 
-        if(account == null){
-            req.setAttribute("errorMessage", "You haven't logged in yet");
+        if (account == null) {
+            req.getSession().setAttribute("errorMessage", "You haven't logged in yet");
             req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
             return;
         }
@@ -61,18 +74,17 @@ public class WarehouseProductRequestController extends HttpServlet {
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
         if (warehouse == null) {
-            req.setAttribute("errorMessage", "You must be assigned to a warehouse to view product requests.");
+            req.getSession().setAttribute("errorMessage", "You must be assigned to a warehouse to view product requests.");
             req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
             return;
         }
 
-        List<ProductRequest> productRequests = productRequestDAO.findAll();
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put("warehouse", warehouse.getWarehouseID());
 
-        productRequests = productRequests.stream()
-                .filter(pr -> pr.getWarehouse().getWarehouseID().equals(warehouse.getWarehouseID()))
-                .toList();
+        List<ProductRequest> productRequests = productRequestDAO.findWithCondition(conditions);
 
-        if(productRequests.isEmpty()){
+        if (productRequests.isEmpty()) {
             req.setAttribute("errorMessage", "No product requests found for your warehouse.");
             req.getRequestDispatcher("/warehouse_keeper/view_product_request.jsp").forward(req, resp);
             return;
@@ -106,14 +118,27 @@ public class WarehouseProductRequestController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productRequestIDStr = req.getParameter("productRequestID");
         String action = req.getParameter("action");
-        int productRequestID = Integer.parseInt(productRequestIDStr);
 
-        ProductRequest productRequest = productRequestDAO.findById(productRequestID);
+        try {
+            em.beginTransaction();
+            int productRequestID = Integer.parseInt(productRequestIDStr);
 
-        productRequest.setStatus(action.equals("accept") ? ProductRequestStatus.Approved : ProductRequestStatus.Rejected);
+            ProductRequest productRequest = productRequestDAO.findById(productRequestID);
 
-        productRequestDAO.merge(productRequest);
+            productRequest.setStatus(action.equals("accept") ? ProductRequestStatus.Accepted : ProductRequestStatus.Rejected);
 
-        resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS);
+            productRequestDAO.merge(productRequest);
+            em.commit();
+
+            req.getSession().setAttribute("successMessage", "Product request has been " + (action.equals("accept") ? "accepted." : "rejected."));
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS);
+        } catch (Exception e) {
+            em.rollback();
+            req.getSession().setAttribute("errorMessage", "An error occurred while processing the product request.");
+            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS);
+            return;
+        }
+
+
     }
 }

@@ -16,8 +16,7 @@
         }
         body{
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-            min-height: 100vh;
+           min-height: 100vh;
             padding: 40px 20px;
             position: relative;
             overflow-x: hidden;
@@ -448,7 +447,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp" />
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="feedback-edit-container">
     <div class="feedback-edit-card">
         <div class="card-header">

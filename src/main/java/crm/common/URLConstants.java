@@ -82,6 +82,8 @@ public class URLConstants {
     public static final String TECHEM_VIEW_ASSIGNED_TASK = "/technician_employee/task/viewAssignedTasks";
     public static final String CREATE_PRODUCT_REQUEST = "/technician_employee/employees/create_product_requests";
     public static final String TECHEM_VIEW_PROFILE = "/technician_employee/profile";
+    public static final String TECHEM_VIEW_PRODUCT_REQUESTS = "/technician_employee/view_product_requests";
+
     // - TASK
     public static final String TASK_PROCESS_ASSIGNMENT = "/technician_employee/task/processAssignment";
     public static final String TASK_ASSIGNMENT_DECISION = "/technician_employee/task/assignmentDecision";
@@ -106,6 +108,7 @@ public class URLConstants {
     // INVENTORY MANAGER
     public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
     public static final String INVENTORY_VIEW_TRANSFER_REQUESTS = "/inventory_manager/view_transfer_requests";
+    public static final String INVENTORY_VIEW_PRODUCT_REQUESTS = "/inventory_manager/view_product_requests";
 
     // OTHERs
     public static final String UNAUTHORIZED = "/unauthorized";

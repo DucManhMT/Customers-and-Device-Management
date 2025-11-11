@@ -30,8 +30,8 @@ public class ExportProductController extends HttpServlet {
         }
 
         ProductRequest productRequest = em.find(ProductRequest.class, Integer.parseInt(productRequestID));
-        Request request = productRequest.getRequest();
-        int requestID = request.getRequestID(); // adjust method name if your model uses different casing
+//        Request request = productRequest.getRequest();
+//        int requestID = request.getRequestID(); // adjust method name if your model uses different casing
 
         String[] itemIdsArray = req.getParameterValues("itemIds");
         List<String> itemIds = (itemIdsArray == null) ? List.of() : Arrays.stream(itemIdsArray).toList();
@@ -77,7 +77,7 @@ public class ExportProductController extends HttpServlet {
                 throw new RuntimeException(e);
             }
 
-            resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/export_product?productRequestID=" + productRequestID + "&requestID=" + requestID);
+            resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/export_product?productRequestID=" + productRequestID + "&requestID=" );
         }
     }
 }

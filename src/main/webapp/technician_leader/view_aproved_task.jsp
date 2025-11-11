@@ -1,786 +1,989 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Assign Tasks</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
-    <link href="${pageContext.request.contextPath}/assets/css/task-views.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Requests - Assign Tasks</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --primary-light: #818CF8;
+            --secondary: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --success: #10B981;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Container */
+        .approved-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0 0 0.25rem 0;
+        }
+
+        .header-text p {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .header-stats i {
+            font-size: 2rem;
+            opacity: 0.9;
+        }
+
+        .header-stats-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-stats-label {
+            font-size: 0.8125rem;
+            opacity: 0.9;
+        }
+
+        .header-stats-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9375rem;
+        }
+
+        .alert i {
+            font-size: 1.25rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: #065f46;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: #991b1b;
+        }
+
+        /* Filter Card */
+        .filter-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-900);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .table-controls label {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .table-controls select {
+            padding: 0.375rem 0.625rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--gray-50);
+        }
+
+        th {
+            padding: 0.875rem 1rem;
+            text-align: left;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.875rem;
+            color: var(--gray-900);
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        /* Request Info */
+        .request-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+        }
+
+        .request-title {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .request-note {
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+        }
+
+        .request-id {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            background: var(--gray-100);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-top: 0.25rem;
+        }
+
+        /* Customer Info */
+        .customer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .customer-contact {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+        }
+
+        .customer-contact i {
+            color: var(--primary);
+            width: 14px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-processing {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .badge-finished {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--gray-600);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-600);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+            color: var(--gray-400);
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+        }
+
+        .empty-state p {
+            font-size: 0.9375rem;
+            opacity: 0.7;
+        }
+
+        /* Pagination */
+        .table-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pagination-info {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            background: white;
+            color: var(--gray-700);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--gray-100);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .approved-container {
+                padding: 1rem 0.75rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .header-text h1 {
+                font-size: 1.5rem;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .table-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .pagination-controls {
+                justify-content: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-<c:set var="activePage" value="viewAprovedTask" scope="request"/>
+
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
-<div class="page-header">
-    <div>
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1 class="display-5 fw-bold mb-0">
-                    <i class="bi bi-list-check me-3"></i>View Request
-                </h1>
-            </div>
-            <div class="col-md-4 text-end">
-                <div class="d-flex align-items-center justify-content-end">
-                    <div class="me-3">
-                        <div class="text-white-50 small">Total Approved Requests</div>
-                        <div class="h4 mb-0 fw-bold" id="totalTasksCount">${totalCount}</div>
-                    </div>
-                    <i class="bi bi-clipboard-check display-4 opacity-50"></i>
+
+<div class="approved-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fas fa-clipboard-check"></i>
                 </div>
+                <div class="header-text">
+                    <h1>Approved Requests</h1>
+                    <p>View and assign approved service requests to technicians</p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <i class="fas fa-tasks"></i>
+                <div class="header-stats-text">
+                    <div class="header-stats-label">Total Requests</div>
+                    <div class="header-stats-value">
+                        <c:choose>
+                            <c:when test="${not empty totalCount}">${totalCount}</c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <c:if test="${not empty sessionScope.successMessage}">
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>${sessionScope.successMessage}</span>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+
+    <c:if test="${not empty sessionScope.warningMessage}">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>${sessionScope.warningMessage}</span>
+        </div>
+        <c:remove var="warningMessage" scope="session"/>
+    </c:if>
+
+    <c:if test="${not empty sessionScope.errorMessage}">
+        <div class="alert alert-danger">
+            <i class="fas fa-times-circle"></i>
+            <span>${sessionScope.errorMessage}</span>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
+
+    <!-- Filter Card -->
+    <div class="filter-card">
+        <div class="filter-header">
+            <i class="fas fa-filter"></i>
+            Filter Requests
+        </div>
+        <form method="POST" action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+              id="filterForm">
+            <input type="hidden" name="page" value="1">
+            <input type="hidden" name="pageSize" value="${pageSize}">
+
+            <div class="filter-grid">
+                <div class="form-group">
+                    <label class="form-label">Search by Phone</label>
+                    <input type="text" class="form-control" name="phoneFilter"
+                           value="${phoneFilter}" placeholder="Enter phone number..."
+                           inputmode="numeric">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" name="customerFilter"
+                           value="${customerFilter}" placeholder="Search customer...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" name="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="Approved" ${statusFilter == 'Approved' ? 'selected' : ''}>Approved</option>
+                        <option value="Processing" ${statusFilter == 'Processing' ? 'selected' : ''}>Processing</option>
+                        <option value="Finished" ${statusFilter == 'Finished' ? 'selected' : ''}>Finished</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">From Date</label>
+                    <input type="date" class="form-control" name="fromDate"
+                           value="${fromDate}" id="fromDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">To Date</label>
+                    <input type="date" class="form-control" name="toDate"
+                           value="${toDate}" id="toDate">
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Apply Filters
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Clear Filters
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+        <div class="table-header">
+            <div class="table-title">
+                <i class="fas fa-list"></i>
+                Request List
+                <span style="color: var(--gray-600); font-weight: 500;">
+                    (<c:choose>
+                    <c:when test="${not empty totalCount}">${totalCount}</c:when>
+                    <c:otherwise>0</c:otherwise>
+                </c:choose> requests)
+                </span>
+            </div>
+            <div class="table-controls">
+                <label>Show:</label>
+                <form method="POST"
+                      action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+                      style="display: inline;" id="pageSizeForm">
+                    <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="phoneFilter" value="${phoneFilter}">
+                    <input type="hidden" name="customerFilter" value="${customerFilter}">
+                    <input type="hidden" name="statusFilter" value="${statusFilter}">
+                    <input type="hidden" name="fromDate" value="${fromDate}">
+                    <input type="hidden" name="toDate" value="${toDate}">
+                    <select name="pageSize" onchange="this.form.submit()" class="form-control">
+                        <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
+                        <option value="8" ${pageSize == 8 ? 'selected' : ''}>8</option>
+                        <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                        <option value="15" ${pageSize == 15 ? 'selected' : ''}>15</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Request Details</th>
+                    <th>Customer Info</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:choose>
+                    <c:when test="${not empty approvedRequests}">
+                        <c:forEach var="reqObj" items="${approvedRequests}">
+                            <tr>
+                                <td>
+                                    <div class="request-info">
+                                        <div class="request-title">
+                                            <c:choose>
+                                                <c:when test="${not empty reqObj.requestDescription}">
+                                                    ${reqObj.requestDescription}
+                                                </c:when>
+                                                <c:otherwise>Service Request</c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                        <c:if test="${not empty reqObj.note}">
+                                            <div class="request-note">${reqObj.note}</div>
+                                        </c:if>
+                                        <span class="request-id">REQ-${reqObj.requestID}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="customer-info">
+                                        <div class="customer-name">
+                                            <c:choose>
+                                                <c:when test="${not empty reqObj.contract.customer.customerName}">
+                                                    ${reqObj.contract.customer.customerName}
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                        <c:if test="${not empty reqObj.contract.customer.phone}">
+                                            <div class="customer-contact">
+                                                <i class="fas fa-phone"></i>
+                                                    ${reqObj.contract.customer.phone}
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty reqObj.startDate}">
+                                            <i class="fas fa-calendar"
+                                               style="color: var(--gray-500); margin-right: 0.375rem;"></i>
+                                            ${reqObj.startDate}
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="color: var(--gray-500);">No date</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${reqObj.requestStatus == 'Approved'}">
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check-circle"></i> ${reqObj.requestStatus}
+                                                </span>
+                                        </c:when>
+                                        <c:when test="${reqObj.requestStatus == 'Processing'}">
+                                                <span class="badge badge-processing">
+                                                    <i class="fas fa-spinner"></i> ${reqObj.requestStatus}
+                                                </span>
+                                        </c:when>
+                                        <c:when test="${reqObj.requestStatus == 'Finished'}">
+                                                <span class="badge badge-finished">
+                                                    <i class="fas fa-check"></i> ${reqObj.requestStatus}
+                                                </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge">${reqObj.requestStatus}</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="${pageContext.request.contextPath}/technician_leader/requests/detail?requestId=${reqObj.requestID}"
+                                           class="btn btn-outline btn-sm">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <c:if test="${reqObj.requestStatus != 'Finished'}">
+                                            <form action="${pageContext.request.contextPath}/task/selectTechnician"
+                                                  method="POST" style="display: inline;">
+                                                <input type="hidden" name="selectedTasks" value="${reqObj.requestID}">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-user-plus"></i> Assign
+                                                </button>
+                                            </form>
+                                        </c:if>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <h3>No Approved Requests Found</h3>
+                                    <p>There are currently no approved requests matching your criteria.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-footer">
+            <div class="pagination-info">
+                Showing
+                <c:choose>
+                    <c:when test="${not empty totalCount and totalCount > 0}">
+                        ${startItem} - ${endItem} of ${totalCount}
+                    </c:when>
+                    <c:otherwise>0</c:otherwise>
+                </c:choose>
+                entries
+            </div>
+
+            <div class="pagination-controls">
+                <c:set var="currentPage" value="${currentPage != null ? currentPage : 1}"/>
+                <c:set var="totalPages" value="${totalPages != null ? totalPages : 1}"/>
+
+                <form method="POST"
+                      action="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
+                      style="display: inline;" id="paginationForm">
+                    <input type="hidden" name="page" id="pageInput" value="${currentPage}">
+                    <input type="hidden" name="phoneFilter" value="${phoneFilter}">
+                    <input type="hidden" name="customerFilter" value="${customerFilter}">
+                    <input type="hidden" name="statusFilter" value="${statusFilter}">
+                    <input type="hidden" name="fromDate" value="${fromDate}">
+                    <input type="hidden" name="toDate" value="${toDate}">
+                    <input type="hidden" name="pageSize" value="${pageSize}">
+                </form>
+
+                <c:choose>
+                    <c:when test="${currentPage == 1}">
+                        <button type="button" class="pagination-btn" disabled>
+                            <i class="fas fa-angles-left"></i>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="button" class="pagination-btn" onclick="goToPage(1)">
+                            <i class="fas fa-angles-left"></i>
+                        </button>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${currentPage == 1}">
+                        <button type="button" class="pagination-btn" disabled>
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="button" class="pagination-btn" onclick="goToPage(${currentPage - 1})">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                    </c:otherwise>
+                </c:choose>
+
+                <button class="pagination-btn active">
+                    Page ${currentPage} of ${totalPages}
+                </button>
+
+                <c:choose>
+                    <c:when test="${currentPage >= totalPages}">
+                        <button type="button" class="pagination-btn" disabled>
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="button" class="pagination-btn" onclick="goToPage(${currentPage + 1})">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${currentPage >= totalPages}">
+                        <button type="button" class="pagination-btn" disabled>
+                            <i class="fas fa-angles-right"></i>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="button" class="pagination-btn" onclick="goToPage(${totalPages})">
+                            <i class="fas fa-angles-right"></i>
+                        </button>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container-fluid">
+<script>
+    function goToPage(page) {
+        document.getElementById('pageInput').value = page;
+        document.getElementById('paginationForm').submit();
+    }
 
+    function clearFilters() {
+        const form = document.getElementById('filterForm');
+        form.querySelectorAll('input[type="text"], input[type="date"]').forEach(input => {
+            input.value = '';
+        });
+        form.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+        });
+        form.querySelector('input[name="page"]').value = 1;
+        form.submit();
+    }
 
-    <c:if test="${not empty sessionScope.successMessage}">
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i>${sessionScope.successMessage}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-        <c:remove var="successMessage" scope="session"/>
-    </c:if>
-    <c:if test="${not empty sessionScope.warningMessage}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i>${sessionScope.warningMessage}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-        <c:remove var="warningMessage" scope="session"/>
-    </c:if>
-    <c:if test="${not empty sessionScope.errorMessage}">
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-x-circle me-2"></i>${sessionScope.errorMessage}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-        <c:remove var="errorMessage" scope="session"/>
-    </c:if>
+    // Date validation
+    document.addEventListener('DOMContentLoaded', function () {
+        const fromDate = document.getElementById('fromDate');
+        const toDate = document.getElementById('toDate');
+        const today = new Date().toISOString().split('T')[0];
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card card-custom filter-card mb-4">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-funnel me-2"></i>Filter Requests
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="${pageContext.request.contextPath}/task/viewAprovedTask"
-                          id="filterForm">
-                        <input type="hidden" name="action" value="filter"/>
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Search by Phone</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        id="phoneFilter"
-                                        name="phoneFilter"
-                                        value="${phoneFilter}"
-                                        placeholder="Enter phone number..."
-                                        inputmode="numeric"
-                                        pattern="\\d*"
-                                        title="Only digits are allowed"
-                                />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">From Date</label>
-                                <input
-                                        type="date"
-                                        class="form-control"
-                                        id="fromDate"
-                                        name="fromDate"
-                                        value="${fromDate}"
-                                        title="Select start date for filtering requests"
-                                />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">To Date</label>
-                                <input
-                                        type="date"
-                                        class="form-control"
-                                        id="toDate"
-                                        name="toDate"
-                                        value="${toDate}"
-                                        title="Select end date for filtering requests"
-                                />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Customer Name</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        id="customerFilter"
-                                        name="customerFilter"
-                                        value="${customerFilter}"
-                                        placeholder="Search customer..."
-                                />
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-search"></i> Apply Filter
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
-                                        <i class="bi bi-arrow-clockwise"></i> Clear
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="hidden" name="page" value="1"/>
-                        <input type="hidden" name="pageSize" value="${pageSize}"/>
-                    </form>
-                </div>
-            </div>
+        fromDate.setAttribute('max', today);
+        toDate.setAttribute('max', today);
 
-            <div class="card">
-                <div
-                        class="card-header d-flex justify-content-between align-items-center"
-                >
-                    <h5 class="mb-0">
-                        <i class="bi bi-list-ul"></i> Request List (<span id="totalCount">${totalCount}</span> requests)
-                    </h5>
-                    <div class="d-flex align-items-center gap-2">
-                        <label class="form-label mb-0 me-2">Show:</label>
-                        <select
-                                class="form-select form-select-sm"
-                                id="pageSize"
-                                style="width: 80px"
-                        >
-                            <option value="5" ${pageSize == 5 ? 'selected' : ''}>5</option>
-                            <option value="8" ${pageSize == 8 ? 'selected' : ''}>8</option>
-                            <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
-                            <option value="15" ${pageSize == 15 ? 'selected' : ''}>15</option>
-                        </select>
-                        <span class="text-muted ms-2">per page</span>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>Request Details</th>
-                            <th>Customer Info</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-
-                        <tbody id="requestsTableBody">
-                        <c:choose>
-                            <c:when test="${not empty approvedRequests}">
-                                <c:forEach var="reqObj" items="${approvedRequests}">
-                                    <tr>
-                                        <td>
-                                            <div class="fw-bold text-primary mb-1">
-                                                <c:choose>
-                                                    <c:when test="${not empty reqObj.requestDescription}">
-                                                        ${reqObj.requestDescription}
-                                                    </c:when>
-                                                    <c:otherwise>Service Request</c:otherwise>
-                                                </c:choose>
-                                            </div>
-                                            <small class="text-muted">
-                                                <c:out value="${reqObj.note}" default=""/>
-                                            </small>
-                                            <div class="mt-1">
-                                                <small class="badge bg-light text-dark border">REQ-${reqObj.requestID}</small>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="fw-semibold">
-                                                <c:choose>
-                                                    <c:when test="${not empty reqObj.contract and not empty reqObj.contract.customer and not empty reqObj.contract.customer.customerName}">
-                                                        ${reqObj.contract.customer.customerName}
-                                                    </c:when>
-                                                    <c:otherwise></c:otherwise>
-                                                </c:choose>
-                                            </div>
-                                            <small class="text-muted">
-                                                <i class="bi bi-telephone me-1"></i>
-                                                <c:choose>
-                                                    <c:when test="${not empty reqObj.contract and not empty reqObj.contract.customer and not empty reqObj.contract.customer.phone}">
-                                                        ${reqObj.contract.customer.phone}
-                                                    </c:when>
-                                                    <c:otherwise></c:otherwise>
-                                                </c:choose>
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <small><i class="bi bi-calendar me-1"></i>
-                                                <c:choose>
-                                                    <c:when test="${not empty reqObj.startDate}">
-                                                        ${reqObj.startDate}
-                                                    </c:when>
-                                                    <c:otherwise></c:otherwise>
-                                                </c:choose>
-                                            </small>
-                                        </td>
-                                        <td>
-                                                <%-- ===== START: THAY ĐỔI THEO YÊU CẦU 1 ===== --%>
-                                            <c:set var="statusClass">
-                                                <c:choose>
-                                                    <c:when test="${reqObj.requestStatus == 'Approved'}">bg-success</c:when>
-                                                    <c:when test="${reqObj.requestStatus == 'Processing'}">bg-warning text-dark</c:when>
-                                                    <c:when test="${reqObj.requestStatus == 'Finished'}">bg-info text-dark</c:when>
-                                                    <c:otherwise>bg-secondary</c:otherwise>
-                                                </c:choose>
-                                            </c:set>
-                                            <span class="badge ${statusClass}">${reqObj.requestStatus}</span>
-                                                <%-- ===== END: THAY ĐỔI THEO YÊU CẦU 1 ===== --%>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-
-                                                <a href="${pageContext.request.contextPath}/technician_leader/requests/detail?requestId=${reqObj.requestID}"
-                                                   class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-eye"></i> View
-                                                </a>
-
-                                                    <%-- ===== START: THAY ĐỔI THEO YÊU CẦU 2 ===== --%>
-                                                <c:if test="${reqObj.requestStatus != 'Finished'}">
-                                                    <form
-                                                            action="${pageContext.request.contextPath}/task/selectTechnician"
-                                                            style="display:inline-block;">
-                                                        <input type="hidden" name="selectedTasks"
-                                                               value="${reqObj.requestID}"/>
-                                                        <button
-                                                                class="btn btn-success btn-sm ms-2"
-                                                                type="submit"
-                                                        >
-                                                            <i class="bi bi-person-plus me-2"></i>
-                                                            Assign
-                                                        </button>
-                                                    </form>
-                                                </c:if>
-                                                    <%-- ===== END: THAY ĐỔI THEO YÊU CẦU 2 ===== --%>
-
-                                            </div>
-
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">No approved requests found</td>
-                                </tr>
-                            </c:otherwise>
-                        </c:choose>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-muted">
-                            Showing <span id="showingStart">${startItem}</span> to
-                            <span id="showingEnd">${endItem}</span> of
-                            <span id="showingTotal">${totalCount}</span> entries
-                        </div>
-                        <nav aria-label="Request pagination">
-                            <ul class="pagination mb-0" id="pagination">
-                                <c:set var="prev" value="${currentPage > 1 ? currentPage - 1 : 1}"/>
-                                <c:set var="next" value="${currentPage < totalPages ? currentPage + 1 : totalPages}"/>
-                                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                    <a class="page-link pagination-link" href="#"
-                                       data-page="${prev}" ${currentPage == 1 ? 'data-disabled="true"' : ''}>
-                                        <i class="bi bi-chevron-left"></i> Previous
-                                    </a>
-                                </li>
-                                <c:set var="startPage" value="${currentPage - 3 > 0 ? currentPage - 3 : 1}"/>
-                                <c:set var="endPage"
-                                       value="${currentPage + 3 < totalPages ? currentPage + 3 : totalPages}"/>
-                                <c:forEach var="p" begin="${startPage}" end="${endPage}">
-                                    <li class="page-item ${p == currentPage ? 'active' : ''}">
-                                        <a class="page-link pagination-link" href="#"
-                                           data-page="${p}" ${p == currentPage ? 'data-current="true"' : ''}>${p}</a>
-                                    </li>
-                                </c:forEach>
-                                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                    <a class="page-link pagination-link" href="#"
-                                       data-page="${next}" ${currentPage == totalPages ? 'data-disabled="true"' : ''}>
-                                        Next <i class="bi bi-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-
-            <%--            <div class="card mt-3">--%>
-            <%--                <div class="card-body text-center">--%>
-            <%--                    <div class="d-flex gap-2 justify-content-center">--%>
-            <%--                        <button--%>
-            <%--                                class="btn btn-success btn-lg"--%>
-            <%--                                id="quickAssignBtn"--%>
-            <%--                                disabled--%>
-            <%--                        >--%>
-            <%--                            <i class="bi bi-person-plus me-2"></i>--%>
-            <%--                            Assign Selected Tasks--%>
-            <%--                            <span--%>
-            <%--                                    class="badge bg-light text-dark ms-2"--%>
-            <%--                                    id="quickAssignCount"--%>
-            <%--                            >0</span--%>
-            <%--                            >--%>
-            <%--                        </button>--%>
-            <%--                    </div>--%>
-            <%--                </div>--%>
-            <%--            </div>--%>
-        </div>
-
-        <div class="col-lg-4" style="display:none ">
-            <div class="floating-summary">
-                <div
-                        class="assignment-summary mb-4"
-                        id="assignmentSummary"
-                        style="display: none"
-                >
-                    <h5 class="fw-bold mb-3">
-                        <i class="bi bi-clipboard-check me-2"></i>Assignment Summary
-                    </h5>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="task-count-badge me-3" id="selectedCountBadge">
-                            0
-                        </div>
-                        <div>
-                            <div class="fw-semibold">Tasks Selected</div>
-                            <div class="small text-muted">Ready to assign</div>
-                        </div>
-                    </div>
-                    <div id="selectedTasksList" class="small mb-3"></div>
-                </div>
-
-                <div class="card card-custom">
-                    <div class="card-header bg-transparent border-0">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">
-                                <i class="bi bi-check-circle me-2"></i>Selected Tasks
-                            </h5>
-                            <span class="badge bg-primary fs-6" id="selectedCountBadge"
-                            >0 selected</span
-                            >
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="emptyState" class="text-center py-5">
-                            <div class="mb-3">
-                                <i class="bi bi-inbox display-1 text-muted"></i>
-                            </div>
-                            <h6 class="text-muted">No tasks selected</h6>
-                            <p class="text-muted small">
-                                Select tasks from the table above to view them here
-                            </p>
-                        </div>
-
-                        <div id="selectedTasksContainer" style="display: none">
-                            <div
-                                    class="d-flex justify-content-between align-items-center mb-3"
-                            >
-                                <h6 class="mb-0">
-                                    <i class="bi bi-list-check me-2"></i>Tasks Ready for
-                                    Assignment
-                                </h6>
-                                <button class="btn btn-outline-danger btn-sm" onclick="clearAllSelections()">
-                                    <i class="bi bi-trash"></i> Clear All
-                                </button>
-                            </div>
-
-                            <div id="selectedTasksDisplay"></div>
-
-                            <template id="selectedTaskTemplate">
-                                <div class="selected-task-item p-3 mb-2 rounded bg-light border d-flex justify-content-between align-items-start"
-                                     data-task-id="">
-                                    <div class="flex-grow-1">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <div class="fw-semibold text-primary selected-task-desc">Request
-                                                    description
-                                                </div>
-                                                <div class="small text-muted selected-task-note">Note</div>
-                                            </div>
-                                            <div class="text-end ms-3">
-                                                <div class="small text-muted">REQ-<span
-                                                        class="selected-task-id">0</span></div>
-                                                <div class="small text-muted selected-task-date">01/01/1970</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-2 small text-muted">
-                                            <i class="bi bi-person me-1"></i><span class="selected-task-customer">Customer Name</span>
-                                            &nbsp;•&nbsp;
-                                            <i class="bi bi-telephone me-1"></i><span class="selected-task-phone">0123456789</span>
-                                            &nbsp;•&nbsp;
-                                            <span class="badge bg-success selected-task-status">APPROVED</span>
-                                        </div>
-                                    </div>
-                                    <div class="ms-3 text-end">
-                                        <div class="d-flex flex-column gap-2">
-                                            <button class="btn btn-sm btn-outline-primary selected-task-view"
-                                                    type="button"><i class="bi bi-eye"></i> View
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-
-                            <div id="assignmentActions" class="mt-4" style="display: none">
-
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-success btn-lg" onclick="assignSelectedTasks()">
-                                        <i class="bi bi-person-plus me-2"></i>Assign to Technician
-                                    </button>
-                                    <button class="btn btn-outline-secondary" onclick="clearAllSelections()">
-                                        <i class="bi bi-arrow-clockwise me-2"></i>Reset Selection
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        const contextPath = '${pageContext.request.contextPath}';
-        document.getElementById('pageSize').addEventListener('change', function () {
-            const form = document.getElementById('filterForm');
-            const pageSizeInput = form.querySelector('input[name="pageSize"]');
-            const pageInput = form.querySelector('input[name="page"]');
-            pageSizeInput.value = this.value;
-            pageInput.value = 1;
-            form.submit();
+        fromDate.addEventListener('change', function () {
+            if (this.value) {
+                toDate.setAttribute('min', this.value);
+            }
         });
 
-        function clearFilters() {
-            document.getElementById('phoneFilter').value = '';
-            document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            document.getElementById('customerFilter').value = '';
-
-            const form = document.getElementById('filterForm');
-            form.querySelector('input[name="page"]').value = 1;
-            form.submit();
-
-        }
-
-        function goToPage(page) {
-            const form = document.getElementById('filterForm');
-            form.querySelector('input[name="page"]').value = page;
-            form.querySelector('input[name="action"]').value = 'filter';
-            form.submit();
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeTaskSelection();
-            initializeDateFilters();
-            initializePagination();
-            setupPhoneFilter();
+        toDate.addEventListener('change', function () {
+            if (this.value) {
+                fromDate.setAttribute('max', this.value);
+            }
         });
 
-        function initializePagination() {
-            const paginationLinks = document.querySelectorAll('.pagination-link');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-
-                    if (this.hasAttribute('data-disabled') || this.hasAttribute('data-current')) {
-                        return false;
-                    }
-
-                    const page = this.getAttribute('data-page');
-                    if (page) {
-                        goToPage(page);
-                    }
-                });
-            });
-        }
-
-        function initializeDateFilters() {
-            const fromDate = document.getElementById('fromDate');
-            const toDate = document.getElementById('toDate');
-
-            const today = new Date().toISOString().split('T')[0];
-            fromDate.setAttribute('max', today);
-            toDate.setAttribute('max', today);
-
-            fromDate.addEventListener('change', function () {
-                validateDateRange();
-            });
-
-            toDate.addEventListener('change', function () {
-                validateDateRange();
-            });
-        }
-
-        function setupPhoneFilter() {
-            const phoneInput = document.getElementById('phoneFilter');
-            const form = document.getElementById('filterForm');
-            if (!phoneInput || !form) return;
-
-            // Ensure numeric input on mobile and hint to browsers
-            phoneInput.setAttribute('inputmode', 'numeric');
-            phoneInput.setAttribute('pattern', '\\d*');
-
-            // On input: remove any non-digit characters
-            phoneInput.addEventListener('input', function () {
-                const cursor = this.selectionStart;
+        // Phone filter - only digits
+        const phoneFilter = document.querySelector('input[name="phoneFilter"]');
+        if (phoneFilter) {
+            phoneFilter.addEventListener('input', function () {
                 this.value = this.value.replace(/\D/g, '');
-                try {
-                    this.setSelectionRange(cursor, cursor);
-                } catch (e) { /* ignore */
-                }
-            });
-
-            // On paste: filter pasted content to digits only
-            phoneInput.addEventListener('paste', function (e) {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-                this.value = text.replace(/\D/g, '');
-            });
-
-            // On form submit, validate phone contains digits only (if not empty)
-            form.addEventListener('submit', function (e) {
-                const val = phoneInput.value.trim();
-                if (val !== '' && !/^\d+$/.test(val)) {
-                    e.preventDefault();
-                    alert('Phone number must contain digits only.');
-                    phoneInput.focus();
-                    return false;
-                }
             });
         }
+    });
+</script>
 
-        function validateDateRange() {
-            const fromDate = document.getElementById('fromDate');
-            const toDate = document.getElementById('toDate');
-
-            if (fromDate.value && toDate.value) {
-                const from = new Date(fromDate.value);
-                const to = new Date(toDate.value);
-
-                if (from > to) {
-                    toDate.setCustomValidity('To Date must be after From Date');
-                    toDate.reportValidity();
-                    return false;
-                } else {
-                    toDate.setCustomValidity('');
-                }
-
-                toDate.setAttribute('min', fromDate.value);
-                fromDate.setAttribute('max', toDate.value);
-            } else {
-                toDate.setCustomValidity('');
-                const today = new Date().toISOString().split('T')[0];
-                fromDate.setAttribute('max', today);
-                toDate.removeAttribute('min');
-            }
-            return true;
-        }
-
-        let selectedTasks = new Set();
-
-        function initializeTaskSelection() {
-            const checkboxes = document.querySelectorAll('.request-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function (event) {
-                    const taskId = this.value;
-                    const row = this.closest('tr');
-
-                    if (this.checked) {
-                        selectedTasks.add(taskId);
-                        row.classList.add('table-success');
-                        addTaskToSelectedList(taskId, row);
-                    } else {
-                        selectedTasks.delete(taskId);
-                        row.classList.remove('table-success');
-                        removeTaskFromSelectedList(taskId);
-                    }
-
-                    updateSelectedCount();
-                    toggleSelectedTasksDisplay();
-                });
-            });
-
-            const quickAssignBtn = document.getElementById('quickAssignBtn');
-            if (quickAssignBtn) {
-                quickAssignBtn.addEventListener('click', function () {
-                    if (selectedTasks.size > 0) {
-                        assignSelectedTasks();
-                    }
-                });
-            }
-        }
-
-        function addTaskToSelectedList(taskId, row) {
-            const selectedTasksDisplay = document.getElementById('selectedTasksDisplay');
-            const template = document.getElementById('selectedTaskTemplate');
-            const clone = template.content.cloneNode(true);
-
-            const cells = row.querySelectorAll('td');
-            const requestDesc = cells[1].querySelector('.fw-bold') ? cells[1].querySelector('.fw-bold').textContent.trim() : '';
-            const note = cells[1].querySelector('.text-muted') ? cells[1].querySelector('.text-muted').textContent.trim() : '';
-            const customerName = cells[2].querySelector('.fw-semibold') ? cells[2].querySelector('.fw-semibold').textContent.trim() : '';
-            const phone = cells[2].querySelector('.text-muted') ? cells[2].querySelector('.text-muted').textContent.trim() : '';
-            const date = cells[3].querySelector('small') ? cells[3].querySelector('small').textContent.trim() : '';
-            const status = cells[4].querySelector('.badge') ? cells[4].querySelector('.badge').textContent.trim() : '';
-
-            const itemRoot = clone.querySelector('[data-task-id]');
-            if (itemRoot) itemRoot.setAttribute('data-task-id', taskId);
-            const idEl = clone.querySelector('.selected-task-id');
-            if (idEl) idEl.textContent = taskId;
-            const descEl = clone.querySelector('.selected-task-desc');
-            if (descEl) descEl.textContent = requestDesc || 'Service Request';
-            const noteEl = clone.querySelector('.selected-task-note');
-            if (noteEl) noteEl.textContent = note || '';
-            const custEl = clone.querySelector('.selected-task-customer');
-            if (custEl) custEl.textContent = customerName || '';
-            const phoneEl = clone.querySelector('.selected-task-phone');
-            if (phoneEl) phoneEl.textContent = phone || '';
-            const dateEl = clone.querySelector('.selected-task-date');
-            if (dateEl) dateEl.textContent = date || '';
-            const statusEl = clone.querySelector('.selected-task-status');
-            if (statusEl) statusEl.textContent = status || '';
-
-            const viewBtn = clone.querySelector('.selected-task-view');
-            if (viewBtn) {
-                viewBtn.addEventListener('click', function () {
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '${pageContext.request.contextPath}/task/detail';
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'id';
-                    input.value = taskId;
-                    form.appendChild(input);
-                    document.body.appendChild(form);
-                    form.submit();
-                });
-            }
-
-            const removeBtn = clone.querySelector('.selected-task-remove');
-            if (removeBtn) {
-                removeBtn.addEventListener('click', function () {
-                    removeTaskFromSelection(taskId);
-                });
-            }
-
-            selectedTasksDisplay.appendChild(clone);
-        }
-
-        function removeTaskFromSelectedList(taskId) {
-            const taskItem = document.querySelector(`[data-task-id="${taskId}"]`);
-            if (taskItem) {
-                taskItem.remove();
-            }
-        }
-
-        function removeTaskFromSelection(taskId) {
-            selectedTasks.delete(taskId);
-
-            const checkbox = document.querySelector(`input[value="${taskId}"]`);
-            if (checkbox) {
-                checkbox.checked = false;
-                checkbox.closest('tr').classList.remove('table-success');
-            }
-
-            removeTaskFromSelectedList(taskId);
-            updateSelectedCount();
-            updateSelectAllCheckbox();
-            toggleSelectedTasksDisplay();
-        }
-
-        function updateSelectedCount() {
-            const count = selectedTasks.size;
-
-            document.getElementById('selectedRequestsCount').textContent = count;
-            document.getElementById('quickAssignCount').textContent = count;
-
-            const selectedCountBadges = document.querySelectorAll('#selectedCountBadge');
-            selectedCountBadges.forEach(badge => {
-                badge.textContent = count + ' selected';
-            });
-
-            const quickAssignBtn = document.getElementById('quickAssignBtn');
-            if (quickAssignBtn) {
-                quickAssignBtn.disabled = count === 0;
-            }
-        }
-
-        function toggleSelectedTasksDisplay() {
-            const emptyState = document.getElementById('emptyState');
-            const selectedTasksContainer = document.getElementById('selectedTasksContainer');
-            const assignmentActions = document.getElementById('assignmentActions');
-
-            if (selectedTasks.size > 0) {
-                emptyState.style.display = 'none';
-                selectedTasksContainer.style.display = 'block';
-                if (assignmentActions) {
-                    assignmentActions.style.display = 'block';
-                }
-            } else {
-                emptyState.style.display = 'block';
-                selectedTasksContainer.style.display = 'none';
-                if (assignmentActions) {
-                    assignmentActions.style.display = 'none';
-                }
-            }
-        }
-
-        function clearAllSelections() {
-            selectedTasks.clear();
-
-            document.querySelectorAll('.request-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.closest('tr').classList.remove('table-success');
-            });
-
-            const selectedTasksDisplay = document.getElementById('selectedTasksDisplay');
-            selectedTasksDisplay.innerHTML = '';
-
-            updateSelectedCount();
-            toggleSelectedTasksDisplay();
-        }
-
-
-        function assignSelectedTasks() {
-            if (selectedTasks.size === 0) {
-                alert('Please select at least one task to assign.');
-                return;
-            }
-
-            const taskCount = selectedTasks.size;
-            if (confirm(`Are you sure you want to assign ${taskCount} task(s) to a technician?`)) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = contextPath + '/task/selectTechnician';
-
-                selectedTasks.forEach(taskId => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'selectedTasks';
-                    input.value = taskId;
-                    form.appendChild(input);
-                });
-
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-
-    </script>
 </body>
 </html>

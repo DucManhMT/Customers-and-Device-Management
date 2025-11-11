@@ -104,6 +104,13 @@ public class TransferRequestCreateController extends HttpServlet {
                 int productID = Integer.parseInt(productIdStr);
                 int quantity = Integer.parseInt(quantityStr);
 
+                if(quantity <= 0){
+                    req.setAttribute("errorMessage", "Quantities must be positive integers.");
+                    entityManager.rollback();
+                    doGet(req, resp);
+                    return;
+                }
+
                 Product product = productDAO.find(productID);
 
                 WarehouseRequest warehouseRequest = new WarehouseRequest();

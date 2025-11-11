@@ -13,6 +13,7 @@
 </head>
 <body class="bg-light">
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container py-5">
     <!-- Header with breadcrumb -->
     <div class="d-flex justify-content-between align-items-center mb-4">
