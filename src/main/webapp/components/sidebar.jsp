@@ -563,10 +563,6 @@
                            href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"><span>Product Requests</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'warehouse-profile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/warehouse_keeper/profile"><span>Profile</span></a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"><span>Warehouse Request</span></a>
                     </li>
