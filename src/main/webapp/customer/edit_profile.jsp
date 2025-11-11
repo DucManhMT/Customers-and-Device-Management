@@ -84,7 +84,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="account-container">
     <a href="${pageContext.request.contextPath}/customer/profile?id=${account.username}" class="btn btn-link mb-3">
         <i class="bi bi-arrow-left-circle me-2"></i> Back to Profile
