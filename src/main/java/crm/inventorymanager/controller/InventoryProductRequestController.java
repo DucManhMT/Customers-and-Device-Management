@@ -70,6 +70,7 @@ public class InventoryProductRequestController extends HttpServlet {
                 } else {
                     req.getSession().setAttribute("successMessage", "Warehouse assigned to product request successfully.");
                     resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_PRODUCT_REQUESTS);
+                    return;
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);

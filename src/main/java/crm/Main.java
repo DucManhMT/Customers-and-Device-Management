@@ -21,9 +21,10 @@ public class Main {
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
         Map<String, Object> conditions = new HashMap<>();
+        conditions.put("warehouse", 1);
         conditions.put("status", ProductRequestStatus.Pending.name());
 
-        List<ProductRequest> productRequests = em.findWithConditions(ProductRequest.class, conditions);
+        List<ProductRequest> productRequests = em.findWithConditions(ProductRequest.class,conditions);
 
         for(ProductRequest pr : productRequests) {
             System.out.println(pr);
