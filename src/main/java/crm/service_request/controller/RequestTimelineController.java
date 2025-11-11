@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "RequestTimelineController", urlPatterns = { URLConstants.CUSTOMER_REQUEST_TIMELINE })
+@WebServlet(name = "RequestTimelineController", urlPatterns = {URLConstants.CUSTOMER_REQUEST_TIMELINE})
 public class RequestTimelineController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,6 +35,7 @@ public class RequestTimelineController extends HttpServlet {
             if (!requestService.isRequestOwner(request, account.getUsername())) {
                 throw new IllegalArgumentException(MessageConst.MSG20);
             }
+ 
             req.setAttribute("request", request);
 
         } catch (NumberFormatException e) {
