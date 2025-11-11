@@ -414,9 +414,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask">View
-                            Aproved
-                            Request</span> </a>
+                           href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask">View Aproved Request</span> </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
@@ -464,8 +462,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-                   href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"> View
-                   <span> Received Assignments</span></a>
+                   href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
+                   <span>View Received Assignments</span></a>
             </li>
                 </ul>
             </div>
