@@ -420,9 +420,8 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask">View
-                            Aproved
-                            Request</span> </a>
+                           href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"><i
+                                class="bi bi-eye"></i> View Request List</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
@@ -446,8 +445,8 @@
             </div>
         </div>
 
-        <!-- Technical Employee Category -->
-          <div class="sidebar-category">
+        <!-- Technical Employee Category --> 
+        <div class="sidebar-category">
             <div class="category-header" onclick="toggleCategory('techem')">
                 <span><i class="fas fa-wrench category-icon"></i>Technical Employee</span>
                 <i class="fas fa-chevron-down toggle-icon"></i>
@@ -455,6 +454,11 @@
 
             <div class="category-items" id="category-techem">
                 <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><i class="bi bi-person-circle"></i>Action Center
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My Profile
@@ -468,7 +472,7 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><i
-                                class="bi bi-eye"></i> View Assigned Tasks</a>
+                                class="bi bi-eye"></i> My Tasks</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
