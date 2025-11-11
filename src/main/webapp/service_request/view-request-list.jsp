@@ -134,7 +134,7 @@
                             </td>
                             <td>
                                 <a href="../../staff/customer/detail?customerId=${request.contract.customer.customerID}"
-                                   class="text-decoration-none text-dark">
+                                   class="text-decoration-none ">
                                         ${request.contract.customer.customerName}
                                 </a>
                             </td>

@@ -75,6 +75,7 @@ public class URLConstants {
     public static final String TECHLEAD_TASK_LIST = "/technician_leader/tasks/list";
     public static final String TECHLEAD_FINISH_REQUEST = "/technician_leader/request/finish";
     public static final String TECHLEAD_REQUEST_DETAIL = "/technician_leader/requests/detail";
+    public static final String TECHLEAD_DASHBOARD = "/technician_leader/dashboard";
 
     // TECHNICAL EMPLOYEE
     public static final String TECHEM_ACTION_CENTER = "/technician_employee/techemployee_actioncenter";
@@ -151,7 +152,7 @@ public class URLConstants {
             List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
             List<String> urls = getAllUrls();
             for (Feature feature : features) {
-                if (urls!=null && !urls.contains(feature.getFeatureURL())) {
+                if (urls != null && !urls.contains(feature.getFeatureURL())) {
                     if (roleFeatures != null) {
                         for (RoleFeature rf : roleFeatures) {
                             if (rf.getFeature().getFeatureID().equals(feature.getFeatureID())) {
