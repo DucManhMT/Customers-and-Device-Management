@@ -30,7 +30,7 @@ public class ProductRequest {
     @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
 
-    @ManyToOne(joinColumn = "WarehouseID")
+    @ManyToOne(joinColumn = "WarehouseID", nullable = true)
     private LazyReference<Warehouse> warehouse;
 
     public Integer getProductRequestID() {
@@ -90,7 +90,7 @@ public class ProductRequest {
     }
 
     public Warehouse getWarehouse() {
-        return warehouse.get();
+        return (warehouse != null) ? warehouse.get() : null;
     }
 
     public void setWarehouse(Warehouse warehouse) {

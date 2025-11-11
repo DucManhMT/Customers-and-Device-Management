@@ -110,7 +110,7 @@ public class WarehouseProductRequestController extends HttpServlet {
 
         ProductRequest productRequest = productRequestDAO.findById(productRequestID);
 
-        productRequest.setStatus(action.equals("accept") ? ProductRequestStatus.Approved : ProductRequestStatus.Rejected);
+        productRequest.setStatus(action.equals("accept") ? ProductRequestStatus.Accepted : ProductRequestStatus.Rejected);
 
         productRequestDAO.merge(productRequest);
 

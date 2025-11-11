@@ -106,6 +106,7 @@ public class URLConstants {
     // INVENTORY MANAGER
     public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
     public static final String INVENTORY_VIEW_TRANSFER_REQUESTS = "/inventory_manager/view_transfer_requests";
+    public static final String INVENTORY_VIEW_PRODUCT_REQUESTS = "/inventory_manager/view_product_requests";
 
     // OTHERs
     public static final String UNAUTHORIZED = "/unauthorized";

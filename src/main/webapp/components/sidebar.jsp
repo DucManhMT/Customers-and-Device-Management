@@ -573,6 +573,10 @@
                         <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -592,10 +596,7 @@
 
         <!-- Footer with Logout -->
         <div class="sidebar-footer">
-            <a class="nav-link" href="${pageContext.request.contextPath}/auth/logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
+
         </div>
     </div>
 </div>
