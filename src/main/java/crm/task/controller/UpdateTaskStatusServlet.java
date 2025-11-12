@@ -61,17 +61,10 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 task.getAssignTo();
                 Request req = task.getRequest();
 
-                // Update task status to Finished
                 task.setStatus(TaskStatus.Finished);
                 task.setEndDate(LocalDateTime.now());
                 entityManager.merge(task, Task.class);
-
-                // Also update the Request status to Finished if not already
-                if (req != null && !RequestStatus.Finished.equals(req.getRequestStatus())) {
-                    req.setRequestStatus(RequestStatus.Finished);
-                    req.setFinishedDate(LocalDateTime.now());
-                    entityManager.merge(req, Request.class);
-                }
+                
 
                 connection.commit();
 
