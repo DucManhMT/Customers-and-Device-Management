@@ -523,10 +523,6 @@
                            href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><span>Product Warehouse</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'product-detail' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail"><span>Product Detail</span></a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><span>View Inventory</span></a>
                     </li>
@@ -557,6 +553,10 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"><span>Imported Products</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"><span>Exported Products</span></a>
                     </li>
                 </ul>
             </div>
