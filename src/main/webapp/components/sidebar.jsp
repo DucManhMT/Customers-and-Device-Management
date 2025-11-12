@@ -580,25 +580,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
               href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
             >
-              View
-              <span> Received Assignments</span></a
-            >
-          </li>
-
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-              ><span>View Assigned Tasks</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
-            >
-              View
-              <span> Received Assignments</span></a
+              View Received Assignments</a
             >
           </li>
           <li class="nav-item">
@@ -608,7 +590,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               ><span>View Product Requests</span>
             </a>
           </li>
-        </ul>
+        </ul>`
       </div>
     </div>
 
