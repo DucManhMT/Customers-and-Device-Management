@@ -15,4 +15,7 @@ public class MessageConst {
     public static final String MSG21 = "Both start time and end time are required!";
     public static final String MSG22 = "Start time cannot be after end time!";
     public static final String MSG23 = "Invalid date format!";
+
+    //Admin
+
 }

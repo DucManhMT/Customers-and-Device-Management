@@ -116,10 +116,10 @@
             </c:if> -->
 
             <div class="button-container">
-                <a href="../employees" class="btn back-button me-3">
+                <a href="${pageContext.request.contextPath}/technician_leader/employees" class="btn back-button me-3">
                     <i class="bi bi-arrow-left"></i> Back to Employee List
                 </a>
-                <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+                <a href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
                    class="btn home-button">
                     <span>Back to Action Center</span>
                 </a>

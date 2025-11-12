@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -23,10 +24,9 @@ import java.util.Map;
 @WebServlet(name = "CreateContract", value = URLConstants.CUSTOMER_SUPPORTER_CREATE_CONTRACT)
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,  // 1MB
-        maxFileSize = 1024 * 1024 * 50,   // 50MB
+        maxFileSize = 1024 * 1024 * 10,   // 10MB
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
-
 public class CreateContractServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,6 +37,12 @@ public class CreateContractServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Part filePart = request.getPart("contractImage");
+
+        if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty()) {
+            request.setAttribute("error", "Please select a PDF file to upload.");
+            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            return;
+        }
 
         String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
         String mimeType = getServletContext().getMimeType(fileName);
@@ -62,14 +68,13 @@ public class CreateContractServlet extends HttpServlet {
 
         Contract contract = new Contract();
         String customerUsername = request.getParameter("userName");
-        System.out.println(customerUsername);
         if(!Validator.isValidUsername(customerUsername)){
             request.setAttribute("error", "Customer username contains invalid characters.");
             request.setAttribute("userName", customerUsername);
             request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
             return;
         }
-        System.out.println("customerUsername: " + customerUsername);
+
         Customer customer = null;
         if (customerUsername != null && !customerUsername.isEmpty()) {
             Map<String, Object> cond = new HashMap<>();
@@ -85,6 +90,7 @@ public class CreateContractServlet extends HttpServlet {
             request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
             return;
         }
+
         int contractId = IDGeneratorService.generateID(Contract.class);
         contract.setContractID(contractId);
         contract.setContractImage(fileName);
@@ -118,8 +124,8 @@ public class CreateContractServlet extends HttpServlet {
         try {
             LocalDate expireDate = LocalDate.parse(expireDateStr);
 
-            if (expireDate.isBefore(LocalDate.now())) {
-                request.setAttribute("error", "Expire date must be after start date.");
+            if (expireDate.isBefore(startDate)) {
+                request.setAttribute("error", "Expire date must be the same or after start date.");
                 request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
                 return;
             }
@@ -132,19 +138,13 @@ public class CreateContractServlet extends HttpServlet {
         }
 
         contract.setCustomer(customer);
-//        System.out.println("contract.getContractID(): " + contract.getContractID());
-//        System.out.println("contract.getContractImage(): " + contract.getContractImage());
-//        System.out.println("contract.getStartDate(): " + contract.getStartDate());
-//        System.out.println("contract.getExpiredDate(): " + contract.getExpiredDate());
-//        System.out.println(contract.getCustomer().getCustomerID());
         em.persist(contract, Contract.class);
+
+        // build public URL to the uploaded PDF
         String pdfURL = request.getContextPath() + "/assets/" + fileName;
-        request.setAttribute("contractPDF", pdfURL);
-        // Gửi phản hồi hiển thị ảnh đã upload
-        response.setContentType("text/html;charset=UTF-8");
-        response.getWriter().println("<html><body style='font-family:Arial;text-align:center;'>");
-        response.getWriter().println("<h2>PDF Upload Successful!</h2>");
-        response.getWriter().println("<a href='create_contract.jsp'>← Back to Upload</a>");
-        response.getWriter().println("</body></html>");
+
+        // Redirect back to the create page with success flag and pdf URL (URL-encode)
+        String redirectUrl = request.getContextPath() + "/customer_supporter/create_contract?success=1&contractPDF=" + URLEncoder.encode(pdfURL, "UTF-8");
+        response.sendRedirect(redirectUrl);
     }
 }

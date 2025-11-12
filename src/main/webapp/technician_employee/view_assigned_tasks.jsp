@@ -753,9 +753,9 @@
                             <c:choose>
                                 <c:when test="${req.requestStatus == 'Processing'}">
                                     <form method="GET"
-                                          action="${pageContext.request.contextPath}/staff/employees/createProductRequests"
+                                          action="${pageContext.request.contextPath}/technician_employee/createProductRequests"
                                           style="display: inline; flex: 1;">
-                                        <input type="hidden" name="requestID" value="${req.requestID}">
+                                        <input type="hidden" name="taskID" value="${task.taskID}">
                                         <button type="submit" class="btn btn-outline">
                                             <i class="fas fa-plus"></i> Create Request
                                         </button>

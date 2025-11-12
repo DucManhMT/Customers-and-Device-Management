@@ -26,7 +26,6 @@ public class ExportProductService {
             em.beginTransaction();
             em.persist(whl, WarehouseLog.class);
             if (numberOfItems == productRequest.getQuantity()) {
-                productRequest.setStatus(ProductRequestStatus.Finished);
                 productRequest.setQuantity(0);
                 em.merge(productRequest, ProductRequest.class);
             } else if (productRequest.getQuantity() > numberOfItems) {
@@ -43,16 +42,19 @@ public class ExportProductService {
                         exportedItem.setProductWarehouse(item);
                         exportedItem.setWarehouseLog(whl);
                         item.setProductStatus(ProductStatus.Exported);
+                        // Update the item in the warehouse as exported
                         em.merge(item, ProductWarehouse.class);
+                        // Persist the exported item record
+                        em.persist(exportedItem, ProductExported.class);
                     }
-                } catch (NumberFormatException ignored) {
-                    // skip invalid id
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             em.commit();
         } catch (Exception e) {
             em.rollback();
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

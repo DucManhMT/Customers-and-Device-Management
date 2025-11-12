@@ -23,6 +23,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -70,7 +71,7 @@
                         <table class="table table-hover table-bordered align-middle">
                             <thead class="table-light">
                             <tr>
-                                <th style="width: 12%">Request ID</th>
+                                <th style="width: 12%">Task ID</th>
                                 <th style="width: 15%">Product</th>
                                 <th style="width: 8%">Quantity</th>
                                 <th style="width: 12%">Request Date</th>
@@ -90,7 +91,7 @@
                                 <c:otherwise>
                                     <c:set var="request" value="${productRequests}"/>
                                     <tr>
-                                        <td><strong>${request.request.requestID}</strong></td>
+                                        <td><strong>${request.task.taskID}</strong></td>
                                         <td>${request.product.productName}</td>
                                         <td class="text-center">
                                             <span class="badge bg-secondary"
@@ -104,9 +105,9 @@
                                                             <i class="bi bi-clock"></i> Pending
                                                         </span>
                                                 </c:when>
-                                                <c:when test="${request.status == ProductRequestStatus.Approved}">
+                                                <c:when test="${request.status == ProductRequestStatus.Accepted}">
                                                         <span class="badge bg-success">
-                                                            <i class="bi bi-check-circle"></i> Approved
+                                                            <i class="bi bi-check-circle"></i> Accepted
                                                         </span>
                                                 </c:when>
                                                 <c:when test="${request.status == ProductRequestStatus.Finished}">

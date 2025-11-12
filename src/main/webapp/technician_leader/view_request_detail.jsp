@@ -24,20 +24,24 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         margin: 0 auto;
         padding: 20px;
       }
+
       .header h1 {
         margin: 0;
         font-size: 28px;
       }
+
       .subtitle {
         color: #666;
         margin-top: 4px;
       }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 18px;
         margin-top: 20px;
       }
+
       .card {
         background: #fff;
         border: 1px solid #e3e3e3;
@@ -45,6 +49,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         padding: 18px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
       }
+
       .card h3 {
         margin-top: 0;
         font-size: 18px;
@@ -52,33 +57,40 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         align-items: center;
         gap: 8px;
       }
+
       .item {
         display: flex;
         justify-content: space-between;
         padding: 6px 0;
         border-bottom: 1px dashed #eee;
       }
+
       .item:last-child {
         border-bottom: none;
       }
+
       .label {
         font-weight: 600;
         color: #444;
       }
+
       .value {
         color: #222;
         text-align: right;
       }
+
       .muted {
         color: #999;
         font-style: italic;
       }
+
       .actions {
         margin-top: 20px;
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
       }
+
       .btn {
         padding: 10px 18px;
         border-radius: 6px;
@@ -90,23 +102,28 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         text-decoration: none;
         border: none;
       }
+
       .btn-success {
         background: #28a745;
         color: #fff;
       }
+
       .btn-secondary {
         background: #6c757d;
         color: #fff;
       }
+
       .btn-danger {
         background: #dc3545;
         color: #fff;
       }
+
       table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
       }
+
       th,
       td {
         border: 1px solid #e3e3e3;
@@ -114,9 +131,11 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         vertical-align: middle;
         text-align: left;
       }
+
       th {
         background: #f8f9fa;
       }
+
       .badge {
         display: inline-block;
         padding: 4px 10px;
@@ -124,18 +143,22 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         border-radius: 14px;
         font-weight: 600;
       }
+
       .status-Pending {
         background: #fff3cd;
         color: #856404;
       }
+
       .status-Processing {
         background: #cce5ff;
         color: #004085;
       }
+
       .status-Finished {
         background: #d4edda;
         color: #155724;
       }
+
       .status-Reject,
       .status-Rejected {
         background: #f8d7da;
@@ -145,16 +168,40 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
   <body>
     <div class="container">
-        <jsp:include page="../components/header.jsp" />
-        <jsp:include page="../components/sidebar.jsp"/>
+      <jsp:include page="../components/header.jsp" />
+      <jsp:include page="../components/sidebar.jsp" />
 
-        <div class="header">
+      <div class="header">
         <h1><i class="fas fa-clipboard-list"></i> Request Detail</h1>
         <p class="subtitle">Full information and related tasks</p>
       </div>
 
-      <!-- Alert Container -->
-      <div id="alert-container"></div>
+      <!-- Alert / Error Modal -->
+      <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+              <h5 class="modal-title" id="modalTitle">Error</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <c:if test="${not empty requestObj}">
         <div class="grid">
@@ -209,11 +256,29 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
             <h3><i class="fas fa-user"></i> Customer & Contract</h3>
             <div class="item">
               <span class="label">Customer Name:</span>
-              <span class="value">${customer.customerName}</span>
+              <span class="value">
+                <a
+                  href="${pageContext.request.contextPath}/staff/customer/detail?customerId=${customer.customerID}"
+                  >${customer.customerName}</a
+                ></span
+              >
+            </div>
+            <div class="item">
+              <span class="label">Phone:</span>
+              <span class="value">${customer.phone}</span>
+            </div>
+            <div class="item">
+              <span class="label">Email:</span>
+              <span class="value">${customer.email}</span>
             </div>
             <div class="item">
               <span class="label">Contract ID:</span>
-              <span class="value">#${contract.contractID}</span>
+              <span class="value"
+                ><a
+                  href="${pageContext.request.contextPath}/contract/detail?contractId=${contract.contractID}"
+                  >#${contract.contractID}</a
+                ></span
+              >
             </div>
           </div>
         </div>
@@ -232,6 +297,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                     <th>Task ID</th>
                     <th>Assign To</th>
                     <th>Status</th>
+                    <th>Start Date</th>
                     <th>Deadline</th>
                     <th>Actions</th>
                   </tr>
@@ -255,6 +321,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                           >${t.status}</span
                         >
                       </td>
+                      <td>${t.startDate}</td>
                       <td>${t.deadline}</td>
                       <td>
                         <div class="task-actions">
@@ -271,7 +338,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                               class="btn btn-danger delete-btn"
                               data-task-id="${t.taskID}"
                             >
-                              <i class="fas fa-trash"></i> Delete
+                              <i class="fas fa-trash"></i> Deactive
                             </button>
                           </c:if>
                         </div>
@@ -284,7 +351,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           </c:choose>
         </div>
 
-        <!-- Back button -->
+        <!-- Back & Finish Request -->
         <div class="actions mt-3">
           <a
             href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
@@ -292,75 +359,79 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           >
             <i class="fas fa-arrow-left"></i> Back to Request List
           </a>
+          <c:if test='${requestObj.requestStatus != "Finished"}'>
+            <button
+              id="finishRequestBtn"
+              class="btn btn-success"
+              data-request-id="${requestObj.requestID}"
+            >
+              <i class="fas fa-check-circle"></i> Finish Request
+            </button>
+          </c:if>
         </div>
       </c:if>
-
-      <!-- Error Modal -->
-      <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-              <h5 class="modal-title">Error</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");
+        const finishBtn = document.getElementById("finishRequestBtn");
         const modalEl = document.getElementById("errorModal");
         const modalBody = document.getElementById("modalBody");
+        const modalTitle = document.getElementById("modalTitle");
         const errorModal = new bootstrap.Modal(modalEl);
 
+        async function handleFetch(url, payload, successMessage) {
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+              alert(successMessage);
+              window.location.reload();
+            } else {
+              modalTitle.textContent = "Error";
+              modalBody.textContent =
+                data.message || data.error || "Operation failed.";
+              errorModal.show();
+            }
+          } catch (err) {
+            modalTitle.textContent = "Error";
+            modalBody.textContent = "Server not responding.";
+            errorModal.show();
+          }
+        }
+
+        // Delete task
         deleteButtons.forEach((btn) => {
-          btn.addEventListener("click", async function () {
+          btn.addEventListener("click", function () {
             if (!confirm("Are you sure you want to delete this task?")) return;
             const taskId = this.dataset.taskId;
             const requestId = "${requestObj.requestID}";
-
-            try {
-              const response = await fetch(
-                "${pageContext.request.contextPath}/api/technician_leader/tasks/delete",
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ taskId, requestId }),
-                }
-              );
-              const data = await response.json();
-
-              if (response.ok && data.success) {
-                window.location.reload();
-              } else {
-                modalBody.textContent =
-                  data.message || data.error || "Delete failed.";
-                errorModal.show();
-              }
-            } catch (err) {
-              modalBody.textContent = "Server not responding.";
-              errorModal.show();
-            }
+            handleFetch(
+              "${pageContext.request.contextPath}/technician_leader/tasks/delete",
+              { taskId, requestId },
+              "Task deleted successfully."
+            );
           });
         });
+
+        // Finish request
+        if (finishBtn) {
+          finishBtn.addEventListener("click", function () {
+            if (!confirm("Mark this request as finished?")) return;
+            const requestId = this.dataset.requestId;
+            handleFetch(
+              "${pageContext.request.contextPath}/technician_leader/request/finish",
+              { requestId },
+              "Request marked as finished successfully."
+            );
+          });
+        }
       });
     </script>
   </body>

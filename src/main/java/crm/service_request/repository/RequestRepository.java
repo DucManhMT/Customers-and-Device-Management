@@ -11,6 +11,7 @@ import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
+import crm.contract.repository.ContractRepository;
 import crm.core.config.DBcontext;
 import crm.service_request.repository.persistence.AbstractRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;

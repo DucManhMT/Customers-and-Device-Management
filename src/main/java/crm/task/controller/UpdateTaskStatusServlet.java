@@ -83,18 +83,30 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
         } catch (NumberFormatException e) {
             if (connection != null) {
-                try { connection.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         } catch (Exception e) {
             if (connection != null) {
-                try { connection.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
         } finally {
             if (connection != null) {
-                try { connection.setAutoCommit(true); connection.close(); } catch (Exception ignore) {}
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (Exception ignore) {
+                }
             }
         }
     }

@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contract Detail</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -47,10 +48,12 @@
                     <div class="card-header">Customer Information</div>
                     <div class="card-body">
                         <div class="mb-2"><strong>Customer ID:</strong>
-                            <span><c:choose><c:when test='${not empty customer and not empty customer.customerID}'>#${customer.customerID}</c:when><c:otherwise>N/A</c:otherwise></c:choose></span>
+                            <span><c:choose><c:when
+                                    test='${not empty customer and not empty customer.customerID}'>#${customer.customerID}</c:when><c:otherwise>N/A</c:otherwise></c:choose></span>
                         </div>
                         <div class="mb-2"><strong>Customer Name:</strong>
-                            <span><c:choose><c:when test='${not empty customer and not empty customer.customerName}'>${customer.customerName}</c:when><c:otherwise>N/A</c:otherwise></c:choose></span>
+                            <span><c:choose><c:when
+                                    test='${not empty customer and not empty customer.customerName}'>${customer.customerName}</c:when><c:otherwise>N/A</c:otherwise></c:choose></span>
                         </div>
                     </div>
                 </div>
@@ -77,7 +80,8 @@
         </div>
 
         <!-- Modal (reused pattern from history page) -->
-    <div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
+        <div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">

@@ -46,6 +46,7 @@
 </head>
 <body class="bg-light">
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container py-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
@@ -78,7 +79,7 @@
 
                                             <c:choose>
                                                 <c:when test="${not empty item.account}">
-                                                    <a href="#">${item.account.username}</a>
+                                                    <span>${item.account.username}</span>
                                                 </c:when>
                                                 <c:otherwise>
                                                     System

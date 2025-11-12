@@ -17,7 +17,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container py-5">
 
     <div class="container py-5">
@@ -35,7 +35,8 @@
                         <div class="mb-4">
                             <h5 class="border-bottom pb-2 text-secondary">Request Information</h5>
                             <p><strong>Contract Code:</strong>
-                                <a href="#">
+                                <a href="../../contract/detail?contractId=${request.contract.contractID}"
+                                   class="text-decoration-none">
                                         ${request.contract.contractCode}
                                 </a>
                             </p>

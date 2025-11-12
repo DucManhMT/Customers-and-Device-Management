@@ -9,13 +9,15 @@ import java.util.List;
 
 public class ProductWarehouseDAO extends FuntionalityDAO<ProductWarehouse> {
 
+    EntityManager em;
+
     public ProductWarehouseDAO() {
         super(ProductWarehouse.class);
     }
 
     public List<ProductWarehouse> getAvailableProductsByWarehouse(int warehouseID) {
 
-        EntityManager em = new EntityManager(DBcontext.getConnection());
+        em = new EntityManager(DBcontext.getConnection());
 
         List<ProductWarehouse> productWarehouseList = em.findAll(ProductWarehouse.class);
 
@@ -26,5 +28,4 @@ public class ProductWarehouseDAO extends FuntionalityDAO<ProductWarehouse> {
 
         return productWarehouseList;
     }
-
 }

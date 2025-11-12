@@ -170,11 +170,10 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
   </head>
   <body>
     <div class="container">
-        <jsp:include page="../components/header.jsp" />
-        <jsp:include page="../components/sidebar.jsp"/>
-        <div class="header">
+      <jsp:include page="../components/header.jsp" />
+      <jsp:include page="../components/sidebar.jsp" />
+      <div class="header">
         <h1><i class="fas fa-tasks"></i> Task Detail</h1>
-        <p class="subtitle">Complete information for selected task</p>
       </div>
 
       <c:if test="${not empty errorMessage}">
@@ -203,7 +202,7 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <c:if test="${not empty task}">
         <div class="info-grid">
           <div class="card">
-            <h3><i class="fas fa-info-circle"></i> Core Information</h3>
+            <h3><i class="fas fa-info-circle"></i> Task Information</h3>
             <div class="item">
               <span class="label">Task ID:</span
               ><span class="value">#${task.taskID}</span>
@@ -307,7 +306,11 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
                 ><c:choose
                   ><c:when
                     test="${not empty requestObj and not empty requestObj.requestID}"
-                    >${requestObj.requestID}</c:when
+                  >
+                    <a
+                      href="${pageContext.request.contextPath}/technician_leader/requests/detail?requestId=${requestObj.requestID}"
+                      >#${requestObj.requestID}</a
+                    > </c:when
                   ><c:otherwise
                     ><span class="muted">N/A</span></c:otherwise
                   ></c:choose
@@ -320,7 +323,11 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
                 ><c:choose
                   ><c:when
                     test="${not empty customer and not empty customer.customerName}"
-                    >${customer.customerName}</c:when
+                  >
+                    <a
+                      href="${pageContext.request.contextPath}/staff/customer/detail?customerId=${customer.customerID}"
+                      >${customer.customerName}</a
+                    ></c:when
                   ><c:otherwise
                     ><span class="muted">N/A</span></c:otherwise
                   ></c:choose
