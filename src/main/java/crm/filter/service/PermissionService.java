@@ -27,6 +27,7 @@ public class PermissionService {
                 URLConstants.AUTH_CUSTOMER_REGISTER,
                 URLConstants.AUTH_STAFF_LOGIN,
                 URLConstants.AUTH_FORGOT_PASSWORD,
+                URLConstants.AUTH_CHANGE_PASSWORD,
                 URLConstants.AUTH_LOGOUT,
                 URLConstants.UNAUTHORIZED
         );
@@ -41,6 +42,9 @@ public class PermissionService {
     }
 
     public static boolean hasAccess(Role role, String uri){
+        if (role.getRoleName().equals("Admin")) {
+            return true; // Admin has access to all features
+        }
         List<Feature> features = roleFeatureMap.get(role);
         if (features != null) {
             for (Feature feature : features) {

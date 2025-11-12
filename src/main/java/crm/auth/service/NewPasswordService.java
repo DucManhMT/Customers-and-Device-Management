@@ -45,4 +45,19 @@ public class NewPasswordService {
         }
         return newPass.toString();
     }
+
+    public static boolean changePassword(String newPassword, Account account){
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        try{
+            em.beginTransaction();
+            account.setPasswordHash(newPassword);
+            em.merge(account, Account.class);
+            em.commit();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }

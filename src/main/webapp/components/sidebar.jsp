@@ -241,6 +241,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               ><span>Customer Register</span></a
             >
           </li>
+            <li class="nav-item" style=${sessionScope.account != null ? 'display:block;' : 'display:none;'}>
+                <a class="nav-link ${activePage == 'forgot-password' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/auth/change_password"
+                ><span>Change Password</span></a
+                >
+            </li>
           <li class="nav-item">
             <a
               class="nav-link ${activePage == 'forgot-password' ? 'active' : ''}"
