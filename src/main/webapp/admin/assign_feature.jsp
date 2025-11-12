@@ -568,14 +568,14 @@
                         <%-- Count non-Admin roles --%>
                         <c:set var="nonAdminOrCustomerRoleCount" value="0" />
                         <c:forEach var="role" items="${roles}">
-                            <c:if test="${role.roleName != 'Admin' || role.roleName !='Customer'}">
+                            <c:if test="${role.roleName != 'Admin'}">
                                 <c:set var="nonAdminRoleCount" value="${nonAdminRoleCount + 1}" />
                             </c:if>
                         </c:forEach>
 
                         <%-- Display only non-Admin roles --%>
                         <c:forEach var="role" items="${roles}" varStatus="roleStatus">
-                            <c:if test="${role.roleName != 'Admin'&& role.roleName !='Customer'}">
+                            <c:if test="${role.roleName != 'Admin'}">
                                 <th>
                                     <div>
                                         <span class="role-badge role-${role.roleName}">${role.roleName}</span>
@@ -618,7 +618,7 @@
 
                                         <%-- Loop through each role (skip Admin) --%>
                                     <c:forEach var="role" items="${roles}">
-                                        <c:if test="${role.roleName != 'Admin' && role.roleName !='Customer'}">
+                                        <c:if test="${role.roleName != 'Admin'}">
                                             <td class="text-center">
                                                     <%-- Check if this role has this feature --%>
                                                     <%-- roleFeatureMap is Map<Integer, List<Feature>> --%>
