@@ -186,7 +186,7 @@
 <!-- Count total products in warehouse (IN_STOCK or RESERVED) -->
 <c:set var="totalInWarehouse" value="0"/>
 <c:forEach items="${productWarehouses}" var="pw">
-    <c:if test="${pw.productStatus eq ProductStatus.In_Stock or pw.productStatus eq ProductStatus.Reserved}">
+    <c:if test="${pw.productStatus eq ProductStatus.In_Stock or pw.productStatus eq ProductStatus.Exported}">
         <c:set var="totalInWarehouse" value="${totalInWarehouse + 1}"/>
     </c:if>
 </c:forEach>
