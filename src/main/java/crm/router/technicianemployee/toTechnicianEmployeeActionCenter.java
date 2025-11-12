@@ -44,7 +44,6 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                 return;
             }
 
-            // Get current user's staff record
             List<Staff> allStaff = entityManager.findAll(Staff.class);
             Staff currentStaff = allStaff.stream()
                     .filter(s -> s.getAccount() != null && username.equals(s.getAccount().getUsername()))
@@ -64,7 +63,6 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                 return;
             }
 
-            // Get all tasks assigned to current technician
             List<Task> allTasks = entityManager.findAll(Task.class);
             List<Task> myTasks = allTasks.stream()
                     .filter(task -> task != null)
@@ -73,7 +71,6 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                     .filter(task -> task.getStatus() == TaskStatus.Processing || task.getStatus() == TaskStatus.Finished)
                     .collect(Collectors.toList());
 
-            // Calculate statistics
             int totalTasks = myTasks.size();
             int processingTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
@@ -82,7 +79,6 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                     .filter(task -> task.getStatus() == TaskStatus.Finished)
                     .count();
 
-            // Calculate near due and overdue tasks
             LocalDate today = LocalDate.now();
             int nearDueTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
@@ -100,14 +96,12 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                     .filter(task -> task.getDeadline().toLocalDate().isBefore(today))
                     .count();
 
-            // Today's tasks (tasks with deadline today)
             int todayTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
                     .filter(task -> task.getDeadline() != null)
                     .filter(task -> task.getDeadline().toLocalDate().equals(today))
                     .count();
 
-            // Get recent tasks (last 5 processing tasks sorted by start date)
             List<Task> recentTasks = myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
                     .sorted((t1, t2) -> {
@@ -116,12 +110,11 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                         if (dt1 == null && dt2 == null) return 0;
                         if (dt1 == null) return 1;
                         if (dt2 == null) return -1;
-                        return dt2.compareTo(dt1); // Descending order
+                        return dt2.compareTo(dt1); 
                     })
                     .limit(5)
                     .collect(Collectors.toList());
 
-            // Set attributes
             req.setAttribute("totalTasks", totalTasks);
             req.setAttribute("processingTasks", processingTasks);
             req.setAttribute("finishedTasks", finishedTasks);
@@ -143,14 +136,6 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
             req.setAttribute("todayTasks", 0);
             req.setAttribute("recentTasks", Collections.emptyList());
             req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        } 
     }
 }
