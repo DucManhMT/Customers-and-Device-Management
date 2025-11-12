@@ -23,6 +23,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">

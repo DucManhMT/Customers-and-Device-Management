@@ -96,7 +96,13 @@
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 2.5rem;
-            min-height: 450px;
+            overflow: hidden;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
         }
 
         .section-title {
@@ -130,10 +136,6 @@
             opacity: 0.5;
         }
 
-        .chart-canvas {
-            max-height: 400px;
-        }
-
         .dashboard-title {
             color: #2c3e50;
             font-weight: 600;
@@ -154,36 +156,12 @@
 <body>
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
-<!-- Calculate statistics from lists -->
-<jsp:useBean id="now" class="java.util.Date"/>
 
-<!-- Count products imported this month -->
-<c:set var="currentYear" value="${now.year + 1900}"/>
-<c:set var="currentMonth" value="${now.month}"/>
-<c:set var="importedThisMonth" value="0"/>
-<c:forEach items="${productsImported}" var="importLog">
-    <c:if test="${not empty importLog.importedDate}">
-        <jsp:useBean id="importDate" class="java.util.Date"/>
-        <c:set target="${importDate}" property="time" value="${importLog.importedDate.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()}"/>
-        <c:if test="${importDate.year + 1900 == currentYear and importDate.month == currentMonth}">
-            <c:set var="importedThisMonth" value="${importedThisMonth + 1}"/>
-        </c:if>
-    </c:if>
-</c:forEach>
+<!-- Simple count logic -->
+<c:set var="importedTotal" value="${fn:length(productsImported)}"/>
+<c:set var="exportedTotal" value="${fn:length(productExporteds)}"/>
 
-<!-- Count products exported this month -->
-<c:set var="exportedThisMonth" value="0"/>
-<c:forEach items="${productExporteds}" var="exportLog">
-    <c:if test="${not empty exportLog.warehouseLog and not empty exportLog.warehouseLog.logDate}">
-        <jsp:useBean id="exportDate" class="java.util.Date"/>
-        <c:set target="${exportDate}" property="time" value="${exportLog.warehouseLog.logDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()}"/>
-        <c:if test="${exportDate.year + 1900 == currentYear and exportDate.month == currentMonth}">
-            <c:set var="exportedThisMonth" value="${exportedThisMonth + 1}"/>
-        </c:if>
-    </c:if>
-</c:forEach>
-
-<!-- Count total products in warehouse (IN_STOCK or RESERVED) -->
+<!-- Count total products in warehouse -->
 <c:set var="totalInWarehouse" value="0"/>
 <c:forEach items="${productWarehouses}" var="pw">
     <c:if test="${pw.productStatus eq ProductStatus.In_Stock or pw.productStatus eq ProductStatus.Exported}">
@@ -228,9 +206,9 @@
                         <div>
                             <div class="stat-label">Products Imported</div>
                             <div class="stat-value">
-                                <fmt:formatNumber value="${importedThisMonth}" groupingUsed="true"/>
+                                <fmt:formatNumber value="${importedTotal}" groupingUsed="true"/>
                             </div>
-                            <small><i class="bi bi-calendar-week"></i> This Month</small>
+                            <small><i class="bi bi-calendar-week"></i> Total Records</small>
                         </div>
                         <div class="stat-icon">
                             <i class="bi bi-box-arrow-in-down"></i>
@@ -248,9 +226,9 @@
                         <div>
                             <div class="stat-label">Products Exported</div>
                             <div class="stat-value">
-                                <fmt:formatNumber value="${exportedThisMonth}" groupingUsed="true"/>
+                                <fmt:formatNumber value="${exportedTotal}" groupingUsed="true"/>
                             </div>
-                            <small><i class="bi bi-calendar-week"></i> This Month</small>
+                            <small><i class="bi bi-calendar-week"></i> Total Records</small>
                         </div>
                         <div class="stat-icon">
                             <i class="bi bi-box-arrow-up"></i>
@@ -343,40 +321,44 @@
 
     <!-- Charts Section -->
     <div class="row chart-row g-4">
-        <!-- Import/Export Activity Chart -->
-        <div class="col-lg-6">
+        <!-- Import Activity Chart -->
+        <div class="col-12 col-lg-6">
             <div class="chart-container">
                 <h3 class="section-title">
-                    <i class="bi bi-graph-up"></i> Import & Export Activity
+                    <i class="bi bi-box-arrow-in-down"></i> Import Activity
                 </h3>
                 <c:choose>
-                    <c:when test="${not empty productsImported or not empty productExporteds}">
-                        <canvas id="importExportChart" class="chart-canvas"></canvas>
+                    <c:when test="${not empty productsImported}">
+                        <div class="chart-wrapper">
+                            <canvas id="importChart"></canvas>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <div class="empty-state">
                             <i class="bi bi-bar-chart"></i>
-                            <p class="mb-0">No activity data available</p>
+                            <p class="mb-0">No import data available</p>
                         </div>
                     </c:otherwise>
                 </c:choose>
             </div>
         </div>
 
-        <!-- Warehouse Distribution Chart -->
-        <div class="col-lg-6">
+        <!-- Export Activity Chart -->
+        <div class="col-12 col-lg-6">
             <div class="chart-container">
                 <h3 class="section-title">
-                    <i class="bi bi-pie-chart"></i> Warehouse Distribution
+                    <i class="bi bi-box-arrow-up"></i> Export Activity
                 </h3>
                 <c:choose>
-                    <c:when test="${not empty productWarehouses}">
-                        <canvas id="warehouseDistributionChart" class="chart-canvas"></canvas>
+                    <c:when test="${not empty productExporteds}">
+                        <div class="chart-wrapper">
+                            <canvas id="exportChart"></canvas>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <div class="empty-state">
-                            <i class="bi bi-pie-chart"></i>
-                            <p class="mb-0">No warehouse data available</p>
+                            <i class="bi bi-bar-chart"></i>
+                            <p class="mb-0">No export data available</p>
                         </div>
                     </c:otherwise>
                 </c:choose>
@@ -389,231 +371,196 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Chart.js Global Configuration
     Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
     Chart.defaults.color = '#666';
 
-    // 1. Import/Export Activity Chart (Bar Chart)
-    <c:if test="${not empty productsImported or not empty productExporteds}">
-    const importExportCtx = document.getElementById('importExportChart').getContext('2d');
+    // 1. Import Chart
+    <c:if test="${not empty productsImported}">
+    {
+        const ctx = document.getElementById('importChart');
+        if (ctx) {
+            const dates = {};
 
-    // Prepare data for imports by date
-    const importDates = {};
-    <c:forEach items="${productsImported}" var="importLog">
-    <c:if test="${not empty importLog.importedDate}">
-    const importDateObj = new Date(${importLog.importedDate.year}, ${importLog.importedDate.monthValue - 1}, ${importLog.importedDate.dayOfMonth});
-    const importDateStr = importDateObj.toISOString().split('T')[0];
-    importDates[importDateStr] = (importDates[importDateStr] || 0) + 1;
-    </c:if>
-    </c:forEach>
-
-    // Prepare data for exports by date
-    const exportDates = {};
-    <c:forEach items="${productExporteds}" var="exportLog">
-    <c:if test="${not empty exportLog.warehouseLog and not empty exportLog.warehouseLog.logDate}">
-    const exportDateObj = new Date(${exportLog.warehouseLog.logDate.year}, ${exportLog.warehouseLog.logDate.monthValue - 1}, ${exportLog.warehouseLog.logDate.dayOfMonth});
-    const exportDateStr = exportDateObj.toISOString().split('T')[0];
-    exportDates[exportDateStr] = (exportDates[exportDateStr] || 0) + 1;
-    </c:if>
-    </c:forEach>
-
-    // Get all unique dates and sort them
-    const allDates = [...new Set([...Object.keys(importDates), ...Object.keys(exportDates)])].sort();
-    const importData = allDates.map(date => importDates[date] || 0);
-    const exportData = allDates.map(date => exportDates[date] || 0);
-
-    // Take last 10 dates if more than 10
-    const displayDates = allDates.slice(-10);
-    const displayImportData = displayDates.map(date => importDates[date] || 0);
-    const displayExportData = displayDates.map(date => exportDates[date] || 0);
-
-    new Chart(importExportCtx, {
-        type: 'bar',
-        data: {
-            labels: displayDates.map(date => {
-                const d = new Date(date);
-                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            }),
-            datasets: [{
-                label: 'Imports',
-                data: displayImportData,
-                backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                borderColor: 'rgba(102, 126, 234, 1)',
-                borderWidth: 2,
-                borderRadius: 5
-            }, {
-                label: 'Exports',
-                data: displayExportData,
-                backgroundColor: 'rgba(240, 147, 251, 0.8)',
-                borderColor: 'rgba(240, 147, 251, 1)',
-                borderWidth: 2,
-                borderRadius: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        padding: 15,
-                        font: {
-                            size: 13,
-                            weight: '600'
-                        }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12,
-                    titleFont: {
-                        size: 14,
-                        weight: 'bold'
-                    },
-                    bodyFont: {
-                        size: 13
-                    },
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.label + ': ' + context.parsed.y + ' items';
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        font: {
-                            size: 12
-                        }
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: {
-                            size: 12
-                        }
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
+            <c:forEach items="${productsImported}" var="item" varStatus="status">
+            <c:if test="${not empty item.importedDate}">
+            {
+                const dateKey = '${item.importedDate.year}-${item.importedDate.monthValue}-${item.importedDate.dayOfMonth}';
+                dates[dateKey] = (dates[dateKey] || 0) + 1;
             }
-        }
-    });
-    </c:if>
+            </c:if>
+            </c:forEach>
 
-    // 2. Warehouse Distribution Chart (Doughnut Chart)
-    <c:if test="${not empty productWarehouses}">
-    const warehouseDistCtx = document.getElementById('warehouseDistributionChart').getContext('2d');
+            const sortedDates = Object.keys(dates).sort();
+            const last10 = sortedDates.slice(-10);
 
-    // Count products by warehouse
-    const warehouseCounts = {};
-    const warehouseNames = {};
-    <c:forEach items="${productWarehouses}" var="pw">
-    <c:if test="${not empty pw.warehouse}">
-    const whId = ${pw.warehouse.warehouseID};
-    const whName = '${fn:escapeXml(pw.warehouse.warehouseName)}';
-    warehouseCounts[whId] = (warehouseCounts[whId] || 0) + 1;
-    warehouseNames[whId] = whName;
-    </c:if>
-    </c:forEach>
+            const labels = last10.map(d => {
+                const parts = d.split('-');
+                const date = new Date(parts[0], parts[1] - 1, parts[2]);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
 
-    const warehouseLabels = Object.values(warehouseNames);
-    const warehouseData = Object.values(warehouseCounts);
+            const data = last10.map(d => dates[d]);
 
-    new Chart(warehouseDistCtx, {
-        type: 'doughnut',
-        data: {
-            labels: warehouseLabels,
-            datasets: [{
-                data: warehouseData,
-                backgroundColor: [
-                    'rgba(102, 126, 234, 0.8)',
-                    'rgba(240, 147, 251, 0.8)',
-                    'rgba(79, 172, 254, 0.8)',
-                    'rgba(67, 233, 123, 0.8)',
-                    'rgba(250, 112, 154, 0.8)',
-                    'rgba(48, 207, 208, 0.8)'
-                ],
-                borderColor: [
-                    'rgba(102, 126, 234, 1)',
-                    'rgba(240, 147, 251, 1)',
-                    'rgba(79, 172, 254, 1)',
-                    'rgba(67, 233, 123, 1)',
-                    'rgba(250, 112, 154, 1)',
-                    'rgba(48, 207, 208, 1)'
-                ],
-                borderWidth: 3,
-                hoverOffset: 10
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'right',
-                    labels: {
-                        padding: 15,
-                        font: {
-                            size: 13,
-                            weight: '600'
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Products Imported',
+                        data: data,
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        generateLabels: function(chart) {
-                            const data = chart.data;
-                            if (data.labels.length && data.datasets.length) {
-                                return data.labels.map((label, i) => {
-                                    const value = data.datasets[0].data[i];
-                                    return {
-                                        text: label + ' (' + value + ')',
-                                        fillStyle: data.datasets[0].backgroundColor[i],
-                                        hidden: false,
-                                        index: i
-                                    };
-                                });
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Imported: ' + context.parsed.y + ' items';
+                                }
                             }
-                            return [];
                         }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12,
-                    titleFont: {
-                        size: 14,
-                        weight: 'bold'
                     },
-                    bodyFont: {
-                        size: 13
-                    },
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed || 0;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return label + ': ' + value + ' items (' + percentage + '%)';
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false
+                            }
                         }
+                    },
+                    layout: {
+                        padding: 10
                     }
                 }
-            }
+            });
         }
-    });
+    }
     </c:if>
 
-    // Auto-refresh every 5 minutes (300000 ms)
-    setTimeout(function() {
-        location.reload();
-    }, 300000);
+    // 2. Export Chart
+    <c:if test="${not empty productExporteds}">
+    {
+        const ctx = document.getElementById('exportChart');
+        if (ctx) {
+            const dates = {};
+
+            <c:forEach items="${productExporteds}" var="item" varStatus="status">
+            <c:if test="${not empty item.warehouseLog and not empty item.warehouseLog.logDate}">
+            {
+                const dateKey = '${item.warehouseLog.logDate.year}-${item.warehouseLog.logDate.monthValue}-${item.warehouseLog.logDate.dayOfMonth}';
+                dates[dateKey] = (dates[dateKey] || 0) + 1;
+            }
+            </c:if>
+            </c:forEach>
+
+            const sortedDates = Object.keys(dates).sort();
+            const last10 = sortedDates.slice(-10);
+
+            const labels = last10.map(d => {
+                const parts = d.split('-');
+                const date = new Date(parts[0], parts[1] - 1, parts[2]);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            const data = last10.map(d => dates[d]);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Products Exported',
+                        data: data,
+                        backgroundColor: 'rgba(240, 147, 251, 0.2)',
+                        borderColor: 'rgba(240, 147, 251, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgba(240, 147, 251, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Exported: ' + context.parsed.y + ' items';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: 10
+                    }
+                }
+            });
+        }
+    }
+    </c:if>
 </script>
 </body>
 </html>

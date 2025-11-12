@@ -612,6 +612,52 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </div>
     </div>
 
+            <div class="category-items" id="category-techem">
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"></i>Action Center
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile">My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/create_product_request"> Create export request </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"> My Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">View Received Assignments</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
+                            View Received Assignments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/view_product_requests"><span>View Product Requests</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+
     <!-- Warehouse Keeper Category -->
     <div class="sidebar-category">
       <div class="category-header" onclick="toggleCategory('warehouse')">
