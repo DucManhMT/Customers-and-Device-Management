@@ -7,7 +7,7 @@
 
 <body>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -116,10 +116,10 @@
             </c:if> -->
 
             <div class="button-container">
-                <a href="../employees" class="btn back-button me-3">
+                <a href="${pageContext.request.contextPath}/technician_leader/employees" class="btn back-button me-3">
                     <i class="bi bi-arrow-left"></i> Back to Employee List
                 </a>
-                <a href="${pageContext.request.contextPath}/technicianleader/technicianleader_actioncenter"
+                <a href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
                    class="btn home-button">
                     <span>Back to Action Center</span>
                 </a>

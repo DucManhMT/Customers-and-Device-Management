@@ -180,12 +180,14 @@ public class TaskService {
         }
         TaskStatus status = task.getStatus();
         boolean allowed = (status == TaskStatus.Pending || status == TaskStatus.Processing);
+
         if (!allowed) {
             return false;
         }
         try {
             TransactionManager.beginTransaction();
-            taskRepository.deleteById(taskId);
+            task.setStatus(TaskStatus.DeActived);
+            taskRepository.update(task);
             TransactionManager.commit();
             return true;
         } catch (SQLException e) {

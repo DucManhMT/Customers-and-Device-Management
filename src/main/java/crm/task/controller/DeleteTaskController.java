@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.URLConstants;
 import crm.task.service.TaskService;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -12,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(urlPatterns = "/api/technician_leader/tasks/delete", name = "DeleteTaskController")
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_DELETE_TASK, name = "DeleteTaskController")
 public class DeleteTaskController extends HttpServlet {
 
     private static final TaskService taskService = new TaskService();

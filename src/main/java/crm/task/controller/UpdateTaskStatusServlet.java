@@ -51,7 +51,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
             if (TaskStatus.Finished.equals(task.getStatus())) {
                 request.getSession().setAttribute("errorMessage", "Task is already finished");
-                response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
+                response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
                 return;
             }
 
@@ -76,25 +76,37 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 connection.commit();
 
                 request.getSession().setAttribute("successMessage", "Task #" + taskId + " has been marked as finished successfully!");
-                response.sendRedirect(request.getContextPath() + "/task/viewAssignedTasks");
+                response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
             }
 
         } catch (NumberFormatException e) {
             if (connection != null) {
-                try { connection.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         } catch (Exception e) {
             if (connection != null) {
-                try { connection.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+                try {
+                    connection.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
         } finally {
             if (connection != null) {
-                try { connection.setAutoCommit(true); connection.close(); } catch (Exception ignore) {}
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (Exception ignore) {
+                }
             }
         }
     }

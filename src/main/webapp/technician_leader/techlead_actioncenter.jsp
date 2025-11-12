@@ -13,8 +13,8 @@
           rel="stylesheet">
 </head>
 <body>
-<jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/techlead_sidebar.jsp"/>
+<jsp:include page="../components/header.jsp" />
+<jsp:include page="../components/sidebar.jsp"/>
 
 </body>
 </html>

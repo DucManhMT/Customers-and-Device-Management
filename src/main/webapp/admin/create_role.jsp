@@ -1,521 +1,201 @@
-<%-- Created by IntelliJ IDEA. User: FPT SHOP Date: 10/11/2025 Time: 2:34 PM To
-change this template use File | Settings | File Templates. --%>
-<%@ page
-        contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c"
-           uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Create Role</title>
-    <link
-            href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-            rel="stylesheet"
-    />
+
+    <!-- Bootstrap 5 + Icons -->
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* Keep UI consistent with Feature Management / Role pages */
+        body {
+            margin-left: 260px !important;
+            padding-top: 70px !important;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef4ff 100%);
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            color: #1e1e1e;
+        }
+
+        .container-fluid {
+            max-width: 1100px;
+            padding: 30px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 22px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.18);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -40%;
+            width: 180%;
+            height: 180%;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            opacity: .6;
+        }
+        @keyframes rotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+
+        .page-header h1 { margin:0; font-weight:700; }
+        .page-header p { margin:0; opacity:.95; }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 8px 24px rgba(35,44,78,0.06);
+        }
+
+        label.form-label { font-weight: 600; }
+
+        input.form-control {
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2b6cb0 0%, #6b46c1 100%);
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .btn-primary:hover { opacity: .95; }
+
+        .btn-outline-secondary {
+            border-radius: 10px;
+            color: #6c757d;
+            border-color: #6c757d;
+            background: #fff;
+        }
+        .btn-outline-secondary:hover { background: #6c757d; color: #fff; }
+
+        .btn-assign {
+            background: linear-gradient(135deg,#5b6ee1,#6b46c1);
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .btn-assign.disabled, .btn-assign[disabled] {
+            opacity: .5;
+            pointer-events: none;
+        }
+
+        .help-text { color: #6c757d; font-size: 0.9rem; }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        @media (max-width: 992px) {
+            body { margin-left: 0 !important; padding-top: 90px !important; }
+            .container-fluid { padding: 18px; }
+        }
+    </style>
 </head>
 <body>
+<c:set var="activePage" value="rolemanage" scope="request" />
 <jsp:include page="../components/header.jsp"/>
-<header class="bg-white shadow-sm border-bottom mb-4 p-3">
-    <h1 class="h3 mb-0 fw-bold text-dark">Role Management</h1>
-    <a href="${pageContext.request.contextPath}/admin/role_list"
-       class="btn-back d-inline-flex align-items-center mb-3">
-        <i class="bi bi-arrow-left me-2"></i>
-        Back to Roles
-    </a>
-</header>
-<c:if test="${not empty success}">
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-            ${success}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<jsp:include page="../components/sidebar.jsp"/>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="h4 mb-1">Create New Role</h1>
+                <p class="mb-0">Add a new role and then assign features to it using the Assign Features flow.</p>
+            </div>
+            <div>
+                <a href="${pageContext.request.contextPath}/admin/role_list" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Roles
+                </a>
+            </div>
+        </div>
     </div>
-</c:if>
-<div class="container-fluid px-4 py-4">
-    <div class="row g-4">
-        <!-- Create New Role Form -->
+
+    <c:if test="${not empty success}">
+        <div class="alert alert-success mt-3" role="alert">${success}</div>
+    </c:if>
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger mt-3" role="alert">${error}</div>
+    </c:if>
+
+    <div class="row">
         <div class="col-lg-8">
             <div class="form-card">
                 <div class="d-flex align-items-center mb-4">
-                    <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
-                        <i class="bi bi-plus-circle text-primary fs-5"></i>
+                    <div class="bg-white bg-opacity-10 rounded p-2 me-3">
+                        <i class="bi bi-plus-circle text-white fs-4"></i>
                     </div>
-                    <h2 class="h4 mb-0">Create New Role</h2>
+                    <h2 class="h5 mb-0">Role Details</h2>
                 </div>
-                <c:if test="${not empty error}">
-                    <div class="alert alert-danger">${error}</div>
-                </c:if>
-                <form
-                        id="roleForm"
-                        action="${pageContext.request.contextPath}/admin/role_list/create_role"
-                        method="post"
-                >
-                    <!-- Role Name -->
-                    <%--
-                    <div class="mb-4">
-                      --%> <%--
-                <label for="roleId" class="form-label fw-medium">Role ID</label
-                >--%> <%--
-                <input
-                  type="text"
-                  class="form-control form-control-lg"
-                  id="roleId"
-                  name="roleId"
-                  required--%
-                />
-                <%-- placeholder="Enter ID..." value="${roleId != null ? roleId
-                : ''}">--%> <%--
-              </div>
-              --%>
 
-                    <div class="mb-4">
-                        <label for="roleName" class="form-label fw-medium"
-                        >Role Name</label
-                        >
-                        <input
-                                type="text"
-                                class="form-control form-control-lg"
-                                id="roleName"
-                                name="roleName"
-                                required
-                                placeholder="Enter role name..."
-                                value="${roleName != null ? roleName : ''}"
-                        />
+                <form id="createRoleForm" action="${pageContext.request.contextPath}/admin/role_list/create_role" method="post">
+                    <div class="mb-3">
+                        <label for="roleName" class="form-label">Role Name</label>
+                        <input type="text" id="roleName" name="roleName" class="form-control" required
+                               placeholder="Enter role name" value="${roleName != null ? roleName : ''}">
+                        <div class="form-text help-text">Give the role a clear, descriptive name (e.g. "Support", "Warehouse").</div>
                     </div>
 
-                    <!-- Description -->
+                    <!-- DESCRIPTION & PERMISSION BLOCK REMOVED
+                         Replaced with Assign Features flow button (see below).
+                         The Assign Features button will be enabled only when the page has a roleID (i.e. after creation).
+                    -->
 
-                    <!-- Permissions -->
-                    <%--
-                    <div class="mb-4">
-                      --%> <%--
-                <label class="form-label fw-medium mb-3">Permissions</label>--%>
-                    <%--
-                    <div class="row g-3">
-                      --%> <%--
-                  <!-- User Management -->--%> <%--
-                  <div class="col-md-6">
-                    --%> <%--
-                    <div class="permission-group">
-                      --%> <%--
-                      <h5 class="h6 mb-3 d-flex align-items-center">
-                        --%> <%--
-                        <i class="bi bi-people text-muted me-2"></i>--%> <%--
-                        User Management--%> <%--
-                      </h5>
-                      --%> <%--
-                      <div class="d-flex flex-column gap-2">
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="users.view"
-                            id="users-view"
-                          />--%> <%--
-                          <label class="form-check-label" for="users-view"
-                            >View Users</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="users.create"
-                            id="users-create"
-                          />--%> <%--
-                          <label class="form-check-label" for="users-create"
-                            >Create Users</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="users.edit"
-                            id="users-edit"
-                          />--%> <%--
-                          <label class="form-check-label" for="users-edit"
-                            >Edit Users</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="users.delete"
-                            id="users-delete"
-                          />--%> <%--
-                          <label class="form-check-label" for="users-delete"
-                            >Delete Users</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                      </div>
-                      --%> <%--
-                    </div>
-                    --%> <%--
-                  </div>
-                  --%> <%--
-                  <!-- Content Management -->--%> <%--
-                  <div class="col-md-6">
-                    --%> <%--
-                    <div class="permission-group">
-                      --%> <%--
-                      <h5 class="h6 mb-3 d-flex align-items-center">
-                        --%> <%--
-                        <i class="bi bi-file-text text-muted me-2"></i>--%> <%--
-                        Content Management--%> <%--
-                      </h5>
-                      --%> <%--
-                      <div class="d-flex flex-column gap-2">
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="content.view"
-                            id="content-view"
-                          />--%> <%--
-                          <label class="form-check-label" for="content-view"
-                            >View Content</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="content.create"
-                            id="content-create"
-                          />--%> <%--
-                          <label class="form-check-label" for="content-create"
-                            >Create Content</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="content.edit"
-                            id="content-edit"
-                          />--%> <%--
-                          <label class="form-check-label" for="content-edit"
-                            >Edit Content</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="content.publish"
-                            id="content-publish"
-                          />--%> <%--
-                          <label class="form-check-label" for="content-publish"
-                            >Publish Content</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                      </div>
-                      --%> <%--
-                    </div>
-                    --%> <%--
-                  </div>
-                  --%> <%--
-                  <!-- System Settings -->--%> <%--
-                  <div class="col-md-6">
-                    --%> <%--
-                    <div class="permission-group">
-                      --%> <%--
-                      <h5 class="h6 mb-3 d-flex align-items-center">
-                        --%> <%-- <i class="bi bi-gear text-muted me-2"></i>--%>
-                    <%-- System Settings--%> <%--
-                      </h5>
-                      --%> <%--
-                      <div class="d-flex flex-column gap-2">
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="settings.view"
-                            id="settings-view"
-                          />--%> <%--
-                          <label class="form-check-label" for="settings-view"
-                            >View Settings</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="settings.edit"
-                            id="settings-edit"
-                          />--%> <%--
-                          <label class="form-check-label" for="settings-edit"
-                            >Edit Settings</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="backup.create"
-                            id="backup-create"
-                          />--%> <%--
-                          <label class="form-check-label" for="backup-create"
-                            >Create Backups</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                      </div>
-                      --%> <%--
-                    </div>
-                    --%> <%--
-                  </div>
-                  --%> <%--
-                  <!-- Reports & Analytics -->--%> <%--
-                  <div class="col-md-6">
-                    --%> <%--
-                    <div class="permission-group">
-                      --%> <%--
-                      <h5 class="h6 mb-3 d-flex align-items-center">
-                        --%> <%--
-                        <i class="bi bi-bar-chart text-muted me-2"></i>--%> <%--
-                        Reports & Analytics--%> <%--
-                      </h5>
-                      --%> <%--
-                      <div class="d-flex flex-column gap-2">
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="reports.view"
-                            id="reports-view"
-                          />--%> <%--
-                          <label class="form-check-label" for="reports-view"
-                            >View Reports</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="reports.export"
-                            id="reports-export"
-                          />--%> <%--
-                          <label class="form-check-label" for="reports-export"
-                            >Export Reports</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                        <div class="form-check">
-                          --%> <%--
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="permissions"
-                            value="analytics.view"
-                            id="analytics-view"
-                          />--%> <%--
-                          <label class="form-check-label" for="analytics-view"
-                            >View Analytics</label
-                          >--%> <%--
-                        </div>
-                        --%> <%--
-                      </div>
-                      --%> <%--
-                    </div>
-                    --%> <%--
-                  </div>
-                  --%> <%--
-                </div>
-                --%> <%--
-              </div>
-              --%>
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <a href="${pageContext.request.contextPath}/admin/role_list" class="btn btn-outline-secondary">Cancel</a>
 
-                    <!-- Submit Buttons -->
-                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                        <a
-                                href="${pageContext.request.contextPath}/admin/role_list"
-                                class="btn btn-outline-secondary"
-                        >
-                            Cancel
-                        </a>
+                        <!-- Create Role submit -->
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>
-                            Create Role
+                            <i class="bi bi-plus-circle me-1"></i>Create Role
                         </button>
+
+
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Sidebar -->
-        <%--
+        <!-- Optional right column: quick info -->
         <div class="col-lg-4">
-          --%> <%--
-          <!-- Existing Roles -->--%> <%--
-          <div class="stats-card mb-4">
-            --%> <%--
-            <h3 class="h5 fw-semibold mb-3">Existing Roles</h3>
-            --%> <%--
-            <div id="rolesList">
-              --%> <%--
-              <!-- Sample existing roles -->--%> <%--
-              <div class="role-card">
-                --%> <%--
-                <div
-                  class="d-flex justify-content-between align-items-start mb-2"
-                >
-                  --%> <%--
-                  <h4 class="h6 mb-0 fw-medium">Super Admin</h4>
-                  --%> <%--
-                  <span class="badge bg-danger badge-custom">All Access</span
-                  >--%> <%--
-                </div>
-                --%> <%--
-                <p class="text-muted small mb-2">
-                  Full system access and control
-                </p>
-                --%> <%--
-                <div class="d-flex gap-2">
-                  --%> <%--
-                  <button class="btn btn-link btn-sm p-0 text-primary">
-                    Edit</button
-                  >--%> <%--
-                  <button class="btn btn-link btn-sm p-0 text-muted">
-                    View</button
-                  >--%> <%--
-                </div>
-                --%> <%--
-              </div>
-              --%> <%--
-              <div class="role-card">
-                --%> <%--
-                <div
-                  class="d-flex justify-content-between align-items-start mb-2"
-                >
-                  --%> <%--
-                  <h4 class="h6 mb-0 fw-medium">Editor</h4>
-                  --%> <%--
-                  <span class="badge bg-success badge-custom">Content</span>--%>
-        <%--
-      </div>
-      --%> <%--
-                <p class="text-muted small mb-2">Can create and edit content</p>
-                --%> <%--
-                <div class="d-flex gap-2">
-                  --%> <%--
-                  <button class="btn btn-link btn-sm p-0 text-primary">
-                    Edit</button
-                  >--%> <%--
-                  <button class="btn btn-link btn-sm p-0 text-muted">
-                    View</button
-                  >--%> <%--
-                </div>
-                --%> <%--
-              </div>
-              --%> <%--
-              <div class="role-card">
-                --%> <%--
-                <div
-                  class="d-flex justify-content-between align-items-start mb-2"
-                >
-                  --%> <%--
-                  <h4 class="h6 mb-0 fw-medium">Viewer</h4>
-                  --%> <%--
-                  <span class="badge bg-secondary badge-custom">Read Only</span
-                  >--%> <%--
-                </div>
-                --%> <%--
-                <p class="text-muted small mb-2">View-only access to content</p>
-                --%> <%--
-                <div class="d-flex gap-2">
-                  --%> <%--
-                  <button class="btn btn-link btn-sm p-0 text-primary">
-                    Edit</button
-                  >--%> <%--
-                  <button class="btn btn-link btn-sm p-0 text-muted">
-                    View</button
-                  >--%> <%--
-                </div>
-                --%> <%--
-              </div>
-              --%> <%--
+            <div class="card p-3 mb-3" style="border-radius:12px; box-shadow:0 8px 24px rgba(35,44,78,0.06);">
+                <h6 class="mb-2">Quick Tips</h6>
+                <ul class="list-unstyled small text-muted mb-0">
+                    <li class="mb-2"><i class="bi bi-check2 me-2 text-primary"></i>Use clear role names.</li>
+                    <li class="mb-2"><i class="bi bi-check2 me-2 text-primary"></i>Assign permissions carefully after creating the role.</li>
+                    <li><i class="bi bi-check2 me-2 text-primary"></i>Admins always retain full access.</li>
+                </ul>
             </div>
-            --%> <%--
-          </div>
-          --%> <%--
-          <!-- Quick Stats -->--%> <%--
-          <div class="stats-card">
-            --%> <%--
-            <h3 class="h5 fw-semibold mb-3">Quick Stats</h3>
-            --%> <%--
-            <div class="d-flex flex-column gap-2">
-              --%> <%--
-              <div class="d-flex justify-content-between">
-                --%> <%-- <span class="text-muted">Total Roles</span>--%> <%--
-                <span class="fw-medium" id="totalRoles">${roleCount}</span>--%>
-        <%--
-      </div>
-      --%> <%--
-              <div class="d-flex justify-content-between">
-                --%> <%-- <span class="text-muted">Active Users</span>--%> <%--
-                <span class="fw-medium">24</span>--%> <%--
-              </div>
-              --%> <%--
-              <div class="d-flex justify-content-between">
-                --%> <%-- <span class="text-muted">Permissions</span>--%> <%--
-                <span class="fw-medium">15</span>--%> <%--
-              </div>
-              --%> <%--
+
+            <div class="card p-3" style="border-radius:12px; box-shadow:0 8px 24px rgba(35,44,78,0.06);">
+                <h6 class="mb-2">Existing Roles</h6>
+                <div class="text-muted small">You can view and manage existing roles on the Roles list.</div>
+                <a href="${pageContext.request.contextPath}/admin/role_list" class="d-inline-block mt-3 btn btn-primary btn-sm">View Roles</a>
             </div>
-            --%> <%--
-          </div>
-          --%> <%--
         </div>
-        --%>
     </div>
 </div>
-</div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

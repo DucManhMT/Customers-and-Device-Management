@@ -19,9 +19,9 @@
           rel="stylesheet"/>
 </head>
 <body>
-<c:set var="activePage" value="requestList" scope="request" />
+<c:set var="activePage" value="requestList" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/supporter_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid">
     <div class="container-fluid">
         <h2 class="mt-1">Request List</h2>
@@ -59,8 +59,12 @@
                 <c:forEach items="${requests}" var="request" varStatus="status">
                     <tr>
                         <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                        <td><a href="#">${request.contract.contractCode}</a></td>
-                        <td><a href="#">${request.contract.customer.customerName}</a></td>
+                        <td>
+                            <a href="../../contract/detail?contractId=${request.contract.contractID}"
+                               class="text-decoration-none">${request.contract.contractCode}</a>
+                        </td>
+                        <td><a href="../../staff/customer/detail?customerId=${request.contract.customer.customerID}"
+                               class="text-decoration-none">${request.contract.customer.customerName}</a></td>
                         <td>${request.requestStatus}</td>
                         <td>${request.startDate}</td>
                         <td><c:out value="${empty request.finishedDate ? '-' : request.finishedDate}"/></td>

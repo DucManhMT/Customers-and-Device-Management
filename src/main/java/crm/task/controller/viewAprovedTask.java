@@ -26,11 +26,6 @@ public class viewAprovedTask extends HttpServlet {
     private final RequestService requestService = new RequestService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        processRequest(req, resp);
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
     }
@@ -38,6 +33,7 @@ public class viewAprovedTask extends HttpServlet {
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String phone = req.getParameter("phoneFilter");
         String customerName = req.getParameter("customerFilter");
+        String statusFilter = req.getParameter("statusFilter");
         String fromDateString = req.getParameter("fromDate");
         String toDateString = req.getParameter("toDate");
         String pageSizeParam = req.getParameter("pageSize");
@@ -51,7 +47,6 @@ public class viewAprovedTask extends HttpServlet {
             if (pageNumberParam != null && !pageNumberParam.isEmpty())
                 pageNumber = Integer.parseInt(pageNumberParam);
         } catch (NumberFormatException e) {
-            // Use default values if parsing fails
         }
 
         LocalDateTime fromDate = null;
@@ -78,8 +73,16 @@ public class viewAprovedTask extends HttpServlet {
                 }
             }
 
-            List<String> statuses = List.of(RequestStatus.Approved.toString(),
-                    RequestStatus.Processing.toString(), RequestStatus.Finished.toString());
+            // Determine statuses based on filter
+            List<String> statuses;
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                // Filter by specific status
+                statuses = List.of(statusFilter);
+            } else {
+                // Show all approved, processing, and finished requests
+                statuses = List.of(RequestStatus.Approved.toString(),
+                        RequestStatus.Processing.toString(), RequestStatus.Finished.toString());
+            }
 
             // Fetch approved requests with filters and pagination
             Page<Request> approvedRequests = requestService.getRequestWithCondition(
@@ -107,6 +110,7 @@ public class viewAprovedTask extends HttpServlet {
             // Giữ giá trị filter trong form
             req.setAttribute("phoneFilter", phone);
             req.setAttribute("customerFilter", customerName);
+            req.setAttribute("statusFilter", statusFilter);
             req.setAttribute("fromDate", fromDateString);
             req.setAttribute("toDate", toDateString);
 
@@ -121,4 +125,11 @@ public class viewAprovedTask extends HttpServlet {
             req.getRequestDispatcher("/technician_leader/view_aproved_task.jsp").forward(req, resp);
         }
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    
 }

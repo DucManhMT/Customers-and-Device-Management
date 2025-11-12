@@ -14,9 +14,8 @@
           rel="stylesheet"/>
 </head>
 <body>
-<c:set var="activePage" value="myRequest" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class=" container-fluid">
 
     <form action="">
@@ -58,7 +57,10 @@
             <c:forEach items="${requests}" var="request" varStatus="status">
                 <tr>
                     <td>${status.index + 1 +(currentPage-1)*recordsPerPage}</td>
-                    <td><a href="./list">${request.contract.contractCode}</a></td>
+                    <td>
+                        <a href="../contract/detail?contractId=${request.contract.contractID}"
+                           class="text-decoration-none">${request.contract.contractCode}</a>
+                    </td>
                     <td>${request.requestDescription}</td>
                     <td>${request.requestStatus}</td>
                     <td>${request.startDate}</td>

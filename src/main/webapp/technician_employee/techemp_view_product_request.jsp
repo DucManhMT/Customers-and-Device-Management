@@ -14,6 +14,7 @@
 </head>
 <body>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container my-5">
     <h1 class="mb-4">Sended Product Requests</h1>
 

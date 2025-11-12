@@ -9,7 +9,6 @@ import java.util.List;
 
 @Entity(tableName = "WarehouseRequest")
 public class WarehouseRequest {
-
     @Key
     @Column(name = "WarehouseRequestID", type = "INT")
     private Integer warehouseRequestID;
@@ -35,6 +34,9 @@ public class WarehouseRequest {
 
     @ManyToOne(joinColumn = "DestinationWarehouse")
     private LazyReference<Warehouse> destinationWarehouse;
+
+    @OneToMany(joinColumn = "WarehouseRequestID", mappedBy = "warehouseRequestID", targetEntity = ProductTransaction.class)
+    private List<ProductTransaction> productTransactions;
 
     public Integer getWarehouseRequestID() {
         return warehouseRequestID;
@@ -98,5 +100,13 @@ public class WarehouseRequest {
 
     public void setProduct(Product product) {
         this.product = new LazyReference<>(Product.class, product.getProductID());
+    }
+
+    public List<ProductTransaction> getProductTransactions() {
+        return productTransactions;
+    }
+
+    public void setProductTransactions(List<ProductTransaction> productTransactions) {
+        this.productTransactions = productTransactions;
     }
 }
