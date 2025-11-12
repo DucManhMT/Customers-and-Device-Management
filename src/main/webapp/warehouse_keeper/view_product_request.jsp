@@ -519,7 +519,7 @@
         <div class="page-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h1><i class="fas fa-inbox me-2"></i>Incoming Product Requests</h1>
+                    <h1><i class="fas fa-inbox me-2"></i>Product Requests</h1>
                     <p class="page-header-subtitle mb-0">Manage and process product requests from staff</p>
                 </div>
                 <div class="stats-badge">

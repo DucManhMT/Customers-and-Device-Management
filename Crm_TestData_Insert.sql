@@ -1163,59 +1163,6 @@
     (44, 'support1', 15),
     (45, 'staff9', 15);
 
-    INSERT INTO Feature (FeatureID, FeatureURL, Description) VALUES
--- ACCOUNT & ROLE MANAGEMENT
-(1, '/account/list', 'View account list'),
-(2, '/account/create', 'Create a new account'),
-(3, '/account/update', 'Update account information'),
-(4, '/account/delete', 'Delete an account'),
-(5, '/role/list', 'View role list'),
-(6, '/role/assign', 'Assign features to roles'),
-
--- CUSTOMER MANAGEMENT
-(7, '/customer/list', 'View customer list'),
-(8, '/customer/create', 'Add a new customer'),
-(9, '/customer/update', 'Update customer information'),
-(10, '/customer/delete', 'Delete a customer'),
-
--- PRODUCT MANAGEMENT
-(11, '/product/list', 'View product list'),
-(12, '/product/create', 'Add a new product'),
-(13, '/product/update', 'Update product information'),
-(14, '/product/delete', 'Delete a product'),
-
--- TYPE & SPECIFICATION
-(15, '/type/list', 'View product type list'),
-(16, '/specification/list', 'View product specifications'),
-
--- WAREHOUSE MANAGEMENT
-(17, '/warehouse/list', 'View warehouse list'),
-(18, '/warehouse/add', 'Add a new warehouse'),
-(19, '/warehouse/update', 'Update warehouse information'),
-(20, '/inventory/view', 'View inventory items'),
-(21, '/inventory/transfer', 'Transfer items between warehouses'),
-
--- REQUEST & CONTRACT
-(22, '/request/list', 'View request list'),
-(23, '/request/create', 'Create a new request'),
-(24, '/request/update', 'Update request status'),
-(25, '/contract/list', 'View contract list'),
-(26, '/contract/create', 'Create a new contract'),
-
--- FEEDBACK
-(27, '/feedback/list', 'View customer feedback list'),
-(28, '/feedback/respond', 'Respond to customer feedback'),
-(29, '/feedback/delete', 'Delete or hide customer feedback'),
-
--- PRODUCT REQUEST
-(30, '/productRequest/list', 'View product request list'),
-(31, '/productRequest/approve', 'Approve product request'),
-(32, '/productRequest/reject', 'Reject product request'),
-
--- SYSTEM MANAGEMENT
-(33, '/dashboard', 'View system dashboard'),
-(34, '/otp/manage', 'Manage user OTP codes');
-
     INSERT INTO Province (ProvinceID, ProvinceName) VALUES
                                                         (1, 'An Giang'),
                                                         (2, 'Bắc Ninh'),

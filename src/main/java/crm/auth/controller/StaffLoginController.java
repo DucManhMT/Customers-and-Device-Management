@@ -1,6 +1,7 @@
 package crm.auth.controller;
 
 import crm.auth.service.LoginService;
+import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.core.validator.Validator;
 import jakarta.servlet.ServletException;
@@ -45,7 +46,7 @@ public class StaffLoginController extends HttpServlet {
                         session.removeAttribute("error");
                         session.setAttribute("account", account);
                         session.setAttribute("role", account.getRole());
-                        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/warehousekeeper_actioncenter");
+                        resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_DASHBOARD);
                         return; // ✅ stop after redirect
                     case "Admin":
                         session.removeAttribute("error");

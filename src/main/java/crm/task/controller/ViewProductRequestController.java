@@ -34,7 +34,7 @@ public class ViewProductRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int pageSize = 10; // Default items per page
+        int pageSize = 6; // Default items per page
         int currentPage = 1; // Default page
 
         // Get pagination parameters from request

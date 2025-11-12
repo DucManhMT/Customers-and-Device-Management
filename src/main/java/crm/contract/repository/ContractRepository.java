@@ -1,10 +1,11 @@
-package crm.service_request.repository;
+package crm.contract.repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import crm.common.model.Contract;
 import crm.common.model.Customer;
+import crm.service_request.repository.CustomerRepository;
 import crm.service_request.repository.persistence.AbstractRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;

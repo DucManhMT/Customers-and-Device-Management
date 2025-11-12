@@ -8,6 +8,7 @@ import crm.common.model.enums.ProductStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.warehousekeeper.service.ExportProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,46 +39,9 @@ public class ExportProductController extends HttpServlet {
         int numberOfItems = itemIds.size();
 
         if (numberOfItems > 0 ) {
-            WarehouseLog whl = new WarehouseLog();
-            whl.setWarehouseLogID(IDGeneratorService.generateID(WarehouseLog.class));
-            whl.setLogDate(LocalDate.now());
-            whl.setWarehouse(productRequest.getWarehouse());
-            whl.setProductRequest(productRequest);
-            try {
-                em.beginTransaction();
-                em.persist(whl, WarehouseLog.class);
-                if (numberOfItems == productRequest.getQuantity()) {
-                    productRequest.setStatus(ProductRequestStatus.Finished);
-                    productRequest.setQuantity(0);
-                    em.merge(productRequest, ProductRequest.class);
-                } else if (productRequest.getQuantity() > numberOfItems) {
-                    productRequest.setQuantity(productRequest.getQuantity() - numberOfItems);
-                    em.merge(productRequest, ProductRequest.class);
-                }
-
-                for (String itemId : itemIds) {
-                    try {
-                        int id = Integer.parseInt(itemId);
-                        ProductWarehouse item = em.find(ProductWarehouse.class, id);
-                        if (item != null) {
-                            ProductExported exportedItem = new ProductExported();
-                            exportedItem.setProductWarehouse(item);
-                            exportedItem.setWarehouseLog(whl);
-                            item.setProductStatus(ProductStatus.Exported);
-                            em.merge(item, ProductWarehouse.class);
-                        }
-                    } catch (NumberFormatException ignored) {
-                        // skip invalid id
-                    }
-                }
-
-                em.commit();
-            } catch (Exception e) {
-                em.rollback();
-                throw new RuntimeException(e);
-            }
-
-            resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/export_product?productRequestID=" + productRequestID + "&requestID=" );
+            ExportProductService.exportProducts(productRequest, itemIds);
         }
+        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/export_product?productRequestID=" + productRequestID + "&requestID=" );
+
     }
 }
