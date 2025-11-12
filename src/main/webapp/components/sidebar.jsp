@@ -845,29 +845,29 @@
             </div>
         </div>
 
-        <!-- Inventory Manager Category -->
-        <div class="sidebar-category">
-            <div class="category-header" onclick="toggleCategory('inventory')">
-                <span><i class="fas fa-chart-line category-icon"></i>Inventory Manager</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <div class="category-items" id="category-inventory">
-                <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <!-- Inventory Manager Category -->
+  <div class="sidebar-category">
+    <div class="category-header" onclick="toggleCategory('inventory')">
+      <span><i class="fas fa-chart-line category-icon"></i>Inventory Manager</span>
+      <i class="fas fa-chevron-down toggle-icon"></i>
+    </div>
+    <div class="category-items" id="category-inventory">
+      <ul class="sidebar-nav">
+        <li class="nav-item">
+          <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
+             href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
+             href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
+             href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
+        </li>
+      </ul>
+    </div>
+  </div>
 
         <%--
         <!-- Task Management Category -->--%> <%--
