@@ -187,11 +187,17 @@
 
         <form id="uploadForm" action="${pageContext.request.contextPath}/customer_supporter/create_contract"
               method="post" enctype="multipart/form-data" novalidate>
-            <div class="mb-3">
+            <div class="row g-3">
+                <div class="col-md-6">
                 <label for="userName" class="form-label">Customer Username</label>
                 <input type="text" class="form-control" id="userName" name="userName"
-                       placeholder="Enter customer username" value="${param.userName != null ? param.userName : ''}" required>
-                <div class="form-text help-text">Enter the exact username of the customer.</div>
+                       placeholder="Enter customer username" value="${account.username}" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label for="userName" class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" id="userName" name="userName"
+                           placeholder="Enter customer username" value="${customerName}" readonly>
+                </div>
             </div>
 
             <div class="row g-3">

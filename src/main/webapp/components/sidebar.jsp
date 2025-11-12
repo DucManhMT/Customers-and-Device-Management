@@ -461,6 +461,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               ><span>Action Center</span></a
             >
           </li>
+            <li class="nav-item">
+                <a
+                        class="nav-link ${activePage == 'view-customers-list' ? 'active' : ''}"
+                        href="${pageContext.request.contextPath}/customer_supporter/customers_list"
+                ><span>Customer List</span></a
+                >
+            </li>
           <li class="nav-item">
             <a
               class="nav-link ${activePage == 'create-contract' ? 'active' : ''}"
