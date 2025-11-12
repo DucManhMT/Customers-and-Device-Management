@@ -17,7 +17,7 @@
     <jsp:include page="../components/header.jsp" />
     <jsp:include page="../components/sidebar.jsp"/>
     <div class="header">
-        <h1><i class="fas fa-tasks"></i> Request Detail</h1>
+        <h1><i class="fas fa-tasks"></i> Task Detail</h1>
         <p class="subtitle">Detailed information about your assigned task</p>
     </div>
 
@@ -162,7 +162,7 @@
             </div>
 
             <div class="description-section">
-                <h3><i class="fas fa-file-alt"></i> Task Description</h3>
+                <h3><i class="fas fa-file-alt"></i> Request Description</h3>
                 <div class="description-text">
                     <c:choose>
                         <c:when test="${not empty requestObj.requestDescription}">${requestObj.requestDescription}</c:when>
@@ -171,14 +171,38 @@
                 </div>
             </div>
 
-            <c:if test="${not empty requestObj.note}">
-                <div class="description-section">
-                    <h3><i class="fas fa-sticky-note"></i> Additional Notes</h3>
-                    <div class="description-text">
-                            ${requestObj.note}
-                    </div>
+            <div class="description-section">
+                <h3><i class="fas fa-file-alt"></i> Task Description</h3>
+                <div class="description-text">
+                    <c:choose>
+                        <c:when test="${not empty taskObj.description}">${taskObj.description}</c:when>
+                        <c:otherwise>No description provided</c:otherwise>
+                    </c:choose>
                 </div>
-            </c:if>
+                
+            </div>
+            <div class="description-section">
+                <h3><i class="fas fa-file-alt"></i> Task Start Date</h3>
+                <div class="description-text">
+                    <c:choose>
+                        <c:when test="${not empty taskObj.startDate}">${taskObj.startDate}</c:when>
+                        <c:otherwise>No description provided</c:otherwise>
+                    </c:choose>
+                </div>
+                
+            </div>
+            <div class="description-section">
+                <h3><i class="fas fa-file-alt"></i> Task DeadLine</h3>
+                <div class="description-text">
+                    <c:choose>
+                        <c:when test="${not empty taskObj.deadline}">${taskObj.deadline}</c:when>
+                        <c:otherwise>No description provided</c:otherwise>
+                    </c:choose>
+                </div>
+                
+            </div>
+            
+                
 
             <c:if test="${not empty assignedAccounts}">
                 <div class="info-card">
