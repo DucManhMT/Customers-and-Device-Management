@@ -127,6 +127,8 @@ public class WarehouseProductRequestController extends HttpServlet {
 
             productRequest.setStatus(action.equals("accept") ? ProductRequestStatus.Accepted : ProductRequestStatus.Rejected);
 
+            System.out.println("Product Request ID: " + productRequestID + ", Action: " + action);
+            System.out.println("Updating status to: " + productRequest.getStatus());
             productRequestDAO.merge(productRequest);
             em.commit();
 
@@ -134,6 +136,7 @@ public class WarehouseProductRequestController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS);
         } catch (Exception e) {
             em.rollback();
+            e.printStackTrace();
             req.getSession().setAttribute("errorMessage", "An error occurred while processing the product request.");
             resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS);
             return;
