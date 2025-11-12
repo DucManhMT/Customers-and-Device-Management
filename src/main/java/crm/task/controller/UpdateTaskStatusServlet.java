@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
-@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = {URLConstants.TECHEM_UPDATE_TASK_STATUS})
+@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = { URLConstants.TECHEM_UPDATE_TASK_STATUS })
 public class UpdateTaskStatusServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -56,7 +56,6 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
 
             if ("finished".equals(newStatus)) {
-                // Force load lazy references to avoid merge issues
                 task.getAssignBy();
                 task.getAssignTo();
                 Request req = task.getRequest();
@@ -64,11 +63,11 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 task.setStatus(TaskStatus.Finished);
                 task.setEndDate(LocalDateTime.now());
                 entityManager.merge(task, Task.class);
-                
 
                 connection.commit();
 
-                request.getSession().setAttribute("successMessage", "Task #" + taskId + " has been marked as finished successfully!");
+                request.getSession().setAttribute("successMessage",
+                        "Task #" + taskId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
@@ -92,7 +91,8 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 }
             }
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Error updating task status: " + e.getMessage());
         } finally {
             if (connection != null) {
                 try {

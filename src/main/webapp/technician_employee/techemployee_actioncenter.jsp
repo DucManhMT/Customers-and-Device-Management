@@ -1,6 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    request.setAttribute("dateFormatter", dateFormatter);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -560,13 +565,45 @@
                                 </div>
                                 <div class="task-meta">
                                         <span><i class="fas fa-calendar"></i> 
-                                            <fmt:formatDate value="${task.startDate}" pattern="dd/MM/yyyy"/>
+                                            ${task.startDate.toLocalDate().format(dateFormatter)}
                                         </span>
                                     <c:if test="${not empty task.deadline}">
                                             <span><i class="fas fa-flag-checkered"></i> 
-                                                Due: <fmt:formatDate value="${task.deadline}" pattern="dd/MM/yyyy"/>
+                                                Due: ${task.deadline.toLocalDate().format(dateFormatter)}
                                             </span>
-                                    </c:if>
+                                        </c:if>
+                                    </div>
+                                </div>
+                                
+                                <c:choose>
+                                    <c:when test="${not empty task.deadline}">
+                                        <c:set var="today" value="<%= java.time.LocalDate.now() %>"/>
+                                        <c:set var="deadlineDate" value="${task.deadline.toLocalDate()}"/>
+                                        <c:set var="daysDiff" value="${java.time.temporal.ChronoUnit.DAYS.between(today, deadlineDate)}"/>
+                                        
+                                        <c:choose>
+                                            <c:when test="${daysDiff < 0}">
+                                                <span class="task-status overdue">Overdue</span>
+                                            </c:when>
+                                            <c:when test="${daysDiff <= 3}">
+                                                <span class="task-status near-due">Near Due</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="task-status processing">Processing</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="task-status processing">Processing</span>
+                                    </c:otherwise>
+                                </c:choose>
+                                
+                                <div class="task-actions">
+                                    <a href="${pageContext.request.contextPath}/technician_employee/request/detail?id=${task.request.requestID}" 
+                                       class="btn btn-primary">
+                                        <i class="fas fa-eye"></i>
+                                        View Details
+                                    </a>
                                 </div>
                             </div>
 

@@ -30,14 +30,19 @@ public class toWarehouseKeeperDashboard extends HttpServlet {
         List<ProductExported> productExporteds = em.findAll(ProductExported.class);
         List<ProductWarehouse> productWarehouses = em.findAll(ProductWarehouse.class);
         List<Product> products = em.findAll(Product.class);
-        List<ProductRequest> productRequests = em.findAll(ProductRequest.class);
+        List<ProductRequest> allProductRequests = em.findAll(ProductRequest.class);
+        List<ProductRequest> myProductRequests = allProductRequests.stream()
+                .filter(pr -> pr.getWarehouse() != null)
+                .filter(pr -> pr.getWarehouse().getWarehouseID().equals(warehouse.getWarehouseID()))
+                .toList();
+
         List<WarehouseLog> warehouseLogs = em.findAll(WarehouseLog.class);
 
         req.setAttribute("productsImported", productsImported);
         req.setAttribute("productExporteds", productExporteds);
         req.setAttribute("productWarehouses", productWarehouses);
         req.setAttribute("products", products);
-        req.setAttribute("productRequests", productRequests);
+        req.setAttribute("productRequests", myProductRequests);
         req.setAttribute("warehouseLogs", warehouseLogs);
 
         req.getRequestDispatcher("/warehouse_keeper/warehousekeeper_dashboard.jsp").forward(req, resp);

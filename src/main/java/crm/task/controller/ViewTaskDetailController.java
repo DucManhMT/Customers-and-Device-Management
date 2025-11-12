@@ -1,6 +1,5 @@
 package crm.task.controller;
 
-import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
