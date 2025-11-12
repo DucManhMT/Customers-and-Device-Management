@@ -1,59 +1,37 @@
 package crm.tech.service;
 
 import crm.common.model.Staff;
-import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.tech.dao.TechEmployeeDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TechEmployeeService {
-    private final int TECHEM_ROLE_ID = 6;
-    public List<Staff> getAllTechEmployees(EntityManager entityManager) throws SQLException {
-        try {
-            String sql = "SELECT s.* FROM Staff s " +
-                    "INNER JOIN Account a ON s.Username = a.Username " +
-                    "WHERE a.RoleID = ? AND a.AccountStatus = 'Active'";
+    private final TechEmployeeDAO techEmployeeDAO = new TechEmployeeDAO();
 
-            List<Object> params = new ArrayList<>();
-            params.add(TECHEM_ROLE_ID); 
-
-            crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO sqlParams = new crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO(
-                    sql, params);
-
-            List<Staff> allStaff = entityManager.executeQuery(sqlParams, Staff.class);
-
-            System.out.println("[DEBUG] getAllTechEmployees: Found " +
-                    (allStaff != null ? allStaff.size() : 0) +
-                    " active technicians with roleId=" + TECHEM_ROLE_ID);
-
-            return allStaff;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve active tech employees", e);
-        }
+    public void setEntityManager(EntityManager entityManager) {
+        techEmployeeDAO.setEntityManager(entityManager);
     }
 
-    public Page<Staff> getTechEmployeesPaginated(EntityManager entityManager, int page, int size) throws SQLException {
+    public Page<Staff> getTechEmployeesPaginated(int page, int size) throws SQLException {
         try {
-            int offset = (page - 1) * size;
-
-            List<Staff> allTechEmployees = getAllTechEmployees(entityManager);
+            List<Staff> allTechEmployees = techEmployeeDAO.findAllActiveTechEmployees();
             int totalCount = allTechEmployees.size();
 
-            List<Staff> paginatedList = new ArrayList<>();
+            int offset = (page - 1) * size;
             int startIndex = offset;
             int endIndex = Math.min(startIndex + size, totalCount);
 
+            List<Staff> paginatedList = new ArrayList<>();
             for (int i = startIndex; i < endIndex; i++) {
                 paginatedList.add(allTechEmployees.get(i));
             }
@@ -61,8 +39,9 @@ public class TechEmployeeService {
             PageRequest pageRequest = new PageRequest(page, size);
             Page<Staff> pageResult = new Page<>(totalCount, pageRequest, paginatedList);
 
-            System.out.println("[DEBUG] getTechEmployeesPaginated: Page " + page + ", Size " + size + ", Found "
-                    + paginatedList.size() + " technicians");
+            System.out.println("[Service] getTechEmployeesPaginated: Page " + page + "/" + 
+                    pageResult.getTotalPages() + ", Size " + size + ", Total " + totalCount);
+
             return pageResult;
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,74 +49,20 @@ public class TechEmployeeService {
         }
     }
 
-    public Staff getTechEmployeeById(EntityManager entityManager, int staffId) throws SQLException {
-        try {
-            String sql = "SELECT s.* FROM Staff s " +
-                    "INNER JOIN Account a ON s.Username = a.Username " +
-                    "WHERE s.StaffID = ? AND a.RoleID = ?";
-
-            List<Object> params = new ArrayList<>();
-            params.add(staffId);
-            params.add(TECHEM_ROLE_ID);
-
-            crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO sqlParams = new crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO(
-                    sql, params);
-
-            List<Staff> staffList = entityManager.executeQuery(sqlParams, Staff.class);
-            if (staffList != null && !staffList.isEmpty()) {
-                return staffList.get(0);
-            }
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve tech employee by ID", e);
-        }
+    public Staff getTechEmployeeById(int staffId) throws SQLException {
+        return techEmployeeDAO.findTechEmployeeById(staffId);
     }
 
-    public int getTechEmployeeCount(EntityManager entityManager) throws SQLException {
-        try {
-            List<Staff> allTechEmployees = getAllTechEmployees(entityManager);
-            return allTechEmployees.size();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to count tech employees", e);
-        }
+
+    public int getTechEmployeeCount() throws SQLException {
+        return techEmployeeDAO.countActiveTechEmployees();
     }
 
-    public Page<Staff> getTechEmployeesWithFilters(EntityManager entityManager, String searchName, String location,
+    public Page<Staff> getTechEmployeesWithFilters(String searchName, String location,
             String ageRange, int page, int size) throws SQLException {
         try {
-            List<Staff> allTechEmployees = getAllTechEmployees(entityManager);
-            List<Staff> filteredEmployees = new ArrayList<>();
-
-            for (Staff staff : allTechEmployees) {
-                boolean matches = true;
-
-                if (searchName != null && !searchName.trim().isEmpty()) {
-                    if (staff.getStaffName() == null
-                            || !staff.getStaffName().toLowerCase().contains(searchName.toLowerCase())) {
-                        matches = false;
-                    }
-                }
-
-                if (location != null && !location.trim().isEmpty()) {
-                    if (staff.getAddress() == null
-                            || !staff.getAddress().toLowerCase().contains(location.toLowerCase())) {
-                        matches = false;
-                    }
-                }
-
-                if (ageRange != null && !ageRange.trim().isEmpty() && staff.getDateOfBirth() != null) {
-                    int age = calculateAge(staff.getDateOfBirth());
-                    if (!matchesAgeRange(age, ageRange)) {
-                        matches = false;
-                    }
-                }
-
-                if (matches) {
-                    filteredEmployees.add(staff);
-                }
-            }
+            List<Staff> allTechEmployees = techEmployeeDAO.findAllActiveTechEmployees();
+            List<Staff> filteredEmployees = applyFilters(allTechEmployees, searchName, location, ageRange);
 
             int totalCount = filteredEmployees.size();
             int offset = (page - 1) * size;
@@ -152,6 +77,9 @@ public class TechEmployeeService {
             PageRequest pageRequest = new PageRequest(page, size);
             Page<Staff> pageResult = new Page<>(totalCount, pageRequest, paginatedList);
 
+            System.out.println("[Service] getTechEmployeesWithFilters: Filtered " + totalCount + 
+                    " from " + allTechEmployees.size() + " total");
+
             return pageResult;
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,26 +87,46 @@ public class TechEmployeeService {
         }
     }
 
-    public List<String> getAvailableLocations(EntityManager entityManager) throws SQLException {
-        try {
-            List<Staff> allTechEmployees = getAllTechEmployees(entityManager);
-            List<String> locations = new ArrayList<>();
+    private List<Staff> applyFilters(List<Staff> staffList, String searchName, String location, String ageRange) {
+        List<Staff> filteredEmployees = new ArrayList<>();
 
-            for (Staff staff : allTechEmployees) {
-                if (staff.getAddress() != null && !staff.getAddress().trim().isEmpty()) {
-                    String location = staff.getAddress().trim();
-                    if (!locations.contains(location)) {
-                        locations.add(location);
-                    }
+        for (Staff staff : staffList) {
+            boolean matches = true;
+
+            if (searchName != null && !searchName.trim().isEmpty()) {
+                if (staff.getStaffName() == null
+                        || !staff.getStaffName().toLowerCase().contains(searchName.toLowerCase())) {
+                    matches = false;
                 }
             }
 
-            return locations;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Failed to retrieve available locations", e);
+            if (location != null && !location.trim().isEmpty()) {
+                if (staff.getAddress() == null
+                        || !staff.getAddress().toLowerCase().contains(location.toLowerCase())) {
+                    matches = false;
+                }
+            }
+
+            if (ageRange != null && !ageRange.trim().isEmpty() && staff.getDateOfBirth() != null) {
+                int age = calculateAge(staff.getDateOfBirth());
+                if (!matchesAgeRange(age, ageRange)) {
+                    matches = false;
+                }
+            }
+
+            if (matches) {
+                filteredEmployees.add(staff);
+            }
         }
+
+        return filteredEmployees;
     }
+
+
+    public List<String> getAvailableLocations() throws SQLException {
+        return techEmployeeDAO.findAllLocations();
+    }
+
 
     public int calculateAge(LocalDate dateOfBirth) {
         if (dateOfBirth == null)
@@ -210,66 +158,46 @@ public class TechEmployeeService {
     }
 
     public void showTechEmployeesList(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException, Exception {
+            throws ServletException, IOException {
 
-        int page = 1;
-        int recordsPerPage = 10;
+        int page = parseIntParam(req.getParameter("page"), 1);
+        int recordsPerPage = parseIntParam(req.getParameter("recordsPerPage"), 10);
 
         String searchName = req.getParameter("searchName");
         String location = req.getParameter("location");
         String ageRange = req.getParameter("ageRange");
 
         try {
-            if (req.getParameter("page") != null) {
-                page = Integer.parseInt(req.getParameter("page"));
-            }
-            if (req.getParameter("recordsPerPage") != null) {
-                recordsPerPage = Integer.parseInt(req.getParameter("recordsPerPage"));
-            }
-        } catch (NumberFormatException e) {
-        }
-
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager entityManager = new EntityManager(connection);
+            boolean hasFilterApplied = hasFilters(searchName, location, ageRange);
 
             Page<Staff> techEmployeePage;
             int totalCount;
 
-            boolean hasFilters = (searchName != null && !searchName.trim().isEmpty()) ||
-                    (location != null && !location.trim().isEmpty()) ||
-                    (ageRange != null && !ageRange.trim().isEmpty());
-
-            if (hasFilters) {
-                techEmployeePage = getTechEmployeesWithFilters(entityManager, searchName, location, ageRange, page,
+            if (hasFilterApplied) {
+                techEmployeePage = getTechEmployeesWithFilters(searchName, location, ageRange, page,
                         recordsPerPage);
                 totalCount = (int) techEmployeePage.getTotalElements();
             } else {
-                techEmployeePage = getTechEmployeesPaginated(entityManager, page, recordsPerPage);
-                totalCount = getTechEmployeeCount(entityManager);
+                techEmployeePage = getTechEmployeesPaginated(page, recordsPerPage);
+                totalCount = getTechEmployeeCount();
             }
 
-            List<String> availableLocations = getAvailableLocations(entityManager);
+            List<String> availableLocations = getAvailableLocations();
 
-            req.setAttribute("techEmployees", techEmployeePage.getContent());
-            req.setAttribute("currentPage", page);
-            req.setAttribute("totalPages", techEmployeePage.getTotalPages());
-            req.setAttribute("recordsPerPage", recordsPerPage);
-            req.setAttribute("pageSize", recordsPerPage);
-            req.setAttribute("totalRecords", techEmployeePage.getTotalElements());
-            req.setAttribute("totalCount", totalCount);
-            req.setAttribute("availableLocations", availableLocations);
+            setListAttributes(req, techEmployeePage, page, recordsPerPage, totalCount, availableLocations,
+                    searchName, location, ageRange);
 
-            req.setAttribute("searchName", searchName);
-            req.setAttribute("selectedLocation", location);
-            req.setAttribute("selectedAgeRange", ageRange);
             req.getRequestDispatcher("/technician_leader/view_technician_list.jsp").forward(req, resp);
 
         } catch (SQLException e) {
+            e.printStackTrace();
             req.setAttribute("errorMessage", "Failed to load tech employees: " + e.getMessage());
+            req.getRequestDispatcher("/technician_leader/view_technician_list.jsp").forward(req, resp);
         } catch (Exception e) {
+            e.printStackTrace();
             req.setAttribute("errorMessage", "Unexpected error: " + e.getMessage());
+            req.getRequestDispatcher("/technician_leader/view_technician_list.jsp").forward(req, resp);
         }
-
     }
 
     public void showTechEmployeeDetail(HttpServletRequest req, HttpServletResponse resp)
@@ -285,13 +213,11 @@ public class TechEmployeeService {
             return;
         }
 
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager entityManager = new EntityManager(connection);
-
+        try {
             Integer staffId = Integer.parseInt(staffIdStr);
             System.out.println("Parsed staff ID: " + staffId);
 
-            Staff techEmployee = getTechEmployeeById(entityManager, staffId);
+            Staff techEmployee = getTechEmployeeById(staffId);
             System.out.println(
                     "Retrieved tech employee: " + (techEmployee != null ? techEmployee.getStaffName() : "null"));
 
@@ -314,5 +240,39 @@ public class TechEmployeeService {
             req.getRequestDispatcher("/technician_leader/view_technician_list.jsp").forward(req, resp);
         }
         System.out.println("=== End TechEmployeeController Detail Debug ===");
+    }
+
+    private int parseIntParam(String param, int defaultValue) {
+        if (param == null || param.trim().isEmpty()) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(param);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    private boolean hasFilters(String searchName, String location, String ageRange) {
+        return (searchName != null && !searchName.trim().isEmpty()) ||
+                (location != null && !location.trim().isEmpty()) ||
+                (ageRange != null && !ageRange.trim().isEmpty());
+    }
+
+    private void setListAttributes(HttpServletRequest req, Page<Staff> techEmployeePage, int page,
+            int recordsPerPage, int totalCount, List<String> availableLocations,
+            String searchName, String location, String ageRange) {
+
+        req.setAttribute("techEmployees", techEmployeePage.getContent());
+        req.setAttribute("currentPage", page);
+        req.setAttribute("totalPages", techEmployeePage.getTotalPages());
+        req.setAttribute("recordsPerPage", recordsPerPage);
+        req.setAttribute("pageSize", recordsPerPage);
+        req.setAttribute("totalRecords", techEmployeePage.getTotalElements());
+        req.setAttribute("totalCount", totalCount);
+        req.setAttribute("availableLocations", availableLocations);
+        req.setAttribute("searchName", searchName);
+        req.setAttribute("selectedLocation", location);
+        req.setAttribute("selectedAgeRange", ageRange);
     }
 }
