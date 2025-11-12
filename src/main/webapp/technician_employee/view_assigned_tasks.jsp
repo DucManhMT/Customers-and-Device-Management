@@ -794,7 +794,6 @@
         </c:choose>
     </div>
 
-    <!-- Pagination -->
     <div class="pagination">
         <div class="pagination-content">
             <div class="pagination-info">
@@ -872,17 +871,14 @@
 </div>
 
 <script>
-    // Date validation
     document.addEventListener('DOMContentLoaded', function() {
         const fromDate = document.getElementById('fromDate');
         const toDate = document.getElementById('toDate');
         const today = new Date().toISOString().split('T')[0];
 
-        // Set max date to today (không cho chọn ngày trong tương lai)
         if (fromDate) fromDate.setAttribute('max', today);
         if (toDate) toDate.setAttribute('max', today);
 
-        // Khi chọn From Date, set min cho To Date
         if (fromDate) {
             fromDate.addEventListener('change', function() {
                 if (this.value && toDate) {
@@ -891,7 +887,6 @@
             });
         }
 
-        // Khi chọn To Date, set max cho From Date
         if (toDate) {
             toDate.addEventListener('change', function() {
                 if (this.value && fromDate) {
@@ -901,6 +896,5 @@
         }
     });
 </script>
-<script src="${pageContext.request.contextPath}/js/view_assigned_tasks.js"></script>
 </body>
 </html>
