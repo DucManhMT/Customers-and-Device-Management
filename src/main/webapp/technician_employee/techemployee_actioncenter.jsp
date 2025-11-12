@@ -2,10 +2,6 @@
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    request.setAttribute("dateFormatter", dateFormatter);
-%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -548,110 +544,111 @@
         </div>
 
         <c:choose>
-            <c:when test="${empty recentTasks}">
-                <div class="empty-state">
-                    <i class="fas fa-clipboard-list"></i>
-                    <p>No active tasks at the moment</p>
-                    <small>Your processing tasks will appear here</small>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div class="tasks-list">
-                    <c:forEach var="task" items="${recentTasks}">
-                        <div class="task-item">
-                            <div class="task-info">
-                                <div class="task-title">
-                                    Task #${task.taskID} - Request #${task.request.requestID}
-                                </div>
-                                <div class="task-meta">
+        <c:when test="${empty recentTasks}">
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <p>No active tasks at the moment</p>
+                <small>Your processing tasks will appear here</small>
+            </div>
+        </c:when>
+        <c:otherwise>
+        <div class="tasks-list">
+            <c:forEach var="task" items="${recentTasks}">
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-title">
+                        Task #${task.taskID} - Request #${task.request.requestID}
+                    </div>
+                    <div class="task-meta">
                                         <span><i class="fas fa-calendar"></i> 
-                                            ${task.startDate.toLocalDate().format(dateFormatter)}
+                                            ${task.startDate}
                                         </span>
-                                    <c:if test="${not empty task.deadline}">
+                        <c:if test="${not empty task.deadline}">
                                             <span><i class="fas fa-flag-checkered"></i> 
-                                                Due: ${task.deadline.toLocalDate().format(dateFormatter)}
+                                                Due: ${task.deadline}
                                             </span>
-                                        </c:if>
-                                    </div>
-                                </div>
-                                
-                                <c:choose>
-                                    <c:when test="${not empty task.deadline}">
-                                        <c:set var="today" value="<%= java.time.LocalDate.now() %>"/>
-                                        <c:set var="deadlineDate" value="${task.deadline.toLocalDate()}"/>
-                                        <c:set var="daysDiff" value="${java.time.temporal.ChronoUnit.DAYS.between(today, deadlineDate)}"/>
-                                        
-                                        <c:choose>
-                                            <c:when test="${daysDiff < 0}">
-                                                <span class="task-status overdue">Overdue</span>
-                                            </c:when>
-                                            <c:when test="${daysDiff <= 3}">
-                                                <span class="task-status near-due">Near Due</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="task-status processing">Processing</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="task-status processing">Processing</span>
-                                    </c:otherwise>
-                                </c:choose>
-                                
-                                <div class="task-actions">
-                                    <a href="${pageContext.request.contextPath}/technician_employee/request/detail?id=${task.request.requestID}" 
-                                       class="btn btn-primary">
-                                        <i class="fas fa-eye"></i>
-                                        View Details
-                                    </a>
-                                </div>
-                            </div>
-
-                            <c:choose>
-                                <c:when test="${not empty task.deadline}">
-                                    <jsp:useBean id="now" class="java.util.Date"/>
-                                    <c:set var="deadlineDate" value="${task.deadline}"/>
-                                    <c:set var="timeDiff" value="${deadlineDate.time - now.time}"/>
-                                    <c:set var="daysDiff" value="${timeDiff / (1000 * 60 * 60 * 24)}"/>
-
-                                    <c:choose>
-                                        <c:when test="${daysDiff < 0}">
-                                            <span class="task-status overdue">Overdue</span>
-                                        </c:when>
-                                        <c:when test="${daysDiff <= 3}">
-                                            <span class="task-status near-due">Near Due</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="task-status processing">Processing</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="task-status processing">Processing</span>
-                                </c:otherwise>
-                            </c:choose>
-
-                            <div class="task-actions">
-                                <a href="${pageContext.request.contextPath}/technician_employee/task/detail?taskId=${task.taskID}"
-                                   class="btn btn-primary">
-                                    <i class="fas fa-eye"></i>
-                                    View Details
-                                </a>
-                            </div>
-                        </div>
-                    </c:forEach>
+                        </c:if>
+                    </div>
                 </div>
 
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-                       class="btn btn-outline">
-                        <i class="fas fa-arrow-right"></i>
-                        View All Tasks
+                <c:choose>
+                    <c:when test="${not empty task.deadline}">
+                        <c:set var="today" value="<%= java.time.LocalDate.now() %>"/>
+                        <c:set var="deadlineDate" value="${task.deadline.toLocalDate()}"/>
+                        <c:set var="daysDiff"
+                               value="${java.time.temporal.ChronoUnit.DAYS.between(today, deadlineDate)}"/>
+
+                        <c:choose>
+                            <c:when test="${daysDiff < 0}">
+                                <span class="task-status overdue">Overdue</span>
+                            </c:when>
+                            <c:when test="${daysDiff <= 3}">
+                                <span class="task-status near-due">Near Due</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="task-status processing">Processing</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="task-status processing">Processing</span>
+                    </c:otherwise>
+                </c:choose>
+
+                <div class="task-actions">
+                    <a href="${pageContext.request.contextPath}/technician_employee/request/detail?id=${task.request.requestID}"
+                       class="btn btn-primary">
+                        <i class="fas fa-eye"></i>
+                        View Details
                     </a>
                 </div>
-            </c:otherwise>
-        </c:choose>
+            </div>
+
+            <c:choose>
+                <c:when test="${not empty task.deadline}">
+                    <jsp:useBean id="now" class="java.util.Date"/>
+                    <c:set var="deadlineDate" value="${task.deadline}"/>
+                    <c:set var="timeDiff" value="${deadlineDate.time - now.time}"/>
+                    <c:set var="daysDiff" value="${timeDiff / (1000 * 60 * 60 * 24)}"/>
+
+                    <c:choose>
+                        <c:when test="${daysDiff < 0}">
+                            <span class="task-status overdue">Overdue</span>
+                        </c:when>
+                        <c:when test="${daysDiff <= 3}">
+                            <span class="task-status near-due">Near Due</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="task-status processing">Processing</span>
+                        </c:otherwise>
+                    </c:choose>
+                </c:when>
+                <c:otherwise>
+                    <span class="task-status processing">Processing</span>
+                </c:otherwise>
+            </c:choose>
+
+            <div class="task-actions">
+                <a href="${pageContext.request.contextPath}/technician_employee/task/detail?taskId=${task.taskID}"
+                   class="btn btn-primary">
+                    <i class="fas fa-eye"></i>
+                    View Details
+                </a>
+            </div>
+        </div>
+        </c:forEach>
     </div>
+
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
+           class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i>
+            View All Tasks
+        </a>
+    </div>
+    </c:otherwise>
+    </c:choose>
+</div>
 </div>
 </body>
 </html>

@@ -652,6 +652,13 @@
                     </li>
                     <li class="nav-item">
                         <a
+                                class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
+                        ><span>Import Product</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
                                 class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
                         ><span>Create Transfer Request</span></a
@@ -690,6 +697,13 @@
                                 class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"
                         ><span>Imported Products</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                                class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"
+                        ><span>Exported Products</span></a
                         >
                     </li>
                 </ul>

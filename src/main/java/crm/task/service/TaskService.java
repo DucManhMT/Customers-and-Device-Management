@@ -7,6 +7,7 @@ import java.util.List;
 import crm.common.model.Task;
 import crm.common.model.Request;
 import crm.common.model.Staff;
+import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.core.config.TransactionManager;
@@ -15,6 +16,7 @@ import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
+import crm.service_request.service.RequestLogService;
 import crm.service_request.service.RequestService;
 import crm.service_request.repository.persistence.query.common.Order;
 import crm.task.dto.TaskFilter;
@@ -27,6 +29,7 @@ public class TaskService {
     private RequestRepository requestRepository = new RequestRepository();
     private StaffRepository staffRepository = new StaffRepository();
     private RequestService requestService = new RequestService();
+    RequestLogService requestLogService = new RequestLogService();
 
     // Column name constants to avoid duplication & magic strings
     private static final String COL_REQUEST_ID = "RequestID";
@@ -120,7 +123,7 @@ public class TaskService {
         LocalDateTime now = LocalDateTime.now();
         // Đổi logic sắp quá hạn theo ngày (nearDueDays) thay cho giờ
         int nearDueDays = (nearDueHours == null || nearDueHours <= 0) ? 1 : nearDueHours; // tái sử dụng field
-                                                                                          // nearDueHours như days
+        // nearDueHours như days
 
         if (Boolean.TRUE.equals(overdue)) {
             builder.less(COL_DEADLINE, now); // deadline < now => quá hạn
@@ -137,7 +140,7 @@ public class TaskService {
     }
 
     public Task createTask(int assignBy, int assignTo, int requestId, LocalDateTime startDate, LocalDateTime deadline,
-            String description) {
+                           String description) {
         Task task = new Task();
         Request request = requestRepository.findById(requestId);
         task.setTaskID(taskRepository.getNewId());
@@ -153,7 +156,12 @@ public class TaskService {
             taskRepository.save(task);
             if (request.getRequestStatus().equals(RequestStatus.Approved)) {
                 request.setRequestStatus(RequestStatus.Processing);
+                requestLogService.createLog(request, "Request has been assigned to tech employee.", OldRequestStatus.Approved,
+                        RequestStatus.Processing, task.getAssignBy().getAccount());
                 requestRepository.update(request);
+            } else {
+                requestLogService.createLog(request, "Request has been assigned to tech employee.", OldRequestStatus.Processing,
+                        RequestStatus.Processing, task.getAssignBy().getAccount());
             }
             TransactionManager.commit();
         } catch (SQLException e) {
