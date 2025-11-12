@@ -73,7 +73,7 @@
         <!-- Main form -->
         <div class="col-lg-8 order-lg-1">
             <div class="card">
-                <div class="card-header">Create Task</div>
+                <div class="card-header">Assign Task</div>
                 <div class="card-body">
                     <c:if test="${not empty errors}">
                         <div class="alert alert-danger">
@@ -93,7 +93,8 @@
                         <input type="hidden" name="assignTo" value="${assignToId}"/>
 
                         <div class="mb-3">
-                            <label for="startDate" class="form-label">Start Date</label>
+                            <label for="startDate" class="form-label">Start Date <span
+                                    style="color: red;">*</span></label>
                             <input
                                     type="date"
                                     id="startDate"
@@ -104,7 +105,7 @@
                             />
                         </div>
                         <div class="mb-3">
-                            <label for="deadline" class="form-label">Deadline</label>
+                            <label for="deadline" class="form-label">Deadline <span style="color: red;">*</span></label>
                             <input
                                     type="date"
                                     id="deadline"
@@ -116,7 +117,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label"
-                            >Description</label
+                            >Description <span style="color: red;">* </span></label
                             >
                             <textarea id="description" name="description" class="form-control" rows="4"
                                       required>${description}</textarea>

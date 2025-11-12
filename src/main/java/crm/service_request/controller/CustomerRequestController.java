@@ -6,8 +6,8 @@ import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Request;
+import crm.contract.repository.ContractRepository;
 import crm.core.validator.Validator;
-import crm.service_request.repository.ContractRepository;
 import crm.service_request.repository.CustomerRepository;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "CustomerRequestController", urlPatterns = {URLConstants.CUSTOMER_VIEW_REQUEST})
+@WebServlet(name = "CustomerRequestController", urlPatterns = { URLConstants.CUSTOMER_VIEW_REQUEST })
 public class CustomerRequestController extends HttpServlet {
 
     @Override

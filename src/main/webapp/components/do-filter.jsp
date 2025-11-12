@@ -12,8 +12,11 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div style="justify-self: flex-end;margin-left: auto">
-    <button type="submit" class="btn btn-primary">Search</button>
-    <button type="button" class="btn btn-danger" onclick="resetFilters(event, this)">Reset</button>
+    <button type="submit" class="btn btn-primary">Filter</button>
+
+    <button type="button" class="btn btn-outline-secondary" onclick="resetFilters(event, this)">
+        <i class="bi bi-arrow-clockwise"></i> Reset
+    </button>
     <script>
         function resetFilters(e, btn) {
             if (e) e.preventDefault();

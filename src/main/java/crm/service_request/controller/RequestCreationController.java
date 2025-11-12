@@ -8,7 +8,7 @@ import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Contract;
-import crm.service_request.repository.ContractRepository;
+import crm.contract.repository.ContractRepository;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
