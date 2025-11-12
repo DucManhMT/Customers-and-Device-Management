@@ -36,7 +36,7 @@ public class InventoryProductRequestController extends HttpServlet {
 
         if (productRequests.isEmpty()) {
             req.getSession().setAttribute("errorMessage", "No product requests found.");
-            req.getRequestDispatcher("/inventory_manager/view_product_request.jsp").forward(req, resp);
+            req.getRequestDispatcher("/inventory_manager/view_product_requests.jsp").forward(req, resp);
             return;
         }
 
