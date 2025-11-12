@@ -207,6 +207,10 @@
                                class="btn action-btn btn-edit me-1">
                                  Create Contract
                             </a>
+                            <a href="${pageContext.request.contextPath}/customer_supporter/customers_list/contracts?id=${account.username}"
+                               class="btn action-btn btn-edit me-1">
+                                View Contracts
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>
