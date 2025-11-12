@@ -1,9 +1,12 @@
 package crm.feedback.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 import crm.common.URLConstants;
 import crm.common.model.Account;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.feedback.service.FeedbackService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,7 +32,9 @@ public class CreateFeedback extends HttpServlet {
             return;
         }
 
-        try {
+        try (Connection connection = DBcontext.getConnection()) {
+            EntityManager entityManager = new EntityManager(connection);
+            fedsv.setEntityManager(entityManager);
 
             fedsv.showCreateFeedbackForm(req, resp);
 
@@ -49,14 +54,23 @@ public class CreateFeedback extends HttpServlet {
         }
         String username = account.getUsername();
 
-        try {
+        try (Connection connection = DBcontext.getConnection()) {
+            EntityManager entityManager = new EntityManager(connection);
+            fedsv.setEntityManager(entityManager);
 
             fedsv.createFeedback(req, resp, username);
 
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("errorMessage", "Error creating feedback: " + e.getMessage());
-            fedsv.showCreateFeedbackForm(req, resp);
+            
+            try (Connection connection2 = DBcontext.getConnection()) {
+                EntityManager entityManager2 = new EntityManager(connection2);
+                fedsv.setEntityManager(entityManager2);
+                fedsv.showCreateFeedbackForm(req, resp);
+            } catch (Exception e2) {
+                req.getRequestDispatcher("/Customer/create_feedback.jsp").forward(req, resp);
+            }
         }
     }
 

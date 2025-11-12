@@ -59,7 +59,6 @@ public class FeedbackService {
                     int reqId = Integer.parseInt(requestIdStr.trim());
                     existingFeedback = feedbackDAO.findFeedbackByRequestId(reqId);
                     
-                    // Check if feedback belongs to current user
                     if (existingFeedback != null && 
                         existingFeedback.getCustomerID() != null && 
                         !existingFeedback.getCustomerID().equals(username)) {
