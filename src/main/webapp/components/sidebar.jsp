@@ -578,8 +578,8 @@
             <div class="category-items" id="category-inventory">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'inventory-action-center' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
