@@ -434,6 +434,7 @@
                 <i class="fas fa-exclamation-circle"></i>
                 <div>${errorMessage}</div>
             </div>
+            <c:remove var="errorMessage" scope="session"/>
         </c:if>
 
         <!-- Page Header -->

@@ -56,8 +56,9 @@ public class SupporterFeedbackManagement extends HttpServlet {
 
         try (Connection connection = DBcontext.getConnection()) {
             EntityManager entityManager = new EntityManager(connection);
+            fedsv.setEntityManager(entityManager);
 
-            Page<Feedback> feedbackPage = fedsv.getFeedbacksWithFilters(entityManager, page, pageSize, username, rating, statusFilter);
+            Page<Feedback> feedbackPage = fedsv.getFeedbacksWithFilters(page, pageSize, username, rating, statusFilter);
 
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             int respondedCount = 0;
@@ -132,6 +133,8 @@ public class SupporterFeedbackManagement extends HttpServlet {
             String responseText = req.getParameter("responseText");
             try (Connection connection = DBcontext.getConnection()) {
                 EntityManager entityManager = new EntityManager(connection);
+                fedsv.setEntityManager(entityManager);
+                
                 Integer fid = null;
                 try { fid = Integer.parseInt(feedbackIdStr); } catch (NumberFormatException e) { }
                 if (fid == null) {
@@ -139,7 +142,7 @@ public class SupporterFeedbackManagement extends HttpServlet {
                     resp.sendRedirect(req.getContextPath() + URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT);
                     return;
                 }
-                Feedback fb = fedsv.getFeedbackById(entityManager, fid);
+                Feedback fb = fedsv.getFeedbackById(fid);
                 if (fb == null) {
                     req.getSession().setAttribute("errorMessage", "Feedback not found");
                     resp.sendRedirect(req.getContextPath() + URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT);
@@ -147,7 +150,7 @@ public class SupporterFeedbackManagement extends HttpServlet {
                 }
                 fb.setResponse(responseText != null ? responseText.trim() : null);
                 fb.setFeedbackStatus(FeedbackStatus.Responded);
-                fedsv.updateFeedback(entityManager, fb);
+                fedsv.updateFeedback(fb);
                 req.getSession().setAttribute("successMessage", "Responded to feedback #" + fid);
                 resp.sendRedirect(req.getContextPath() + URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT);
                 return;

@@ -585,12 +585,14 @@
             <i class="fas fa-check-circle"></i>
             <span>${successMessage}</span>
         </div>
+        <c:remove var="successMessage" scope="session"/>
     </c:if>
     <c:if test="${not empty errorMessage}">
         <div class="alert alert-error">
             <i class="fas fa-exclamation-circle"></i>
             <span>${errorMessage}</span>
         </div>
+        <c:remove var="errorMessage" scope="session"/>
     </c:if>
 
     <!-- Stats Grid -->

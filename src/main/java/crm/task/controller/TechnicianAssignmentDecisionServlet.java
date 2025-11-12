@@ -168,14 +168,7 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
             }
             request.getSession().setAttribute("errorMessage", "Error processing assignment decision: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + URLConstants.TASK_VIEW_RECEIVED_ASSIGNMENTS);
-        } finally {
-            if (conn != null) {
-                try { 
-                    conn.setAutoCommit(true); 
-                    conn.close();
-                } catch (Exception ignore) {}
-            }
-        }
+        } 
     }
 
     @Override
