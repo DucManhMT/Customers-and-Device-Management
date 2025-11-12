@@ -626,96 +626,106 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </div>
     </div>
 
-    <!-- Warehouse Keeper Category -->
-    <div class="sidebar-category">
-      <div class="category-header" onclick="toggleCategory('warehouse')">
-        <span
-          ><i class="fas fa-warehouse category-icon"></i>Warehouse Keeper</span
-        >
-        <i class="fas fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="category-items" id="category-warehouse">
-        <ul class="sidebar-nav">
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_dashboard"
-              ><span>Action Center</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
-              ><span>Product Warehouse</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'product-detail' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail"
-              ><span>Product Detail</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"
-              ><span>View Inventory</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
-              ><span>Add Product</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
-              ><span>Create Transfer Request</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'warehouse-detail' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail"
-              ><span>Warehouse Detail</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
-              ><span>Product Requests</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"
-              ><span>Warehouse Request</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'export-internal' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/export_internal"
-              ><span>Export Internal</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"
-              ><span>Imported Products</span></a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
+            <div class="category-items" id="category-techem">
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"></i>Action Center
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/staff/profile">My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/create_product_request"> Create export request </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"> My Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">View Received Assignments</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><span>View Assigned Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
+                            View Received Assignments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/technician_employee/view_product_requests"><span>View Product Requests</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- Warehouse Keeper Category -->
+        <div class="sidebar-category">
+            <div class="category-header" onclick="toggleCategory('warehouse')">
+                <span><i class="fas fa-warehouse category-icon"></i>Warehouse Keeper</span>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="category-items" id="category-warehouse">
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_dashboard"><span>Action Center</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><span>Product Warehouse</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"><span>View Inventory</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/add_product"><span>Add Product</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"><span>Create Transfer Request</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'warehouse-detail' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail"><span>Warehouse Detail</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"><span>Product Requests</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"><span>Warehouse Request</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'export-internal' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/export_internal"><span>Export Internal</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"><span>Imported Products</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"><span>Exported Products</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
         <!-- Inventory Manager Category -->
         <div class="sidebar-category">
