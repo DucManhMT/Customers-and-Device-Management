@@ -1,6 +1,8 @@
 package crm.tech.controller;
 
 import crm.common.URLConstants;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.tech.service.TechEmployeeService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,15 +11,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 @WebServlet(name = "ViewTechEmployeeList", urlPatterns = { URLConstants.TECHLEAD_VIEW_TECHEM_LIST })
 public class ViewTechEmployeeList extends HttpServlet {
-    TechEmployeeService techEmployeeService = new TechEmployeeService();
+    private final TechEmployeeService techEmployeeService = new TechEmployeeService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try {
+        try (Connection connection = DBcontext.getConnection()) {
+            EntityManager entityManager = new EntityManager(connection);
+            techEmployeeService.setEntityManager(entityManager);
+            
             techEmployeeService.showTechEmployeesList(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
@@ -29,7 +35,10 @@ public class ViewTechEmployeeList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try {
+        try (Connection connection = DBcontext.getConnection()) {
+            EntityManager entityManager = new EntityManager(connection);
+            techEmployeeService.setEntityManager(entityManager);
+            
             techEmployeeService.showTechEmployeesList(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
