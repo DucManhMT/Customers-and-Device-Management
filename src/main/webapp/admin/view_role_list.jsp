@@ -309,7 +309,7 @@
                                        value="${role.roleStatus == 'Active' ? 'deactivate' : 'activate'}">
                                 <input type="hidden" name="id" value="${role.roleID}">
                                 <button class="btn action-btn ${role.roleStatus=='Active' ? 'btn-deactivate' : 'btn-activate'}"
-                                        onclick="return confirm('Are you sure?')"
+                                        onclick="return confirm('Are you sure you want to deactivate this role?')"
                                         title="${role.roleStatus=='Active' ? 'Deactivate' : 'Activate'}">
                                     <i class="bi ${role.roleStatus=='Active' ? 'bi-trash' : 'bi-check-circle'}"></i>
                                 </button>

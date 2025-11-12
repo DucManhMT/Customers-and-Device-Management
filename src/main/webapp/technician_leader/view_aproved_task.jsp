@@ -662,6 +662,15 @@
                            value="${customerFilter}" placeholder="Search customer...">
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" name="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="Approved" ${statusFilter == 'Approved' ? 'selected' : ''}>Approved</option>
+                        <option value="Processing" ${statusFilter == 'Processing' ? 'selected' : ''}>Processing</option>
+                        <option value="Finished" ${statusFilter == 'Finished' ? 'selected' : ''}>Finished</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="form-label">From Date</label>
                     <input type="date" class="form-control" name="fromDate"
                            value="${fromDate}" id="fromDate">
@@ -705,6 +714,7 @@
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="phoneFilter" value="${phoneFilter}">
                     <input type="hidden" name="customerFilter" value="${customerFilter}">
+                    <input type="hidden" name="statusFilter" value="${statusFilter}">
                     <input type="hidden" name="fromDate" value="${fromDate}">
                     <input type="hidden" name="toDate" value="${toDate}">
                     <select name="pageSize" onchange="this.form.submit()" class="form-control">
@@ -860,6 +870,7 @@
                     <input type="hidden" name="page" id="pageInput" value="${currentPage}">
                     <input type="hidden" name="phoneFilter" value="${phoneFilter}">
                     <input type="hidden" name="customerFilter" value="${customerFilter}">
+                    <input type="hidden" name="statusFilter" value="${statusFilter}">
                     <input type="hidden" name="fromDate" value="${fromDate}">
                     <input type="hidden" name="toDate" value="${toDate}">
                     <input type="hidden" name="pageSize" value="${pageSize}">
@@ -935,6 +946,9 @@
         const form = document.getElementById('filterForm');
         form.querySelectorAll('input[type="text"], input[type="date"]').forEach(input => {
             input.value = '';
+        });
+        form.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
         });
         form.querySelector('input[name="page"]').value = 1;
         form.submit();

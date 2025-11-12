@@ -24,13 +24,13 @@ public class ProductRequest {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @ManyToOne(joinColumn = "RequestID")
-    private LazyReference<Request> request;
+    @ManyToOne(joinColumn = "TaskID")
+    private LazyReference<Task> task;
 
     @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
 
-    @ManyToOne(joinColumn = "WarehouseID")
+    @ManyToOne(joinColumn = "WarehouseID", nullable = true)
     private LazyReference<Warehouse> warehouse;
 
     public Integer getProductRequestID() {
@@ -73,13 +73,12 @@ public class ProductRequest {
         this.description = description;
     }
 
-    public Request getRequest() {
-        return request.get();
+    public Task getTask() {
+        return task.get();
     }
 
-    public void setRequest(Request request) {
-
-        this.request = new LazyReference<>(Request.class, request.getRequestID());
+    public void setTask(Task task) {
+        this.task = new LazyReference<>(Task.class, task.getTaskID());
     }
 
     public Product getProduct() {
@@ -91,7 +90,7 @@ public class ProductRequest {
     }
 
     public Warehouse getWarehouse() {
-        return warehouse.get();
+        return (warehouse != null) ? warehouse.get() : null;
     }
 
     public void setWarehouse(Warehouse warehouse) {

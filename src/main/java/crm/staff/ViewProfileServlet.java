@@ -33,7 +33,7 @@ public class ViewProfileServlet extends HttpServlet {
         List<Staff> staffList = em.findWithConditions(Staff.class, cond);
 
         if (staffList == null || staffList.isEmpty()) {
-            session.setAttribute(FLASH_ERROR_KEY, "This profile has no staff information.");
+            session.setAttribute(FLASH_ERROR_KEY, "This account has no staff information.");
             String referer = request.getHeader("Referer");
             String redirectTarget = null;
             if (referer != null && !referer.isEmpty()) {

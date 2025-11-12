@@ -45,14 +45,14 @@ public class ExportProductService {
                         item.setProductStatus(ProductStatus.Exported);
                         em.merge(item, ProductWarehouse.class);
                     }
-                } catch (NumberFormatException ignored) {
-                    // skip invalid id
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             em.commit();
         } catch (Exception e) {
             em.rollback();
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

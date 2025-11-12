@@ -18,7 +18,7 @@ CREATE TABLE Type (
 CREATE TABLE Role (
                       RoleID INT PRIMARY KEY,
                       RoleName NVARCHAR(50) UNIQUE,
-                      RoleStatus ENUM('Active', 'Deactive')
+                      RoleStatus ENUM('Active', 'Deactive') DEFAULT 'Actice'
 );
 
 CREATE TABLE Account (
@@ -283,7 +283,7 @@ CREATE TABLE ProductRequest (
                                 ProductRequestID INT PRIMARY KEY,
                                 Quantity INT NOT NULL,
                                 RequestDate DATE NOT NULL,
-                                Status ENUM('Pending', 'Approved', 'Rejected', 'Finished'),
+                                Status ENUM('Pending', 'Accepted', 'Rejected', 'Finished', 'Processing') DEFAULT ('Pending'),
                                 Description NVARCHAR(255),
                                 TaskID INT NOT NULL,
                                 ProductID INT NOT NULL,

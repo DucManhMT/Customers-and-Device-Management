@@ -176,7 +176,6 @@
 <%--    <c:set var="activePage" value="cusProfile" scope="request"/>--%>
 <%--    <jsp:include page="../components/customer_sidebar.jsp"/>--%>
 <%--</c:if>--%>
-<jsp:include page="../components/sidebar.jsp"/>
 <div class="profile-container">
     <div class="profile-content">
         <div class="profile-header">
