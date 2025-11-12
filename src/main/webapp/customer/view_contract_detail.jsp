@@ -17,6 +17,7 @@
 <body>
 <c:set var="activePage" value="viewContractDetail" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
+<jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Contract Detail</h2>
