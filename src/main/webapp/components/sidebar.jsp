@@ -455,7 +455,7 @@
             <div class="category-items" id="category-warehouse">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'warehouse-action-center' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_dashboard"><span>Action Center</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"><span>Product Warehouse</span></a>

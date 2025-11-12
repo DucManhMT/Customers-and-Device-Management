@@ -84,7 +84,7 @@ public class URLConstants {
     public static final String REQUSET_DETAIL = "/technician_employee/request/detail";
 
     // WAREHOUSE KEEPER
-    public static final String WAREHOUSE_ACTION_CENTER = "/warehouse_keeper/warehousekeeper_actioncenter";
+    public static final String WAREHOUSE_DASHBOARD = "/warehouse_keeper/warehousekeeper_dashboard";
     public static final String WAREHOUSE_VIEW_PRODUCT_WAREHOUSE = "/warehouse_keeper/view_product_warehouse";
     public static final String WAREHOUSE_VIEW_PRODUCT_DETAIL = "/warehouse_keeper/view_product_detail";
     public static final String WAREHOUSE_VIEW_INVENTORY = "/warehouse_keeper/view_inventory";
