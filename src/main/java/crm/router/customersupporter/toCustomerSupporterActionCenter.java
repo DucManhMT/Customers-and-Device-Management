@@ -1,5 +1,6 @@
 package crm.router.customersupporter;
 
+import crm.common.URLConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,6 @@ import java.io.IOException;
 public class toCustomerSupporterActionCenter extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/customer_supporter/customersupporter_actioncenter.jsp").forward(req, resp);
+        req.getRequestDispatcher(URLConstants.CUSTOMER_SUPPORTER_DASHBOARD).forward(req, resp);
     }
 }

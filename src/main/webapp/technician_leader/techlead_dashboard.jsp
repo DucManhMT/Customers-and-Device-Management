@@ -162,7 +162,7 @@ uri="jakarta.tags.core" prefix="c" %>
       }
       .stat-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 1rem;
       }
       .stat {
@@ -274,35 +274,44 @@ uri="jakarta.tags.core" prefix="c" %>
 
       <!-- Mini dashboards -->
       <div class="grid">
-        <!-- Task mini dashboard -->
+        <!-- Task mini dashboard (status distribution) -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              <i class="fas fa-tasks"></i> Tasks Summary
+              <i class="fas fa-tasks"></i> Task Status Overview
             </div>
           </div>
           <div class="stat-grid">
             <div class="stat">
-              <div class="icon icon-total"><i class="fas fa-list"></i></div>
+              <div class="icon icon-page">
+                <i class="fas fa-hourglass-half"></i>
+              </div>
               <div class="stat-content">
-                <div class="stat-number">${taskTotal}</div>
-                <div class="stat-label">Total Matched</div>
+                <div class="stat-number">${taskPending}</div>
+                <div class="stat-label">Pending</div>
               </div>
             </div>
             <div class="stat">
-              <div class="icon icon-page"><i class="fas fa-file-alt"></i></div>
+              <div class="icon icon-total"><i class="fas fa-gears"></i></div>
               <div class="stat-content">
-                <div class="stat-number">${taskOnPage}</div>
-                <div class="stat-label">On Last Page</div>
+                <div class="stat-number">${taskProcessing}</div>
+                <div class="stat-label">Processing</div>
               </div>
             </div>
             <div class="stat">
-              <div class="icon icon-near">
-                <i class="fas fa-exclamation-triangle"></i>
+              <div class="icon icon-req">
+                <i class="fas fa-check-circle"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">${taskNearDue}</div>
-                <div class="stat-label">Near Due</div>
+                <div class="stat-number">${taskFinished}</div>
+                <div class="stat-label">Finished</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="icon icon-near"><i class="fas fa-ban"></i></div>
+              <div class="stat-content">
+                <div class="stat-number">${taskRejected}</div>
+                <div class="stat-label">Rejected</div>
               </div>
             </div>
             <div class="stat">
@@ -319,40 +328,43 @@ uri="jakarta.tags.core" prefix="c" %>
             <a
               href="${pageContext.request.contextPath}/technician_leader/tasks/list"
               class="btn btn-primary"
-              ><i class="fas fa-arrow-right"></i> Go to Task List</a
             >
+              <i class="fas fa-arrow-right"></i> Go to Task List
+            </a>
           </div>
         </div>
 
-        <!-- Approved request mini dashboard -->
+        <!-- Requests mini dashboard (status distribution) -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              <i class="fas fa-clipboard-check"></i> Approved Requests Summary
+              <i class="fas fa-clipboard-check"></i> Requests Status Overview
             </div>
           </div>
           <div class="stat-grid">
             <div class="stat">
-              <div class="icon icon-req"><i class="fas fa-tasks"></i></div>
+              <div class="icon icon-req">
+                <i class="fas fa-circle-check"></i>
+              </div>
               <div class="stat-content">
-                <div class="stat-number">${requestTotal}</div>
-                <div class="stat-label">Total Approved</div>
+                <div class="stat-number">${reqApproved}</div>
+                <div class="stat-label">Approved</div>
               </div>
             </div>
             <div class="stat">
-              <div class="icon icon-page"><i class="fas fa-user-plus"></i></div>
+              <div class="icon icon-page"><i class="fas fa-spinner"></i></div>
               <div class="stat-content">
-                <div class="stat-number">${requestPendingAssign}</div>
-                <div class="stat-label">Pending Assignment</div>
+                <div class="stat-number">${reqProcessing}</div>
+                <div class="stat-label">Processing</div>
               </div>
             </div>
             <div class="stat">
               <div class="icon icon-total">
-                <i class="fas fa-user-check"></i>
+                <i class="fas fa-flag-checkered"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">${requestAssigned}</div>
-                <div class="stat-label">Assigned</div>
+                <div class="stat-number">${reqFinished}</div>
+                <div class="stat-label">Finished</div>
               </div>
             </div>
           </div>
@@ -360,7 +372,7 @@ uri="jakarta.tags.core" prefix="c" %>
             <a
               href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
               class="btn btn-success"
-              ><i class="fas fa-arrow-right"></i> Go to Approved Requests</a
+              ><i class="fas fa-arrow-right"></i> Go to Requests</a
             >
           </div>
         </div>

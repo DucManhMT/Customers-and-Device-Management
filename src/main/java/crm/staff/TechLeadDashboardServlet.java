@@ -1,6 +1,9 @@
 package crm.staff;
 
 import crm.common.URLConstants;
+import crm.service_request.service.RequestService;
+import crm.task.dto.TaskMetrics;
+import crm.task.service.TaskMetricsService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,14 +26,25 @@ public class TechLeadDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Placeholder demo metrics (replace with real services)
-        request.setAttribute("taskTotal", 0); // total tasks matched
-        request.setAttribute("taskNearDue", 0); // tasks near deadline
-        request.setAttribute("taskOverdue", 0); // overdue tasks
-        request.setAttribute("taskOnPage", 0); // tasks displayed on last list page
+        // --- Task metrics (in-memory filtering) ---
+        TaskMetrics metrics = new TaskMetricsService()
+                .getMetrics();
+        request.setAttribute("taskPending", metrics.getPending());
+        request.setAttribute("taskProcessing", metrics.getProcessing());
+        request.setAttribute("taskFinished", metrics.getFinished());
+        request.setAttribute("taskRejected", metrics.getRejected());
+        request.setAttribute("taskOverdue", metrics.getOverdue());
+        request.setAttribute("taskTotal", metrics.getTotal());
 
-        request.setAttribute("requestTotal", 0); // approved requests total
-        request.setAttribute("requestPendingAssign", 0); // approved requests not yet assigned
-        request.setAttribute("requestAssigned", 0); // approved requests already assigned
+        // --- Request metrics via RequestService (Approved, Processing, Finished) ---
+        RequestService reqService = new RequestService();
+        java.util.Map<String, Integer> reqStats = reqService.statisticRequestsByStatus(null, null);
+        int approved = reqStats.getOrDefault("Approved", 0);
+        int processing = reqStats.getOrDefault("Processing", 0);
+        int finished = reqStats.getOrDefault("Finished", 0);
+        request.setAttribute("reqApproved", approved);
+        request.setAttribute("reqProcessing", processing);
+        request.setAttribute("reqFinished", finished);
 
         request.getRequestDispatcher("/technician_leader/techlead_dashboard.jsp").forward(request, response);
     }
