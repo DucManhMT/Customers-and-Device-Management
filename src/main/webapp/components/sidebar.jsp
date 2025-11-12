@@ -437,158 +437,9 @@
         <span
         ><i class="fas fa-headset category-icon"></i>Customer Supporter</span
         >
-        <i class="fas fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="category-items" id="category-supporter">
-        <ul class="sidebar-nav">
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/staff/profile"
-              ><span>View Profile</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"
-              ><span>Action Center</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'create-contract' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/customer_supporter/create_contract"
-              ><span>Create Contract</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"
-              ><span>Request Dashboard</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/customer_supporter/requests/list"
-              ><span>Request List</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/customer_supporter/feedback/management"
-              ><span>Feedback Management</span></a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Technical Leader Category -->
-    <div class="sidebar-category">
-      <div class="category-header" onclick="toggleCategory('techlead')">
-        <span
-          ><i class="fas fa-user-gear category-icon"></i>Technical Leader</span
-        >
-        <i class="fas fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="category-items" id="category-techlead">
-        <ul class="sidebar-nav">
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/staff/profile"
-              ><span>View Profile</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
-              ><span>Action Center</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_leader/employees"
-              ><span> View Technician List</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
-              ><i class="bi bi-eye"></i> View Request List</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_leader/tasks/list"
-            >
-              <span> View Task</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Technical Employee Category -->
-    <div class="sidebar-category">
-      <div class="category-header" onclick="toggleCategory('techem')">
-        <span
-          ><i class="fas fa-wrench category-icon"></i>Technical Employee</span
-        >
-        <i class="fas fa-chevron-down toggle-icon"></i>
-      </div>
-
-      <div class="category-items" id="category-techem">
-        <ul class="sidebar-nav">
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"
-              ><i class="bi bi-person-circle"></i>Action Center
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/staff/profile"
-              ><i class="bi bi-person-circle"></i>My Profile
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-              ><i class="bi bi-eye"></i> My Tasks</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
-            >
-              View Received Assignments</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/view_product_requests"
-              ><span>View Product Requests</span>
-            </a>
-          </li>
-        </ul>`
-      </div>
-    </div>
-
-            <div class="category-items" id="category-techem">
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="category-items" id="category-supporter">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
                         <a
@@ -845,29 +696,29 @@
             </div>
         </div>
 
-  <!-- Inventory Manager Category -->
-  <div class="sidebar-category">
-    <div class="category-header" onclick="toggleCategory('inventory')">
-      <span><i class="fas fa-chart-line category-icon"></i>Inventory Manager</span>
-      <i class="fas fa-chevron-down toggle-icon"></i>
-    </div>
-    <div class="category-items" id="category-inventory">
-      <ul class="sidebar-nav">
-        <li class="nav-item">
-          <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
-             href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
-             href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
-             href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
-        </li>
-      </ul>
-    </div>
-  </div>
+        <!-- Inventory Manager Category -->
+        <div class="sidebar-category">
+            <div class="category-header" onclick="toggleCategory('inventory')">
+                <span><i class="fas fa-chart-line category-icon"></i>Inventory Manager</span>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="category-items" id="category-inventory">
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
         <%--
         <!-- Task Management Category -->--%> <%--
