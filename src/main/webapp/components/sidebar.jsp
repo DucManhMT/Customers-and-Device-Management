@@ -519,13 +519,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </li>
           <li class="nav-item">
             <a
-              class="nav-link ${activePage == 'techleadProfile' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/staff/profile"
-              ><span>My Profile</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
               class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
               href="${pageContext.request.contextPath}/technician_leader/employees"
               ><span> View Technician List</span>
@@ -573,13 +566,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
               href="${pageContext.request.contextPath}/staff/profile"
               ><i class="bi bi-person-circle"></i>My Profile
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/technician_employee/create_product_request"
-              ><i class="bi bi-clipboard-plus-fill"></i> Create export request
             </a>
           </li>
           <li class="nav-item">
@@ -648,13 +634,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
               href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
               ><span>Product Warehouse</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link ${activePage == 'product-detail' ? 'active' : ''}"
-              href="${pageContext.request.contextPath}/warehouse_keeper/view_product_detail"
-              ><span>Product Detail</span></a
             >
           </li>
           <li class="nav-item">
