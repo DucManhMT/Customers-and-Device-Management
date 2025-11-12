@@ -465,31 +465,25 @@
                 <ul class="sidebar-nav">
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"><i
-                                class="bi bi-person-circle"></i>Action Center
+                           href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"></i>Action Center
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/profile"><i class="bi bi-person-circle"></i>My
-                            Profile
+                           href="${pageContext.request.contextPath}/staff/profile">My Profile
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'createProductRequests' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_employee/create_product_request"><i
-                                class="bi bi-clipboard-plus-fill"></i> Create export request </a>
+                           href="${pageContext.request.contextPath}/technician_employee/create_product_request"> Create export request </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"><i
-                                class="bi bi-eye"></i> My Tasks</a>
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"> My Tasks</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"><i
-                                class="bi bi-eye"></i> View
-                            Received Assignments</a>
+                           href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">View Received Assignments</a>
                     </li>
 
                     <li class="nav-item">
@@ -500,8 +494,7 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
-                            View
-                            <span> Received Assignments</span></a>
+                            View Received Assignments</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"

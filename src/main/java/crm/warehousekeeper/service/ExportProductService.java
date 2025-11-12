@@ -43,7 +43,10 @@ public class ExportProductService {
                         exportedItem.setProductWarehouse(item);
                         exportedItem.setWarehouseLog(whl);
                         item.setProductStatus(ProductStatus.Exported);
+                        // Update the item in the warehouse as exported
                         em.merge(item, ProductWarehouse.class);
+                        // Persist the exported item record
+                        em.persist(exportedItem, ProductExported.class);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
