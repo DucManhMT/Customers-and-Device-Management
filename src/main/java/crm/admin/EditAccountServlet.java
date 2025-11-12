@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Customer;
@@ -75,19 +76,19 @@ public class EditAccountServlet extends HttpServlet {
 
         String accountName = request.getParameter("accountName");
         if (!Validator.isValidName(accountName)) {
-            request.getSession().setAttribute("error", "Account name contains invalid characters.");
+            request.getSession().setAttribute("error", MessageConst.MSG24);
             response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
             return;
         }
         String accountEmail = request.getParameter("accountEmail");
         if (!Validator.isValidEmail(accountEmail)) {
-            request.getSession().setAttribute("error", "Invalid email format.");
+            request.getSession().setAttribute("error", MessageConst.MSG25);
             response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
             return;
         }
         String accountPhone = request.getParameter("accountPhone");
         if (!Validator.isValidPhone(accountPhone)) {
-            request.getSession().setAttribute("error", "Invalid phone number format.");
+            request.getSession().setAttribute("error", MessageConst.MSG26);
             response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
             return;
         }
@@ -102,7 +103,7 @@ public class EditAccountServlet extends HttpServlet {
                     .toList();
 
             if (!existingPhones.isEmpty()) {
-                request.getSession().setAttribute("error", "Phone number already in use by another customer.");
+                request.getSession().setAttribute("error", MessageConst.MSG27);
                 response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
                 return;
             }
@@ -116,7 +117,7 @@ public class EditAccountServlet extends HttpServlet {
                     .toList();
 
             if (!existingPhones.isEmpty()) {
-                request.setAttribute("error", "Phone number already in use by another staff.");
+                request.setAttribute("error", MessageConst.MSG28);
                 response.sendRedirect(request.getContextPath() + "/admin/account_list/edit_account?id=" + username + "&role=" + role);
                 return;
             }
@@ -159,7 +160,7 @@ public class EditAccountServlet extends HttpServlet {
         }
 
         em.merge(account, Account.class);
-        request.getSession().setAttribute("success", "Account updated successfully.");
+        request.getSession().setAttribute("success", MessageConst.MSG29);
         response.sendRedirect(request.getContextPath() + "/admin/account_list");
 
     }
