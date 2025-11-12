@@ -382,15 +382,11 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/supporter/requests/dashboard"><span>Request Dashboard</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'process-request' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/supporter/requests/process"><span>Process Request</span></a>
+                           href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"><span>Request Dashboard</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/supporter/requests/list"><span>Request List</span></a>
+                           href="${pageContext.request.contextPath}/customer_supporter/requests/list"><span>Request List</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
@@ -527,12 +523,7 @@
             <div class="category-items" id="category-warehouse">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/staff/profile"><span>View Profile</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'warehouse-action-center' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_actioncenter"><span>Action Center</span></a>
+                        <a class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_dashboard"><span>Action Center</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
