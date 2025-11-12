@@ -68,6 +68,15 @@ public class ExportInternalController extends HttpServlet {
                     for (String productWarehouseIDStr : selectedProducts) {
                         int productWarehouseID = Integer.parseInt(productWarehouseIDStr);
                         ProductWarehouse productToUpdate = em.find(ProductWarehouse.class, productWarehouseID);
+
+                        if (productToUpdate.getProductStatus().name().equals(ProductStatus.Exported.name())) {
+                            req.getSession().setAttribute("errorMessage", "Some selected products have already been exported.");
+                            em.rollback();
+                            resp.sendRedirect(req.getContextPath() + URLConstants.WAREHOUSE_EXPORT_INTERNAL);
+                            return;
+                        }
+
+
                         if (productToUpdate != null) {
                             productToUpdate.setProductStatus(ProductStatus.Exported);
                             em.merge(productToUpdate, ProductWarehouse.class);
