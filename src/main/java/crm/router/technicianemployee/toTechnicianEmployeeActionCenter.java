@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "toTechnicianEmployeeActionCenter", value = "/technician_employee/techemployee_actioncenter")
 public class toTechnicianEmployeeActionCenter extends HttpServlet {
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = null;
@@ -145,11 +145,7 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
             req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
         } finally {
             if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
             }
         }
     }

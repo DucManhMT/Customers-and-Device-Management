@@ -49,7 +49,9 @@ public class FeedbackService {
         } catch (NumberFormatException e) {
         }
 
-        try (Connection connection = DBcontext.getConnection()) {
+        Connection connection = DBcontext.getConnection();
+
+        try {
             EntityManager entityManager = new EntityManager(connection);
 
             Feedback existingFeedback = null;
@@ -214,8 +216,8 @@ public class FeedbackService {
         try (Connection connection = DBcontext.getConnection()) {
             EntityManager entityManager = new EntityManager(connection);
 
-        Page<Feedback> feedbackPage = getFeedbacksWithFilters(entityManager, page, recordsPerPage, username,
-            rating, status, fromDateStr, toDateStr, q, roleId);
+            Page<Feedback> feedbackPage = getFeedbacksWithFilters(entityManager, page, recordsPerPage, username,
+                    rating, status, fromDateStr, toDateStr, q, roleId);
 
             req.setAttribute("feedbacks", feedbackPage.getContent());
             req.setAttribute("currentPage", page);
@@ -243,7 +245,7 @@ public class FeedbackService {
         Account account = (Account) req.getSession().getAttribute("account");
         String requestIdStr = (String) req.getSession().getAttribute("requestId");
         if (requestIdStr == null) {
-            requestIdStr =(String) req.getParameter("requestId");
+            requestIdStr = (String) req.getParameter("requestId");
         }
         String username = account != null ? account.getUsername() : null;
         Integer roleId = account != null ? account.getRole().getRoleID() : null;
@@ -293,7 +295,7 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbackByUsernamePaginated(EntityManager entityManager, String username, int page,
-            int recordsPerPage) throws SQLException {
+                                                         int recordsPerPage) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> userFeedbacks = new ArrayList<>();
@@ -338,19 +340,19 @@ public class FeedbackService {
     }
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-            String username, Integer rating) throws SQLException {
+                                                  String username, Integer rating) throws SQLException {
         return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, null, null, null, null, null);
     }
 
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-            String username, Integer rating, String status) throws SQLException {
+                                                  String username, Integer rating, String status) throws SQLException {
         return getFeedbacksWithFilters(entityManager, page, recordsPerPage, username, rating, status, null, null, null, null);
     }
 
 
     public Page<Feedback> getFeedbacksWithFilters(EntityManager entityManager, int page, int recordsPerPage,
-            String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
+                                                  String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> filteredFeedbacks = new ArrayList<>();
@@ -474,15 +476,15 @@ public class FeedbackService {
         }
     }
 
-   public void deleteFeedback(EntityManager entityManager, Integer feedbackId) throws SQLException {
-       try {
-           Feedback feedback = entityManager.find(Feedback.class, feedbackId);
-           if (feedback != null) {
-               entityManager.remove(feedback, Feedback.class);
-           }
-       } catch (Exception e) {
-           e.printStackTrace();
-           throw new SQLException("Failed to delete feedback", e);
-       }
-   }
+    public void deleteFeedback(EntityManager entityManager, Integer feedbackId) throws SQLException {
+        try {
+            Feedback feedback = entityManager.find(Feedback.class, feedbackId);
+            if (feedback != null) {
+                entityManager.remove(feedback, Feedback.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to delete feedback", e);
+        }
+    }
 }

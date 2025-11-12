@@ -27,7 +27,7 @@ public class ViewTaskDetailController extends HttpServlet {
         try {
             handle(req, resp);
         } catch (Exception e) {
-            req.setAttribute(ATTR_ERROR, "Unexpected error: " + e.getMessage());
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG15);
             try {
                 req.getRequestDispatcher(VIEW).forward(req, resp);
             } catch (Exception ignored) {
@@ -53,7 +53,7 @@ public class ViewTaskDetailController extends HttpServlet {
     private void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String taskIdParam = req.getParameter("taskId");
         if (taskIdParam == null || taskIdParam.isBlank()) {
-            req.setAttribute(ATTR_ERROR, "taskId is required");
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG27);
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;
         }
@@ -62,7 +62,7 @@ public class ViewTaskDetailController extends HttpServlet {
         try {
             taskId = Integer.parseInt(taskIdParam.trim());
         } catch (NumberFormatException nfe) {
-            req.setAttribute(ATTR_ERROR, "Invalid taskId");
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG28);
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;
         }
@@ -70,7 +70,7 @@ public class ViewTaskDetailController extends HttpServlet {
         TaskService taskService = new TaskService();
         Task task = taskService.getTaskById(taskId);
         if (task == null) {
-            req.setAttribute(ATTR_ERROR, "Task not found");
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG29);
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;
         }

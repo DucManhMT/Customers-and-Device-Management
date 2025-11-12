@@ -104,7 +104,6 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             if (connection != null) {
                 try {
                     connection.setAutoCommit(true);
-                    connection.close();
                 } catch (Exception ignore) {
                 }
             }

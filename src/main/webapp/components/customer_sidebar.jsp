@@ -220,10 +220,6 @@
             <div class="category-items" id="category-auth">
                 <ul class="sidebar-nav">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'staff-login' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/auth/staff_login"><span>Staff Login</span></a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'customer-login' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/auth/customer_login"><span>Customer Login</span></a>
                     </li>
@@ -267,14 +263,7 @@
                         <a class="nav-link ${activePage == 'customer-profile' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/customer/profile?id=${account.username}"><span>View Profile</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'create-feedback' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer/feedback/create"><span>Create Feedback</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'myRequest' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/customer/requests">My Request</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/customer/feedback/list">My Feedback</a>

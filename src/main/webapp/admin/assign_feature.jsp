@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -94,13 +94,17 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
 
         @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .page-header h2 {
@@ -108,7 +112,7 @@
             z-index: 1;
             font-weight: 700;
             margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .page-header p {
@@ -219,7 +223,7 @@
             right: -10px;
             bottom: 0;
             width: 10px;
-            background: linear-gradient(to right, rgba(0,0,0,0.05), transparent);
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.05), transparent);
             pointer-events: none;
         }
 
@@ -242,7 +246,7 @@
         .permission-table tbody tr:hover {
             background: linear-gradient(to right, #f8f9fa, #e3f2fd);
             transform: scale(1.002);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         /* Feature Name */
@@ -278,14 +282,14 @@
             font-weight: 700;
             font-size: 13px;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
             white-space: nowrap;
         }
 
         .role-badge:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
 
         /* Specific role colors */
@@ -361,7 +365,7 @@
         .action-buttons {
             position: sticky;
             bottom: 0;
-            background: linear-gradient(to top, white, rgba(255,255,255,0.98));
+            background: linear-gradient(to top, white, rgba(255, 255, 255, 0.98));
             padding: 24px;
             border-top: 3px solid #e9ecef;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
@@ -452,8 +456,12 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
         }
 
         /* Animations */
@@ -508,8 +516,8 @@
 <body>
 <!-- Include Header & Sidebar -->
 <c:set var="activePage" value="assignfeature" scope="request"/>
-<jsp:include page="/components/header.jsp" />
-<jsp:include page="/components/sidebar.jsp" />
+<jsp:include page="/components/header.jsp"/>
+<jsp:include page="/components/sidebar.jsp"/>
 
 <!-- Success Banner -->
 <c:if test="${not empty sessionScope.successMessage}">
@@ -566,16 +574,16 @@
                             <i class="bi bi-list-task me-2"></i>Feature
                         </th>
                         <%-- Count non-Admin roles --%>
-                        <c:set var="nonAdminOrCustomerRoleCount" value="0" />
+                        <c:set var="nonAdminOrCustomerRoleCount" value="0"/>
                         <c:forEach var="role" items="${roles}">
-                            <c:if test="${role.roleName != 'Admin' || role.roleName !='Customer'}">
-                                <c:set var="nonAdminRoleCount" value="${nonAdminRoleCount + 1}" />
+                            <c:if test="${role.roleName != 'Admin'}">
+                                <c:set var="nonAdminRoleCount" value="${nonAdminRoleCount + 1}"/>
                             </c:if>
                         </c:forEach>
 
                         <%-- Display only non-Admin roles --%>
                         <c:forEach var="role" items="${roles}" varStatus="roleStatus">
-                            <c:if test="${role.roleName != 'Admin'&& role.roleName !='Customer'}">
+                            <c:if test="${role.roleName != 'Admin'}">
                                 <th>
                                     <div>
                                         <span class="role-badge role-${role.roleName}">${role.roleName}</span>
@@ -618,20 +626,20 @@
 
                                         <%-- Loop through each role (skip Admin) --%>
                                     <c:forEach var="role" items="${roles}">
-                                        <c:if test="${role.roleName != 'Admin' && role.roleName !='Customer'}">
+                                        <c:if test="${role.roleName != 'Admin'}">
                                             <td class="text-center">
                                                     <%-- Check if this role has this feature --%>
                                                     <%-- roleFeatureMap is Map<Integer, List<Feature>> --%>
-                                                <c:set var="hasPermission" value="false" />
+                                                <c:set var="hasPermission" value="false"/>
 
                                                     <%-- Get features list for this roleID (Integer key) --%>
-                                                <c:set var="featuresForRole" value="${roleFeatureMap[role.roleID]}" />
+                                                <c:set var="featuresForRole" value="${roleFeatureMap[role.roleID]}"/>
 
                                                     <%-- Check if feature exists in the list --%>
                                                 <c:if test="${not empty featuresForRole}">
                                                     <c:forEach var="roleFeature" items="${featuresForRole}">
                                                         <c:if test="${roleFeature.featureID == feature.featureID}">
-                                                            <c:set var="hasPermission" value="true" />
+                                                            <c:set var="hasPermission" value="true"/>
                                                         </c:if>
                                                     </c:forEach>
                                                 </c:if>
@@ -678,11 +686,11 @@
 
 <script>
     // Auto hide banners after 5 seconds
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Success banner
         const successBanner = document.getElementById('successBanner');
         if (successBanner) {
-            setTimeout(function() {
+            setTimeout(function () {
                 successBanner.style.animation = 'slideUp 0.4s ease-out forwards';
                 setTimeout(() => successBanner.remove(), 400);
             }, 5000);
@@ -691,7 +699,7 @@
         // Error banner
         const errorBanner = document.getElementById('errorBanner');
         if (errorBanner) {
-            setTimeout(function() {
+            setTimeout(function () {
                 errorBanner.style.animation = 'slideUp 0.4s ease-out forwards';
                 setTimeout(() => errorBanner.remove(), 400);
             }, 5000);
@@ -710,11 +718,11 @@
             scrollHint.style.display = 'block';
 
             // Hide hint when user scrolls
-            container.addEventListener('scroll', function() {
+            container.addEventListener('scroll', function () {
                 if (this.scrollLeft > 50) {
                     scrollHint.style.display = 'none';
                 }
-            }, { once: true });
+            }, {once: true});
 
             // Auto hide after 5 seconds
             setTimeout(() => {
@@ -792,7 +800,7 @@
     // Form submit confirmation and process
     const form = document.getElementById('permissionForm');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
 
             if (confirm('✅ Are you sure you want to save these permission changes? Changes will be applied immediately.')) {
@@ -814,7 +822,7 @@
 
     // Add visual feedback when checking/unchecking
     document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             const row = this.closest('tr');
             const cell = this.closest('td');
 
