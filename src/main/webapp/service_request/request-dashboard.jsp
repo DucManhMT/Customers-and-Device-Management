@@ -101,11 +101,82 @@
     <!-- Chart -->
     <div class="card p-4 shadow-sm">
         <h5 class="mb-3">Visualization</h5>
-        <div id="chartContainer" style="height: 400px; width: 100%;"></div>
+        <div id="chartContainer" style="height: 400px; width: 100%;">
+            <!-- Chart -->
+            <div class="card p-4 shadow-sm">
+                <h5 class="mb-3">Visualization</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="pieChart" style="height:400px; width:100%;"></canvas>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div id="chartLegend" class="ms-3"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
 
+    const statsData = {
+        <c:forEach var="entry" items="${stats}">
+        "<c:out value='${entry.key}'/>": <c:out value='${entry.value}'/>,
+        </c:forEach>
+    };
+
+
+    delete statsData['All'];
+
+    const labels = Object.keys(statsData);
+    const values = Object.values(statsData);
+
+
+    const colors = [
+        '#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+    ];
+
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors.slice(0, labels.length),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {font: {size: 14}}
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const total = context.chart._metasets[0].total;
+                            const value = context.raw;
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ` + value + " - " + +percentage + "%"
+                                ;
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Status Distribution (%)',
+                    font: {size: 18, weight: 'bold'}
+                }
+            }
+        }
+    });
+</script>
 <script>
     function resetFilters(e, btn) {
         if (e) e.preventDefault();

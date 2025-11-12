@@ -62,6 +62,7 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_REQUEST_DETAIL = "/customer_supporter/requests/detail";
     public static final String CUSTOMER_SUPPORTER_REQUEST_LIST = "/customer_supporter/requests/list";
     public static final String CUSTOMER_SUPPORTER_VIEW_PROFILE = "/customer_supporter/profile";
+    public static final String CUSTOMER_SUPPORTER_DASHBOARD = "/customer_supporter/dashboard";
 
     // TECHNICAL LEADER
     public static final String TECHLEAD_ACTION_CENTER = "/technician_leader/techlead_actioncenter";
@@ -75,6 +76,7 @@ public class URLConstants {
     public static final String TECHLEAD_TASK_LIST = "/technician_leader/tasks/list";
     public static final String TECHLEAD_FINISH_REQUEST = "/technician_leader/request/finish";
     public static final String TECHLEAD_REQUEST_DETAIL = "/technician_leader/requests/detail";
+    public static final String TECHLEAD_DASHBOARD = "/technician_leader/dashboard";
 
     // TECHNICAL EMPLOYEE
     public static final String TECHEM_ACTION_CENTER = "/technician_employee/techemployee_actioncenter";
@@ -107,7 +109,7 @@ public class URLConstants {
     public static final String WAREHOUSE_VIEW_EXPORTED_PRODUCT = "/warehouse_keeper/view_exported_product";
 
     // INVENTORY MANAGER
-    public static final String INVENTORY_ACTION_CENTER = "/inventory_manager/inventorymanager_actioncenter";
+    public static final String INVENTORY_DASHBOARD = "/inventory_manager/inventorymanager_dashboard";
     public static final String INVENTORY_VIEW_TRANSFER_REQUESTS = "/inventory_manager/view_transfer_requests";
     public static final String INVENTORY_VIEW_PRODUCT_REQUESTS = "/inventory_manager/view_product_requests";
 
@@ -155,7 +157,7 @@ public class URLConstants {
             List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
             List<String> urls = getAllUrls();
             for (Feature feature : features) {
-                if (urls!=null && !urls.contains(feature.getFeatureURL())) {
+                if (urls != null && !urls.contains(feature.getFeatureURL())) {
                     if (roleFeatures != null) {
                         for (RoleFeature rf : roleFeatures) {
                             if (rf.getFeature().getFeatureID().equals(feature.getFeatureID())) {

@@ -33,7 +33,7 @@ public class StaffRequestTimeline extends HttpServlet {
             if (request == null) {
                 throw new IllegalArgumentException(MessageConst.MSG14);
             }
-            List<RequestLog> logs = requestLogService.getLogsByRequestId(requestId);
+            List<RequestLog> logs = request.getLogs();
             req.setAttribute("logs", logs);
             req.setAttribute("request", request);
 
