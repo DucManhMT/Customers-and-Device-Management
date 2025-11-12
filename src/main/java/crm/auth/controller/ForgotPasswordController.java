@@ -2,6 +2,7 @@ package crm.auth.controller;
 
 import crm.auth.service.NewPasswordService;
 import crm.common.model.Customer;
+import crm.common.model.Staff;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import jakarta.servlet.ServletException;
@@ -25,12 +26,20 @@ public class ForgotPasswordController extends HttpServlet {
         conditions.put("account", username);
         try {
             List<Customer> customers =  em.findWithConditions(Customer.class, conditions);
-            if (customers == null || customers.isEmpty()) {
+            List<Staff> staffs = em.findWithConditions(Staff.class, conditions);
+            if (staffs.isEmpty() && customers.isEmpty()) {
                 req.setAttribute("error", "Username does not exist.");
                 req.getRequestDispatcher("/auth/forgot_password").forward(req, resp);
                 return;
             }
-            String email = customers.get(0).getEmail();
+            String email = "";
+            if (!staffs.isEmpty()) {
+                email = staffs.get(0).getEmail();
+            }
+            if (!customers.isEmpty()) {
+                email = customers.get(0).getEmail();
+            }
+
             boolean emailSent = NewPasswordService.sendNewPassword(email);
             if (emailSent) {
                 req.setAttribute("success", "A new password has been sent to your email.");
