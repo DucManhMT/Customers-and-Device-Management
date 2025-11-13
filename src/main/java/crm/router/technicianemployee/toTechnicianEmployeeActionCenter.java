@@ -62,7 +62,7 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                 return;
             }
 
-            List<Task> allTasks = entityManager.findAll(Task.class);
+             List<Task> allTasks = entityManager.findAll(Task.class);
             List<Task> myTasks = allTasks.stream()
                     .filter(task -> task != null)
                     .filter(task -> task.getAssignTo() != null)
