@@ -15,6 +15,12 @@ public class MessageConst {
     public static final String MSG21 = "Both start time and end time are required!";
     public static final String MSG22 = "Start time cannot be after end time!";
     public static final String MSG23 = "Invalid date format!";
+    public static final String MSG24 = "customerId is required";
+    public static final String MSG25 = "Invalid customerId";
+    public static final String MSG26 = "Customer not found";
+    public static final String MSG27 = "taskId is required";
+    public static final String MSG28 = "Invalid taskId";
+    public static final String MSG29 = "Task not found";
 
     //Admin
     public static final String MSG24 = "Account name contains invalid characters";
