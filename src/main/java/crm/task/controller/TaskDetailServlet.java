@@ -6,10 +6,10 @@ import crm.common.model.AccountRequest;
 import crm.common.model.Customer;
 import crm.common.model.Account;
 import crm.common.model.Contract;
+import crm.common.model.Staff;
 import crm.common.model.Task;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.task.service.TaskService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,32 +39,49 @@ public class TaskDetailServlet extends HttpServlet {
 
     private void handleTaskDetail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String requestIdStr = request.getParameter("id");
-        if (requestIdStr == null) {
+        String taskIdStr = request.getParameter("id");
+        if (taskIdStr == null) {
             Object attr = request.getAttribute("id");
             if (attr != null)
-                requestIdStr = attr.toString();
+                taskIdStr = attr.toString();
         }
 
-        if (requestIdStr == null || requestIdStr.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Request ID is required");
+        if (taskIdStr == null || taskIdStr.trim().isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Task ID is required");
             return;
         }
 
         try (Connection connection = DBcontext.getConnection()) {
-            int requestId = Integer.parseInt(requestIdStr);
+            int taskId = Integer.parseInt(taskIdStr);
             EntityManager entityManager = new EntityManager(connection);
 
-            Request requestObj = entityManager.find(Request.class, requestId);
-            if (requestObj == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Request not found");
+            Account account = (Account) request.getSession().getAttribute("account");
+            if (account == null) {
+                response.sendRedirect(request.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
                 return;
             }
 
-            // Get Task associated with this Request
-            TaskService taskService = new TaskService();
-            List<Task> tasks = taskService.getTasksByRequestId(requestId);
-            Task taskObj = tasks.isEmpty() ? null : tasks.get(0);
+            List<Staff> allStaff = entityManager.findAll(Staff.class);
+            Staff currentStaff = allStaff.stream()
+                    .filter(s -> s.getAccount() != null && account.getUsername().equals(s.getAccount().getUsername()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (currentStaff == null) {
+                request.getSession().setAttribute("errorMessage", "Staff record not found for current user.");
+                response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
+                return;
+            }
+
+            Task taskObj = entityManager.find(Task.class, taskId);
+            if (taskObj == null || taskObj.getAssignTo() == null || 
+                !currentStaff.getStaffID().equals(taskObj.getAssignTo().getStaffID())) {
+                request.getSession().setAttribute("errorMessage", "Task not found or not assigned to you.");
+                response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
+                return;
+            }
+
+            Request requestObj = taskObj.getRequest();
 
             Customer customer = null;
             Contract contract = null;
@@ -79,7 +96,7 @@ public class TaskDetailServlet extends HttpServlet {
             List<Account> assignedAccounts = allAccountRequests.stream()
                     .filter(ar -> ar.getRequest() != null &&
                             ar.getRequest().getRequestID() != null &&
-                            ar.getRequest().getRequestID().equals(requestId))
+                            ar.getRequest().getRequestID().equals(requestObj.getRequestID()))
                     .filter(ar -> ar.getAccount() != null && ar.getAccount().getRole() != null &&
                             ar.getAccount().getRole().getRoleID() == 6)
                     .map(AccountRequest::getAccount)
@@ -94,7 +111,7 @@ public class TaskDetailServlet extends HttpServlet {
             request.getRequestDispatcher("/technician_employee/task_detail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
