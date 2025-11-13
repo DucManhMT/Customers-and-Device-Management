@@ -1,6 +1,7 @@
 package crm.contract.controller;
 
 import crm.common.URLConstants;
+import crm.common.model.Account;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.contract.service.ContractCodeGenerator;
@@ -30,6 +31,16 @@ import java.util.Map;
 public class CreateContractServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        String username = request.getParameter("id");
+        Account account = em.find(Account.class, username);
+        Map<String, Object> cond = new HashMap<>();
+        cond.put("account", username);
+        List<Customer> customers = em.findWithConditions(Customer.class, cond);
+        if (customers != null && !customers.isEmpty()) {
+            request.setAttribute("customerName", customers.get(0).getCustomerName());
+        }
+        request.setAttribute("account", account);
         request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
     }
 
@@ -37,6 +48,7 @@ public class CreateContractServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Part filePart = request.getPart("contractImage");
+
 
         if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty()) {
             request.setAttribute("error", "Please select a PDF file to upload.");

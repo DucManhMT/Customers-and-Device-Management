@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = {URLConstants.TECHEM_UPDATE_TASK_STATUS})
+@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = { URLConstants.TECHEM_UPDATE_TASK_STATUS })
 public class UpdateTaskStatusServlet extends HttpServlet {
 
     @Override
@@ -78,7 +78,8 @@ public class UpdateTaskStatusServlet extends HttpServlet {
 
                 connection.commit();
 
-                request.getSession().setAttribute("successMessage", "Task #" + taskId + " has been marked as finished successfully!");
+                request.getSession().setAttribute("successMessage",
+                        "Task #" + taskId + " has been marked as finished successfully!");
                 response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");

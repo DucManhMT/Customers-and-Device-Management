@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "toTechnicianEmployeeActionCenter", value = "/technician_employee/techemployee_actioncenter")
 public class toTechnicianEmployeeActionCenter extends HttpServlet {
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection connection = null;
@@ -62,7 +62,7 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                 return;
             }
 
-             List<Task> allTasks = entityManager.findAll(Task.class);
+            List<Task> allTasks = entityManager.findAll(Task.class);
             List<Task> myTasks = allTasks.stream()
                     .filter(task -> task != null)
                     .filter(task -> task.getAssignTo() != null)
@@ -76,7 +76,7 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                     .filter(task -> currentStaff.getStaffID().equals(task.getAssignTo().getStaffID()))
                     .filter(task -> task.getStatus() == TaskStatus.Pending)
                     .collect(Collectors.toList());
-            
+
             int pendingTasksCount = pendingReceivedTasks.size();
 
             int totalTasks = myTasks.size();
@@ -120,7 +120,7 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                         if (dt1 == null && dt2 == null) return 0;
                         if (dt1 == null) return 1;
                         if (dt2 == null) return -1;
-                        return dt2.compareTo(dt1); 
+                        return dt2.compareTo(dt1);
                     })
                     .limit(5)
                     .collect(Collectors.toList());
@@ -148,6 +148,6 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
             req.setAttribute("todayTasks", 0);
             req.setAttribute("recentTasks", Collections.emptyList());
             req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
-        } 
+        }
     }
 }

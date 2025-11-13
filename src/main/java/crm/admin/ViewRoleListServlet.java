@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Role;
 import crm.common.model.Account;
@@ -124,7 +125,7 @@ public class ViewRoleListServlet extends HttpServlet {
         String roleIdParam = request.getParameter("id");
 
         if (roleIdParam == null || action == null) {
-            request.getSession().setAttribute("error", "Invalid request parameters.");
+            request.getSession().setAttribute("error", MessageConst.MSG34);
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
             return;
         }
@@ -135,7 +136,7 @@ public class ViewRoleListServlet extends HttpServlet {
             Role role = em.find(Role.class, roleId);
 
             if (role == null) {
-                request.getSession().setAttribute("error", "Role not found.");
+                request.getSession().setAttribute("error", MessageConst.MSG35);
                 response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_VIEW_ROLE_LIST);
                 return;
             }
@@ -150,10 +151,10 @@ public class ViewRoleListServlet extends HttpServlet {
                 if (assignedAccountCount == 0) {
                     role.setRoleStatus(RoleStatus.Deactive);
                     em.merge(role, Role.class);
-                    request.getSession().setAttribute("roleSuccess", "Role deactivated successfully.");
+                    request.getSession().setAttribute("roleSuccess", MessageConst.MSG36);
                 } else {
                     request.getSession().setAttribute("error",
-                            "This role can't be deactivated because it is assigned to one or more accounts.");
+                            MessageConst.MSG37);
                 }
             }
 
@@ -161,12 +162,12 @@ public class ViewRoleListServlet extends HttpServlet {
             else if ("activate".equals(action)) {
                 role.setRoleStatus(RoleStatus.Active);
                 em.merge(role, Role.class);
-                request.getSession().setAttribute("roleSuccess", "Role activated successfully.");
+                request.getSession().setAttribute("roleSuccess", MessageConst.MSG38);
             }
 
             // Nếu action không hợp lệ
             else {
-                request.getSession().setAttribute("error", "Invalid action.");
+                request.getSession().setAttribute("error", MessageConst.MSG39);
             }
 
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package crm.staff;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
@@ -26,7 +27,7 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String customerIdParam = req.getParameter("customerId");
         if (customerIdParam == null || customerIdParam.isBlank()) {
-            req.setAttribute(ATTR_ERROR, "customerId is required");
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG72);
             forward(req, resp);
             return;
         }
@@ -34,7 +35,7 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
         try {
             customerId = Integer.parseInt(customerIdParam.trim());
         } catch (NumberFormatException e) {
-            req.setAttribute(ATTR_ERROR, "Invalid customerId");
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG73);
             forward(req, resp);
             return;
         }
@@ -42,7 +43,7 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Customer customer = em.find(Customer.class, customerId);
         if (customer == null) {
-            req.setAttribute(ATTR_ERROR, "Customer not found");
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG74);
             forward(req, resp);
             return;
         }
@@ -52,7 +53,6 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
         contractCond.put("customer", customer.getCustomerID());
         List<Contract> contracts = em.findWithConditions(Contract.class, contractCond);
 
-        // Safely resolve nested account status to avoid lazy-loading exceptions in JSP
         String customerAccountStatus = null;
         try {
             crm.common.model.Account acc = customer.getAccount();
@@ -81,32 +81,16 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
         forward(req, resp);
     }
 
-    private void forward(HttpServletRequest req, HttpServletResponse resp) {
-        try {
-            req.getRequestDispatcher(VIEW).forward(req, resp);
-        } catch (Exception ex) {
-            // Log & emit minimal error output to avoid silent blank page
-            logger.severe(() -> "Forward failed: " + ex.getClass().getName() + ": " + ex.getMessage());
-            try {
-                resp.reset(); // clear any partial output
-                resp.setContentType("text/plain;charset=UTF-8");
-                resp.getWriter().write("Failed to render customer detail page. " +
-                        (req.getAttribute(ATTR_ERROR) != null ? ("Error: " + req.getAttribute(ATTR_ERROR)) : "") +
-                        " Cause: " + ex.getMessage());
-            } catch (IOException ioEx) {
-                logger.severe(() -> "Secondary failure writing error output: " + ioEx.getMessage());
-            }
-        }
+    private void forward(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        req.getRequestDispatcher(VIEW).forward(req, resp);
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            doGet(req, resp);
-        } catch (Exception e) {
-            logger.severe(() -> "doPost failed: " + e.getClass().getName() + ": " + e.getMessage());
-            req.setAttribute(ATTR_ERROR, "Unexpected error: " + e.getMessage());
-            forward(req, resp);
-        }
+
+        doGet(req, resp);
+
     }
 }

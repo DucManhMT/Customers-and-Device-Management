@@ -18,7 +18,7 @@ CREATE TABLE Type (
 CREATE TABLE Role (
                       RoleID INT PRIMARY KEY,
                       RoleName NVARCHAR(50) UNIQUE,
-                      RoleStatus ENUM('Active', 'Deactive') DEFAULT 'Actice'
+                      RoleStatus ENUM('Active', 'Deactive') DEFAULT 'Active'
 );
 
 CREATE TABLE Account (
@@ -144,7 +144,7 @@ CREATE TABLE Contract (
 CREATE TABLE Request (
                          RequestID INT PRIMARY KEY,
                          RequestDescription NVARCHAR(255),
-                         RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing'),
+                         RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing','Tech_Finished') DEFAULT 'Pending',
                          StartDate DATETIME NOT NULL,
                          FinishedDate DATETIME,
                          Note NVARCHAR(255),
