@@ -1,5 +1,6 @@
 package crm.contract.controller;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Contract;
@@ -40,7 +41,7 @@ public class ViewContractHistoryServlet extends HttpServlet {
         List<Customer> customers = em.findWithConditions(Customer.class, cond);
 
         if (account == null || customers == null || customers.isEmpty()) {
-            String errorMsg = "This account has no customer information.";
+            String errorMsg = MessageConst.MSG44;
             session.setAttribute(FLASH_ERROR_KEY, errorMsg);
 
             // Lấy Referer và validate host để tránh open-redirect
