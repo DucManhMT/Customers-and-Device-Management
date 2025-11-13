@@ -2,7 +2,8 @@
 04:03 AM Categorized Sidebar Component for CRM System --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="crm.common.URLConstants" %>
+<%@ page import="crm.filter.service.PermissionService" %>
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -199,52 +200,58 @@
 </style>
 
 <div id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-        <c:if test="${not empty sessionScope.flashErrorMessage}">
-            <div class="alert alert-warning" role="alert">
-                <c:out value="${sessionScope.flashErrorMessage}"/>
-            </div>
-            <c:remove var="flashErrorMessage" scope="session"/>
-        </c:if>
-        <!-- Authentication Category -->
-        <div class="sidebar-category">
-            <div class="category-header" onclick="toggleCategory('auth')">
-                <span><i class="fas fa-lock category-icon"></i>Authentication</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <div class="category-items" id="category-auth">
-                <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'staff-login' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/auth/staff_login"
-                        ><span>Staff Login</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-login' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/auth/customer_login"
-                        ><span>Customer Login</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-register' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/auth/customer_register"
-                        ><span>Customer Register</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'forgot-password' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/auth/forgot_password"
-                        ><span>Forgot Password</span></a
-                        >
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <div class="sidebar-inner">
+    <c:if test="${not empty sessionScope.flashErrorMessage}">
+      <div class="alert alert-warning" role="alert">
+        <c:out value="${sessionScope.flashErrorMessage}" />
+      </div>
+      <c:remove var="flashErrorMessage" scope="session" />
+    </c:if>
+    <!-- Authentication Category -->
+    <div class="sidebar-category">
+      <div class="category-header" onclick="toggleCategory('auth')">
+        <span><i class="fas fa-lock category-icon"></i>Authentication</span>
+        <i class="fas fa-chevron-down toggle-icon"></i>
+      </div>
+      <div class="category-items" id="category-auth">
+        <ul class="sidebar-nav">
+          <li class="nav-item">
+            <a
+              class="nav-link ${activePage == 'staff-login' ? 'active' : ''}"
+              href="${pageContext.request.contextPath}/auth/staff_login"
+              ><span>Staff Login</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link ${activePage == 'customer-login' ? 'active' : ''}"
+              href="${pageContext.request.contextPath}/auth/customer_login"
+              ><span>Customer Login</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link ${activePage == 'customer-register' ? 'active' : ''}"
+              href="${pageContext.request.contextPath}/auth/customer_register"
+              ><span>Customer Register</span></a
+            >
+          </li>
+            <li class="nav-item" style=${sessionScope.account != null ? 'display:block;' : 'display:none;'}>
+                <a class="nav-link ${activePage == 'forgot-password' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/auth/change_password"
+                ><span>Change Password</span></a
+                >
+            </li>
+          <li class="nav-item">
+            <a
+              class="nav-link ${activePage == 'forgot-password' ? 'active' : ''}"
+              href="${pageContext.request.contextPath}/auth/forgot_password"
+              ><span>Forgot Password</span></a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
 
         <!-- Admin Category -->
         <div class="sidebar-category">
@@ -654,6 +661,13 @@
                     </li>
                     <li class="nav-item">
                         <a
+                                class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
+                        ><span>Import Product</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
                                 class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
                         ><span>Create Transfer Request</span></a
@@ -694,6 +708,13 @@
                         ><span>Imported Products</span></a
                         >
                     </li>
+                    <li class="nav-item">
+                        <a
+                                class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"
+                        ><span>Exported Products</span></a
+                        >
+                    </li>
                 </ul>
             </div>
         </div>
@@ -706,7 +727,8 @@
             </div>
             <div class="category-items" id="category-inventory">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
                     </li>

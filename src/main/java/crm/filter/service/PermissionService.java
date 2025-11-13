@@ -20,27 +20,30 @@ public class PermissionService {
         loadPermissions();
     }
 
-    public static boolean isPublicUrl(String uri){
+    public static boolean isPublicUrl(String uri) {
         List<String> publicURLs = List.of(
                 URLConstants.HOME,
                 URLConstants.AUTH_CUSTOMER_LOGIN,
                 URLConstants.AUTH_CUSTOMER_REGISTER,
                 URLConstants.AUTH_STAFF_LOGIN,
                 URLConstants.AUTH_FORGOT_PASSWORD,
+                URLConstants.AUTH_CHANGE_PASSWORD,
                 URLConstants.AUTH_LOGOUT,
-                URLConstants.UNAUTHORIZED
-        );
+                URLConstants.UNAUTHORIZED);
         return publicURLs.contains(uri);
     }
 
-    public static boolean isProtectedUrl(String uri){
+    public static boolean isProtectedUrl(String uri) {
         List<String> protectedURLs = URLConstants.getAllUrls().stream()
                 .filter(url -> !isPublicUrl(url))
                 .toList();
         return protectedURLs.contains(uri);
     }
 
-    public static boolean hasAccess(Role role, String uri){
+    public static boolean hasAccess(Role role, String uri) {
+        if (role.getRoleName().equals("Admin")) {
+            return true; // Admin has access to all features
+        }
         List<Feature> features = roleFeatureMap.get(role);
         if (features != null) {
             for (Feature feature : features) {
@@ -52,13 +55,12 @@ public class PermissionService {
         return false;
     }
 
-    public static void reloadPermissions(){
+    public static void reloadPermissions() {
         roleFeatureMap.clear();
         loadPermissions();
     }
 
-
-    private static void loadPermissions(){
+    private static void loadPermissions() {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         List<RoleFeature> roleFeatures = em.findAll(RoleFeature.class);
         for (RoleFeature rf : roleFeatures) {

@@ -26,6 +26,7 @@ public class ExportProductService {
             em.beginTransaction();
             em.persist(whl, WarehouseLog.class);
             if (numberOfItems == productRequest.getQuantity()) {
+                productRequest.setStatus(ProductRequestStatus.Finished);
                 productRequest.setQuantity(0);
                 em.merge(productRequest, ProductRequest.class);
             } else if (productRequest.getQuantity() > numberOfItems) {

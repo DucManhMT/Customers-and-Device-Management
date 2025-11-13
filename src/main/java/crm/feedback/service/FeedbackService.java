@@ -58,10 +58,10 @@ public class FeedbackService {
                 try {
                     int reqId = Integer.parseInt(requestIdStr.trim());
                     existingFeedback = feedbackDAO.findFeedbackByRequestId(reqId);
-                    
-                    if (existingFeedback != null && 
-                        existingFeedback.getCustomerID() != null && 
-                        !existingFeedback.getCustomerID().equals(username)) {
+
+                    if (existingFeedback != null &&
+                            existingFeedback.getCustomerID() != null &&
+                            !existingFeedback.getCustomerID().equals(username)) {
                         existingFeedback = null;
                     }
                 } catch (Exception ex) {
@@ -205,7 +205,7 @@ public class FeedbackService {
 
         try {
             Page<Feedback> feedbackPage = getFeedbacksWithFilters(page, recordsPerPage, username,
-                rating, status, fromDateStr, toDateStr, q, roleId);
+                    rating, status, fromDateStr, toDateStr, q, roleId);
 
             req.setAttribute("feedbacks", feedbackPage.getContent());
             req.setAttribute("currentPage", page);
@@ -233,7 +233,7 @@ public class FeedbackService {
         Account account = (Account) req.getSession().getAttribute("account");
         String requestIdStr = (String) req.getSession().getAttribute("requestId");
         if (requestIdStr == null) {
-            requestIdStr =(String) req.getParameter("requestId");
+            requestIdStr = (String) req.getParameter("requestId");
         }
         String username = account != null ? account.getUsername() : null;
         Integer roleId = account != null ? account.getRole().getRoleID() : null;
@@ -243,7 +243,7 @@ public class FeedbackService {
             try {
                 int reqId = Integer.parseInt(requestIdStr.trim());
                 Feedback feedback = feedbackDAO.findFeedbackByRequestId(reqId);
-                
+
                 if (feedback == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Feedback not found for this request");
                     return;
@@ -318,15 +318,14 @@ public class FeedbackService {
         return getFeedbacksWithFilters(page, recordsPerPage, username, rating, null, null, null, null, null);
     }
 
-
     public Page<Feedback> getFeedbacksWithFilters(int page, int recordsPerPage,
             String username, Integer rating, String status) throws SQLException {
         return getFeedbacksWithFilters(page, recordsPerPage, username, rating, status, null, null, null, null);
     }
 
-
     public Page<Feedback> getFeedbacksWithFilters(int page, int recordsPerPage,
-            String username, Integer rating, String status, String fromDateStr, String toDateStr, String q, Integer roleId) throws SQLException {
+            String username, Integer rating, String status, String fromDateStr, String toDateStr, String q,
+            Integer roleId) throws SQLException {
         try {
             List<Feedback> allFeedbacks = feedbackDAO.findActiveFeedbacks();
             List<Feedback> filteredFeedbacks = new ArrayList<>();
@@ -369,7 +368,8 @@ public class FeedbackService {
                 }
 
                 if (statusNorm != null && !statusNorm.isEmpty()) {
-                    if (feedback.getFeedbackStatus() == null || !feedback.getFeedbackStatus().name().toLowerCase().equals(statusNorm)) {
+                    if (feedback.getFeedbackStatus() == null
+                            || !feedback.getFeedbackStatus().name().toLowerCase().equals(statusNorm)) {
                         matches = false;
                     }
                 }
@@ -436,7 +436,7 @@ public class FeedbackService {
         feedbackDAO.updateFeedback(feedback);
     }
 
-   public void deleteFeedback(Integer feedbackId) throws SQLException {
-       feedbackDAO.deleteFeedback(feedbackId);
-   }
+    public void deleteFeedback(Integer feedbackId) throws SQLException {
+        feedbackDAO.deleteFeedback(feedbackId);
+    }
 }
