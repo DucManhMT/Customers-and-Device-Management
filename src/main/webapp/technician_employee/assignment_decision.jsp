@@ -514,12 +514,17 @@
             <i class="fas fa-exclamation-circle"></i>
             <span>${errorMessage}</span>
         </div>
+        <c:remove var="errorMessage" scope="session"/>
     </c:if>
     <c:if test="${not empty successMessage}">
         <div class="alert alert-success">
             <i class="fas fa-check-circle"></i>
             <span>${successMessage}</span>
         </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <c:remove var="errorMessage" scope="session"/>
     </c:if>
 
     <c:set var="task" value="${requestScope.taskItem}"/>

@@ -427,14 +427,15 @@
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
 
-<div class="container">
-    <!-- Error Message -->
-    <c:if test="${not empty errorMessage}">
-        <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i>
-            <div>${errorMessage}</div>
-        </div>
-    </c:if>
+    <div class="container">
+        <!-- Error Message -->
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>${errorMessage}</div>
+            </div>
+            <c:remove var="errorMessage" scope="session"/>
+        </c:if>
 
     <!-- Page Header -->
     <div class="page-header">

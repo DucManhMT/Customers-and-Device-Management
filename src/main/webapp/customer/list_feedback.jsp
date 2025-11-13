@@ -568,6 +568,23 @@
 <jsp:include page="../components/customer_sidebar.jsp"/>
 
 <div class="list-container">
+    <!-- Success/Error Messages -->
+    <c:if test="${not empty sessionScope.successMessage}">
+        <div class="alert" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #065f46; border: none; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; animation: slideInRight 0.5s ease-out;">
+            <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+            <span>${sessionScope.successMessage}</span>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+
+    <c:if test="${not empty sessionScope.errorMessage}">
+        <div class="alert" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: #7f1d1d; border: none; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; animation: slideInRight 0.5s ease-out;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem;"></i>
+            <span>${sessionScope.errorMessage}</span>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
+
     <!-- Page Header -->
     <div class="page-header">
         <div class="header-content">

@@ -22,7 +22,7 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@WebServlet(name = "TechnicianAssignmentDecisionServlet", urlPatterns = {URLConstants.TASK_ASSIGNMENT_DECISION})
+@WebServlet(name = "TechnicianAssignmentDecisionServlet", urlPatterns = { URLConstants.TASK_ASSIGNMENT_DECISION })
 public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
     @Override
@@ -47,12 +47,15 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
         if ("decline".equalsIgnoreCase(decision)) {
             if (taskNote == null || taskNote.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "You must provide a reason when declining the task.");
-                response.sendRedirect(request.getContextPath() + URLConstants.TASK_ASSIGNMENT_DECISION + "?taskId=" + taskIdStr);
+                response.sendRedirect(
+                        request.getContextPath() + URLConstants.TASK_ASSIGNMENT_DECISION + "?taskId=" + taskIdStr);
                 return;
             }
             if (taskNote.trim().length() < 10) {
-                request.getSession().setAttribute("errorMessage", "Please provide at least 10 characters for the decline reason.");
-                response.sendRedirect(request.getContextPath() + URLConstants.TASK_ASSIGNMENT_DECISION + "?taskId=" + taskIdStr);
+                request.getSession().setAttribute("errorMessage",
+                        "Please provide at least 10 characters for the decline reason.");
+                response.sendRedirect(
+                        request.getContextPath() + URLConstants.TASK_ASSIGNMENT_DECISION + "?taskId=" + taskIdStr);
                 return;
             }
         }
@@ -119,7 +122,8 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 // Create AccountRequest to track that this tech accepted the request
                 List<AccountRequest> allAccountRequests = em.findAll(AccountRequest.class);
                 AccountRequest existingAR = allAccountRequests.stream()
-                        .filter(ar -> ar.getAccount() != null && account.getUsername().equals(ar.getAccount().getUsername())
+                        .filter(ar -> ar.getAccount() != null
+                                && account.getUsername().equals(ar.getAccount().getUsername())
                                 && ar.getRequest() != null && ar.getRequest().getRequestID() != null
                                 && ar.getRequest().getRequestID().equals(task.getRequest().getRequestID()))
                         .findFirst()
@@ -138,7 +142,8 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 }
 
                 conn.commit();
-                request.getSession().setAttribute("successMessage", "You have accepted the task. Status is now Processing.");
+                request.getSession().setAttribute("successMessage",
+                        "You have accepted the task. Status is now Processing.");
             } else if ("decline".equalsIgnoreCase(decision)) {
                 // Decline task - set status to Reject and save taskNote (required)
                 task.getAssignBy();
@@ -151,7 +156,8 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 em.merge(task, Task.class);
 
                 conn.commit();
-                request.getSession().setAttribute("successMessage", "You declined the assigned task. Your reason has been recorded.");
+                request.getSession().setAttribute("successMessage",
+                        "You declined the assigned task. Your reason has been recorded.");
             }
 
             // Redirect to Pending Assignments page
@@ -166,15 +172,9 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                     ex.printStackTrace();
                 }
             }
-            request.getSession().setAttribute("errorMessage", "Error processing assignment decision: " + e.getMessage());
+            request.getSession().setAttribute("errorMessage",
+                    "Error processing assignment decision: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + URLConstants.TASK_VIEW_RECEIVED_ASSIGNMENTS);
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (Exception ignore) {
-                }
-            }
         }
     }
 
@@ -212,7 +212,8 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error loading assignment decision page: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Error loading assignment decision page: " + e.getMessage());
         }
     }
 }

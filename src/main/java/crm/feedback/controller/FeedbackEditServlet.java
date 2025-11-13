@@ -41,7 +41,7 @@ public class FeedbackEditServlet extends HttpServlet {
                 Account account = (Account) req.getSession().getAttribute("account");
                 String username = account != null ? account.getUsername() : null;
                 Integer roleId = account != null && account.getRole() != null ? account.getRole().getRoleID() : null;
-                // only owner or admin/supporter can edit
+             
                 if (username == null || (!username.equals(feedback.getCustomerID()) && !(roleId != null && (roleId == 1 || roleId == 3)))) {
                     req.getSession().setAttribute("errorMessage", "You don't have permission to edit this feedback.");
                     resp.sendRedirect(req.getContextPath() + "/feedback/view?feedbackId=" + id);
@@ -110,7 +110,6 @@ public class FeedbackEditServlet extends HttpServlet {
 
                 em.merge(feedback, Feedback.class);
 
-                // forward to detail so message appears
                 req.setAttribute("feedback", feedback);
                 req.setAttribute("successMessage", "Feedback updated successfully.");
                 req.setAttribute("currentUsername", username);

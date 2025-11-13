@@ -43,18 +43,12 @@ public class FeedbackDeleteServlet extends HttpServlet {
                 Account account = (Account) req.getSession().getAttribute("account");
                 String username = account != null ? account.getUsername() : null;
                 Integer roleId = account != null && account.getRole() != null ? account.getRole().getRoleID() : null;
-//                if (username == null || (!username.equals(feedback.getCustomerID()) && !(roleId != null && roleId == 1))) {
-//                    req.getSession().setAttribute("errorMessage", "You don't have permission to delete this feedback.");
-//                    resp.sendRedirect(req.getContextPath() + "/feedback/view?requestId=" + rqid);
-//                    return;
-//                }
 
                 feedback.setFeedbackStatus(FeedbackStatus.Deleted);
                 em.merge(feedback, Feedback.class);
 
-                req.getSession().setAttribute("successMessage", "Feedback deleted (hidden) successfully.");
-                resp.sendRedirect(req.getContextPath() + "/customer/customer_actioncenter.jsp");
-                return;
+                req.getSession().setAttribute("successMessage", "Feedback has been deleted successfully!");
+                resp.sendRedirect(req.getContextPath() + "/customer/feedback/list");
             } catch (NumberFormatException nfe) {
                 req.getSession().setAttribute("errorMessage", "Invalid feedback id format");
                 resp.sendRedirect(req.getContextPath() + "/feedback/list");
