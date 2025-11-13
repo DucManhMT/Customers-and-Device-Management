@@ -19,13 +19,8 @@ public class ProductContract {
     @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
 
-    public void setContract(LazyReference<Contract> contract) {
-        this.contract = contract;
-    }
 
-    public void setInventoryItem(LazyReference<InventoryItem> inventoryItem) {
-        this.inventoryItem = inventoryItem;
-    }
+
 
 
     public Contract getContract() {

@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet(name = "CreateContract", value = URLConstants.CUSTOMER_SUPPORTER_CREATE_CONTRACT)
 @MultipartConfig(
@@ -45,6 +43,21 @@ public class CreateContractServlet extends HttpServlet {
 
         // Load all inventory items
         List<InventoryItem> inventoryItems = em.findAll(InventoryItem.class);
+        List<ProductContract> productContracts = em.findAll(ProductContract.class);
+        Set<Integer> usedItemIds = new HashSet<>();
+        if (productContracts != null) {
+            for (ProductContract pc : productContracts) {
+                InventoryItem it = pc.getInventoryItem();
+                if (it != null) {
+                    usedItemIds.add(it.getItemId());
+                }
+            }
+        }
+
+        if (inventoryItems != null && !usedItemIds.isEmpty()) {
+            inventoryItems.removeIf(item -> item != null && usedItemIds.contains(item.getItemId()));
+        }
+
         request.setAttribute("inventoryItems", inventoryItems);
 
         request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
