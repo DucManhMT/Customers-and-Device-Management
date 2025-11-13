@@ -794,7 +794,7 @@
                     </c:if>
 
                     <div class="card-actions">
-                        <a href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${fb.requestID}"
+                        <a href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${fb.requestID.foreignKeyValue}"
                            class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-eye"></i> View Details
                         </a>
