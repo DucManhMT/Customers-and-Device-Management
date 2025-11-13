@@ -684,7 +684,7 @@
                     <i class="fas fa-filter"></i>
                     Filter Technicians
                 </div>
-                <form id="filterForm" method="POST" action="${pageContext.request.contextPath}/task/selectTechnician">
+                <form id="filterForm" method="POST" action="${pageContext.request.contextPath}/technician_leader/task/selectTechnician">
                     <c:forEach var="taskId" items="${selectedTaskIds}">
                         <input type="hidden" name="selectedTasks" value="${taskId}">
                     </c:forEach>
@@ -854,7 +854,7 @@
                     </div>
                     <div class="tech-controls">
                         <label>Show:</label>
-                        <form method="POST" action="${pageContext.request.contextPath}/task/selectTechnician"
+                        <form method="POST" action="${pageContext.request.contextPath}/technician_leader/task/selectTechnician"
                               style="display: inline;" id="pageSizeForm">
                             <c:forEach var="taskId" items="${selectedTaskIds}">
                                 <input type="hidden" name="selectedTasks" value="${taskId}">
@@ -977,7 +977,7 @@
                         <c:set var="currentPage" value="${currentPage != null ? currentPage : 1}"/>
                         <c:set var="totalPages" value="${totalPages != null ? totalPages : 1}"/>
 
-                        <form method="POST" action="${pageContext.request.contextPath}/task/selectTechnician"
+                        <form method="POST" action="${pageContext.request.contextPath}/technician_leader/task/selectTechnician"
                               style="display: inline;" id="paginationForm">
                             <c:forEach var="taskId" items="${selectedTaskIds}">
                                 <input type="hidden" name="selectedTasks" value="${taskId}">

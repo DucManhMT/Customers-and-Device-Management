@@ -601,15 +601,6 @@
                     </li>
                     <li class="nav-item">
                         <a
-                                class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
-                        >
-                            View
-                            <span> Received Assignments</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
                                 class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/view_product_requests"
                         ><span>View Product Requests</span>
