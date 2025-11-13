@@ -348,7 +348,7 @@
                                                            id="selectAllCheckbox">
                                                 </div>
                                             </th>
-                                            <th>Code</th>
+                                            <th>Specification</th>
                                             <th>Product Name</th>
                                             <th>Type</th>
                                             <th>Status</th>

@@ -36,6 +36,7 @@ public class ForgotPasswordController extends HttpServlet {
             if (!staffs.isEmpty()) {
                 email = staffs.get(0).getEmail();
             }
+
             if (!customers.isEmpty()) {
                 email = customers.get(0).getEmail();
             }
