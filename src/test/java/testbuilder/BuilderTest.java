@@ -66,6 +66,7 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.filter.service.PermissionService;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -74,17 +75,17 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-        EntityManager em = new EntityManager(DBcontext.getConnection());
+        Connection connection = DBcontext.getConnection();
+        EntityManager em = new EntityManager(connection);
+        try {
+            connection.close();
+            em.findAll(Account.class);
+        } catch (Exception e) {
 
-        List<ProductImportedLog> importedProducts = em.findAll(ProductImportedLog.class);
-        for (ProductImportedLog log : importedProducts) {
-            System.out.println("Log ID: " + log.getProductImportedLogID());
-            System.out.println("Imported Date: " + log.getImportedDate());
-            System.out.println("Warehouse ID: " + log.getWarehouse().getWarehouseID());
-            System.out.println("Inventory Item ID: " + log.getInventoryItem().getSerialNumber());
-            System.out.println("-----");
 
         }
+        List<Account> accs = em.findAll(Account.class);
+        System.out.println(accs);
     }
 }
 

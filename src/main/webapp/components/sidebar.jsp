@@ -2,7 +2,8 @@
 04:03 AM Categorized Sidebar Component for CRM System --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="crm.common.URLConstants" %>
+<%@ page import="crm.filter.service.PermissionService" %>
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -718,7 +719,8 @@
             </div>
             <div class="category-items" id="category-inventory">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
                     </li>

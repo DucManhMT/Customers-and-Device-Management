@@ -6,6 +6,7 @@ import crm.common.model.Request;
 import crm.common.model.Staff;
 import crm.core.utils.DateTimeConverter;
 import crm.task.service.TaskService;
+import crm.common.model.Task;
 import crm.task.repository.StaffRepository;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
@@ -59,6 +60,12 @@ public class AssignTaskController extends HttpServlet {
         req.setAttribute("assignBy", assignBy);
         req.setAttribute(PARAM_REQUEST_ID, requestId);
         req.setAttribute("assignToId", assignToId);
+
+        // Load technician's current schedule (existing tasks)
+        if (assignToId != null) {
+            List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId);
+            req.setAttribute("assignToTasks", assignToTasks);
+        }
 
         try {
             req.getRequestDispatcher("/technician_leader/assign_task.jsp").forward(req, resp);
@@ -145,6 +152,34 @@ public class AssignTaskController extends HttpServlet {
             errors.add("Deadline can not before startDate.");
         }
 
+        // Business logic: ensure no overlap with existing tasks for the technician
+        if (errors.isEmpty() && assignToId != null && startDate != null && deadline != null) {
+            LocalDateTime newStart = DateTimeConverter.toStartOfDay(startDate);
+            LocalDateTime newEnd = DateTimeConverter.toEndOfDay(deadline);
+            List<Task> existing = taskService.getTasksByStaffId(assignToId);
+            if (existing != null) {
+                for (Task t : existing) {
+                    if (t == null)
+                        continue;
+                    // Consider only active tasks that can block time
+                    if (t.getStatus() == crm.common.model.enums.TaskStatus.DeActived ||
+                            t.getStatus() == crm.common.model.enums.TaskStatus.Finished ||
+                            t.getStatus() == crm.common.model.enums.TaskStatus.Reject) {
+                        continue;
+                    }
+                    LocalDateTime tStart = t.getStartDate();
+                    LocalDateTime tEnd = t.getDeadline();
+                    if (tStart == null || tEnd == null)
+                        continue;
+                    boolean overlap = !(tEnd.isBefore(newStart) || tStart.isAfter(newEnd));
+                    if (overlap) {
+                        errors.add("Selected time conflicts with existing tasks or is invalid.");
+                        break;
+                    }
+                }
+            }
+        }
+
         if (!errors.isEmpty()) {
             // re-populate attributes and errors
             req.setAttribute("errors", errors);
@@ -156,20 +191,44 @@ public class AssignTaskController extends HttpServlet {
             req.setAttribute(PARAM_START_DATE, startDateStr);
             req.setAttribute(PARAM_DEADLINE, deadlineStr);
             req.setAttribute(PARAM_DESCRIPTION, description);
-
+            if (assignToId != null) {
+                List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId);
+                req.setAttribute("assignToTasks", assignToTasks);
+            }
             doGet(req, resp);
             return;
         }
 
         // Create task
         if (assignBy != null && assignTo != null) {
-            taskService.createTask(assignBy.getStaffID(), assignTo.getStaffID(), requestId,
+            Task created = taskService.createTask(assignBy.getStaffID(), assignTo.getStaffID(), requestId,
                     DateTimeConverter.toStartOfDay(startDate), DateTimeConverter.toEndOfDay(deadline),
                     description);
+            if (created == null) {
+                // System error during assignment
+                errors.add("Unable to assign task. Please try again later.");
+                req.setAttribute("errors", errors);
+                req.setAttribute("requestObj", request);
+                req.setAttribute(PARAM_ASSIGN_TO, assignTo);
+                req.setAttribute("assignBy", assignBy);
+                req.setAttribute(PARAM_REQUEST_ID, requestId);
+                req.setAttribute("assignToId", assignToId);
+                req.setAttribute(PARAM_START_DATE, startDateStr);
+                req.setAttribute(PARAM_DEADLINE, deadlineStr);
+                req.setAttribute(PARAM_DESCRIPTION, description);
+                if (assignToId != null) {
+                    List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId);
+                    req.setAttribute("assignToTasks", assignToTasks);
+                }
+                doGet(req, resp);
+                return;
+            }
         }
+
         // Redirect về danh sách task theo request để xem
         try {
-            resp.sendRedirect(req.getContextPath() + "/task/selectTechnician?selectedTasks=" + requestId);
+            resp.sendRedirect(
+                    req.getContextPath() + URLConstants.TECHLEAD_SELECT_TECHNICIAN + "?selectedTasks=" + requestId);
         } catch (IOException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

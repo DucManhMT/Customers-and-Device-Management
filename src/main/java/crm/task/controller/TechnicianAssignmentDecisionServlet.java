@@ -22,7 +22,7 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@WebServlet(name = "TechnicianAssignmentDecisionServlet", urlPatterns = { URLConstants.TASK_ASSIGNMENT_DECISION })
+@WebServlet(name = "TechnicianAssignmentDecisionServlet", urlPatterns = {URLConstants.TASK_ASSIGNMENT_DECISION})
 public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
     @Override
@@ -87,7 +87,7 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
             // Verify this task is assigned to current technician
             Staff assignedTo = task.getAssignTo();
-            if (assignedTo == null || assignedTo.getAccount() == null 
+            if (assignedTo == null || assignedTo.getAccount() == null
                     || !account.getUsername().equals(assignedTo.getAccount().getUsername())) {
                 request.getSession().setAttribute("errorMessage", "This task is not assigned to you.");
                 response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
@@ -99,15 +99,15 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 task.getAssignBy();
                 task.getAssignTo();
                 Request req = task.getRequest();
-                
+
                 task.setStatus(TaskStatus.Processing);
                 task.setStartDate(LocalDateTime.now());
-                
+
                 // Save taskNote if provided (optional for accept)
                 if (taskNote != null && !taskNote.trim().isEmpty()) {
                     task.setTaskNote(taskNote.trim());
                 }
-                
+
                 em.merge(task, Task.class);
 
                 // Update Request status to Processing
@@ -119,18 +119,18 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 // Create AccountRequest to track that this tech accepted the request
                 List<AccountRequest> allAccountRequests = em.findAll(AccountRequest.class);
                 AccountRequest existingAR = allAccountRequests.stream()
-                    .filter(ar -> ar.getAccount() != null && account.getUsername().equals(ar.getAccount().getUsername())
-                            && ar.getRequest() != null && ar.getRequest().getRequestID() != null
-                            && ar.getRequest().getRequestID().equals(task.getRequest().getRequestID()))
-                    .findFirst()
-                    .orElse(null);
+                        .filter(ar -> ar.getAccount() != null && account.getUsername().equals(ar.getAccount().getUsername())
+                                && ar.getRequest() != null && ar.getRequest().getRequestID() != null
+                                && ar.getRequest().getRequestID().equals(task.getRequest().getRequestID()))
+                        .findFirst()
+                        .orElse(null);
 
                 if (existingAR == null) {
                     AccountRequest newAR = new AccountRequest();
                     Integer nextId = allAccountRequests.stream()
-                        .map(AccountRequest::getAccountRequestID)
-                        .max(Integer::compare)
-                        .orElse(0) + 1;
+                            .map(AccountRequest::getAccountRequestID)
+                            .max(Integer::compare)
+                            .orElse(0) + 1;
                     newAR.setAccountRequestID(nextId);
                     newAR.setAccount(account);
                     newAR.setRequest(task.getRequest());
@@ -144,10 +144,10 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
                 task.getAssignBy();
                 task.getAssignTo();
                 task.getRequest();
-                
+
                 task.setStatus(TaskStatus.Reject);
                 task.setTaskNote(taskNote.trim());
-                
+
                 em.merge(task, Task.class);
 
                 conn.commit();
@@ -160,20 +160,20 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             if (conn != null) {
-                try { 
+                try {
                     conn.rollback();
-                } catch (Exception ex) { 
-                    ex.printStackTrace(); 
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
             request.getSession().setAttribute("errorMessage", "Error processing assignment decision: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + URLConstants.TASK_VIEW_RECEIVED_ASSIGNMENTS);
         } finally {
             if (conn != null) {
-                try { 
-                    conn.setAutoCommit(true); 
-                    conn.close();
-                } catch (Exception ignore) {}
+                try {
+                    conn.setAutoCommit(true);
+                } catch (Exception ignore) {
+                }
             }
         }
     }
@@ -182,7 +182,7 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String taskIdStr = request.getParameter("taskId");
-        
+
         if (taskIdStr == null || taskIdStr.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Missing taskId");
             response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);

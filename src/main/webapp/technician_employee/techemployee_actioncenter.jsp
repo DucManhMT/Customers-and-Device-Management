@@ -2,6 +2,10 @@
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    request.setAttribute("dateFormatter", dateFormatter);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -561,11 +565,11 @@
                     </div>
                     <div class="task-meta">
                                         <span><i class="fas fa-calendar"></i> 
-                                            ${task.startDate}
+                                            ${task.startDate.toLocalDate().format(dateFormatter)}
                                         </span>
                         <c:if test="${not empty task.deadline}">
                                             <span><i class="fas fa-flag-checkered"></i> 
-                                                Due: ${task.deadline}
+                                                Due: ${task.deadline.toLocalDate().format(dateFormatter)}
                                             </span>
                         </c:if>
                     </div>

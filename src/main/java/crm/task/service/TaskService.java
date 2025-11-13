@@ -52,6 +52,12 @@ public class TaskService {
         return taskRepository.findWithCondtion(builder, PageRequest.of(page, recordsPerPage));
     }
 
+    public List<Task> getTasksByStaffId(int staffId) {
+        ClauseBuilder builder = new ClauseBuilder();
+        builder.equal(COL_ASSIGN_TO, staffId);
+        return taskRepository.findWithCondition(builder);
+    }
+
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
@@ -140,7 +146,7 @@ public class TaskService {
     }
 
     public Task createTask(int assignBy, int assignTo, int requestId, LocalDateTime startDate, LocalDateTime deadline,
-                           String description) {
+            String description) {
         Task task = new Task();
         Request request = requestRepository.findById(requestId);
         task.setTaskID(taskRepository.getNewId());
@@ -156,11 +162,13 @@ public class TaskService {
             taskRepository.save(task);
             if (request.getRequestStatus().equals(RequestStatus.Approved)) {
                 request.setRequestStatus(RequestStatus.Processing);
-                requestLogService.createLog(request, "Request has been assigned to tech employee.", OldRequestStatus.Approved,
+                requestLogService.createLog(request, "Request has been assigned to tech employee.",
+                        OldRequestStatus.Approved,
                         RequestStatus.Processing, task.getAssignBy().getAccount());
                 requestRepository.update(request);
             } else {
-                requestLogService.createLog(request, "Request has been assigned to tech employee.", OldRequestStatus.Processing,
+                requestLogService.createLog(request, "Request has been assigned to tech employee.",
+                        OldRequestStatus.Processing,
                         RequestStatus.Processing, task.getAssignBy().getAccount());
             }
             TransactionManager.commit();
@@ -172,6 +180,8 @@ public class TaskService {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+            // bubble up failure via null return to let controller show proper message
+            return null;
         }
         return task;
     }
