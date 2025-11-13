@@ -7,6 +7,7 @@ import crm.common.model.Staff;
 import crm.core.utils.DateTimeConverter;
 import crm.task.service.TaskService;
 import crm.common.model.Task;
+import crm.common.model.enums.TaskStatus;
 import crm.task.repository.StaffRepository;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
@@ -63,7 +64,10 @@ public class AssignTaskController extends HttpServlet {
 
         // Load technician's current schedule (existing tasks)
         if (assignToId != null) {
-            List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId);
+            List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
+                    .filter((t) -> t.getStatus().equals(TaskStatus.Processing)
+                            || t.getStatus().equals(TaskStatus.Pending))
+                    .toList();
             req.setAttribute("assignToTasks", assignToTasks);
         }
 
@@ -162,9 +166,9 @@ public class AssignTaskController extends HttpServlet {
                     if (t == null)
                         continue;
                     // Consider only active tasks that can block time
-                    if (t.getStatus() == crm.common.model.enums.TaskStatus.DeActived ||
-                            t.getStatus() == crm.common.model.enums.TaskStatus.Finished ||
-                            t.getStatus() == crm.common.model.enums.TaskStatus.Reject) {
+                    if (t.getStatus() == TaskStatus.DeActived ||
+                            t.getStatus() == TaskStatus.Finished ||
+                            t.getStatus() == TaskStatus.Reject) {
                         continue;
                     }
                     LocalDateTime tStart = t.getStartDate();
@@ -192,7 +196,10 @@ public class AssignTaskController extends HttpServlet {
             req.setAttribute(PARAM_DEADLINE, deadlineStr);
             req.setAttribute(PARAM_DESCRIPTION, description);
             if (assignToId != null) {
-                List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId);
+                List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
+                        .filter((t) -> t.getStatus().equals(TaskStatus.Processing)
+                                || t.getStatus().equals(TaskStatus.Pending))
+                        .toList();
                 req.setAttribute("assignToTasks", assignToTasks);
             }
             doGet(req, resp);
@@ -217,7 +224,10 @@ public class AssignTaskController extends HttpServlet {
                 req.setAttribute(PARAM_DEADLINE, deadlineStr);
                 req.setAttribute(PARAM_DESCRIPTION, description);
                 if (assignToId != null) {
-                    List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId);
+                    List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
+                            .filter((t) -> t.getStatus().equals(TaskStatus.Processing)
+                                    || t.getStatus().equals(TaskStatus.Pending))
+                            .toList();
                     req.setAttribute("assignToTasks", assignToTasks);
                 }
                 doGet(req, resp);

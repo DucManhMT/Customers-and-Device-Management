@@ -818,7 +818,7 @@
                                             <i class="fas fa-eye"></i> View
                                         </a>
                                         <c:if test="${reqObj.requestStatus != 'Finished'}">
-                                            <form action="${pageContext.request.contextPath}/task/selectTechnician"
+                                            <form action="${pageContext.request.contextPath}/technician_leader/task/selectTechnician"
                                                   method="POST" style="display: inline;">
                                                 <input type="hidden" name="selectedTasks" value="${reqObj.requestID}">
                                                 <button type="submit" class="btn btn-success btn-sm">

@@ -72,17 +72,11 @@ public class TaskService {
         return taskRepository.findById(taskId);
     }
 
-    /**
-     * Lấy danh sách Task được sắp xếp theo Deadline gần nhất (ASC).
-     * Có thể lọc theo requestId nếu cung cấp (>0). Phân trang theo page &
-     * recordsPerPage (1-indexed).
-     */
     public Page<Task> getTasksOrderByNearestDeadline(Integer requestId, int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (requestId != null && requestId > 0) {
             builder.equal(COL_REQUEST_ID, requestId);
         }
-        // Sắp xếp theo Deadline tăng dần sử dụng API mới Order list
         return taskRepository.findWithCondtion(builder,
                 PageRequest.of(page, recordsPerPage, java.util.List.of(Order.asc(COL_DEADLINE))));
     }
