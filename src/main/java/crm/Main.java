@@ -18,17 +18,6 @@ import crm.task.service.TaskService;
 
 public class Main {
     public static void main(String[] args) {
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-
-        Map<String, Object> conditions = new HashMap<>();
-        conditions.put("warehouse", 1);
-        conditions.put("status", ProductRequestStatus.Pending.name());
-
-        List<ProductRequest> productRequests = em.findWithConditions(ProductRequest.class,conditions);
-
-        for(ProductRequest pr : productRequests) {
-            System.out.println(pr);
-        }
-
+       
     }
 }

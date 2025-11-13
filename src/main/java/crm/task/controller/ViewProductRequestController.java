@@ -22,18 +22,15 @@ import java.util.stream.Collectors;
 @WebServlet(urlPatterns = URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS)
 public class ViewProductRequestController extends HttpServlet {
 
-    EntityManager em;
-    StaffDAO staffDAO;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        em = new EntityManager(DBcontext.getConnection());
-        staffDAO = new StaffDAO();
+
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        EntityManager em = new EntityManager(DBcontext.getConnection());
         int pageSize = 6; // Default items per page
         int currentPage = 1; // Default page
 
@@ -59,7 +56,7 @@ public class ViewProductRequestController extends HttpServlet {
         }
 
         Account account = (Account) req.getSession().getAttribute("account");
-
+        StaffDAO staffDAO = new StaffDAO();
         Staff staff = staffDAO.findByUsername(account.getUsername());
 
         List<ProductRequest> productRequests = em.findAll(ProductRequest.class);
@@ -99,7 +96,7 @@ public class ViewProductRequestController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        EntityManager em = new EntityManager(DBcontext.getConnection());
         String productRequestIdStr = req.getParameter("productRequestId");
         String action = req.getParameter("action");
 
@@ -125,7 +122,6 @@ public class ViewProductRequestController extends HttpServlet {
             } catch (NumberFormatException e) {
                 req.getSession().setAttribute("errorMessage", "Invalid Product Request ID.");
                 resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
-                return;
             }
         }
     }

@@ -16,6 +16,7 @@
                     <i class="bi bi-exclamation-triangle"></i> ${errorMessage}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
+                <c:remove var="errorMessage" scope="session"/>
             </c:if>
 
             <c:if test="${not empty techEmployee}">

@@ -2,7 +2,8 @@
 04:03 AM Categorized Sidebar Component for CRM System --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="crm.common.URLConstants" %>
+<%@ page import="crm.filter.service.PermissionService" %>
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -658,6 +659,13 @@
                     </li>
                     <li class="nav-item">
                         <a
+                                class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
+                        ><span>Import Product</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
                                 class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
                         ><span>Create Transfer Request</span></a
@@ -698,33 +706,41 @@
                         ><span>Imported Products</span></a
                         >
                     </li>
+                    <li class="nav-item">
+                        <a
+                                class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"
+                        ><span>Exported Products</span></a
+                        >
+                    </li>
                 </ul>
             </div>
         </div>
 
-  <!-- Inventory Manager Category -->
-  <div class="sidebar-category">
-    <div class="category-header" onclick="toggleCategory('inventory')">
-      <span><i class="fas fa-chart-line category-icon"></i>Inventory Manager</span>
-      <i class="fas fa-chevron-down toggle-icon"></i>
-    </div>
-    <div class="category-items" id="category-inventory">
-      <ul class="sidebar-nav">
-        <li class="nav-item">
-          <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
-             href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
-             href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
-             href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
-        </li>
-      </ul>
-    </div>
-  </div>
+        <!-- Inventory Manager Category -->
+        <div class="sidebar-category">
+            <div class="category-header" onclick="toggleCategory('inventory')">
+                <span><i class="fas fa-chart-line category-icon"></i>Inventory Manager</span>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="category-items" id="category-inventory">
+                <ul class="sidebar-nav">
+                    <li class="nav-item"
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
         <%--
         <!-- Task Management Category -->--%> <%--

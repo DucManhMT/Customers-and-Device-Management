@@ -1,5 +1,6 @@
 package crm.task.controller;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Task;
 import crm.service_request.repository.persistence.query.common.Page;
@@ -110,14 +111,11 @@ public class ViewTaskListController extends HttpServlet {
             req.setAttribute("dashboardOverdueCount", overdueCount);
             req.setAttribute("dashboardStatusCounts", statusCounts);
         } catch (Exception e) {
-            req.setAttribute("error", "Error retrieving task list");
+            req.setAttribute("error", MessageConst.MSG15);
         } finally {
-            try {
-                req.getRequestDispatcher("/technician_leader/view_task_list.jsp").forward(req, resp);
-            } catch (Exception ex) {
-                // Log and fallback: send simple error
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Forward error");
-            }
+
+            req.getRequestDispatcher("/technician_leader/view_task_list.jsp").forward(req, resp);
+
         }
     }
 }

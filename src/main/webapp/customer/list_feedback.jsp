@@ -568,6 +568,23 @@
 <jsp:include page="../components/customer_sidebar.jsp"/>
 
 <div class="list-container">
+    <!-- Success/Error Messages -->
+    <c:if test="${not empty sessionScope.successMessage}">
+        <div class="alert" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: #065f46; border: none; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; animation: slideInRight 0.5s ease-out;">
+            <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+            <span>${sessionScope.successMessage}</span>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+
+    <c:if test="${not empty sessionScope.errorMessage}">
+        <div class="alert" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: #7f1d1d; border: none; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; animation: slideInRight 0.5s ease-out;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem;"></i>
+            <span>${sessionScope.errorMessage}</span>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
+
     <!-- Page Header -->
     <div class="page-header">
         <div class="header-content">
@@ -587,15 +604,16 @@
             <div class="filter-grid">
                 <div class="form-group">
                     <label class="form-label">Search</label>
-                    <input type="text" name="q" class="form-control" value="${fn:escapeXml(q)}" placeholder="Search content or description" />
+                    <input type="text" name="q" class="form-control" value="${fn:escapeXml(q)}"
+                           placeholder="Search content or description"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">From Date</label>
-                    <input type="date" name="fromDate" class="form-control" value="${fromDate}" />
+                    <input type="date" name="fromDate" class="form-control" value="${fromDate}"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">To Date</label>
-                    <input type="date" name="toDate" class="form-control" value="${toDate}" />
+                    <input type="date" name="toDate" class="form-control" value="${toDate}"/>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status</label>
@@ -610,7 +628,8 @@
                     <select name="rating" class="form-select">
                         <option value="" ${empty rating ? 'selected' : ''}>All Ratings</option>
                         <c:forEach var="r" begin="1" end="5">
-                            <option value="${r}" ${rating == r.toString() ? 'selected' : ''}>${r} Star${r > 1 ? 's' : ''}</option>
+                            <option value="${r}" ${rating == r.toString() ? 'selected' : ''}>${r}
+                                Star${r > 1 ? 's' : ''}</option>
                         </c:forEach>
                     </select>
                 </div>
@@ -684,7 +703,7 @@
 
                     <!-- Request Information -->
                     <c:catch var="requestError">
-                        <c:set var="request" value="${fb.requestID.entity}" />
+                        <c:set var="request" value="${fb.requestID.entity}"/>
                     </c:catch>
                     <c:if test="${not empty request}">
                         <div class="request-info-box">
@@ -705,7 +724,8 @@
                                     <span class="info-value">
                                         <c:choose>
                                             <c:when test="${request.requestStatus.name() == 'Pending'}">
-                                                <span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>
+                                                <span class="badge badge-pending"><i
+                                                        class="fas fa-clock"></i> Pending</span>
                                             </c:when>
                                             <c:when test="${request.requestStatus.name() == 'Approved'}">
                                                 <span class="badge badge-approved"><i class="fas fa-check"></i> Approved</span>
@@ -781,11 +801,13 @@
 
                     <!-- Actions -->
                     <div class="card-actions">
-                        <a href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${fb.requestID.foreignKeyValue}" class="btn btn-sm btn-outline-primary">
+                        <a href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${fb.requestID}"
+                           class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-eye"></i> View Details
                         </a>
                         <c:if test="${fb.customerID == currentUsername}">
-                            <a href="${pageContext.request.contextPath}/feedback/edit?feedbackId=${fb.feedbackID}" class="btn btn-sm btn-warning">
+                            <a href="${pageContext.request.contextPath}/feedback/edit?feedbackId=${fb.feedbackID}"
+                               class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                         </c:if>
@@ -803,7 +825,8 @@
                 <ul class="pagination">
                     <c:forEach var="p" begin="1" end="${totalPages}">
                         <li class="page-item ${p == currentPage ? 'active' : ''}">
-                            <a class="page-link" href="${pageContext.request.contextPath}/customer/feedback/list?page=${p}&recordsPerPage=${recordsPerPage}&q=${fn:escapeXml(q)}&fromDate=${fromDate}&toDate=${toDate}&status=${status}&rating=${rating}">${p}</a>
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/customer/feedback/list?page=${p}&recordsPerPage=${recordsPerPage}&q=${fn:escapeXml(q)}&fromDate=${fromDate}&toDate=${toDate}&status=${status}&rating=${rating}">${p}</a>
                         </li>
                     </c:forEach>
                 </ul>

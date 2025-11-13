@@ -663,6 +663,7 @@
                         <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
                         <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
                         <option value="Reject" ${status == 'Reject' ? 'selected' : ''}>Reject</option>
+                        <option value="DeActived" ${status == 'Deactived' ? 'selected' : ''}>Deactived</option>
                     </select>
                 </div>
                 <div class="form-group">

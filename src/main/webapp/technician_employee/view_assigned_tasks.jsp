@@ -559,7 +559,7 @@
 </head>
 <body>
 
-<jsp:include page="../components/header.jsp" />
+<jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
 
 <div class="tasks-container">
@@ -572,7 +572,8 @@
                 </div>
                 <h1>My Assigned Tasks</h1>
             </div>
-            <a href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments" class="btn btn-outline">
+            <a href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
+               class="btn btn-outline">
                 <i class="fas fa-inbox"></i>
                 <span>Pending Assignments</span>
             </a>
@@ -585,12 +586,14 @@
             <i class="fas fa-check-circle"></i>
             <span>${successMessage}</span>
         </div>
+        <c:remove var="successMessage" scope="session"/>
     </c:if>
     <c:if test="${not empty errorMessage}">
         <div class="alert alert-error">
             <i class="fas fa-exclamation-circle"></i>
             <span>${errorMessage}</span>
         </div>
+        <c:remove var="errorMessage" scope="session"/>
     </c:if>
 
     <!-- Stats Grid -->
@@ -670,7 +673,7 @@
 
     <c:if test="${not empty statsNote}">
         <div style="text-align: center; margin-bottom: 1.5rem; color: var(--gray-600); font-style: italic;">
-            ${statsNote}
+                ${statsNote}
         </div>
     </c:if>
 
@@ -694,10 +697,10 @@
                                 </c:choose>
                             </h3>
                             <span class="task-badge badge-${task.status == 'Finished' ? 'finished' : task.status == 'Processing' ? 'processing' : 'pending'}">
-                                ${task.status}
+                                    ${task.status}
                             </span>
                         </div>
-                        
+
                         <p class="task-description">
                             <c:if test="${not empty req}">
                                 <strong>Request:</strong> ${not empty req.requestDescription ? req.requestDescription : 'No description'}
@@ -707,7 +710,7 @@
                                 <strong>Notes:</strong> ${req.note}
                             </c:if>
                         </p>
-                        
+
                         <div class="task-details">
                             <div class="task-detail">
                                 <span class="task-detail-label">Task ID:</span>
@@ -740,12 +743,12 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="task-footer">
-                            <form method="POST"
-                                  action="${pageContext.request.contextPath}/technician_employee/request/detail"
-                                  style="display: inline; flex: 1;">
-                                <input type="hidden" name="id" value="${req.requestID}">
+                            <form
+                                    action="${pageContext.request.contextPath}/staff/task/detail?taskId=5"
+                                    style="display: inline; flex: 1;">
+                                <input type="hidden" name="taskId" value="${task.taskID}">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-eye"></i> View Details
                                 </button>
@@ -769,7 +772,8 @@
                                     </button>
                                 </c:when>
                                 <c:otherwise>
-                                    <form method="POST" action="${pageContext.request.contextPath}/technician_employee/task/updateStatus"
+                                    <form method="POST"
+                                          action="${pageContext.request.contextPath}/technician_employee/task/updateStatus"
                                           style="display: inline; flex: 1;"
                                           onsubmit="return confirm('Are you sure you want to mark this task as finished?')">
                                         <input type="hidden" name="taskId" value="${task.taskID}">
@@ -880,7 +884,7 @@
         if (toDate) toDate.setAttribute('max', today);
 
         if (fromDate) {
-            fromDate.addEventListener('change', function() {
+            fromDate.addEventListener('change', function () {
                 if (this.value && toDate) {
                     toDate.setAttribute('min', this.value);
                 }
@@ -888,7 +892,7 @@
         }
 
         if (toDate) {
-            toDate.addEventListener('change', function() {
+            toDate.addEventListener('change', function () {
                 if (this.value && fromDate) {
                     fromDate.setAttribute('max', this.value);
                 }
