@@ -134,7 +134,9 @@
                                     <c:choose>
                                         <c:when test='${request.requestStatus eq "Pending"}'>bg-warning text-dark</c:when>
                                         <c:when test='${request.requestStatus eq "Processing"}'>bg-primary</c:when>
+                                        <c:when test='${request.requestStatus eq "Tech_Finished"}'>bg-info text-dark</c:when>
                                         <c:when test='${request.requestStatus eq "Finished"}'>bg-success</c:when>
+                                        <c:when test='${request.requestStatus eq "Rejected"}'>bg-danger</c:when>
                                         <c:otherwise>bg-secondary</c:otherwise>
                                     </c:choose>">
                                         ${request.requestStatus}

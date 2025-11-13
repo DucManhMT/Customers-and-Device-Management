@@ -1,23 +1,22 @@
 package crm.service_request.controller;
 
 import crm.common.URLConstants;
+import crm.common.model.Account;
 import crm.service_request.service.RequestService;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
-
-import crm.common.model.Account;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(urlPatterns = URLConstants.CUSTOMER_SUPPORTER_FINISH_REQUEST, name = "FinishRequestController")
-public class FinishRequestController extends HttpServlet {
+@WebServlet(urlPatterns = URLConstants.CUSTOMER_SUPPORTER_NOT_FINISH_REQUEST, name = "NotFinishRequestController")
+public class NotFinishRequestController extends HttpServlet {
     private static final RequestService requestService = new RequestService();
 
     @Override
@@ -44,16 +43,22 @@ public class FinishRequestController extends HttpServlet {
         }
 
         String requestIdParam = requestJson.getString("requestId", null);
+        String message = requestJson.getString("message", null);
         if (requestIdParam == null || requestIdParam.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             writeJson(resp, false, "requestId is required.");
             return;
         }
+        if (message == null || message.isBlank()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            writeJson(resp, false, "message is required.");
+            return;
+        }
 
         try {
             int requestId = Integer.parseInt(requestIdParam.trim());
-            requestService.setFinishRequest(requestId, account);
-            writeJson(resp, true, "Request marked as finished successfully.");
+            requestService.setNotFinishRequest(requestId, account, message);
+            writeJson(resp, true, "Request reopened successfully.");
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             writeJson(resp, false, "Invalid requestId format.");
@@ -62,7 +67,7 @@ public class FinishRequestController extends HttpServlet {
             writeJson(resp, false, e.getMessage());
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            writeJson(resp, false, "Failed to finish request.");
+            writeJson(resp, false, "Failed to reopen request.");
         }
     }
 
@@ -74,7 +79,6 @@ public class FinishRequestController extends HttpServlet {
                     .build();
             out.print(json.toString());
         } catch (IOException e) {
-            // Best-effort: set error code when failing to write
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

@@ -28,7 +28,7 @@
                 <form action="./process" method="post" class="needs-validation" novalidate>
                     <input type="hidden" name="requestId" value="${request.requestID}"/>
                     <div class="mb-3">
-                        <label for="note" class="form-label fw-semibold">Note</label>
+                        <label for="note" class="form-label fw-semibold">Note<span style="color: red"> * </span></label>
                         <textarea id="note" name="note" class="form-control" rows="3"
                                   placeholder="Enter processing note or update here..."></textarea>
                         <div class="invalid-feedback">
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="action" class="form-label fw-semibold">Status</label>
+                        <label for="action" class="form-label fw-semibold">Status <span style="color: red"> * </span></label>
                         <select id="status" name="status" class="form-select"
                                 style="width: 200px; display: inline-block;">
                             <option value="">Select Status</option>

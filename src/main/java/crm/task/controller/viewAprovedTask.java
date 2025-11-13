@@ -19,7 +19,7 @@ import java.util.List;
 import crm.common.model.Request;
 import crm.common.model.enums.RequestStatus;
 
-@WebServlet(name = "viewAprovedTask", urlPatterns = { URLConstants.TECHLEAD_VIEW_APROVED_TASK })
+@WebServlet(name = "viewAprovedTask", urlPatterns = {URLConstants.TECHLEAD_VIEW_APROVED_TASK})
 public class viewAprovedTask extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -81,7 +81,7 @@ public class viewAprovedTask extends HttpServlet {
             } else {
                 // Show all approved, processing, and finished requests
                 statuses = List.of(RequestStatus.Approved.toString(),
-                        RequestStatus.Processing.toString(), RequestStatus.Finished.toString());
+                        RequestStatus.Processing.toString(), RequestStatus.Finished.toString(), RequestStatus.Tech_Finished.toString());
             }
 
             // Fetch approved requests with filters and pagination
@@ -131,5 +131,5 @@ public class viewAprovedTask extends HttpServlet {
         processRequest(req, resp);
     }
 
-    
+
 }

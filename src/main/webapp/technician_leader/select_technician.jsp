@@ -684,7 +684,8 @@
                     <i class="fas fa-filter"></i>
                     Filter Technicians
                 </div>
-                <form id="filterForm" method="POST" action="${pageContext.request.contextPath}/task/selectTechnician">
+                <form id="filterForm" method="POST"
+                      action="${pageContext.request.contextPath}/technician_leader/task/selectTechnician">
                     <c:forEach var="taskId" items="${selectedTaskIds}">
                         <input type="hidden" name="selectedTasks" value="${taskId}">
                     </c:forEach>
@@ -694,7 +695,7 @@
 
                     <div class="form-group">
                         <label class="form-label">Search by Name/ID</label>
-                        <input type="text" class="form-control" name="searchName" 
+                        <input type="text" class="form-control" name="searchName"
                                value="${searchName}" placeholder="Enter name or Staff ID...">
                     </div>
                     <div class="form-group">
@@ -790,10 +791,12 @@
                             Weekly Schedule
                         </div>
                         <div class="schedule-nav">
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="goToWeek('${prevWeekStart}')">
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    onclick="goToWeek('${prevWeekStart}')">
                                 <i class="fas fa-chevron-left"></i> Prev
                             </button>
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="goToWeek('${nextWeekStart}')">
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    onclick="goToWeek('${nextWeekStart}')">
                                 Next <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -801,38 +804,39 @@
                     <div class="schedule-body">
                         <table class="schedule-table">
                             <thead>
-                                <tr>
-                                    <th>Technician</th>
-                                    <c:forEach var="day" items="${weekDays}">
-                                        <th>${day}</th>
-                                    </c:forEach>
-                                </tr>
+                            <tr>
+                                <th>Technician</th>
+                                <c:forEach var="day" items="${weekDays}">
+                                    <th>${day}</th>
+                                </c:forEach>
+                            </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="tech" items="${technicians}">
-                                    <tr>
+                            <c:forEach var="tech" items="${technicians}">
+                                <tr>
+                                    <td>
+                                        <div class="tech-info">
+                                            <div class="tech-name">${tech.staffName}</div>
+                                            <div class="tech-username">${tech.account.username}</div>
+                                        </div>
+                                    </td>
+                                    <c:forEach var="i" begin="0" end="${fn:length(weekDays) - 1}">
                                         <td>
-                                            <div class="tech-info">
-                                                <div class="tech-name">${tech.staffName}</div>
-                                                <div class="tech-username">${tech.account.username}</div>
-                                            </div>
+                                            <c:choose>
+                                                <c:when test="${not empty techSchedules[tech.account.username] and techSchedules[tech.account.username][i] != null}">
+                                                    <div class="schedule-cell">
+                                                        <c:out value="${techSchedules[tech.account.username][i]}"
+                                                               escapeXml="false"/>
+                                                    </div>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <div class="schedule-cell schedule-empty">—</div>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </td>
-                                        <c:forEach var="i" begin="0" end="${fn:length(weekDays) - 1}">
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty techSchedules[tech.account.username] and techSchedules[tech.account.username][i] != null}">
-                                                        <div class="schedule-cell">
-                                                            <c:out value="${techSchedules[tech.account.username][i]}" escapeXml="false" />
-                                                        </div>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="schedule-cell schedule-empty">—</div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </c:forEach>
+                                    </c:forEach>
+                                </tr>
+                            </c:forEach>
                             </tbody>
                         </table>
                     </div>
@@ -847,9 +851,9 @@
                         Available Technicians
                         <span style="color: var(--gray-600); font-weight: 500;">
                             (<c:choose>
-                                <c:when test="${not empty totalCount}">${totalCount}</c:when>
-                                <c:otherwise>0</c:otherwise>
-                            </c:choose> total)
+                            <c:when test="${not empty totalCount}">${totalCount}</c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose> total)
                         </span>
                     </div>
                     <div class="tech-controls">
@@ -879,92 +883,92 @@
                 <div class="table-wrapper">
                     <table>
                         <thead>
-                            <tr>
-                                <th>Technician</th>
-                                <th>Contact</th>
-                                <th>Address</th>
-                                <th>Date of Birth</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th>Technician</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th>Date of Birth</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <c:choose>
-                                <c:when test="${not empty technicians}">
-                                    <c:forEach var="tech" items="${technicians}">
-                                        <tr>
-                                            <td>
-                                                <div class="tech-info">
-                                                    <div class="tech-name">${tech.staffName}</div>
-                                                    <div class="tech-username">ID: ${tech.staffID}</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="tech-info">
-                                                    <a href="tel:${tech.phone}" class="contact-link">
-                                                        <i class="fas fa-phone"></i> ${tech.phone}
-                                                    </a>
-                                                    <a href="mailto:${tech.email}" class="contact-link">
-                                                        <i class="fas fa-envelope"></i> ${tech.email}
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty tech.address}">
-                                                        ${tech.address}
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span style="color: var(--gray-500);">No address</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty tech.dateOfBirth}">
-                                                        ${tech.dateOfBirth}
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span style="color: var(--gray-500);">N/A</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <button type="button" class="btn btn-outline btn-sm" 
-                                                            onclick="viewTech('${tech.staffID}')">
-                                                        <i class="fas fa-eye"></i> View
-                                                    </button>
-                                                    <a href="${pageContext.request.contextPath}/technician_leader/tasks/assign?assignTo=${tech.staffID}&requestId=${selectedTaskIds[0]}"
-                                                       class="btn btn-success btn-sm">
-                                                        <i class="fas fa-user-plus"></i> Assign
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
+                        <c:choose>
+                            <c:when test="${not empty technicians}">
+                                <c:forEach var="tech" items="${technicians}">
                                     <tr>
-                                        <td colspan="5">
-                                            <div class="empty-state">
-                                                <i class="fas fa-users"></i>
-                                                <h3>No Technicians Available</h3>
-                                                <p>There are currently no technicians matching your criteria.</p>
+                                        <td>
+                                            <div class="tech-info">
+                                                <div class="tech-name">${tech.staffName}</div>
+                                                <div class="tech-username">ID: ${tech.staffID}</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tech-info">
+                                                <a href="tel:${tech.phone}" class="contact-link">
+                                                    <i class="fas fa-phone"></i> ${tech.phone}
+                                                </a>
+                                                <a href="mailto:${tech.email}" class="contact-link">
+                                                    <i class="fas fa-envelope"></i> ${tech.email}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty tech.address}">
+                                                    ${tech.address}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span style="color: var(--gray-500);">No address</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty tech.dateOfBirth}">
+                                                    ${tech.dateOfBirth}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span style="color: var(--gray-500);">N/A</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button type="button" class="btn btn-outline btn-sm"
+                                                        onclick="viewTech('${tech.staffID}')">
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                                <a href="${pageContext.request.contextPath}/technician_leader/tasks/assign?assignTo=${tech.staffID}&requestId=${selectedTaskIds[0]}"
+                                                   class="btn btn-success btn-sm">
+                                                    <i class="fas fa-user-plus"></i> Assign
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
-                                </c:otherwise>
-                            </c:choose>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <i class="fas fa-users"></i>
+                                            <h3>No Technicians Available</h3>
+                                            <p>There are currently no technicians matching your criteria.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-footer">
                     <div class="pagination-info">
-                        Showing 
+                        Showing
                         <c:choose>
                             <c:when test="${not empty totalCount and totalCount > 0}">
-                                ${((currentPage - 1) * recordsPerPage) + 1} - 
+                                ${((currentPage - 1) * recordsPerPage) + 1} -
                                 ${currentPage * recordsPerPage > totalCount ? totalCount : currentPage * recordsPerPage}
                                 of ${totalCount}
                             </c:when>

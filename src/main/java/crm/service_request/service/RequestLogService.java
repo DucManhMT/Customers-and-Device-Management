@@ -2,12 +2,14 @@ package crm.service_request.service;
 
 import crm.common.model.Account;
 import crm.common.model.Request;
+import crm.common.model.Staff;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.TransactionManager;
 import crm.service_request.model.RequestLog;
 import crm.service_request.repository.RequestLogRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
+import crm.task.repository.StaffRepository;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class RequestLogService {
     RequestLogRepository requestLogRepository = new RequestLogRepository();
+    StaffRepository staffRepository = new StaffRepository();
 
     public void createLog(Request request, String description, OldRequestStatus oldStatus, RequestStatus newStatus,
                           Account account) {
@@ -40,6 +43,20 @@ public class RequestLogService {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    public Staff findLatestTechFinishLogsByRequestId(int requestId) {
+        List<RequestLog> requestLogs = requestLogRepository.findWithCondition(ClauseBuilder.builder()
+                .equal("RequestID", requestId)
+                .and()
+                .equal("NewStatus", RequestStatus.Tech_Finished.toString()));
+
+        RequestLog latestLog = requestLogs.stream()
+                .max((log1, log2) -> log1.getActionDate().compareTo(log2.getActionDate()))
+                .orElse(null);
+
+        return requestLogs.isEmpty() ? null
+                : staffRepository.findByUsername(latestLog.getAccount().getUsername());
     }
 
     public List<RequestLog> getLogsByRequestId(int requestId) {
