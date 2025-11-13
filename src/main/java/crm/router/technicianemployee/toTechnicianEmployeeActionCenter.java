@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -71,6 +70,15 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                     .filter(task -> task.getStatus() == TaskStatus.Processing || task.getStatus() == TaskStatus.Finished)
                     .collect(Collectors.toList());
 
+            List<Task> pendingReceivedTasks = allTasks.stream()
+                    .filter(task -> task != null)
+                    .filter(task -> task.getAssignTo() != null)
+                    .filter(task -> currentStaff.getStaffID().equals(task.getAssignTo().getStaffID()))
+                    .filter(task -> task.getStatus() == TaskStatus.Pending)
+                    .collect(Collectors.toList());
+            
+            int pendingTasksCount = pendingReceivedTasks.size();
+
             int totalTasks = myTasks.size();
             int processingTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
@@ -79,27 +87,29 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
                     .filter(task -> task.getStatus() == TaskStatus.Finished)
                     .count();
 
-            LocalDate today = LocalDate.now();
+            LocalDateTime now = LocalDateTime.now();
             int nearDueTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
                     .filter(task -> task.getDeadline() != null)
                     .filter(task -> {
-                        LocalDate deadline = task.getDeadline().toLocalDate();
-                        long daysUntilDeadline = java.time.temporal.ChronoUnit.DAYS.between(today, deadline);
-                        return daysUntilDeadline >= 0 && daysUntilDeadline <= 3;
+                        LocalDateTime deadline = task.getDeadline();
+                        return deadline.isAfter(now) && deadline.isBefore(now.plusDays(3));
                     })
                     .count();
 
             int overdueTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
                     .filter(task -> task.getDeadline() != null)
-                    .filter(task -> task.getDeadline().toLocalDate().isBefore(today))
+                    .filter(task -> task.getDeadline().isBefore(now))
                     .count();
 
             int todayTasks = (int) myTasks.stream()
                     .filter(task -> task.getStatus() == TaskStatus.Processing)
                     .filter(task -> task.getDeadline() != null)
-                    .filter(task -> task.getDeadline().toLocalDate().equals(today))
+                    .filter(task -> {
+                        LocalDateTime deadline = task.getDeadline();
+                        return deadline.toLocalDate().equals(now.toLocalDate());
+                    })
                     .count();
 
             List<Task> recentTasks = myTasks.stream()
@@ -122,6 +132,8 @@ public class toTechnicianEmployeeActionCenter extends HttpServlet {
             req.setAttribute("overdueTasks", overdueTasks);
             req.setAttribute("todayTasks", todayTasks);
             req.setAttribute("recentTasks", recentTasks);
+            req.setAttribute("pendingTasksCount", pendingTasksCount);
+            req.setAttribute("pendingReceivedTasks", pendingReceivedTasks);
 
             req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
 
