@@ -166,8 +166,8 @@ CREATE TABLE AccountRequest(
 CREATE TABLE RequestLog (
                             RequestLogID INT PRIMARY KEY,
                             ActionDate DATE,
-                            OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing'),
-                            NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing'),
+                            OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing', 'Tech_Finished'),
+                            NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing', 'Tech_Finished'),
                             Description NVARCHAR(255),
                             RequestID INT NOT NULL,
                             Username NVARCHAR(100),
