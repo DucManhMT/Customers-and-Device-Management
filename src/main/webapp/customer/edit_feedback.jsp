@@ -538,7 +538,7 @@
                     <i class="fas fa-save"></i>
                     Save Changes
                 </button>
-                <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/feedback/view?requestId=${feedback.requestID.getForeignKeyValue()}">
+                <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${feedback.requestID.foreignKeyValue}">
                     <i class="fas fa-times"></i>
                     Cancel
                 </a>
