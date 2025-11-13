@@ -72,17 +72,11 @@ public class TaskService {
         return taskRepository.findById(taskId);
     }
 
-    /**
-     * Lấy danh sách Task được sắp xếp theo Deadline gần nhất (ASC).
-     * Có thể lọc theo requestId nếu cung cấp (>0). Phân trang theo page &
-     * recordsPerPage (1-indexed).
-     */
     public Page<Task> getTasksOrderByNearestDeadline(Integer requestId, int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (requestId != null && requestId > 0) {
             builder.equal(COL_REQUEST_ID, requestId);
         }
-        // Sắp xếp theo Deadline tăng dần sử dụng API mới Order list
         return taskRepository.findWithCondtion(builder,
                 PageRequest.of(page, recordsPerPage, java.util.List.of(Order.asc(COL_DEADLINE))));
     }
@@ -121,20 +115,19 @@ public class TaskService {
             if (!staffIds.isEmpty()) {
                 builder.in(COL_ASSIGN_TO, staffIds);
             } else {
-                // Không ai khớp -> trả về trang rỗng
+
                 return new Page<>(0, PageRequest.of(page, size), java.util.List.of());
             }
         }
 
         LocalDateTime now = LocalDateTime.now();
-        // Đổi logic sắp quá hạn theo ngày (nearDueDays) thay cho giờ
+
         int nearDueDays = (nearDueHours == null || nearDueHours <= 0) ? 1 : nearDueHours; // tái sử dụng field
-        // nearDueHours như days
 
         if (Boolean.TRUE.equals(overdue)) {
-            builder.less(COL_DEADLINE, now); // deadline < now => quá hạn
+            builder.less(COL_DEADLINE, now);
         } else if (Boolean.TRUE.equals(nearDue)) {
-            // deadline trong khoảng [today, today + nearDueDays]
+
             LocalDateTime edge = now.plusDays(nearDueDays);
             builder.greaterOrEqual(COL_DEADLINE, now).and().lessOrEqual(COL_DEADLINE, edge);
         }
@@ -149,6 +142,7 @@ public class TaskService {
             String description) {
         Task task = new Task();
         Request request = requestRepository.findById(requestId);
+        // return null if request not found
         task.setTaskID(taskRepository.getNewId());
         task.setAssignBy(staffRepository.findById(assignBy));
         task.setAssignTo(staffRepository.findById(assignTo));
@@ -157,20 +151,18 @@ public class TaskService {
         task.setDeadline(deadline);
         task.setDescription(description);
         task.setStatus(TaskStatus.Pending);
+
         try {
             TransactionManager.beginTransaction();
             taskRepository.save(task);
             if (request.getRequestStatus().equals(RequestStatus.Approved)) {
                 request.setRequestStatus(RequestStatus.Processing);
-                requestLogService.createLog(request, "Request has been assigned to tech employee.",
-                        OldRequestStatus.Approved,
-                        RequestStatus.Processing, task.getAssignBy().getAccount());
+
                 requestRepository.update(request);
-            } else {
-                requestLogService.createLog(request, "Request has been assigned to tech employee.",
-                        OldRequestStatus.Processing,
-                        RequestStatus.Processing, task.getAssignBy().getAccount());
             }
+            requestLogService.createLog(request, "Request has been assigned to tech employee.",
+                    OldRequestStatus.Approved,
+                    RequestStatus.Processing, task.getAssignBy().getAccount());
             TransactionManager.commit();
         } catch (SQLException e) {
 

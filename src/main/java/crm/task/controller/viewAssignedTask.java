@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 @WebServlet(name = "viewAssignedTask", urlPatterns = { URLConstants.TECHEM_VIEW_ASSIGNED_TASK })
 public class viewAssignedTask extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

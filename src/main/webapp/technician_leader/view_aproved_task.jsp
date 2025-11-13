@@ -446,6 +446,11 @@
             color: var(--gray-600);
         }
 
+        .badge-tech-finished {
+            background: rgba(129, 140, 248, 0.15);
+            color: var(--primary-dark);
+        }
+
         /* Action Buttons */
         .action-buttons {
             display: flex;
@@ -667,6 +672,9 @@
                         <option value="">All Status</option>
                         <option value="Approved" ${statusFilter == 'Approved' ? 'selected' : ''}>Approved</option>
                         <option value="Processing" ${statusFilter == 'Processing' ? 'selected' : ''}>Processing</option>
+                        <option value="Tech_Finished" ${statusFilter == 'Tech_Finished' ? 'selected' : ''}>Tech
+                            Finished
+                        </option>
                         <option value="Finished" ${statusFilter == 'Finished' ? 'selected' : ''}>Finished</option>
                     </select>
                 </div>
@@ -792,19 +800,24 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${reqObj.requestStatus == 'Approved'}">
-                                                <span class="badge badge-success">
-                                                    <i class="fas fa-check-circle"></i> ${reqObj.requestStatus}
-                                                </span>
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle"></i> ${reqObj.requestStatus}
+                                            </span>
                                         </c:when>
                                         <c:when test="${reqObj.requestStatus == 'Processing'}">
-                                                <span class="badge badge-processing">
-                                                    <i class="fas fa-spinner"></i> ${reqObj.requestStatus}
-                                                </span>
+                                            <span class="badge badge-processing">
+                                                <i class="fas fa-spinner"></i> ${reqObj.requestStatus}
+                                            </span>
+                                        </c:when>
+                                        <c:when test="${reqObj.requestStatus == 'Tech_Finished'}">
+                                            <span class="badge badge-tech-finished">
+                                                <i class="fas fa-clipboard-check"></i> ${reqObj.requestStatus}
+                                            </span>
                                         </c:when>
                                         <c:when test="${reqObj.requestStatus == 'Finished'}">
-                                                <span class="badge badge-finished">
-                                                    <i class="fas fa-check"></i> ${reqObj.requestStatus}
-                                                </span>
+                                            <span class="badge badge-finished">
+                                                <i class="fas fa-check"></i> ${reqObj.requestStatus}
+                                            </span>
                                         </c:when>
                                         <c:otherwise>
                                             <span class="badge">${reqObj.requestStatus}</span>
@@ -817,14 +830,17 @@
                                            class="btn btn-outline btn-sm">
                                             <i class="fas fa-eye"></i> View
                                         </a>
-                                        <c:if test="${reqObj.requestStatus != 'Finished'}">
-                                            <form action="${pageContext.request.contextPath}/task/selectTechnician"
+                                        <c:if test="${reqObj.requestStatus != 'Finished' && reqObj.requestStatus != 'Tech_Finished'}">
+                                            <form action="${pageContext.request.contextPath}/technician_leader/task/selectTechnician"
                                                   method="POST" style="display: inline;">
                                                 <input type="hidden" name="selectedTasks" value="${reqObj.requestID}">
                                                 <button type="submit" class="btn btn-success btn-sm">
                                                     <i class="fas fa-user-plus"></i> Assign
                                                 </button>
                                             </form>
+                                        </c:if>
+                                        <c:if test="${reqObj.requestStatus == 'Tech_Finished'}">
+                                            <span class="badge badge-tech-finished">Awaiting supporter confirmation</span>
                                         </c:if>
 
                                     </div>

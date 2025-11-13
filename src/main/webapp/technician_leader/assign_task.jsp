@@ -11,7 +11,6 @@
     />
 </head>
 <body>
-
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
 <div class="container my-3">
@@ -68,6 +67,56 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Existing tasks of selected technician -->
+            <c:if test="${not empty assignToId}">
+                <div class="card mt-3">
+                    <div class="card-header">Processing Tasks</div>
+                    <div class="card-body p-0">
+                        <c:choose>
+                            <c:when test="${empty assignToTasks}">
+                                <div class="p-3 text-muted">No tasks found.</div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="table-responsive">
+                                    <table class="table table-sm mb-0">
+                                        <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Request</th>
+                                            <th>Start</th>
+                                            <th>Deadline</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach
+                                                var="t"
+                                                items="${assignToTasks}"
+                                                varStatus="loop"
+                                        >
+                                            <tr>
+                                                <td>${t.taskID}</td>
+                                                <td>
+                                                        ${t.request != null ? t.request.requestID : '-'}
+                                                </td>
+                                                <td>${t.startDate}</td>
+                                                <td>${t.deadline}</td>
+                                                <td>
+                                <span class="badge bg-secondary"
+                                >${t.status}</span
+                                >
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </c:if>
         </div>
 
         <!-- Main form -->
@@ -93,8 +142,9 @@
                         <input type="hidden" name="assignTo" value="${assignToId}"/>
 
                         <div class="mb-3">
-                            <label for="startDate" class="form-label">Start Date <span
-                                    style="color: red;">*</span></label>
+                            <label for="startDate" class="form-label"
+                            >Start Date <span style="color: red">*</span></label
+                            >
                             <input
                                     type="date"
                                     id="startDate"
@@ -105,7 +155,9 @@
                             />
                         </div>
                         <div class="mb-3">
-                            <label for="deadline" class="form-label">Deadline <span style="color: red;">*</span></label>
+                            <label for="deadline" class="form-label"
+                            >Deadline <span style="color: red">*</span></label
+                            >
                             <input
                                     type="date"
                                     id="deadline"
@@ -117,18 +169,18 @@
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label"
-                            >Description <span style="color: red;">* </span></label
+                            >Description <span style="color: red">* </span></label
                             >
-                            <textarea id="description" name="description" class="form-control" rows="4"
-                                      required>${description}</textarea>
-
+                            <textarea id="description" name="description" class="form-control" rows="4" required
+                            >${description}</textarea
+                            >
                         </div>
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Assign</button>
                             <a
                                     class="btn btn-secondary"
-                                    href="${pageContext.request.contextPath}/task/selectTechnician?selectedTasks=${requestId}"
+                                    href="${pageContext.request.contextPath}/technician_leader/task/selectTechnician?selectedTasks=${requestId}"
                             >Cancel</a
                             >
                         </div>

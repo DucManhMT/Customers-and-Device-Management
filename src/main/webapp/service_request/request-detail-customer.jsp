@@ -19,7 +19,23 @@
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/customer_sidebar.jsp"/>
 <div class="container py-5">
-
+    <c:choose>
+            <c:when test="${request.requestStatus == 'Pending'}">
+              <c:set var="statusClass" value="bg-warning text-dark" />
+            </c:when>
+            <c:when test="${request.requestStatus == 'Processing'}">
+              <c:set var="statusClass" value="bg-primary" />
+            </c:when>
+            <c:when test="${request.requestStatus == 'Tech_Finished'}">
+              <c:set var="statusClass" value="bg-info" />
+            </c:when>
+            <c:when test="${request.requestStatus == 'Finished'}">
+              <c:set var="statusClass" value="bg-success" />
+            </c:when>
+            <c:when test="${request.requestStatus == 'Rejected'}">
+              <c:set var="statusClass" value="bg-danger" />
+            </c:when>
+          </c:choose>
     <div class="container py-5">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
@@ -41,9 +57,10 @@
                                 </a>
                             </p>
                             <p><strong>Description:</strong> ${request.requestDescription}</p>
-                            <p><strong>Status:</strong>
-                                <span class="text-danger" style="font-weight: bold">${request.requestStatus}</span>
-                            </p>
+                            <p>
+              <strong>Status:</strong>
+              <span class="badge ${statusClass}">${request.requestStatus}</span>
+            </p>
                             <p><strong>Note:</strong> ${request.note}</p>
                             <p><strong>Create Date:</strong> ${request.startDate}</p>
                             <p><strong>Finish Date:</strong> ${request.finishedDate}</p>

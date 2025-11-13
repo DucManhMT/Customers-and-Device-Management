@@ -13,11 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-/**
- * View detailed information about a single contract (for customer side).
- * Expects contractId as query parameter.
- * URL: /contract/detail?contractId=123
- */
+
 @WebServlet(urlPatterns = URLConstants.CONTRACT_DETAIL, name = "ViewContractDetailServlet")
 public class ViewContractDetailServlet extends HttpServlet {
     private static final String ATTR_ERROR = "error";

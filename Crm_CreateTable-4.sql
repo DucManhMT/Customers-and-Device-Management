@@ -144,7 +144,7 @@ CREATE TABLE Contract (
 CREATE TABLE Request (
                          RequestID INT PRIMARY KEY,
                          RequestDescription NVARCHAR(255),
-                         RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing'),
+                         RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing','Tech_Finished') DEFAULT 'Pending',
                          StartDate DATETIME NOT NULL,
                          FinishedDate DATETIME,
                          Note NVARCHAR(255),
@@ -166,8 +166,8 @@ CREATE TABLE AccountRequest(
 CREATE TABLE RequestLog (
                             RequestLogID INT PRIMARY KEY,
                             ActionDate DATE,
-                            OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing'),
-                            NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing'),
+                            OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing', 'Tech_Finished'),
+                            NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing', 'Tech_Finished'),
                             Description NVARCHAR(255),
                             RequestID INT NOT NULL,
                             Username NVARCHAR(100),

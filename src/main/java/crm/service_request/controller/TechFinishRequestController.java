@@ -1,23 +1,23 @@
 package crm.service_request.controller;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
+import crm.common.model.Account;
 import crm.service_request.service.RequestService;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
-
-import crm.common.model.Account;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(urlPatterns = URLConstants.CUSTOMER_SUPPORTER_FINISH_REQUEST, name = "FinishRequestController")
-public class FinishRequestController extends HttpServlet {
+@WebServlet(urlPatterns = URLConstants.TECHLEAD_FINISH_REQUEST, name = "TechFinishRequestController")
+public class TechFinishRequestController extends HttpServlet {
     private static final RequestService requestService = new RequestService();
 
     @Override
@@ -52,7 +52,10 @@ public class FinishRequestController extends HttpServlet {
 
         try {
             int requestId = Integer.parseInt(requestIdParam.trim());
-            requestService.setFinishRequest(requestId, account);
+            // Pass the authenticated account to ensure proper auditing and to avoid
+            // null-related failures
+            requestService.setTechFinishRequest(requestId, account);
+
             writeJson(resp, true, "Request marked as finished successfully.");
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -66,16 +69,13 @@ public class FinishRequestController extends HttpServlet {
         }
     }
 
-    private void writeJson(HttpServletResponse resp, boolean success, String message) {
+    private void writeJson(HttpServletResponse resp, boolean success, String message) throws IOException {
         try (PrintWriter out = resp.getWriter()) {
             JsonObject json = Json.createObjectBuilder()
                     .add("success", success)
                     .add("message", message)
                     .build();
             out.print(json.toString());
-        } catch (IOException e) {
-            // Best-effort: set error code when failing to write
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

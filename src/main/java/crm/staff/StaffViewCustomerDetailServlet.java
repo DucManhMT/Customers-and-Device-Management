@@ -27,7 +27,7 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String customerIdParam = req.getParameter("customerId");
         if (customerIdParam == null || customerIdParam.isBlank()) {
-            req.setAttribute(ATTR_ERROR, MessageConst.MSG24);
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG72);
             forward(req, resp);
             return;
         }
@@ -35,7 +35,7 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
         try {
             customerId = Integer.parseInt(customerIdParam.trim());
         } catch (NumberFormatException e) {
-            req.setAttribute(ATTR_ERROR, MessageConst.MSG25);
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG73);
             forward(req, resp);
             return;
         }
@@ -43,7 +43,7 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Customer customer = em.find(Customer.class, customerId);
         if (customer == null) {
-            req.setAttribute(ATTR_ERROR, MessageConst.MSG26);
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG74);
             forward(req, resp);
             return;
         }
