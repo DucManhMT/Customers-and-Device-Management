@@ -144,7 +144,7 @@ CREATE TABLE Contract (
 CREATE TABLE Request (
                          RequestID INT PRIMARY KEY,
                          RequestDescription NVARCHAR(255),
-                         RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing'),
+                         RequestStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished', 'Processing','Tech_Finished') DEFAULT 'Pending',
                          StartDate DATETIME NOT NULL,
                          FinishedDate DATETIME,
                          Note NVARCHAR(255),

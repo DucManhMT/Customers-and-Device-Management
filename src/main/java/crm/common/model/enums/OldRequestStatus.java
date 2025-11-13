@@ -5,5 +5,6 @@ public enum OldRequestStatus {
     Pending,
     Approved,
     Rejected,
-    Processing
+    Processing,
+    Tech_Finished,
 }

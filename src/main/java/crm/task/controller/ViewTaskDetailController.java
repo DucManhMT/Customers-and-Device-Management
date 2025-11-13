@@ -53,7 +53,7 @@ public class ViewTaskDetailController extends HttpServlet {
     private void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String taskIdParam = req.getParameter("taskId");
         if (taskIdParam == null || taskIdParam.isBlank()) {
-            req.setAttribute(ATTR_ERROR, MessageConst.MSG27);
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG75);
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;
         }
@@ -62,7 +62,7 @@ public class ViewTaskDetailController extends HttpServlet {
         try {
             taskId = Integer.parseInt(taskIdParam.trim());
         } catch (NumberFormatException nfe) {
-            req.setAttribute(ATTR_ERROR, MessageConst.MSG28);
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG76);
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;
         }
@@ -70,7 +70,7 @@ public class ViewTaskDetailController extends HttpServlet {
         TaskService taskService = new TaskService();
         Task task = taskService.getTaskById(taskId);
         if (task == null) {
-            req.setAttribute(ATTR_ERROR, MessageConst.MSG29);
+            req.setAttribute(ATTR_ERROR, MessageConst.MSG77);
             req.getRequestDispatcher(VIEW).forward(req, resp);
             return;
         }

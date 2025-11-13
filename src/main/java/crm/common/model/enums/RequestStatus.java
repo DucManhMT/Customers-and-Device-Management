@@ -5,5 +5,6 @@ public enum RequestStatus {
     Approved,
     Rejected,
     Finished,
-    Processing
+    Processing,
+    Tech_Finished
 }

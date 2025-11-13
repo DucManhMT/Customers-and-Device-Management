@@ -111,6 +111,7 @@ public class Request {
             case Approved -> OldRequestStatus.Approved;
             case Rejected -> OldRequestStatus.Rejected;
             case Processing -> OldRequestStatus.Processing;
+            case Tech_Finished -> OldRequestStatus.Tech_Finished;
             default -> throw new IllegalArgumentException("Unknown status: " + status);
         };
     }
