@@ -22,7 +22,6 @@ import crm.common.model.enums.RequestStatus;
 @WebServlet(name = "viewAprovedTask", urlPatterns = { URLConstants.TECHLEAD_VIEW_APROVED_TASK })
 public class viewAprovedTask extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
     private final RequestService requestService = new RequestService();
 
     @Override

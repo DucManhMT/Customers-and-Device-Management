@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -25,128 +24,130 @@ import java.util.stream.Collectors;
 @WebServlet(name = "toTechnicianEmployeeActionCenter", value = "/technician_employee/techemployee_actioncenter")
 public class toTechnicianEmployeeActionCenter extends HttpServlet {
 
-        @Override
-        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                Connection connection = null;
-                try {
-                        connection = DBcontext.getConnection();
-                        EntityManager entityManager = new EntityManager(connection);
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Connection connection = null;
+        try {
+            connection = DBcontext.getConnection();
+            EntityManager entityManager = new EntityManager(connection);
 
-                        Account account = (Account) req.getSession().getAttribute("account");
-                        if (account == null) {
-                                resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
-                                return;
-                        }
+            Account account = (Account) req.getSession().getAttribute("account");
+            if (account == null) {
+                resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
+                return;
+            }
 
-                        String username = account.getUsername();
-                        if (username == null || username.trim().isEmpty()) {
-                                resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
-                                return;
-                        }
+            String username = account.getUsername();
+            if (username == null || username.trim().isEmpty()) {
+                resp.sendRedirect(req.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);
+                return;
+            }
 
-                        List<Staff> allStaff = entityManager.findAll(Staff.class);
-                        Staff currentStaff = allStaff.stream()
-                                        .filter(s -> s.getAccount() != null
-                                                        && username.equals(s.getAccount().getUsername()))
-                                        .findFirst()
-                                        .orElse(null);
+            List<Staff> allStaff = entityManager.findAll(Staff.class);
+            Staff currentStaff = allStaff.stream()
+                    .filter(s -> s.getAccount() != null && username.equals(s.getAccount().getUsername()))
+                    .findFirst()
+                    .orElse(null);
 
-                        if (currentStaff == null) {
-                                req.setAttribute("errorMessage", "Staff record not found for current user.");
-                                req.setAttribute("totalTasks", 0);
-                                req.setAttribute("processingTasks", 0);
-                                req.setAttribute("finishedTasks", 0);
-                                req.setAttribute("nearDueTasks", 0);
-                                req.setAttribute("overdueTasks", 0);
-                                req.setAttribute("todayTasks", 0);
-                                req.setAttribute("recentTasks", Collections.emptyList());
-                                req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp")
-                                                .forward(req, resp);
-                                return;
-                        }
+            if (currentStaff == null) {
+                req.setAttribute("errorMessage", "Staff record not found for current user.");
+                req.setAttribute("totalTasks", 0);
+                req.setAttribute("processingTasks", 0);
+                req.setAttribute("finishedTasks", 0);
+                req.setAttribute("nearDueTasks", 0);
+                req.setAttribute("overdueTasks", 0);
+                req.setAttribute("todayTasks", 0);
+                req.setAttribute("recentTasks", Collections.emptyList());
+                req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
+                return;
+            }
 
-                        List<Task> allTasks = entityManager.findAll(Task.class);
-                        List<Task> myTasks = allTasks.stream()
-                                        .filter(task -> task != null)
-                                        .filter(task -> task.getAssignTo() != null)
-                                        .filter(task -> currentStaff.getStaffID()
-                                                        .equals(task.getAssignTo().getStaffID()))
-                                        .filter(task -> task.getStatus() == TaskStatus.Processing
-                                                        || task.getStatus() == TaskStatus.Finished)
-                                        .collect(Collectors.toList());
+            List<Task> allTasks = entityManager.findAll(Task.class);
+            List<Task> myTasks = allTasks.stream()
+                    .filter(task -> task != null)
+                    .filter(task -> task.getAssignTo() != null)
+                    .filter(task -> currentStaff.getStaffID().equals(task.getAssignTo().getStaffID()))
+                    .filter(task -> task.getStatus() == TaskStatus.Processing || task.getStatus() == TaskStatus.Finished)
+                    .collect(Collectors.toList());
 
-                        int totalTasks = myTasks.size();
-                        int processingTasks = (int) myTasks.stream()
-                                        .filter(task -> task.getStatus() == TaskStatus.Processing)
-                                        .count();
-                        int finishedTasks = (int) myTasks.stream()
-                                        .filter(task -> task.getStatus() == TaskStatus.Finished)
-                                        .count();
+            List<Task> pendingReceivedTasks = allTasks.stream()
+                    .filter(task -> task != null)
+                    .filter(task -> task.getAssignTo() != null)
+                    .filter(task -> currentStaff.getStaffID().equals(task.getAssignTo().getStaffID()))
+                    .filter(task -> task.getStatus() == TaskStatus.Pending)
+                    .collect(Collectors.toList());
 
-                        LocalDate today = LocalDate.now();
-                        int nearDueTasks = (int) myTasks.stream()
-                                        .filter(task -> task.getStatus() == TaskStatus.Processing)
-                                        .filter(task -> task.getDeadline() != null)
-                                        .filter(task -> {
-                                                LocalDate deadline = task.getDeadline().toLocalDate();
-                                                long daysUntilDeadline = java.time.temporal.ChronoUnit.DAYS
-                                                                .between(today, deadline);
-                                                return daysUntilDeadline >= 0 && daysUntilDeadline <= 3;
-                                        })
-                                        .count();
+            int pendingTasksCount = pendingReceivedTasks.size();
 
-                        int overdueTasks = (int) myTasks.stream()
-                                        .filter(task -> task.getStatus() == TaskStatus.Processing)
-                                        .filter(task -> task.getDeadline() != null)
-                                        .filter(task -> task.getDeadline().toLocalDate().isBefore(today))
-                                        .count();
+            int totalTasks = myTasks.size();
+            int processingTasks = (int) myTasks.stream()
+                    .filter(task -> task.getStatus() == TaskStatus.Processing)
+                    .count();
+            int finishedTasks = (int) myTasks.stream()
+                    .filter(task -> task.getStatus() == TaskStatus.Finished)
+                    .count();
 
-                        int todayTasks = (int) myTasks.stream()
-                                        .filter(task -> task.getStatus() == TaskStatus.Processing)
-                                        .filter(task -> task.getDeadline() != null)
-                                        .filter(task -> task.getDeadline().toLocalDate().equals(today))
-                                        .count();
+            LocalDateTime now = LocalDateTime.now();
+            int nearDueTasks = (int) myTasks.stream()
+                    .filter(task -> task.getStatus() == TaskStatus.Processing)
+                    .filter(task -> task.getDeadline() != null)
+                    .filter(task -> {
+                        LocalDateTime deadline = task.getDeadline();
+                        return deadline.isAfter(now) && deadline.isBefore(now.plusDays(3));
+                    })
+                    .count();
 
-                        List<Task> recentTasks = myTasks.stream()
-                                        .filter(task -> task.getStatus() == TaskStatus.Processing)
-                                        .sorted((t1, t2) -> {
-                                                LocalDateTime dt1 = t1.getStartDate();
-                                                LocalDateTime dt2 = t2.getStartDate();
-                                                if (dt1 == null && dt2 == null)
-                                                        return 0;
-                                                if (dt1 == null)
-                                                        return 1;
-                                                if (dt2 == null)
-                                                        return -1;
-                                                return dt2.compareTo(dt1);
-                                        })
-                                        .limit(5)
-                                        .collect(Collectors.toList());
+            int overdueTasks = (int) myTasks.stream()
+                    .filter(task -> task.getStatus() == TaskStatus.Processing)
+                    .filter(task -> task.getDeadline() != null)
+                    .filter(task -> task.getDeadline().isBefore(now))
+                    .count();
 
-                        req.setAttribute("totalTasks", totalTasks);
-                        req.setAttribute("processingTasks", processingTasks);
-                        req.setAttribute("finishedTasks", finishedTasks);
-                        req.setAttribute("nearDueTasks", nearDueTasks);
-                        req.setAttribute("overdueTasks", overdueTasks);
-                        req.setAttribute("todayTasks", todayTasks);
-                        req.setAttribute("recentTasks", recentTasks);
+            int todayTasks = (int) myTasks.stream()
+                    .filter(task -> task.getStatus() == TaskStatus.Processing)
+                    .filter(task -> task.getDeadline() != null)
+                    .filter(task -> {
+                        LocalDateTime deadline = task.getDeadline();
+                        return deadline.toLocalDate().equals(now.toLocalDate());
+                    })
+                    .count();
 
-                        req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req,
-                                        resp);
+            List<Task> recentTasks = myTasks.stream()
+                    .filter(task -> task.getStatus() == TaskStatus.Processing)
+                    .sorted((t1, t2) -> {
+                        LocalDateTime dt1 = t1.getStartDate();
+                        LocalDateTime dt2 = t2.getStartDate();
+                        if (dt1 == null && dt2 == null) return 0;
+                        if (dt1 == null) return 1;
+                        if (dt2 == null) return -1;
+                        return dt2.compareTo(dt1);
+                    })
+                    .limit(5)
+                    .collect(Collectors.toList());
 
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        req.setAttribute("errorMessage",
-                                        "An error occurred while loading dashboard data: " + e.getMessage());
-                        req.setAttribute("totalTasks", 0);
-                        req.setAttribute("processingTasks", 0);
-                        req.setAttribute("finishedTasks", 0);
-                        req.setAttribute("nearDueTasks", 0);
-                        req.setAttribute("overdueTasks", 0);
-                        req.setAttribute("todayTasks", 0);
-                        req.setAttribute("recentTasks", Collections.emptyList());
-                        req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req,
-                                        resp);
-                }
+            req.setAttribute("totalTasks", totalTasks);
+            req.setAttribute("processingTasks", processingTasks);
+            req.setAttribute("finishedTasks", finishedTasks);
+            req.setAttribute("nearDueTasks", nearDueTasks);
+            req.setAttribute("overdueTasks", overdueTasks);
+            req.setAttribute("todayTasks", todayTasks);
+            req.setAttribute("recentTasks", recentTasks);
+            req.setAttribute("pendingTasksCount", pendingTasksCount);
+            req.setAttribute("pendingReceivedTasks", pendingReceivedTasks);
+
+            req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("errorMessage", "An error occurred while loading dashboard data: " + e.getMessage());
+            req.setAttribute("totalTasks", 0);
+            req.setAttribute("processingTasks", 0);
+            req.setAttribute("finishedTasks", 0);
+            req.setAttribute("nearDueTasks", 0);
+            req.setAttribute("overdueTasks", 0);
+            req.setAttribute("todayTasks", 0);
+            req.setAttribute("recentTasks", Collections.emptyList());
+            req.getRequestDispatcher("/technician_employee/techemployee_actioncenter.jsp").forward(req, resp);
         }
+    }
 }

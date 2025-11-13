@@ -745,10 +745,10 @@
                         </div>
 
                         <div class="task-footer">
-                            <form
-                                    action="${pageContext.request.contextPath}/staff/task/detail?taskId=5"
-                                    style="display: inline; flex: 1;">
-                                <input type="hidden" name="taskId" value="${task.taskID}">
+                            <form method="POST"
+                                  action="${pageContext.request.contextPath}/technician_employee/request/detail"
+                                  style="display: inline; flex: 1;">
+                                <input type="hidden" name="id" value="${task.taskID}">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-eye"></i> View Details
                                 </button>
