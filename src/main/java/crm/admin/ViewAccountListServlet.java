@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Customer;
@@ -243,16 +244,16 @@ public class ViewAccountListServlet extends HttpServlet {
             List<Account> accounts = em.findWithConditions(Account.class, cond);
 
             if (accounts == null || accounts.isEmpty()) {
-                session.setAttribute("success", "Account not found!");
+                session.setAttribute("success", MessageConst.MSG30);
             } else {
                 Account acc = accounts.get(0);
 
                 if ("deactivate".equalsIgnoreCase(action)) {
                     acc.setAccountStatus(AccountStatus.Deactive);
-                    session.setAttribute("success", "Account " + username + " deactivated successfully!");
+                    session.setAttribute("success", MessageConst.MSG31);
                 } else if ("activate".equalsIgnoreCase(action)) {
                     acc.setAccountStatus(AccountStatus.Active);
-                    session.setAttribute("success", "Account " + username + " activated successfully!");
+                    session.setAttribute("success", MessageConst.MSG32);
                 }
 
                 em.merge(acc,Account.class);
@@ -260,7 +261,7 @@ public class ViewAccountListServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("success", "Failed to update account status!");
+            session.setAttribute("success", MessageConst.MSG33);
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/account_list");

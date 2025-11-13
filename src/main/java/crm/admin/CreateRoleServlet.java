@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Role;
 import crm.common.model.enums.RoleStatus;
@@ -47,7 +48,7 @@ public class CreateRoleServlet extends HttpServlet {
 
         String roleName = request.getParameter("roleName");
         if (!Validator.isValidName(roleName)) {
-            session.setAttribute("error", "Role name contains invalid characters.");
+            session.setAttribute("error", MessageConst.MSG40);
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
             return;
         }
@@ -55,7 +56,7 @@ public class CreateRoleServlet extends HttpServlet {
 
         // Kiểm tra rỗng
         if (roleName == null || roleName.trim().isEmpty()) {
-            session.setAttribute("error", "Role name cannot be empty.");
+            session.setAttribute("error", MessageConst.MSG41);
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
             return;
         }
@@ -65,7 +66,7 @@ public class CreateRoleServlet extends HttpServlet {
         conditions.put("roleName", roleName);
 
         if (!em.findWithConditions(Role.class, conditions).isEmpty()) {
-            session.setAttribute("error", "Role name already exists.");
+            session.setAttribute("error", MessageConst.MSG42);
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
             return;
         }
@@ -78,10 +79,10 @@ public class CreateRoleServlet extends HttpServlet {
             role.setRoleName(roleName);
             role.setRoleStatus(RoleStatus.Active);
             em.persist(role, Role.class);
-            session.setAttribute("success", "Role created successfully.");
+            session.setAttribute("success", MessageConst.MSG43);
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
         } catch (Exception e) {
-            session.setAttribute("error", "Error creating role: " + e.getMessage());
+            session.setAttribute("error", "Error creating role");
             response.sendRedirect(request.getContextPath() + URLConstants.ADMIN_CREATE_ROLE);
         }
     }

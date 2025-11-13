@@ -35,7 +35,6 @@ public class ViewAccountDetailServlet extends HttpServlet {
         }
         String username = request.getParameter("id");
         String role = request.getParameter("role");
-//        System.out.println("Role ID: " + role);
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Role roleName = em.find(Role.class, Integer.parseInt(role));
         Account account = em.find(Account.class, username);

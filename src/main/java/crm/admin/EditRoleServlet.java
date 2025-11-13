@@ -1,5 +1,6 @@
 package crm.admin;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Feature;
@@ -55,14 +56,14 @@ public class EditRoleServlet extends HttpServlet {
         int roleId = Integer.parseInt(request.getParameter("roleID"));
         String roleName = request.getParameter("roleName");
         if(!Validator.isValidName(roleName)){
-            request.getSession().setAttribute("error", "Role name contains invalid characters.");
+            request.getSession().setAttribute("error", MessageConst.MSG40);
             response.sendRedirect(request.getContextPath() + "/admin/role_list/edit_role?id=" + roleId);
             return;
         }
         List<Role> allRoles = em.findAll(Role.class);
         for (Role role : allRoles) {
             if (role.getRoleName().equals(roleName) && role.getRoleID() != roleId) {
-                request.getSession().setAttribute("error", "Role name already exists.");
+                request.getSession().setAttribute("error", MessageConst.MSG42);
                 response.sendRedirect(request.getContextPath() + "/admin/role_list/edit_role?id=" + roleId);
                 return;
             }
