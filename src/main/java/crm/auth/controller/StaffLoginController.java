@@ -58,7 +58,7 @@ public class StaffLoginController extends HttpServlet {
                         session.removeAttribute("error");
                         session.setAttribute("account", account);
                         session.setAttribute("role", account.getRole());
-                        resp.sendRedirect(req.getContextPath() + "/inventory_manager/inventorymanager_actioncenter");
+                        resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_DASHBOARD);
                         return; // ✅ stop after redirect
                     default:
                         session.setAttribute("error", "Invalid username or password.");

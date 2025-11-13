@@ -180,6 +180,7 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
         <div class="alert alert-error">
           <i class="fas fa-exclamation-circle"></i> ${errorMessage}
         </div>
+        <c:remove var="errorMessage" scope="session"/>
       </c:if>
       <c:if test="${not empty error}">
         <div class="alert alert-error">
@@ -190,6 +191,10 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
         <div class="alert alert-success">
           <i class="fas fa-check-circle"></i> ${successMessage}
         </div>
+        <c:remove var="successMessage" scope="session"/>
+      </c:if>
+      <c:if test="${not empty errorMessage}">
+        <c:remove var="errorMessage" scope="session"/>
       </c:if>
 
       <c:if test="${empty task}">

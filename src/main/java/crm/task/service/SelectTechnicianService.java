@@ -46,7 +46,7 @@ public class SelectTechnicianService {
        }
 
        int page = 1;
-       int recordsPerPage = 10;
+       int recordsPerPage = 5;
        String searchName = request.getParameter("searchName");
        String location = request.getParameter("location");
        String ageRange = request.getParameter("ageRange");
