@@ -56,7 +56,7 @@ public class StaffViewCustomerDetailController extends HttpServlet {
         }
 
         List<Contract> contracts = contractRepo.findWithCondition(ClauseBuilder.builder()
-                .equal("customer.customerID", customerId));
+                .equal("CustomerID", customerId));
 
         String customerAccountStatus = null;
         try {

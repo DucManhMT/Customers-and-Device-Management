@@ -1,5 +1,6 @@
 package crm.contract.controller;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.common.model.Contract;
@@ -31,6 +32,7 @@ public class ViewContractDetailController extends HttpServlet {
         Account account = (Account) req.getSession().getAttribute("account");
 
         String contractIdParam = req.getParameter("contractId");
+
         if (contractIdParam == null || contractIdParam.isBlank()) {
             req.setAttribute(ATTR_ERROR, "contractId is required");
             forward(req, resp);
@@ -41,7 +43,7 @@ public class ViewContractDetailController extends HttpServlet {
             contractId = Integer.parseInt(contractIdParam.trim());
             Contract contract = contractService.getContractById(contractId);
             if (contract == null) {
-                throw new IllegalArgumentException("Contract not found");
+                throw new IllegalArgumentException(MessageConst.MSG92);
             }
             if (account != null && account.getRole() != null && "Customer".equals(account.getRole().getRoleName())) {
                 Customer customer = null;

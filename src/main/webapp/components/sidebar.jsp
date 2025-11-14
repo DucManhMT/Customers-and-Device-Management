@@ -315,6 +315,11 @@
                                 href="${pageContext.request.contextPath}/customer_supporter/customers_list"
                         ><span>Customer List</span></a>
                     </li>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_VIEW_CUSTOMERS_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'customer-list' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/customer_supporter/contracts"
+                        ><span>Contract List</span></a>
+                    </li>
 
 
                     <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_REQUEST_DASHBOARD) ? '"display: block"' : '"display:none"'}>

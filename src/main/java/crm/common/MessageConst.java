@@ -21,8 +21,9 @@ public class MessageConst {
     public static final String MSG75 = "taskId is required";
     public static final String MSG76 = "Invalid taskId";
     public static final String MSG77 = "Task not found";
+    public static final String MSG92 = "Contract not found";
 
-    //Admin
+    // Admin
     public static final String MSG24 = "Account name contains invalid characters";
     public static final String MSG25 = "Invalid email format.";
     public static final String MSG26 = "Invalid phone number format.";
@@ -44,6 +45,5 @@ public class MessageConst {
     public static final String MSG42 = "Role name already exists.";
     public static final String MSG43 = "Role created successfully.";
     public static final String MSG44 = "This account has no customer information.";
-
 
 }
