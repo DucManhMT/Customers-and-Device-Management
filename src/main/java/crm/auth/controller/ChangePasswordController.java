@@ -20,6 +20,11 @@ public class ChangePasswordController extends HttpServlet {
         String oldPass = req.getParameter("oldPassword");
         String newPass = req.getParameter("newPassword");
         HttpSession session = req.getSession(false);
+        if (!Validator.isValidPassword(oldPass)) {
+            session.setAttribute("error", "Old password is invalid.");
+            resp.sendRedirect(req.getContextPath()+ "/auth/change_password");
+            return;
+        }
         if (!Validator.isValidPassword(newPass)) {
             session.setAttribute("error", "New password is invalid.");
             resp.sendRedirect(req.getContextPath()+ "/auth/change_password");
@@ -30,7 +35,7 @@ public class ChangePasswordController extends HttpServlet {
             try{
                 Account account = (Account) session.getAttribute("account");
                 if (!account.getPasswordHash().equals(Hasher.hashPassword(oldPass))) {
-                    session.setAttribute("success", "Password changed successfully.");
+                    session.setAttribute("error", "Old password not match.");
                     resp.sendRedirect(req.getContextPath()+ "/auth/change_password");
                     return;
                 }

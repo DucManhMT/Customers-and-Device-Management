@@ -16,6 +16,10 @@ public class TechEmProductRequestService {
         try {
             em.beginTransaction();
 
+            if (productRequest.getActualQuantity() != productRequest.getTotalQuantity()) {
+                return false;
+            }
+
             productRequest.setStatus(action.equals("finished") ? ProductRequestStatus.Finished : ProductRequestStatus.Rejected);
 
             em.merge(productRequest, ProductRequest.class);

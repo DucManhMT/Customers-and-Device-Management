@@ -9,7 +9,8 @@ public class LoginService {
         AccountDAO accountDAO = new AccountDAO();
         Account acc;
         acc = accountDAO.find(username);
-        if (acc != null && acc.getPasswordHash().equals(Hasher.hashPassword(password)) && acc.getAccountStatus() == AccountStatus.Active) {
+        if (acc != null && acc.getPasswordHash().equals(Hasher.hashPassword(password)) && acc.getAccountStatus() == AccountStatus.Active && acc.getUsername().equals(username)) {
+
             return acc;
         }
         return null; // Placeholder return

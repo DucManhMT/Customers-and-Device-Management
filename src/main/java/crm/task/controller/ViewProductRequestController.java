@@ -124,7 +124,7 @@ public class ViewProductRequestController extends HttpServlet {
                 if (isFinished) {
                     req.getSession().setAttribute("successMessage", "Product request has been " + (action.equals("finished") ? "finished." : "rejected."));
                 } else {
-                    req.getSession().setAttribute("errorMessage", "Failed to update product request status.");
+                    req.getSession().setAttribute("errorMessage", "Failed to update product request status, please check again.");
                 }
                 resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
             } catch (NumberFormatException e) {
