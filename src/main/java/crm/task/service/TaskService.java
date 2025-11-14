@@ -13,13 +13,11 @@ import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.core.config.TransactionManager;
 import crm.core.utils.DateTimeConverter;
-import crm.core.utils.KeyGenerator;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
 import crm.service_request.service.RequestLogService;
-import crm.service_request.service.RequestService;
 import crm.service_request.repository.persistence.query.common.Order;
 import crm.task.dto.TaskFilter;
 import crm.task.exception.TaskDeletionException;
@@ -30,7 +28,6 @@ public class TaskService {
     private TaskRepository taskRepository = new TaskRepository();
     private RequestRepository requestRepository = new RequestRepository();
     private StaffRepository staffRepository = new StaffRepository();
-    private RequestService requestService = new RequestService();
     RequestLogService requestLogService = new RequestLogService();
 
     // Column name constants to avoid duplication & magic strings

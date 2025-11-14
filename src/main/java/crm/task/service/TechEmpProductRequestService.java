@@ -2,7 +2,6 @@ package crm.task.service;
 
 import crm.common.model.Product;
 import crm.common.model.ProductRequest;
-import crm.common.model.Request;
 import crm.common.model.Task;
 import crm.common.model.enums.ProductRequestStatus;
 import crm.core.config.DBcontext;
@@ -13,28 +12,30 @@ import java.time.LocalDate;
 
 public class TechEmpProductRequestService {
 
-    public static boolean createProductRequest(Task task, String[] selectedProductIds, String[] quantities, String note) {
+    public static boolean createProductRequest(Task task, String[] selectedProductIds, String[] quantities,
+            String note) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
-        try{
+        try {
             em.beginTransaction();
 
-            for(int i = 0; i < selectedProductIds.length; i++) {
+            for (int i = 0; i < selectedProductIds.length; i++) {
                 String productIdStr = selectedProductIds[i];
                 String quantityStr = quantities[i];
 
-                if(quantityStr == null || quantityStr.isEmpty()) {
+                if (quantityStr == null || quantityStr.isEmpty()) {
                     throw new IllegalArgumentException("Quantity for product ID " + productIdStr + " is missing.");
                 }
 
                 int productId = Integer.parseInt(productIdStr);
                 int quantity = Integer.parseInt(quantityStr);
 
-                if(quantity <= 0) {
-                    throw new IllegalArgumentException("Quantity for product ID " + productIdStr + " must be greater than zero.");
+                if (quantity <= 0) {
+                    throw new IllegalArgumentException(
+                            "Quantity for product ID " + productIdStr + " must be greater than zero.");
                 }
 
                 Product product = em.find(Product.class, productId);
-                if(product == null) {
+                if (product == null) {
                     throw new IllegalArgumentException("Product with ID " + productIdStr + " not found.");
                 }
 

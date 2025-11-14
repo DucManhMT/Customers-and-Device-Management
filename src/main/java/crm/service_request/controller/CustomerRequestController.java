@@ -8,7 +8,6 @@ import crm.common.model.Account;
 import crm.common.model.Request;
 import crm.contract.repository.ContractRepository;
 import crm.core.validator.Validator;
-import crm.service_request.repository.CustomerRepository;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.service.RequestService;
 import jakarta.servlet.ServletException;
@@ -41,7 +40,6 @@ public class CustomerRequestController extends HttpServlet {
             String field = req.getParameter("field");
             String sort = req.getParameter("sort");
             int contractId = Validator.parseInt(req.getParameter("contractId"), 0);
-            System.out.println("Contract ID: " + contractId);
             String status = req.getParameter("status");
 
             req.setAttribute("contracts", contractRepository.findByUsername(account.getUsername()));

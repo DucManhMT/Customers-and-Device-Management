@@ -48,7 +48,6 @@ public class RequestProcessController extends HttpServlet {
             if (note.length() > 255) {
                 throw new IllegalArgumentException("Note cannot exceed 255 characters.");
             }
-            String username = account.getUsername();
             if (!requestService.isExist(requestId)) {
                 throw new IllegalArgumentException(MessageConst.MSG14);
             }

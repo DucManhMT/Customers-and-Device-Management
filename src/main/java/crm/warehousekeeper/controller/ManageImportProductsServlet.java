@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,7 +28,8 @@ public class ManageImportProductsServlet extends HttpServlet {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    private void handleRemoveProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleRemoveProduct(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String productIdStr = req.getParameter("productId");
 
         if (productIdStr == null || productIdStr.trim().isEmpty()) {
@@ -72,7 +74,9 @@ public class ManageImportProductsServlet extends HttpServlet {
                     }
                     // Send success response
                     resp.setContentType("application/json");
-                    resp.getWriter().write("{\"success\": true, \"message\": \"Product removed successfully\", \"remainingCount\": " + importList.size() + "}");
+                    resp.getWriter().write(
+                            "{\"success\": true, \"message\": \"Product removed successfully\", \"remainingCount\": "
+                                    + importList.size() + "}");
 
                 } else {
                     resp.setContentType("application/json");
@@ -100,7 +104,7 @@ public class ManageImportProductsServlet extends HttpServlet {
             session.removeAttribute("serialsMap");
 
             // Set empty list to ensure consistency
-            session.setAttribute("importProductList", new java.util.ArrayList<Product>());
+            session.setAttribute("importProductList", new ArrayList<Product>());
             session.setAttribute("totalImportCount", 0);
 
             resp.setContentType("application/json");
@@ -109,7 +113,8 @@ public class ManageImportProductsServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             resp.setContentType("application/json");
-            resp.getWriter().write("{\"success\": false, \"message\": \"Server error occurred: " + e.getMessage() + "\"}");
+            resp.getWriter()
+                    .write("{\"success\": false, \"message\": \"Server error occurred: " + e.getMessage() + "\"}");
         }
     }
 

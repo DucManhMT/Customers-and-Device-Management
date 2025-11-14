@@ -1,6 +1,5 @@
 package crm.service_request.controller;
 
-import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.Account;
 import crm.service_request.service.RequestService;

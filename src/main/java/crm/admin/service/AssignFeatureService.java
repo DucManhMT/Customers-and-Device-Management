@@ -7,8 +7,6 @@ import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
 
-import java.util.List;
-import java.util.Map;
 
 public class AssignFeatureService {
     public static boolean assignFeatureToRole(Role role, Feature feature) {

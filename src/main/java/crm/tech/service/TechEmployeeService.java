@@ -4,7 +4,7 @@ import crm.common.model.Staff;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
-import crm.tech.dao.TechEmployeeDAO;
+import crm.tech.repository.TechEmployeeDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +39,7 @@ public class TechEmployeeService {
             PageRequest pageRequest = new PageRequest(page, size);
             Page<Staff> pageResult = new Page<>(totalCount, pageRequest, paginatedList);
 
-            System.out.println("[Service] getTechEmployeesPaginated: Page " + page + "/" + 
+            System.out.println("[Service] getTechEmployeesPaginated: Page " + page + "/" +
                     pageResult.getTotalPages() + ", Size " + size + ", Total " + totalCount);
 
             return pageResult;
@@ -52,7 +52,6 @@ public class TechEmployeeService {
     public Staff getTechEmployeeById(int staffId) throws SQLException {
         return techEmployeeDAO.findTechEmployeeById(staffId);
     }
-
 
     public int getTechEmployeeCount() throws SQLException {
         return techEmployeeDAO.countActiveTechEmployees();
@@ -77,7 +76,7 @@ public class TechEmployeeService {
             PageRequest pageRequest = new PageRequest(page, size);
             Page<Staff> pageResult = new Page<>(totalCount, pageRequest, paginatedList);
 
-            System.out.println("[Service] getTechEmployeesWithFilters: Filtered " + totalCount + 
+            System.out.println("[Service] getTechEmployeesWithFilters: Filtered " + totalCount +
                     " from " + allTechEmployees.size() + " total");
 
             return pageResult;
@@ -122,11 +121,9 @@ public class TechEmployeeService {
         return filteredEmployees;
     }
 
-
     public List<String> getAvailableLocations() throws SQLException {
         return techEmployeeDAO.findAllLocations();
     }
-
 
     public int calculateAge(LocalDate dateOfBirth) {
         if (dateOfBirth == null)

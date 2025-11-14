@@ -2,7 +2,6 @@ package crm.router.admin;
 
 import crm.common.model.Feature;
 import crm.common.model.Role;
-import crm.common.model.RoleFeature;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.filter.service.PermissionService;
@@ -28,7 +27,7 @@ public class toAssignFeature extends HttpServlet {
 
         List<Feature> allFeatures = entityManager.findAll(Feature.class);
 
-        List<Feature> features= allFeatures.stream().filter(f-> !isPublicUrl(f.getFeatureURL())).toList();
+        List<Feature> features = allFeatures.stream().filter(f -> !isPublicUrl(f.getFeatureURL())).toList();
 
         req.setAttribute("features", features);
         PermissionService.reloadPermissions();

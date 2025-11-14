@@ -1,12 +1,9 @@
 package crm.task.controller;
 
 import crm.common.URLConstants;
-import crm.common.model.Request;
 import crm.common.model.Account;
-import crm.common.model.AccountRequest;
 import crm.common.model.Staff;
 import crm.common.model.Task;
-import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -139,14 +136,15 @@ public class viewAssignedTask extends HttpServlet {
             // Get all tasks assigned TO current technician (not Pending or Rejected)
             List<Task> allTasks = entityManager.findAll(Task.class);
             System.out.println("DEBUG viewAssignedTask: Total tasks in DB: " + allTasks.size());
-            
+
             List<Task> myTasks = allTasks.stream()
                     .filter(task -> task != null)
                     .filter(task -> task.getAssignTo() != null)
                     .filter(task -> currentStaff.getStaffID().equals(task.getAssignTo().getStaffID()))
-                    .filter(task -> task.getStatus() == TaskStatus.Processing || task.getStatus() == TaskStatus.Finished)
+                    .filter(task -> task.getStatus() == TaskStatus.Processing
+                            || task.getStatus() == TaskStatus.Finished)
                     .collect(Collectors.toList());
-            
+
             System.out.println("DEBUG viewAssignedTask: My tasks (Processing/Finished): " + myTasks.size());
 
             if (myTasks.isEmpty()) {
@@ -220,20 +218,22 @@ public class viewAssignedTask extends HttpServlet {
             if (sortBy != null && !sortBy.isEmpty()) {
                 if ("newest".equals(sortBy)) {
                     filteredTasks.sort((t1, t2) -> {
-                        LocalDateTime d1 = t1.getStartDate() != null ? t1.getStartDate() : 
-                                         (t1.getRequest() != null ? t1.getRequest().getStartDate() : null);
-                        LocalDateTime d2 = t2.getStartDate() != null ? t2.getStartDate() : 
-                                         (t2.getRequest() != null ? t2.getRequest().getStartDate() : null);
-                        if (d2 != null && d1 != null) return d2.compareTo(d1);
+                        LocalDateTime d1 = t1.getStartDate() != null ? t1.getStartDate()
+                                : (t1.getRequest() != null ? t1.getRequest().getStartDate() : null);
+                        LocalDateTime d2 = t2.getStartDate() != null ? t2.getStartDate()
+                                : (t2.getRequest() != null ? t2.getRequest().getStartDate() : null);
+                        if (d2 != null && d1 != null)
+                            return d2.compareTo(d1);
                         return 0;
                     });
                 } else if ("oldest".equals(sortBy)) {
                     filteredTasks.sort((t1, t2) -> {
-                        LocalDateTime d1 = t1.getStartDate() != null ? t1.getStartDate() : 
-                                         (t1.getRequest() != null ? t1.getRequest().getStartDate() : null);
-                        LocalDateTime d2 = t2.getStartDate() != null ? t2.getStartDate() : 
-                                         (t2.getRequest() != null ? t2.getRequest().getStartDate() : null);
-                        if (d1 != null && d2 != null) return d1.compareTo(d2);
+                        LocalDateTime d1 = t1.getStartDate() != null ? t1.getStartDate()
+                                : (t1.getRequest() != null ? t1.getRequest().getStartDate() : null);
+                        LocalDateTime d2 = t2.getStartDate() != null ? t2.getStartDate()
+                                : (t2.getRequest() != null ? t2.getRequest().getStartDate() : null);
+                        if (d1 != null && d2 != null)
+                            return d1.compareTo(d2);
                         return 0;
                     });
                 }
@@ -250,7 +250,7 @@ public class viewAssignedTask extends HttpServlet {
                     .skip(offset)
                     .limit(pageSize)
                     .collect(Collectors.toList());
-                    
+
             // Calculate statistics
             int totalTasks = myTasks.size();
             int processingTasks = (int) myTasks.stream()
@@ -288,6 +288,6 @@ public class viewAssignedTask extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error loading tasks: " + e.getMessage());
-        } 
+        }
     }
 }

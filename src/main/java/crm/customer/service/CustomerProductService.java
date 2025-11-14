@@ -1,6 +1,5 @@
 package crm.customer.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import crm.common.model.Contract;

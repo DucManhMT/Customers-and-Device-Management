@@ -53,7 +53,7 @@ public class ViewContractDetailController extends HttpServlet {
                 if (customer == null || customer.getAccount() == null ||
                         customer.getAccount().getUsername() == null ||
                         !customer.getAccount().getUsername().equals(account.getUsername())) {
-                    req.setAttribute(ATTR_ERROR, "Contract not found");
+                    req.setAttribute(ATTR_ERROR, "You do not have permission to view this contract");
                     forward(req, resp);
                     return;
                 }
