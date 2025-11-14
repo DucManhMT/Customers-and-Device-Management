@@ -228,9 +228,9 @@ uri="jakarta.tags.core" prefix="c" %>
           </div>
           <div class="quick-actions">
             <a
-              href="${pageContext.request.contextPath}/customer_supporter/create_contract"
+              href="${pageContext.request.contextPath}/customer_supporter/customers_list"
               class="btn btn-outline"
-              ><i class="fas fa-file-signature"></i> Create Contract</a
+              ><i class="fas fa-file-signature"></i> Customer List</a
             >
             <a
               href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"

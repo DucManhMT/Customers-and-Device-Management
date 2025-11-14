@@ -222,10 +222,9 @@
                         <td><c:out value="${contract.startDate}"/></td>
                         <td><c:out value="${contract.expiredDate}"/></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-view me-2"
-                                    onclick="viewDetails('${contract.contractCode}', '${contract.contractImage}')">
-                                <i class="bi bi-eye"></i> View
-                            </button>
+                            <a href="${pageContext.request.contextPath}/supporter_view_contract/detail?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2"                                 >
+                                <i class="bi bi-eye"></i> View Detail
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>

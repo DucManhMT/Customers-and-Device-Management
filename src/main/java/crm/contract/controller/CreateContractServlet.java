@@ -142,8 +142,10 @@ public class CreateContractServlet extends HttpServlet {
         List<String> errorList = new ArrayList<>();
         Set<String> serialsInRequest = new HashSet<>();
 
-        // 🔥 MAP LƯU SERIAL NGƯỜI DÙNG NHẬP (dùng để gọi setter)
         Map<Integer, String> serialInputMap = new HashMap<>();
+        if(productIds ==null || productIds.length==0){
+            errorList.add("No products selected.");
+        }
 
         if (productIds != null && serialNumbers != null) {
             for (int i = 0; i < productIds.length; i++) {
