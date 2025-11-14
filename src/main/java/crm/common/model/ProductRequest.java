@@ -27,8 +27,8 @@ public class ProductRequest {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @ManyToOne(joinColumn = "RequestID")
-    private LazyReference<Request> request;
+    @ManyToOne(joinColumn = "TaskID")
+    private LazyReference<Task> task;
 
     @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
@@ -76,12 +76,12 @@ public class ProductRequest {
         this.description = description;
     }
 
-    public Request getRequest() {
-        return request.get();
+    public Task getTask() {
+        return task.get();
     }
 
-    public void setRequest(Request request) {
-        this.request = new LazyReference<>(Request.class, request.getRequestID());
+    public void setTask(Task task) {
+        this.task = new LazyReference<>(Task.class, task.getTaskID());
     }
 
     public Product getProduct() {

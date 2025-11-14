@@ -79,6 +79,53 @@
             </div>
         </div>
 
+        <div class="card mt-4">
+            <div class="card-header"><i class="bi bi-box-seam"></i> Linked Products</div>
+            <div class="card-body">
+                <c:choose>
+                    <c:when test='${not empty contractItems}'>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                <tr>
+                                    <th style="width: 10%">Product ID</th>
+                                    <th style="width: 40%">Product Name</th>
+                                    <th style="width: 50%">Item Serial</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="item" items="${contractItems}">
+                                    <tr>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test='${not empty item.product and not empty item.product.productID}'>
+                                                    ${item.product.productID}
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test='${not empty item.product and not empty item.product.productName}'>
+                                                    ${item.product.productName}
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>${item.serialNumber}</td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="alert alert-info mb-0"><i class="bi bi-info-circle"></i> No products linked to this contract.</div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+
         <!-- Modal (reused pattern from history page) -->
         <div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel"
              aria-hidden="true">
