@@ -329,7 +329,7 @@
                         ><span>Request List</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/feedback/management"
                         ><span>Feedback Management</span></a
@@ -349,31 +349,31 @@
             </div>
             <div class="category-items" id="category-techlead">
                 <ul class="sidebar-nav">
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/staff/profile"
                         ><span>View Profile</span></a>
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_ACTION_CENTER) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
                         ><span>Action Center</span></a>
                     </li>
 
 
-                    <li class="nav-item">
+                    <li class="nav-item" ${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_VIEW_TECHEM_LIST) ? 'style="display: block"' : 'style="display:none"'}>
                         <a
                                 class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/employees"
                         ><span> View Technician List</span>
                         </a>
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_VIEW_APROVED_TASK) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
                         > View Request List</a>
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_TASK_LIST) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/tasks/list">
                             <span> View Task</span>
@@ -394,13 +394,13 @@
 
             <div class="category-items" id="category-techem">
                 <ul class="sidebar-nav">
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHEM_ACTION_CENTER) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"
                         >Action Center
                         </a>
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/staff/profile"
                         >My Profile
@@ -408,25 +408,17 @@
                     </li>
 
 
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHEM_VIEW_ASSIGNED_TASK) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
                         > My Tasks</a>
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TASK_VIEW_RECEIVED_ASSIGNMENTS) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
-                            View
-                            <span> Received Assignments</span></a
-                        >
+                            View Received Assignments</a>
                     </li>
 
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
-                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-                        ><span>View Assigned Tasks</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -441,13 +433,13 @@
             </div>
             <div class="category-items" id="category-warehouse">
                 <ul class="sidebar-nav">
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_DASHBOARD) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_dashboard"
                         ><span>Action Center</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_PRODUCT_WAREHOUSE) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
                         ><span>Product Warehouse</span></a
@@ -455,66 +447,66 @@
                     </li>
 
 
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_INVENTORY) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"
                         ><span>View Inventory</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_ADD_PRODUCT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
                         ><span>Add Product</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_IMPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
                         ><span>Import Product</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
                         ><span>Create Transfer Request</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_WAREHOUSE_DETAIL) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'warehouse-detail' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail"
                         ><span>Warehouse Detail</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
                         ><span>Product Requests</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_WAREHOUSE_REQUEST) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"
                         ><span>Warehouse Request</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_EXPORT_INTERNAL) ? '"display: block"' : '"display:none"'}>
                         <a
                                 class="nav-link ${activePage == 'export-internal' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/export_internal"
                         ><span>Export Internal</span></a
                         >
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_IMPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"
-                        ><span>Imported Products</span></a
+                        ><span>View imported Products</span></a
                         >
                     </li>
                     <li class="nav-item"
-                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_EXPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"
-                        ><span>Exported Products</span></a
+                        ><span>View exported Products</span></a
                         >
                     </li>
                 </ul>
@@ -535,39 +527,18 @@
                            href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
                     </li>
                     <li class="nav-item"
-                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
                     </li>
                     <li class="nav-item"
-                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_VIEW_PRODUCT_REQUESTS) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
                     </li>
                 </ul>
             </div>
         </div>
-
-        <%--
-        <!-- Task Management Category -->--%> <%--
-    <div class="sidebar-category">
-      --%> <%--
-      <div class="category-header" onclick="toggleCategory('task')">
-        --%> <%--
-        <span><i class="fas fa-tasks category-icon"></i>Task Management</span
-        >--%> <%-- <i class="fas fa-chevron-down toggle-icon"></i>--%> <%--
-      </div>
-      --%> <%--
-      <div class="category-items" id="category-task">
-        --%> <%--
-        <ul class="sidebar-nav">
-          --%> <%-- --%> <%--
-        </ul>
-        --%> <%--
-      </div>
-      --%> <%--
-    </div>
-    --%>
 
         <!-- Footer with Logout -->
         <div class="sidebar-footer"></div>
