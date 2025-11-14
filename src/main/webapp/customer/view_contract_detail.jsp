@@ -17,7 +17,16 @@
 <body>
 <c:set var="activePage" value="viewContractDetail" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<c:set var="account" value='${sessionScope.account}'/>
+<c:choose>
+    <c:when test='${not empty account and not empty account.role and account.role.roleName eq "Customer"}'>
+        <jsp:include page="../components/customer_sidebar.jsp"/>
+    </c:when>
+    <c:otherwise>
+        <jsp:include page="../components/sidebar.jsp"/>
+    </c:otherwise>
+    
+</c:choose>
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Contract Detail</h2>
