@@ -43,10 +43,15 @@
                         </div>
                         <!-- Export Counter -->
                         <div>
-                                <span class="badge bg-light text-dark export-count-badge">
-                                    <i class="bi bi-cart-check"></i> Exported: <span id="exportedCount">0</span> / <span
-                                        id="requiredQty">${not empty productRequests ? productRequests.quantity : 0}</span>
-                                </span>
+                            <span class="badge bg-light text-dark export-count-badge">
+                                <i class="bi bi-cart-check"></i> Current Export: <span id="exportedCount">0</span>
+                            </span>
+                            <span class="badge bg-info text-dark ms-2">
+                                <i class="bi bi-box-seam"></i> Already Exported: <span id="actualQty">${not empty productRequests ? productRequests.actualQuantity : 0}</span>
+                            </span>
+                            <span class="badge bg-success text-dark ms-2">
+                                <i class="bi bi-clipboard-check"></i> Total Required: <span id="totalQty">${not empty productRequests ? productRequests.totalQuantity : 0}</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -73,7 +78,9 @@
                             <tr>
                                 <th style="width: 12%">Task ID</th>
                                 <th style="width: 15%">Product</th>
-                                <th style="width: 8%">Quantity</th>
+                                <th style="width: 10%">Total Quantity</th>
+                                <th style="width: 10%">Already Exported</th>
+                                <th style="width: 10%">Remaining</th>
                                 <th style="width: 12%">Request Date</th>
                                 <th style="width: 10%">Status</th>
                             </tr>
@@ -82,7 +89,7 @@
                             <c:choose>
                                 <c:when test="${empty productRequests}">
                                     <tr>
-                                        <td colspan="5" class="text-center py-4">
+                                        <td colspan="7" class="text-center py-4">
                                             <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
                                             <p class="mt-2 text-muted">No warehouse requests found</p>
                                         </td>
@@ -90,30 +97,36 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:set var="request" value="${productRequests}"/>
+                                    <c:set var="remaining" value="${request.totalQuantity - request.actualQuantity}"/>
                                     <tr>
                                         <td><strong>${request.task.taskID}</strong></td>
                                         <td>${request.product.productName}</td>
                                         <td class="text-center">
-                                            <span class="badge bg-secondary"
-                                                  id="requestedQtyBadge">${request.quantity}</span>
+                                            <span class="badge bg-primary" id="totalQtyBadge">${request.totalQuantity}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info" id="actualQtyBadge">${request.actualQuantity}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning text-dark" id="remainingQtyBadge">${remaining}</span>
                                         </td>
                                         <td>${request.requestDate}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${request.status == ProductRequestStatus.Pending}">
-                                                        <span class="badge bg-warning text-dark">
-                                                            <i class="bi bi-clock"></i> Pending
-                                                        </span>
+                                                    <span class="badge bg-warning text-dark">
+                                                        <i class="bi bi-clock"></i> Pending
+                                                    </span>
                                                 </c:when>
                                                 <c:when test="${request.status == ProductRequestStatus.Accepted}">
-                                                        <span class="badge bg-success">
-                                                            <i class="bi bi-check-circle"></i> Accepted
-                                                        </span>
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle"></i> Accepted
+                                                    </span>
                                                 </c:when>
                                                 <c:when test="${request.status == ProductRequestStatus.Finished}">
-                                                        <span class="badge bg-info">
-                                                            <i class="bi bi-check-all"></i> Finished
-                                                        </span>
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-check-all"></i> Finished
+                                                    </span>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <span class="badge bg-secondary">${request.status}</span>
@@ -127,11 +140,36 @@
                         </table>
                     </div>
 
+                    <!-- Progress Bar -->
+                    <c:if test="${not empty productRequests}">
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <strong>Export Progress:</strong>
+                                <span id="progressText">${productRequests.actualQuantity} / ${productRequests.totalQuantity}</span>
+                                (<span id="progressPercent">
+                                    <fmt:formatNumber value="${(productRequests.actualQuantity / productRequests.totalQuantity) * 100}"
+                                                      maxFractionDigits="1"/>
+                                </span>%)
+                            </label>
+                            <div class="progress" style="height: 30px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                     role="progressbar"
+                                     id="progressBar"
+                                     style="width: ${(productRequests.actualQuantity / productRequests.totalQuantity) * 100}%"
+                                     aria-valuenow="${productRequests.actualQuantity}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="${productRequests.totalQuantity}">
+                                        ${productRequests.actualQuantity} / ${productRequests.totalQuantity}
+                                </div>
+                            </div>
+                        </div>
+                    </c:if>
+
                     <!-- Products to be Exported Section -->
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">
-                                <i class="bi bi-box-arrow-up"></i> Products to be Exported
+                                <i class="bi bi-box-arrow-up"></i> Products to be Exported (This Session)
                             </h5>
                             <button type="button" class="btn btn-success" id="confirmExportBtn" style="display: none;"
                                     onclick="submitExport()">
@@ -142,8 +180,7 @@
                         <!-- Quantity Warning Alert -->
                         <div id="quantityAlert" class="alert alert-warning d-none mb-3" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <strong>Limit Reached!</strong> You have added the maximum quantity required for this
-                            request.
+                            <strong>Limit Reached!</strong> You have added the maximum quantity remaining for this request.
                         </div>
 
                         <div id="exportedProductsList" class="border rounded p-3 bg-light">
@@ -197,13 +234,13 @@
                     <div class="mb-3">
                         <p class="mb-1"><strong>Total Quantity in Warehouse:</strong>
                             <span class="badge bg-info" id="totalWarehouseQty">
-                                    <c:choose>
-                                        <c:when test="${not empty warehouseProducts}">
-                                            ${warehouseProducts.size()}
-                                        </c:when>
-                                        <c:otherwise>0</c:otherwise>
-                                    </c:choose>
-                                </span>
+                                <c:choose>
+                                    <c:when test="${not empty warehouseProducts}">
+                                        ${warehouseProducts.size()}
+                                    </c:when>
+                                    <c:otherwise>0</c:otherwise>
+                                </c:choose>
+                            </span>
                         </p>
                         <p class="mb-0"><strong>Filtered Results:</strong>
                             <span class="badge bg-primary" id="filteredCount">0</span>
@@ -242,14 +279,14 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${product.productStatus == ProductStatus.In_Stock}">
-                                                            <span class="badge bg-success status-badge">
-                                                                <i class="bi bi-check-circle"></i> In Stock
-                                                            </span>
+                                                        <span class="badge bg-success status-badge">
+                                                            <i class="bi bi-check-circle"></i> In Stock
+                                                        </span>
                                                     </c:when>
                                                     <c:when test="${product.productStatus == ProductStatus.Exported}">
-                                                            <span class="badge bg-warning text-dark status-badge">
-                                                                <i class="bi bi-box-arrow-up"></i> Exported
-                                                            </span>
+                                                        <span class="badge bg-warning text-dark status-badge">
+                                                            <i class="bi bi-box-arrow-up"></i> Exported
+                                                        </span>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <span class="badge bg-secondary status-badge">${product.productStatus}</span>
@@ -306,8 +343,10 @@
     // ========================================
     // GLOBAL VARIABLES
     // ========================================
-    var requiredQuantity = 0;
-    var exportedCount = 0;
+    var totalQuantity = 0;        // Total quantity required
+    var actualQuantity = 0;       // Already exported quantity
+    var remainingQuantity = 0;    // Remaining to be exported
+    var exportedCount = 0;        // Current session export count
 
     // Store objects with both productWarehouseID and itemId
     var exportedProducts = [];
@@ -316,11 +355,19 @@
     // INITIALIZE ON PAGE LOAD
     // ========================================
     window.addEventListener('DOMContentLoaded', function () {
-        // Get required quantity from page
-        var qtyElement = document.getElementById('requiredQty');
-        if (qtyElement) {
-            requiredQuantity = parseInt(qtyElement.innerText) || 0;
+        // Get quantities from page
+        var totalQtyElement = document.getElementById('totalQty');
+        var actualQtyElement = document.getElementById('actualQty');
+
+        if (totalQtyElement) {
+            totalQuantity = parseInt(totalQtyElement.innerText) || 0;
         }
+        if (actualQtyElement) {
+            actualQuantity = parseInt(actualQtyElement.innerText) || 0;
+        }
+
+        // Calculate remaining quantity
+        remainingQuantity = totalQuantity - actualQuantity;
 
         // Auto-dismiss alerts after 5 seconds
         setTimeout(function () {
@@ -336,7 +383,25 @@
 
         // Apply initial filter (In Stock by default)
         filterByStatus();
+
+        // Check if already completed
+        if (remainingQuantity <= 0) {
+            disableAllAddButtons();
+            showCompletedMessage();
+        }
     });
+
+    // ========================================
+    // SHOW COMPLETED MESSAGE
+    // ========================================
+    function showCompletedMessage() {
+        var emptyMessage = document.getElementById('emptyExportMessage');
+        if (emptyMessage) {
+            emptyMessage.innerHTML =
+                '<i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>' +
+                '<p class="mb-0 text-success"><strong>Export Complete!</strong> All required quantities have been exported.</p>';
+        }
+    }
 
     // ========================================
     // FILTER BY STATUS
@@ -421,9 +486,9 @@
     // ADD PRODUCT TO EXPORT LIST
     // ========================================
     function addToExport(productWarehouseID, itemId, serialNumber) {
-        // Check if limit reached
-        if (exportedCount >= requiredQuantity) {
-            alert('Cannot add more items! Maximum quantity reached.');
+        // Check if remaining quantity allows adding more
+        if (exportedCount >= remainingQuantity) {
+            alert('Cannot add more items! Remaining quantity: ' + remainingQuantity);
             return;
         }
 
@@ -466,7 +531,7 @@
         if (confirmBtn) confirmBtn.style.display = 'block';
 
         // Check if limit reached
-        if (exportedCount >= requiredQuantity) {
+        if (exportedCount >= remainingQuantity) {
             showQuantityAlert();
             disableAllAddButtons();
         }
@@ -513,7 +578,7 @@
         renumberExportedRows();
 
         // Check if below limit
-        if (exportedCount < requiredQuantity) {
+        if (exportedCount < remainingQuantity) {
             hideQuantityAlert();
             enableAllAddButtons();
         }
@@ -548,7 +613,7 @@
         row.innerHTML =
             '<td class="text-center">' + exportedCount + '</td>' +
             '<td><strong>' + serialNumber + '</strong></td>' +
-            '<td><span class="badge bg-success status-badge"><i class="bi bi-check-circle"></i> In Stock</span></td>' +
+            '<td><span class="badge bg-success status-badge"><i class="bi bi-check-circle"></i> Ready to Export</span></td>' +
             '<td class="text-center">' +
             '<button type="button" class="btn btn-sm btn-danger" onclick="removeFromExport(\'' + productWarehouseID + '\')">' +
             '<i class="bi bi-trash"></i>' +
@@ -672,6 +737,11 @@
         // Check if any products selected
         if (exportedProducts.length === 0) {
             alert('Please add at least one product to export!');
+            return;
+        }
+
+        // Confirm export
+        if (!confirm('Are you sure you want to export ' + exportedProducts.length + ' item(s)?')) {
             return;
         }
 

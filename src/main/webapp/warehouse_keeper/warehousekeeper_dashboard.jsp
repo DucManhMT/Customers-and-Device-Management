@@ -169,11 +169,11 @@
     </c:if>
 </c:forEach>
 
-<!-- Count pending requests -->
-<c:set var="pendingCount" value="0"/>
+<!-- Count not finished requests (pending) -->
+<c:set var="notFinishedCount" value="0"/>
 <c:forEach items="${productRequests}" var="request">
     <c:if test="${request.status eq ProductRequestStatus.Pending}">
-        <c:set var="pendingCount" value="${pendingCount + 1}"/>
+        <c:set var="notFinishedCount" value="${notFinishedCount + 1}"/>
     </c:if>
 </c:forEach>
 
@@ -183,14 +183,14 @@
         <i class="bi bi-speedometer2"></i> Warehouse Dashboard
     </h2>
 
-    <!-- Warning Alert for Pending Requests -->
-    <c:if test="${pendingCount > 0}">
+    <!-- Warning Alert for Not Finished Requests -->
+    <c:if test="${notFinishedCount > 0}">
         <div class="alert-warning-custom">
             <div class="d-flex align-items-center">
                 <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 1.5rem; color: #ffc107;"></i>
                 <div>
                     <strong>Action Required!</strong>
-                    You have <strong>${pendingCount}</strong> pending request<c:if test="${pendingCount > 1}">s</c:if> waiting for processing.
+                    You have <strong>${notFinishedCount}</strong> not finished request<c:if test="${notFinishedCount > 1}">s</c:if> waiting for completion.
                 </div>
             </div>
         </div>
@@ -278,17 +278,17 @@
             </div>
         </div>
 
-        <!-- Pending Requests -->
+        <!-- Not Finished Requests -->
         <div class="col-xl-4 col-md-6">
             <div class="card stat-card card-pending">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="stat-label">Pending Actions</div>
+                            <div class="stat-label">Not Finished</div>
                             <div class="stat-value">
-                                <fmt:formatNumber value="${pendingCount}" groupingUsed="true"/>
+                                <fmt:formatNumber value="${notFinishedCount}" groupingUsed="true"/>
                             </div>
-                            <small><i class="bi bi-hourglass-split"></i> Awaiting Processing</small>
+                            <small><i class="bi bi-hourglass-split"></i> Awaiting Completion</small>
                         </div>
                         <div class="stat-icon">
                             <i class="bi bi-exclamation-circle"></i>

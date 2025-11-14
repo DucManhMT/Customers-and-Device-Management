@@ -25,14 +25,6 @@ public class ExportProductService {
         try {
             em.beginTransaction();
             em.persist(whl, WarehouseLog.class);
-            if (numberOfItems == productRequest.getTotalQuantity()) {
-                productRequest.setStatus(ProductRequestStatus.Finished);
-                productRequest.setTotalQuantity(0);
-                em.merge(productRequest, ProductRequest.class);
-            } else if (productRequest.getTotalQuantity() > numberOfItems) {
-                productRequest.setTotalQuantity(productRequest.getTotalQuantity() - numberOfItems);
-                em.merge(productRequest, ProductRequest.class);
-            }
 
             for (String itemId : itemIds) {
                 try {
@@ -52,6 +44,14 @@ public class ExportProductService {
                     e.printStackTrace();
                 }
             }
+            int actualQuantity = productRequest.getActualQuantity() == null ? 0 : productRequest.getActualQuantity();
+            actualQuantity += numberOfItems;
+            productRequest.setActualQuantity(actualQuantity);
+            if (actualQuantity > 0) {
+                productRequest.setStatus(ProductRequestStatus.Transporting);
+                em.merge(productRequest, ProductRequest.class);
+            }
+
             em.commit();
         } catch (Exception e) {
             em.rollback();
