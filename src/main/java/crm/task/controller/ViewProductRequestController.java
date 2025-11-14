@@ -62,7 +62,7 @@ public class ViewProductRequestController extends HttpServlet {
         List<ProductRequest> productRequests = em.findAll(ProductRequest.class);
 
         productRequests = productRequests.stream()
-                .filter(pr -> pr.getTask().getAssignTo().getStaffID() == staff.getStaffID())
+                .filter(pr -> pr.getRequest().getAssignTo().getStaffID() == staff.getStaffID())
                 .toList();
 
         if (productRequests.isEmpty()) {
