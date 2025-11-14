@@ -142,12 +142,14 @@ public class CreateContractServlet extends HttpServlet {
         List<String> errorList = new ArrayList<>();
         Set<String> serialsInRequest = new HashSet<>();
 
-        // 🔥 MAP LƯU SERIAL NGƯỜI DÙNG NHẬP (dùng để gọi setter)
         Map<Integer, String> serialInputMap = new HashMap<>();
+
+        if (productIds == null || productIds.length == 0) {
+            errorList.add("Please select at least one product.");
+        }
 
         if (productIds != null && serialNumbers != null) {
             for (int i = 0; i < productIds.length; i++) {
-
                 String pidStr = productIds[i];
                 String serialInput = serialNumbers[i];
 
@@ -174,16 +176,13 @@ public class CreateContractServlet extends HttpServlet {
                     continue;
                 }
 
-                // 🔥 HASH CHUẨN ĐỂ CHECK DUPLICATE
                 String generated = SerialGenerator.generateSerial(String.valueOf(productIdInt), serialInput.trim());
 
-                // duplicate in same submission
                 if (!serialsInRequest.add(generated)) {
                     errorList.add("Duplicate serial in submission: " + serialInput);
                     continue;
                 }
 
-                // duplicate in DB
                 Map<String, Object> cond = new HashMap<>();
                 cond.put("serialNumber", generated);
                 List<InventoryItem> exists = em.findWithConditions(InventoryItem.class, cond);
@@ -192,7 +191,6 @@ public class CreateContractServlet extends HttpServlet {
                     continue;
                 }
 
-                // 🔥 Lưu giá trị người dùng để gọi setter (setter sẽ hash)
                 serialInputMap.put(i, serialInput.trim());
             }
         }
@@ -202,6 +200,7 @@ public class CreateContractServlet extends HttpServlet {
             response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
+
 
         // ===== SAVE CONTRACT =====
         int contractId = IDGeneratorService.generateID(Contract.class);
@@ -240,7 +239,6 @@ public class CreateContractServlet extends HttpServlet {
             item.setItemId(IDGeneratorService.generateID(InventoryItem.class));
             item.setProduct(p);
 
-            // 🔥 TRUYỀN SERIAL NGƯỜI DÙNG NHẬP, setter sẽ hash
             item.setSerialNumber(serialInputMap.get(i));
 
             em.persist(item, InventoryItem.class);
