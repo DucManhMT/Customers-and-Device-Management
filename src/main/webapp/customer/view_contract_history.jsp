@@ -7,7 +7,8 @@
     <title>Contract History</title>
 
     <!-- Bootstrap + Icons -->
-    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+          rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
@@ -36,15 +37,17 @@
         .header-section {
             margin-bottom: 18px;
         }
+
         .page-header-compact {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 18px 20px;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(102,126,234,0.16);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.16);
             position: relative;
             overflow: hidden;
         }
+
         .page-header-compact::before {
             content: '';
             position: absolute;
@@ -52,30 +55,50 @@
             right: -40%;
             width: 180%;
             height: 180%;
-            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
             opacity: .5;
         }
-        @keyframes rotate { from { transform:rotate(0deg);} to { transform:rotate(360deg);} }
 
-        .page-title { margin:0; font-weight:700; font-size:1.25rem; }
-        .page-actions { text-align: right; }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .page-title {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .page-actions {
+            text-align: right;
+        }
 
         /* Search panel */
         .search-card {
             background: white;
             border-radius: 12px;
             padding: 18px;
-            box-shadow: 0 8px 24px rgba(35,44,78,0.06);
+            box-shadow: 0 8px 24px rgba(35, 44, 78, 0.06);
             margin-bottom: 18px;
         }
-        .search-card .form-label { font-weight:600; }
+
+        .search-card .form-label {
+            font-weight: 600;
+        }
+
         .search-card .btn-primary {
-            background: linear-gradient(135deg,#2b6cb0 0%,#6b46c1 100%);
+            background: linear-gradient(135deg, #2b6cb0 0%, #6b46c1 100%);
             border: none;
         }
+
         .search-card .btn-danger {
-            background: linear-gradient(135deg,#ef4444,#e11d48);
+            background: linear-gradient(135deg, #ef4444, #e11d48);
             border: none;
         }
 
@@ -84,30 +107,39 @@
             background: white;
             border-radius: 12px;
             padding: 16px;
-            box-shadow: 0 8px 24px rgba(35,44,78,0.06);
+            box-shadow: 0 8px 24px rgba(35, 44, 78, 0.06);
             margin-bottom: 18px;
             text-align: center;
         }
-        .summary-card h3 { color: #16a34a; margin-bottom:6px; font-size:1.6rem; }
+
+        .summary-card h3 {
+            color: #16a34a;
+            margin-bottom: 6px;
+            font-size: 1.6rem;
+        }
 
         /* Table */
         .contract-card {
             background: transparent;
         }
+
         .card-header-custom {
             margin-bottom: 10px;
         }
+
         .table-responsive {
             background: white;
             border-radius: 12px;
             padding: 12px;
-            box-shadow: 0 8px 24px rgba(35,44,78,0.04);
+            box-shadow: 0 8px 24px rgba(35, 44, 78, 0.04);
         }
+
         table.table {
             margin-bottom: 0;
             border-collapse: separate;
             border-spacing: 0;
         }
+
         table.table thead th {
             background: linear-gradient(to bottom, #f8f9ff, #eef4ff);
             position: sticky;
@@ -115,9 +147,11 @@
             z-index: 5;
             font-weight: 700;
         }
+
         table.table tbody tr:hover {
             background: linear-gradient(to right, #fbfdff, #eef7ff);
         }
+
         table.table td, table.table th {
             vertical-align: middle;
             padding: 12px 14px;
@@ -125,24 +159,45 @@
 
         /* Buttons */
         .btn-view {
-            background: linear-gradient(135deg,#5b6ee1,#6b46c1);
+            background: linear-gradient(135deg, #5b6ee1, #6b46c1);
             color: #fff;
             border: none;
         }
 
         /* Modal sizes */
-        .modal-content { border-radius: 12px; overflow: hidden; }
-        .alert-warning { margin-top: 12px; }
+        .modal-content {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .alert-warning {
+            margin-top: 12px;
+        }
 
         /* Pagination controls */
-        .form-select { border-radius: 8px; }
-        .pagination .page-link { border-radius: 8px; }
+        .form-select {
+            border-radius: 8px;
+        }
+
+        .pagination .page-link {
+            border-radius: 8px;
+        }
 
         /* Responsive adjustments */
         @media (max-width: 992px) {
-            body { margin-left: 0 !important; padding-top: 90px !important; }
-            .container-fluid { padding: 16px; }
-            .page-actions { margin-top: 12px; text-align: left; }
+            body {
+                margin-left: 0 !important;
+                padding-top: 90px !important;
+            }
+
+            .container-fluid {
+                padding: 16px;
+            }
+
+            .page-actions {
+                margin-top: 12px;
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -160,7 +215,8 @@
                 <div class="text-white-75" style="opacity:.95;">View your contract history</div>
             </div>
             <div class="page-actions">
-                <a href="${pageContext.request.contextPath}/customer/customer_actioncenter" class="btn btn-outline-light">
+                <a href="${pageContext.request.contextPath}/customer/customer_actioncenter"
+                   class="btn btn-outline-light">
                     <i class="bi bi-arrow-left-circle me-1"></i> Back to Menu
                 </a>
             </div>
@@ -173,11 +229,13 @@
         <form action="${pageContext.request.contextPath}/customer/contract_history" method="get" class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">Contract Code</label>
-                <input type="text" class="form-control" name="contractCode" placeholder="Enter contract code..." value="${contractCodeSearch != null ? contractCodeSearch : ''}">
+                <input type="text" class="form-control" name="contractCode" placeholder="Enter contract code..."
+                       value="${contractCodeSearch != null ? contractCodeSearch : ''}">
             </div>
             <div class="col-md-4">
                 <label class="form-label">Start Date</label>
-                <input type="date" class="form-control" name="startDate" value="${startDateSearch != null ? startDateSearch : ''}">
+                <input type="date" class="form-control" name="startDate"
+                       value="${startDateSearch != null ? startDateSearch : ''}">
             </div>
             <div class="col-md-4 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-primary w-50">
@@ -223,10 +281,14 @@
                         <td><c:out value="${contract.startDate}"/></td>
                         <td><c:out value="${contract.expiredDate}"/></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-view me-2"
+                            <!-- <button type="button" class="btn btn-sm btn-view me-2"
                                     onclick="viewDetails('${contract.contractCode}', '${contract.contractImage}')">
                                 <i class="bi bi-eye"></i> View
-                            </button>
+                            </button> -->
+                            <a href="${pageContext.request.contextPath}/contract/detail?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2"                                 >
+                                <i class="bi bi-eye"></i> View Detail
+                            </a>
+                            <a href="${pageContext.request.contextPath}/customer/requests/create?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2">  Create Request</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -236,9 +298,11 @@
     </div>
 
     <!-- Pagination Controls -->
-    <form method="get" action="${pageContext.request.contextPath}/customer/contract_history" class="mt-3 d-flex align-items-center gap-3">
+    <form method="get" action="${pageContext.request.contextPath}/customer/contract_history"
+          class="mt-3 d-flex align-items-center gap-3">
         <span>Show:</span>
-        <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+        <select name="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
+                onchange="this.form.submit()">
             <option value="5"  ${recordsPerPage == 5 ? 'selected' : ''}>5</option>
             <option value="10" ${recordsPerPage == 10 ? 'selected' : ''}>10</option>
             <option value="15" ${recordsPerPage == 15 ? 'selected' : ''}>15</option>
@@ -251,19 +315,22 @@
         <ul class="pagination justify-content-center">
             <c:if test="${currentPage > 1}">
                 <li class="page-item">
-                    <a class="page-link" href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">Previous</a>
+                    <a class="page-link"
+                       href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage - 1}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">Previous</a>
                 </li>
             </c:if>
 
             <c:forEach begin="1" end="${totalPages}" var="i">
                 <li class="page-item ${i == currentPage ? 'active' : ''}">
-                    <a class="page-link" href="${pageContext.request.contextPath}/customer/contract_history?page=${i}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">${i}</a>
+                    <a class="page-link"
+                       href="${pageContext.request.contextPath}/customer/contract_history?page=${i}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">${i}</a>
                 </li>
             </c:forEach>
 
             <c:if test="${currentPage < totalPages}">
                 <li class="page-item">
-                    <a class="page-link" href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">Next</a>
+                    <a class="page-link"
+                       href="${pageContext.request.contextPath}/customer/contract_history?page=${currentPage + 1}&itemsPerPage=${recordsPerPage}&contractCode=${contractCodeSearch}&startDate=${startDateSearch}">Next</a>
                 </li>
             </c:if>
         </ul>

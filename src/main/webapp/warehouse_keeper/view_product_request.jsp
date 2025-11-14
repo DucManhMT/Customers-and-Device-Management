@@ -583,7 +583,7 @@
                                 <span class="status-badge
                                     ${pr.status == 'Pending' ? 'status-pending' : ''}
                                     ${pr.status == 'Accepted' ? 'status-accepted' : ''}
-                                    ${pr.status == 'Processing' ? 'status-processing' : ''}
+                                    ${pr.status == 'Transporting' ? 'status-transporting' : ''}
                                     ${pr.status == 'Rejected' ? 'status-rejected' : ''}
                                     ${pr.status == 'Finished' ? 'status-finished' : ''}">
                                         ${pr.status}
@@ -605,7 +605,7 @@
                                     </div>
                                     <div class="quantity-display">
                                         <div class="quantity-label">Qty</div>
-                                        <div class="quantity-value">${pr.quantity}</div>
+                                        <div class="quantity-value">${pr.totalQuantity}</div>
                                     </div>
                                 </div>
                             </div>

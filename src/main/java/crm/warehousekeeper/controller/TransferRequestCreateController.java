@@ -121,7 +121,8 @@ public class TransferRequestCreateController extends HttpServlet {
                 warehouseRequest.setDestinationWarehouse(managerWarehouse);
                 warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Pending);
                 warehouseRequest.setProduct(product);
-                warehouseRequest.setQuantity(quantity);
+                warehouseRequest.setTotalQuantity(quantity);
+                warehouseRequest.setActualQuantity(0);
 
                 warehouseRequestDAO.persist(warehouseRequest);
             }

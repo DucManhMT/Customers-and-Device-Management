@@ -1,9 +1,7 @@
 package crm.task.controller;
 
 import crm.common.URLConstants;
-import crm.common.model.Account;
-import crm.common.model.ProductRequest;
-import crm.common.model.Staff;
+import crm.common.model.*;
 import crm.common.repository.staff.StaffDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -21,28 +19,22 @@ import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS)
 public class ViewProductRequestController extends HttpServlet {
-
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-
-    }
+    EntityManager em = new EntityManager(DBcontext.getConnection());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        int pageSize = 6; // Default items per page
-        int currentPage = 1; // Default page
+        int pageSize = 6;
+        int currentPage = 1;
 
-        // Get pagination parameters from request
         String pageSizeParam = req.getParameter("pageSize");
         String pageParam = req.getParameter("page");
+        String taskIdStr = req.getParameter("taskID");
 
         if (pageSizeParam != null && !pageSizeParam.isEmpty()) {
             try {
                 pageSize = Integer.parseInt(pageSizeParam);
             } catch (NumberFormatException e) {
-                // Use default if invalid
+
             }
         }
 
@@ -51,24 +43,37 @@ public class ViewProductRequestController extends HttpServlet {
                 currentPage = Integer.parseInt(pageParam);
                 if (currentPage < 1) currentPage = 1;
             } catch (NumberFormatException e) {
-                // Use default if invalid
+
             }
         }
 
         Account account = (Account) req.getSession().getAttribute("account");
         StaffDAO staffDAO = new StaffDAO();
-        Staff staff = staffDAO.findByUsername(account.getUsername());
+        Staff currentStaff = staffDAO.findByUsername(account.getUsername());
 
+        Task currentTask = null;
+        Request currentRequest = null;
         List<ProductRequest> productRequests = em.findAll(ProductRequest.class);
 
-        productRequests = productRequests.stream()
-                .filter(pr -> pr.getTask().getAssignTo().getStaffID() == staff.getStaffID())
-                .toList();
 
-        if (productRequests.isEmpty()) {
-            req.getSession().setAttribute("productRequests", productRequests);
-            req.getRequestDispatcher("/technician_employee/view_product_requests.jsp").forward(req, resp);
-            return;
+        try {
+            if (taskIdStr != null && !taskIdStr.isEmpty()) {
+                int taskId = Integer.parseInt(taskIdStr);
+                currentTask = em.find(Task.class, taskId);
+
+
+                if (currentTask != null) {
+                    currentRequest = currentTask.getRequest();
+                    int requestId = currentRequest.getRequestID();
+
+                    productRequests = productRequests.stream()
+                            .filter(pr -> pr.getTask().getRequest().getRequestID() == requestId)
+                            .sorted((pr1, pr2) -> pr2.getRequestDate().compareTo(pr1.getRequestDate()))
+                            .collect(Collectors.toList());
+                }
+            }
+        } catch (NumberFormatException e) {
+            req.setAttribute("errorMessage", "Invalid Task ID");
         }
 
         int totalRequests = productRequests.size();
@@ -79,24 +84,27 @@ public class ViewProductRequestController extends HttpServlet {
         }
 
         int offset = (currentPage - 1) * pageSize;
-
         productRequests = productRequests.stream()
                 .skip(offset)
                 .limit(pageSize)
                 .collect(Collectors.toList());
 
         req.setAttribute("productRequests", productRequests);
+        req.setAttribute("currentTask", currentTask);
+        req.setAttribute("currentRequest", currentRequest);
+        req.setAttribute("currentStaff", currentStaff);
+        req.setAttribute("taskID", taskIdStr);
         req.setAttribute("currentPage", currentPage);
         req.setAttribute("totalPages", totalPages);
         req.setAttribute("pageSize", pageSize);
         req.setAttribute("totalRequests", totalRequests);
 
         req.getRequestDispatcher("/technician_employee/view_product_requests.jsp").forward(req, resp);
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        EntityManager em = new EntityManager(DBcontext.getConnection());
         String productRequestIdStr = req.getParameter("productRequestId");
         String action = req.getParameter("action");
 

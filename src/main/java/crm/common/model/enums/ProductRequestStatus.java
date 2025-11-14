@@ -4,6 +4,6 @@ public enum ProductRequestStatus {
     Pending,
     Accepted,
     Rejected,
-    Processing,
+    Transporting,
     Finished
 }

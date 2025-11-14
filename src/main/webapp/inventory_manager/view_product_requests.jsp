@@ -341,7 +341,7 @@
                                 </span>
                                 <c:set var="statusClass" value="bg-secondary"/>
                                 <c:if test="${req.status == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
-                                <c:if test="${req.status == 'Processing'}"><c:set var="statusClass" value="bg-info"/></c:if>
+                                <c:if test="${req.status == 'Transporting'}"><c:set var="statusClass" value="bg-info"/></c:if>
                                 <c:if test="${req.status == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <c:if test="${req.status == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
                                 <span class="badge ${statusClass} status-badge">${req.status}</span>
@@ -374,7 +374,7 @@
                                                 <small class="text-muted">Product ID: ${req.product.productID}</small>
                                             </div>
                                             <span class="quantity-badge">
-                                                <i class="fas fa-cubes me-1"></i>${req.quantity}
+                                                <i class="fas fa-cubes me-1"></i>${req.totalQuantity}
                                             </span>
                                         </div>
                                     </div>
@@ -421,7 +421,7 @@
                                         <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
                                             <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i>Select a source warehouse based on available stock</p>
                                             <span class="quantity-badge">
-                                                <i class="fas fa-cubes me-1"></i>Required: ${req.quantity}
+                                                <i class="fas fa-cubes me-1"></i>Required: ${req.totalQuantity}
                                             </span>
                                         </div>
                                         <table class="table table-hover stock-table">
@@ -441,7 +441,7 @@
                                                             <td class="fw-bold">${stock.warehouse.warehouseName}</td>
                                                             <td>${stock.warehouse.location}</td>
                                                             <td class="text-center">
-                                                                <span class="badge ${stock.count >= req.quantity ? 'bg-success' : 'bg-warning text-dark'}">
+                                                                <span class="badge ${stock.count >= req.totalQuantity ? 'bg-success' : 'bg-warning text-dark'}">
                                                                         ${stock.count}
                                                                 </span>
                                                             </td>
@@ -450,8 +450,8 @@
                                                                       method="post">
                                                                     <input type="hidden" name="productRequestID" value="${req.productRequestID}">
                                                                     <input type="hidden" name="warehouseID" value="${stock.warehouse.warehouseID}">
-                                                                    <button type="submit" class="btn btn-sm ${stock.count >= req.quantity ? 'btn-success' : 'btn-secondary'}"
-                                                                            <c:if test="${stock.count < req.quantity}">disabled</c:if>>
+                                                                    <button type="submit" class="btn btn-sm ${stock.count >= req.totalQuantity ? 'btn-success' : 'btn-secondary'}"
+                                                                            <c:if test="${stock.count < req.totalQuantity}">disabled</c:if>>
                                                                         <i class="fas fa-check me-1"></i>Choose
                                                                     </button>
                                                                 </form>

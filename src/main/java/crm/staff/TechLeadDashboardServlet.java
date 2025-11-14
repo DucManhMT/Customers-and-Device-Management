@@ -42,9 +42,11 @@ public class TechLeadDashboardServlet extends HttpServlet {
         int approved = reqStats.getOrDefault("Approved", 0);
         int processing = reqStats.getOrDefault("Processing", 0);
         int finished = reqStats.getOrDefault("Finished", 0);
+        int techFinished = reqStats.getOrDefault("Tech_Finished", 0);
         request.setAttribute("reqApproved", approved);
         request.setAttribute("reqProcessing", processing);
         request.setAttribute("reqFinished", finished);
+        request.setAttribute("reqTechFinished", techFinished);
 
         request.getRequestDispatcher("/technician_leader/techlead_dashboard.jsp").forward(request, response);
     }

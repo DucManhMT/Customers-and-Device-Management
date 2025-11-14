@@ -23,8 +23,11 @@ public class WarehouseRequest {
     @Column(name = "Note", length = 255)
     private String note;
 
-    @Column(name = "Quantity", type = "INT", nullable = false)
-    private int quantity;
+    @Column(name = "TotalQuantity", type = "INT", nullable = false)
+    private int totalQuantity;
+
+    @Column(name = "ActualQuantity", type = "INT", nullable = false)
+    private int actualQuantity;
 
     @OneToOne(joinColumn = "ProductID", mappedBy = "productID")
     private LazyReference<Product> product;
@@ -86,12 +89,12 @@ public class WarehouseRequest {
         this.destinationWarehouse = new LazyReference<>(Warehouse.class, destinationWarehouse.getWarehouseID());
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     public Product getProduct() {
@@ -108,5 +111,13 @@ public class WarehouseRequest {
 
     public void setProductTransactions(List<ProductTransaction> productTransactions) {
         this.productTransactions = productTransactions;
+    }
+
+    public int getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(int actualQuantity) {
+        this.actualQuantity = actualQuantity;
     }
 }
