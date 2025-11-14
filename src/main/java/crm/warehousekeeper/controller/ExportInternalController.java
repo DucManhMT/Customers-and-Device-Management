@@ -65,6 +65,8 @@ public class ExportInternalController extends HttpServlet {
                     warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Transporting);
                     em.merge(warehouseRequest, WarehouseRequest.class);
 
+                    int actualQuantity = warehouseRequest.getActualQuantity();
+
                     for (String productWarehouseIDStr : selectedProducts) {
                         int productWarehouseID = Integer.parseInt(productWarehouseIDStr);
                         ProductWarehouse productToUpdate = em.find(ProductWarehouse.class, productWarehouseID);
@@ -91,8 +93,12 @@ public class ExportInternalController extends HttpServlet {
                         transaction.setDestinationWarehouseEntity(warehouseRequest.getDestinationWarehouse());
                         transaction.setSourceWarehouseEntity(warehouseRequest.getSourceWarehouse());
 
+                        actualQuantity += 1;
+
                         em.persist(transaction, ProductTransaction.class);
                     }
+                    warehouseRequest.setActualQuantity(actualQuantity);
+
                 }
 
                 em.commit();

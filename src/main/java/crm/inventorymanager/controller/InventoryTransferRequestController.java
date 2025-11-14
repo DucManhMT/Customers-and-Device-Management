@@ -25,9 +25,11 @@ public class InventoryTransferRequestController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         Account account = (Account) req.getSession().getAttribute("account");
 
         List<WarehouseRequest> warehouseRequests = em.findAll(WarehouseRequest.class);
+
         List<Map<String, Object>> inventorySummary = warehouseDAO.getInventorySummary();
 
 
