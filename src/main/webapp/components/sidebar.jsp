@@ -533,7 +533,7 @@
                         <a
                                 class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
-                        ><i class="bi bi-eye"></i> View Request List</a
+                        > View Request List</a
                         >
                     </li>
                     <li class="nav-item">
@@ -563,14 +563,14 @@
                         <a
                                 class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"
-                        ><i class="bi bi-person-circle"></i>Action Center
+                        >Action Center
                         </a>
                     </li>
                     <li class="nav-item">
                         <a
                                 class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/staff/profile"
-                        ><i class="bi bi-person-circle"></i>My Profile
+                        >My Profile
                         </a>
                     </li>
 
@@ -579,7 +579,7 @@
                         <a
                                 class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-                        ><i class="bi bi-eye"></i> My Tasks</a
+                        > My Tasks</a
                         >
                     </li>
                     <li class="nav-item">
