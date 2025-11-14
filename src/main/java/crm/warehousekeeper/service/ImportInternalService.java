@@ -39,8 +39,8 @@ public class ImportInternalService {
                         productTransaction.setTransactionDate(LocalDateTime.now());
                         productTransaction.setInventoryItem(item);
                         productTransaction.setNote(note);
-                        productTransaction.setSourceWarehouseEntity(warehouseRequest.getSourceWarehouse());
-                        productTransaction.setDestinationWarehouseEntity(warehouseRequest.getDestinationWarehouse());
+                        productTransaction.setSourceWarehouse(warehouseRequest.getSourceWarehouse());
+                        productTransaction.setDestinationWarehouse(warehouseRequest.getDestinationWarehouse());
                         productTransaction.setWarehouseRequest(warehouseRequest);
 
                         em.persist(productTransaction, ProductTransaction.class);
