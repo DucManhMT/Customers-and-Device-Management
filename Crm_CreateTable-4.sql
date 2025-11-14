@@ -287,10 +287,10 @@ CREATE TABLE ProductRequest (
                                 RequestDate DATE NOT NULL,
                                 Status ENUM('Pending', 'Accepted', 'Rejected', 'Finished', 'Transporting') DEFAULT ('Pending'),
                                 Description NVARCHAR(255),
-                                RequestID INT NOT NULL,
+                                TaskID INT NOT NULL,
                                 ProductID INT NOT NULL,
                                 WarehouseID INT,
-                                FOREIGN KEY (RequestID) REFERENCES Request(RequestID),
+                                FOREIGN KEY (TaskID) REFERENCES Task(TaskID),
                                 FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
                                 FOREIGN KEY (WarehouseID) REFERENCES Warehouse(WarehouseID)
 );
