@@ -222,7 +222,7 @@
                         <td><c:out value="${contract.startDate}"/></td>
                         <td><c:out value="${contract.expiredDate}"/></td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/contract/detail?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2"                                 >
+                            <a href="${pageContext.request.contextPath}/supporter_view_contract/detail?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2"                                 >
                                 <i class="bi bi-eye"></i> View Detail
                             </a>
                         </td>
