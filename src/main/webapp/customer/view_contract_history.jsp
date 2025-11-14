@@ -223,10 +223,14 @@
                         <td><c:out value="${contract.startDate}"/></td>
                         <td><c:out value="${contract.expiredDate}"/></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-view me-2"
+                            <!-- <button type="button" class="btn btn-sm btn-view me-2"
                                     onclick="viewDetails('${contract.contractCode}', '${contract.contractImage}')">
                                 <i class="bi bi-eye"></i> View
-                            </button>
+                            </button> -->
+                            <a href="${pageContext.request.contextPath}/contract/detail?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2"                                 >
+                                <i class="bi bi-eye"></i> View Detail
+                            </a>
+                            <a href="${pageContext.request.contextPath}/customer/requests/create?contractId=${contract.contractID}" class="btn btn-sm btn-view me-2">  Create Request</a>
                         </td>
                     </tr>
                 </c:forEach>

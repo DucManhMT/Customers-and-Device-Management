@@ -64,14 +64,17 @@ public class RequestCreationController extends HttpServlet {
         Account account = (Account) req.getSession().getAttribute("account");
         ContractRepository contractRepo = new ContractRepository();
 
+        String contractId = req.getParameter("contractId");
+        if (contractId != null) {
+            req.setAttribute("contractId", contractId);
+        }
+
         if (account == null) {
             resp.sendRedirect(req.getContextPath() + "/auth/customer_login");
             return;
         }
 
         List<Contract> contracts = contractRepo.findNotExpiredByUserName(account.getUsername());
-        System.out.println(contracts);
-        System.out.println(account.getUsername());
         req.setAttribute("contracts", contracts);
 
         req.getRequestDispatcher("/service_request/request-creation.jsp").forward(req, resp);

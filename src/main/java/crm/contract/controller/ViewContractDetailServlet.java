@@ -3,6 +3,8 @@ package crm.contract.controller;
 import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
+import crm.common.model.InventoryItem;
+import crm.common.model.ProductContract;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import jakarta.servlet.ServletException;
@@ -12,7 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @WebServlet(urlPatterns = URLConstants.CONTRACT_DETAIL, name = "ViewContractDetailServlet")
 public class ViewContractDetailServlet extends HttpServlet {
@@ -49,8 +54,32 @@ public class ViewContractDetailServlet extends HttpServlet {
         } catch (Exception ignored) {
             // allow null
         }
+        // Load all inventory items linked to this contract via ProductContract
+        List<InventoryItem> contractItems = new ArrayList<>();
+        try {
+            List<ProductContract> pcs = em.findAll(ProductContract.class);
+            if (pcs != null) {
+                Set<Integer> seenItemIds = new HashSet<>();
+                for (ProductContract pc : pcs) {
+                    try {
+                        Contract c = pc.getContract();
+                        if (c != null && c.getContractID() != null && c.getContractID() == contractId) {
+                            InventoryItem item = pc.getInventoryItem();
+                            if (item != null && item.getItemId() != null && seenItemIds.add(item.getItemId())) {
+                                contractItems.add(item);
+                            }
+                        }
+                    } catch (Exception ignored) {
+                        // skip malformed row
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // If loading fails, keep empty list and continue rendering page.
+        }
         req.setAttribute("contract", contract);
         req.setAttribute("customer", customer);
+        req.setAttribute("contractItems", contractItems);
         forward(req, resp);
     }
 
