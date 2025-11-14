@@ -2,7 +2,6 @@ package crm.warehousekeeper.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.*;
-import crm.common.model.enums.WarehouseRequestStatus;
 import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.common.repository.Warehouse.WarehouseRequestDAO;
 import crm.core.validator.Validator;
@@ -57,7 +56,7 @@ public class WarehouseRequestViewController extends HttpServlet {
                 }
 
                 String[] selectedItems = req.getParameterValues("selectedItems");
-                int totalItems = warehouseRequest.getQuantity();
+                int totalItems = warehouseRequest.getTotalQuantity();
 
                 if (selectedItems == null || selectedItems.length != totalItems) {
                     req.getSession().setAttribute("errorMessage", "You must select all " + totalItems + " items to process this request.");

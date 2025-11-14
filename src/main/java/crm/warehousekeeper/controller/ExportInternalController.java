@@ -62,7 +62,7 @@ public class ExportInternalController extends HttpServlet {
                 WarehouseRequest warehouseRequest = em.find(WarehouseRequest.class, warehouseRequestID);
 
                 if (warehouseRequest != null) {
-                    warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Processing);
+                    warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Transporting);
                     em.merge(warehouseRequest, WarehouseRequest.class);
 
                     for (String productWarehouseIDStr : selectedProducts) {
