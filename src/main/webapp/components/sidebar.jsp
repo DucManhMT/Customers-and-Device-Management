@@ -210,7 +210,7 @@
     <!-- Authentication Category -->
     <div class="sidebar-category">
       <div class="category-header" onclick="toggleCategory('auth')">
-        <span><i class="fas fa-lock category-icon"></i>Authentication</span>
+        <span><i class="fas fa-lock category-icon"></i>Common Action</span>
         <i class="fas fa-chevron-down toggle-icon"></i>
       </div>
       <div class="category-items" id="category-auth">
@@ -249,6 +249,11 @@
               ><span>Forgot Password</span></a
             >
           </li>
+            <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
+                <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/staff/profile"
+                ><span>View Profile</span></a>
+            </li>
         </ul>
       </div>
     </div>
@@ -300,11 +305,6 @@
             </div>
             <div class="category-items" id="category-supporter">
                 <ul class="sidebar-nav">
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/staff/profile"
-                        ><span>View Profile</span></a>
-                    </li>
                     <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_DASHBOARD) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"
@@ -314,6 +314,11 @@
                         <a class="nav-link ${activePage == 'customer-list' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/customers_list"
                         ><span>Customer List</span></a>
+                    </li>
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_VIEW_CUSTOMERS_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'customer-list' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/customer_supporter/contracts"
+                        ><span>Contract List</span></a>
                     </li>
 
 
@@ -349,11 +354,6 @@
             </div>
             <div class="category-items" id="category-techlead">
                 <ul class="sidebar-nav">
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
-                        <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/staff/profile"
-                        ><span>View Profile</span></a>
-                    </li>
                     <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_ACTION_CENTER) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
@@ -400,13 +400,6 @@
                         >Action Center
                         </a>
                     </li>
-                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
-                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/staff/profile"
-                        >My Profile
-                        </a>
-                    </li>
-
 
                     <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHEM_VIEW_ASSIGNED_TASK) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
@@ -499,14 +492,21 @@
                     <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_IMPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"
-                        ><span>View imported Products</span></a
+                        ><span>View imported products</span></a
                         >
                     </li>
                     <li class="nav-item"
                         style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_EXPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"
-                        ><span>View exported Products</span></a
+                        ><span>View exported products</span></a
+                        >
+                    </li>
+                    <li class="nav-item"
+                        >
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/product/view_product_transaction"
+                        ><span>View product transaction</span></a
                         >
                     </li>
                 </ul>
