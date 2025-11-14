@@ -149,8 +149,10 @@
                                    class="btn btn-info btn-sm me-1">View</a>
                                 <a href="./requests/timeline?requestId=${request.requestID}"
                                    class="btn btn-primary btn-sm me-1">Timeline</a>
-                                <a href="./feedback/create?requestId=${request.requestID}"
-                                   class="btn btn-success btn-sm">Feedback</a>
+                                <c:if test="${request.requestStatus eq 'Finished'}">
+                                    <a href="./feedback/create?requestId=${request.requestID}"
+                                       class="btn btn-success btn-sm">Feedback</a>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>

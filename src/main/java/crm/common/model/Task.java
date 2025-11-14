@@ -5,7 +5,6 @@ import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity(tableName = "Task")
 public class Task {

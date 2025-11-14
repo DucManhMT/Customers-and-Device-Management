@@ -1,17 +1,10 @@
 package crm.common.model;
 
-import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.annotation.Column;
 import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.annotation.Key;
-import crm.core.repository.hibernate.annotation.ManyToOne;
 import crm.core.repository.hibernate.annotation.OneToMany;
-import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.core.repository.hibernate.entitymanager.LazyReference;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity(tableName = "Type")
 public class Type {
@@ -55,13 +48,14 @@ public class Type {
         this.typeImage = typeImage;
     }
 
-//    public Category getCategory() {
-//        return category.get();
-//    }
-//
-//    public void setCategory(Category category) {
-//        this.category = new LazyReference<>(Category.class, category.getCategoryID());
-//    }
+    // public Category getCategory() {
+    // return category.get();
+    // }
+    //
+    // public void setCategory(Category category) {
+    // this.category = new LazyReference<>(Category.class,
+    // category.getCategoryID());
+    // }
 
     public List<Product> getProducts() {
         return products;

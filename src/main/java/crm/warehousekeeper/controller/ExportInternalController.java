@@ -90,8 +90,8 @@ public class ExportInternalController extends HttpServlet {
                         transaction.setTransactionStatus(TransactionStatus.Export);
                         transaction.setWarehouseRequest(warehouseRequest);
                         transaction.setInventoryItem(productToUpdate.getInventoryItem());
-                        transaction.setDestinationWarehouseEntity(warehouseRequest.getDestinationWarehouse());
-                        transaction.setSourceWarehouseEntity(warehouseRequest.getSourceWarehouse());
+                        transaction.setDestinationWarehouse(warehouseRequest.getDestinationWarehouse());
+                        transaction.setSourceWarehouse(warehouseRequest.getSourceWarehouse());
 
                         actualQuantity += 1;
 

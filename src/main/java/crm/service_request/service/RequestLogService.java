@@ -6,6 +6,7 @@ import crm.common.model.Staff;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.core.config.TransactionManager;
+import crm.core.service.IDGeneratorService;
 import crm.service_request.model.RequestLog;
 import crm.service_request.repository.RequestLogRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
@@ -23,7 +24,7 @@ public class RequestLogService {
     public void createLog(Request request, String description, OldRequestStatus oldStatus, RequestStatus newStatus,
                           Account account) {
         RequestLog requestLog = new RequestLog();
-        requestLog.setRequestLogID(requestLogRepository.getNewId());
+        requestLog.setRequestLogID(IDGeneratorService.generateID(RequestLog.class));
         requestLog.setRequest(request);
         requestLog.setDescription(description);
         requestLog.setOldStatus(oldStatus);

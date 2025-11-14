@@ -210,7 +210,7 @@
     <!-- Authentication Category -->
     <div class="sidebar-category">
       <div class="category-header" onclick="toggleCategory('auth')">
-        <span><i class="fas fa-lock category-icon"></i>Authentication</span>
+        <span><i class="fas fa-lock category-icon"></i>Common Action</span>
         <i class="fas fa-chevron-down toggle-icon"></i>
       </div>
       <div class="category-items" id="category-auth">
@@ -249,6 +249,11 @@
               ><span>Forgot Password</span></a
             >
           </li>
+            <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.STAFF_VIEW_PROFILE) ? '"display: block"' : '"display:none"'}>
+                <a class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
+                   href="${pageContext.request.contextPath}/staff/profile"
+                ><span>View Profile</span></a>
+            </li>
         </ul>
       </div>
     </div>
@@ -261,182 +266,34 @@
             </div>
             <div class="category-items" id="category-admin">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'admin-action-center' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.ADMIN_ACTION_CENTER) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'admin-action-center' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/admin/admin_actioncenter"
-                        ><span>Action Center</span></a
-                        >
+                        ><span>Action Center</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'role-list' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.ADMIN_VIEW_ROLE_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'role-list' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/admin/role_list"
-                        ><span>Role List</span></a
-                        >
+                        ><span>Role List</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'create-role' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/admin/role_list/create_role"
-                        ><span>Create Role</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'account-list' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.ADMIN_VIEW_ACCOUNT_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'account-list' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/admin/account_list"
-                        ><span>Account List</span></a
-                        >
+                        ><span>Account List</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'create-account' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.ADMIN_CREATE_ACCOUNT) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'create-account' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/admin/create_account"
-                        ><span>Create Account</span></a
-                        >
+                        ><span>Create Account</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'assign-feature' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.ADMIN_ASSIGN_FEATURE) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'assign-feature' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/admin/assign_feature"
-                        ><span>Assign Feature</span></a
-                        >
+                        ><span>Assign Feature</span></a>
                     </li>
                 </ul>
             </div>
         </div>
-
-        <%--
-        <!-- Staff Category -->--%> <%--
-    <div class="sidebar-category">
-      --%> <%--
-      <div class="category-header" onclick="toggleCategory('staff')">
-        --%> <%--
-        <span><i class="fas fa-users category-icon"></i>Staff</span>--%> <%--
-        <i class="fas fa-chevron-down toggle-icon"></i>--%> <%--
-      </div>
-      --%> <%--
-      <div class="category-items" id="category-staff">
-        --%> <%--
-        <ul class="sidebar-nav">
-          --%> <%--
-        </ul>
-        --%> <%--
-      </div>
-      --%> <%--
-    </div>
-    --%>
-
-        <!-- Customer Category -->
-        <div class="sidebar-category">
-            <div class="category-header" onclick="toggleCategory('customer')">
-                <span><i class="fas fa-user category-icon"></i>Customer</span>
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
-            <div class="category-items" id="category-customer">
-                <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-action-center' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/customer_actioncenter"
-                        ><span>Action Center</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'contract-history' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/contract_history"
-                        ><span>Contract History</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-requests' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/requests"
-                        ><span>View Requests</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'request-detail' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/requests/detail"
-                        ><span>Request Detail</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'create-request' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/requests/create"
-                        ><span>Create Request</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-profile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/profile?id=${account.username}"
-                        ><span>View Profile</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-edit-profile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/profile/edit"
-                        ><span>Edit Profile</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'create-feedback' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/feedback/create"
-                        ><span>Create Feedback</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'view-feedback' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/feedback/view"
-                        ><span>View Feedback</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'myRequest' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/requests"
-                        ><i class="bi bi-person-lines-fill"></i> My Request</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'myFeedback' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer/feedback/list"
-                        ><i class="bi bi-person-lines-fill"></i> My Feedback</a
-                        >
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <%--
-        <!-- Feedback Category -->--%> <%--
-    <div class="sidebar-category">
-      --%> <%--
-      <div class="category-header" onclick="toggleCategory('feedback')">
-        --%> <%--
-        <span><i class="fas fa-comment-dots category-icon"></i>Feedback</span
-        >--%> <%-- <i class="fas fa-chevron-down toggle-icon"></i>--%> <%--
-      </div>
-      --%> <%--
-      <div class="category-items" id="category-feedback">
-        --%> <%--
-        <ul class="sidebar-nav">
-          --%> <%--
-        </ul>
-        --%> <%--
-      </div>
-      --%> <%--
-    </div>
-    --%>
 
         <!-- Customer Supporter Category -->
         <div class="sidebar-category">
@@ -448,46 +305,32 @@
             </div>
             <div class="category-items" id="category-supporter">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/staff/profile"
-                        ><span>View Profile</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'supporter-action-center' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/customersupporter_actioncenter"
-                        ><span>Action Center</span></a
-                        >
+                        ><span>Action Center</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'customer-list' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_VIEW_CUSTOMERS_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'customer-list' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/customers_list"
-                        ><span>Customer List</span></a
-                        >
+                        ><span>Customer List</span></a>
                     </li>
 
 
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_REQUEST_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"
                         ><span>Request Dashboard</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_REQUEST_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'supporter-request-list' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/requests/list"
                         ><span>Request List</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'feedback-management' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/customer_supporter/feedback/management"
                         ><span>Feedback Management</span></a
                         >
@@ -506,41 +349,28 @@
             </div>
             <div class="category-items" id="category-techlead">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'staff-profile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/staff/profile"
-                        ><span>View Profile</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_ACTION_CENTER) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'techlead-action-center' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/techlead_actioncenter"
-                        ><span>Action Center</span></a
-                        >
+                        ><span>Action Center</span></a>
                     </li>
 
 
-                    <li class="nav-item">
+                    <li class="nav-item" ${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_VIEW_TECHEM_LIST) ? 'style="display: block"' : 'style="display:none"'}>
                         <a
                                 class="nav-link ${activePage == 'viewTechnicanList' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/employees"
                         ><span> View Technician List</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_VIEW_APROVED_TASK) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'viewAprovedTask' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_leader/request/viewAprovedTask"
-                        ><i class="bi bi-eye"></i> View Request List</a
-                        >
+                        > View Request List</a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_leader/tasks/list"
-                        >
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHLEAD_TASK_LIST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'taskList' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/technician_leader/tasks/list">
                             <span> View Task</span>
                         </a>
                     </li>
@@ -559,46 +389,24 @@
 
             <div class="category-items" id="category-techem">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHEM_ACTION_CENTER) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/techemployee_actioncenter"
                         >Action Center
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'techemProfile' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/staff/profile"
-                        ><i class="bi bi-person-circle"></i>My Profile
-                        </a>
-                    </li>
 
-
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TECHEM_VIEW_ASSIGNED_TASK) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-                        > My Tasks</a
-                        >
+                        > My Tasks</a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
-                        >
-
-                            <span>View Received Assignments</span></a
-                        >
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.TASK_VIEW_RECEIVED_ASSIGNMENTS) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments">
+                            View Received Assignments</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'viewAssignTask' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-                        ><span>View Assigned Tasks</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -613,90 +421,87 @@
             </div>
             <div class="category-items" id="category-warehouse">
                 <ul class="sidebar-nav">
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_DASHBOARD) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'warehouse-dashboard' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/warehousekeeper_dashboard"
                         ><span>Action Center</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_PRODUCT_WAREHOUSE) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'product-warehouse' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_product_warehouse"
                         ><span>Product Warehouse</span></a
                         >
                     </li>
 
 
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_INVENTORY) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'view-inventory' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_inventory"
                         ><span>View Inventory</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_ADD_PRODUCT) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/add_product"
                         ><span>Add Product</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_IMPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'add-product' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/import_product"
                         ><span>Import Product</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_CREATE_TRANSFER_REQUEST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'create-transfer-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
                         ><span>Create Transfer Request</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'warehouse-detail' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_WAREHOUSE_DETAIL) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'warehouse-detail' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_detail"
                         ><span>Warehouse Detail</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_PRODUCT_REQUESTS) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_product_requests"
                         ><span>Product Requests</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_WAREHOUSE_REQUEST) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_warehouse_request"
                         ><span>Warehouse Request</span></a
                         >
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_EXPORT_INTERNAL) ? '"display: block"' : '"display:none"'}>
                         <a
                                 class="nav-link ${activePage == 'export-internal' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/export_internal"
                         ><span>Export Internal</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                    <li class="nav-item" style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_IMPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_imported_product"
-                        ><span>Imported Products</span></a
+                        ><span>View imported products</span></a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                    <li class="nav-item"
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.WAREHOUSE_VIEW_EXPORTED_PRODUCT) ? '"display: block"' : '"display:none"'}>
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                                 href="${pageContext.request.contextPath}/warehouse_keeper/view_exported_product"
-                        ><span>Exported Products</span></a
+                        ><span>View exported products</span></a
+                        >
+                    </li>
+                    <li class="nav-item"
+                        >
+                        <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/product/view_product_transaction"
+                        ><span>View product transaction</span></a
                         >
                     </li>
                 </ul>
@@ -716,38 +521,19 @@
                         <a class="nav-link ${activePage == 'inventory-dashboard' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/inventorymanager_dashboard"><span>Dashboard</span></a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'transfer-requests' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/view_transfer_requests"><span>Transfer Requests</span></a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.INVENTORY_VIEW_PRODUCT_REQUESTS) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'product-requests' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/inventory_manager/view_product_requests"><span>Product Requests</span></a>
                     </li>
                 </ul>
             </div>
         </div>
-
-        <%--
-        <!-- Task Management Category -->--%> <%--
-    <div class="sidebar-category">
-      --%> <%--
-      <div class="category-header" onclick="toggleCategory('task')">
-        --%> <%--
-        <span><i class="fas fa-tasks category-icon"></i>Task Management</span
-        >--%> <%-- <i class="fas fa-chevron-down toggle-icon"></i>--%> <%--
-      </div>
-      --%> <%--
-      <div class="category-items" id="category-task">
-        --%> <%--
-        <ul class="sidebar-nav">
-          --%> <%-- --%> <%--
-        </ul>
-        --%> <%--
-      </div>
-      --%> <%--
-    </div>
-    --%>
 
         <!-- Footer with Logout -->
         <div class="sidebar-footer"></div>

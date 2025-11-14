@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = URLConstants.TECHLEAD_DELETE_TASK, name = "DeleteTaskController")
-public class DeleteTaskController extends HttpServlet {
+public class DeactiveTaskController extends HttpServlet {
 
     private static final TaskService taskService = new TaskService();
 

@@ -1,4 +1,5 @@
 package crm.warehousekeeper.controller;
+
 import crm.common.model.Account;
 import crm.common.model.InventoryItem;
 import crm.common.model.Product;
@@ -15,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,4 +86,3 @@ public class ProcessImportServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/import_product");
     }
 }
-

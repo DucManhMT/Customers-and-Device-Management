@@ -17,7 +17,7 @@
 <body>
 <c:set var="activePage" value="viewContractDetail" scope="request"/>
 <jsp:include page="../components/header.jsp"/>
-<jsp:include page="../components/customer_sidebar.jsp"/>
+<jsp:include page="../components/sidebar.jsp"/>
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Contract Detail</h2>
@@ -83,7 +83,7 @@
             <div class="card-header"><i class="bi bi-box-seam"></i> Linked Products</div>
             <div class="card-body">
                 <c:choose>
-                    <c:when test='${not empty productContracts}'>
+                    <c:when test='${not empty contractItems}'>
                         <div class="table-responsive">
                             <table class="table table-striped align-middle">
                                 <thead>
@@ -94,11 +94,25 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="pc" items="${productContracts}">
+                                <c:forEach var="item" items="${contractItems}">
                                     <tr>
-                                        <td><c:out value='${pc.inventoryItem.product.productID}' default='N/A'/></td>
-                                        <td><c:out value='${pc.inventoryItem.product.productName}' default='N/A'/></td>
-                                        <td><c:out value='${pc.inventoryItem.serialNumber}' default='N/A'/></td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test='${not empty item.product and not empty item.product.productID}'>
+                                                    ${item.product.productID}
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test='${not empty item.product and not empty item.product.productName}'>
+                                                    ${item.product.productName}
+                                                </c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>${item.serialNumber}</td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
@@ -107,53 +121,6 @@
                     </c:when>
                     <c:otherwise>
                         <div class="alert alert-info mb-0"><i class="bi bi-info-circle"></i> No products linked to this contract.</div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-
-        <div class="card mt-4">
-            <div class="card-header"><i class="bi bi-journal-text"></i> Related Requests</div>
-            <div class="card-body">
-                <c:choose>
-                    <c:when test='${not empty requests}'>
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th style="width: 15%">Request ID</th>
-                                    <th style="width: 25%">Status</th>
-                                    <th style="width: 30%">Start Date</th>
-                                    <th style="width: 30%">Finish Date</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="r" items="${requests}">
-                                    <tr>
-                                        <td><c:out value='${r.requestID}' default='N/A'/></td>
-                                        <td>
-                                            <span class="badge
-                                                <c:choose>
-                                                    <c:when test='${r.requestStatus eq "Pending"}'>bg-warning text-dark</c:when>
-                                                    <c:when test='${r.requestStatus eq "Processing"}'>bg-primary</c:when>
-                                                    <c:when test='${r.requestStatus eq "Tech_Finished"}'>bg-info text-dark</c:when>
-                                                    <c:when test='${r.requestStatus eq "Finished"}'>bg-success</c:when>
-                                                    <c:when test='${r.requestStatus eq "Rejected"}'>bg-danger</c:when>
-                                                    <c:otherwise>bg-secondary</c:otherwise>
-                                                </c:choose>">
-                                                ${r.requestStatus}
-                                            </span>
-                                        </td>
-                                        <td><c:out value='${r.startDate}' default='-'/></td>
-                                        <td><c:out value='${empty r.finishedDate ? "-" : r.finishedDate}'/></td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="alert alert-info mb-0"><i class="bi bi-info-circle"></i> No requests for this contract.</div>
                     </c:otherwise>
                 </c:choose>
             </div>

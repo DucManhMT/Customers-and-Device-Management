@@ -10,15 +10,14 @@ import crm.common.model.enums.WarehouseRequestStatus;
 import crm.common.repository.Warehouse.ProductWarehouseDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.core.repository.hibernate.querybuilder.DTO.SqlAndParamsDTO;
-import crm.core.repository.hibernate.querybuilder.QueryUtils;
 import crm.core.service.IDGeneratorService;
 
 import java.time.LocalDateTime;
 
 public class ImportInternalService {
 
-    public static boolean importInternalProducts(String[] selectedItems, WarehouseRequest warehouseRequest, String note) {
+    public static boolean importInternalProducts(String[] selectedItems, WarehouseRequest warehouseRequest,
+            String note) {
 
         EntityManager em = new EntityManager(DBcontext.getConnection());
         ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
@@ -40,8 +39,8 @@ public class ImportInternalService {
                         productTransaction.setTransactionDate(LocalDateTime.now());
                         productTransaction.setInventoryItem(item);
                         productTransaction.setNote(note);
-                        productTransaction.setSourceWarehouseEntity(warehouseRequest.getSourceWarehouse());
-                        productTransaction.setDestinationWarehouseEntity(warehouseRequest.getDestinationWarehouse());
+                        productTransaction.setSourceWarehouse(warehouseRequest.getSourceWarehouse());
+                        productTransaction.setDestinationWarehouse(warehouseRequest.getDestinationWarehouse());
                         productTransaction.setWarehouseRequest(warehouseRequest);
 
                         em.persist(productTransaction, ProductTransaction.class);

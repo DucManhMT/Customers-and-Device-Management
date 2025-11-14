@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,40 @@ public class InventoryTransferRequestController extends HttpServlet {
         String warehouseRequestIdStr = req.getParameter("warehouseRequestID");
         String sourceWarehouseIdStr = req.getParameter("sourceWarehouseID");
 
+        String rejectReason = req.getParameter("rejectReason");
+
+        if (rejectReason != null && !rejectReason.isEmpty() &&
+                warehouseRequestIdStr != null && !warehouseRequestIdStr.isEmpty()) {
+            try {
+                em.beginTransaction();
+                int warehouseRequestId = Integer.parseInt(warehouseRequestIdStr);
+
+                WarehouseRequest requestToUpdate = em.find(WarehouseRequest.class, warehouseRequestId);
+
+                if(requestToUpdate.getWarehouseRequestStatus().equals(WarehouseRequestStatus.Rejected)){
+                    req.getSession().setAttribute("errorMessage", "Warehouse request has already been rejected.");
+                    resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);
+                    return;
+                }
+
+                if (requestToUpdate != null) {
+                    requestToUpdate.setWarehouseRequestStatus(WarehouseRequestStatus.Rejected);
+                    requestToUpdate.setNote(rejectReason);
+
+                    em.merge(requestToUpdate, WarehouseRequest.class);
+                    em.commit();
+
+                    req.getSession().setAttribute("successMessage", "Warehouse request has been updated successfully");
+                    resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);
+                    return;
+                }
+
+            } catch (NumberFormatException | SQLException e) {
+                em.rollback();
+                e.printStackTrace();
+            }
+        }
+
         if (warehouseRequestIdStr != null && !warehouseRequestIdStr.isEmpty() &&
                 sourceWarehouseIdStr != null && !sourceWarehouseIdStr.isEmpty()) {
             try {
@@ -48,6 +83,13 @@ public class InventoryTransferRequestController extends HttpServlet {
                 int sourceWarehouseId = Integer.parseInt(sourceWarehouseIdStr);
 
                 WarehouseRequest requestToUpdate = em.find(WarehouseRequest.class, warehouseRequestId);
+
+                if(requestToUpdate.getWarehouseRequestStatus().equals(WarehouseRequestStatus.Rejected)){
+                    req.getSession().setAttribute("errorMessage", "Warehouse request has been rejected.");
+                    resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);
+                    return;
+                }
+
                 Warehouse sourceWarehouse = em.find(Warehouse.class, sourceWarehouseId);
 
                 if (requestToUpdate != null && sourceWarehouse != null) {
@@ -62,7 +104,7 @@ public class InventoryTransferRequestController extends HttpServlet {
             }
         } else {
             req.getSession().setAttribute("errorMessage", "Invalid warehouse request or source warehouse ID.");
-            resp.sendRedirect(req.getContextPath()+ URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);
+            resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS);
             return;
         }
 

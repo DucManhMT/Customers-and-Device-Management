@@ -252,6 +252,10 @@
                            href="${pageContext.request.contextPath}/customer/contract_history"><span>Contract History</span></a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'contract-history' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/customer/products"><span>View Products</span></a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'customer-requests' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/customer/requests"><span>View Requests</span></a>
                     </li>

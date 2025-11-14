@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class ProductWarehouseController extends HttpServlet {
 
         Account account = (Account) req.getSession().getAttribute("account");
 
-        if(account == null){
+        if (account == null) {
             req.setAttribute("errorMessage", "You haven't logged in yet");
             req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
             return;
@@ -56,14 +55,14 @@ public class ProductWarehouseController extends HttpServlet {
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
                 currentPage = Integer.parseInt(pageParam);
-                if (currentPage < 1) currentPage = 1;
+                if (currentPage < 1)
+                    currentPage = 1;
             } catch (NumberFormatException e) {
                 // Use default if invalid
             }
         }
 
-
-        //Find products in warehouse
+        // Find products in warehouse
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         ProductWarehouseDAO productWarehouseDAO = new ProductWarehouseDAO();
         ProductDAO productDAO = new ProductDAO();
@@ -71,7 +70,8 @@ public class ProductWarehouseController extends HttpServlet {
         Warehouse warehouse = warehouseDAO.getWarehouseByUsername(account.getUsername());
 
         if (warehouse == null) {
-            req.setAttribute("errorMessage", "You currently do not have a warehouse assigned. Please contact the administrator");
+            req.setAttribute("errorMessage",
+                    "You currently do not have a warehouse assigned. Please contact the administrator");
             req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
             return;
         }
@@ -80,7 +80,7 @@ public class ProductWarehouseController extends HttpServlet {
 
         List<Product> products = productDAO.findAll();
 
-        if(products.isEmpty()){
+        if (products.isEmpty()) {
             req.setAttribute("errorMessage", "No products found in your warehouse.");
             req.getRequestDispatcher("/warehouse_keeper/view_product.jsp").forward(req, resp);
             return;
@@ -93,9 +93,7 @@ public class ProductWarehouseController extends HttpServlet {
                 .filter(pw1 -> pw1.getProductStatus() == ProductStatus.In_Stock)
                 .collect(Collectors.groupingBy(
                         pw1 -> pw1.getInventoryItem().getProduct().getProductID(),
-                        Collectors.counting()
-                ));
-
+                        Collectors.counting()));
 
         for (Product p : products) {
             productCounts.putIfAbsent(p.getProductID(), 0L);
@@ -105,8 +103,7 @@ public class ProductWarehouseController extends HttpServlet {
         TypeDAO typeDAO = new TypeDAO();
         List<Type> ProductTypes = typeDAO.findAll();
 
-
-        //Filter
+        // Filter
         if (productNameFilter != null && !productNameFilter.isEmpty()) {
             products = products.stream()
                     .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))

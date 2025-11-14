@@ -3,11 +3,8 @@
 package crm.warehousekeeper.controller;
 
 import crm.common.model.*;
-import crm.common.model.enums.ProductRequestStatus;
-import crm.common.model.enums.ProductStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.core.service.IDGeneratorService;
 import crm.warehousekeeper.service.ExportProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,7 +12,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,17 +27,19 @@ public class ExportProductController extends HttpServlet {
         }
 
         ProductRequest productRequest = em.find(ProductRequest.class, Integer.parseInt(productRequestID));
-//        Request request = productRequest.getRequest();
-//        int requestID = request.getRequestID(); // adjust method name if your model uses different casing
+        // Request request = productRequest.getRequest();
+        // int requestID = request.getRequestID(); // adjust method name if your model
+        // uses different casing
 
         String[] itemIdsArray = req.getParameterValues("itemIds");
         List<String> itemIds = (itemIdsArray == null) ? List.of() : Arrays.stream(itemIdsArray).toList();
         int numberOfItems = itemIds.size();
 
-        if (numberOfItems > 0 ) {
+        if (numberOfItems > 0) {
             ExportProductService.exportProducts(productRequest, itemIds);
         }
-        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/export_product?productRequestID=" + productRequestID + "&requestID=" );
+        resp.sendRedirect(req.getContextPath() + "/warehouse_keeper/export_product?productRequestID=" + productRequestID
+                + "&requestID=");
 
     }
 }

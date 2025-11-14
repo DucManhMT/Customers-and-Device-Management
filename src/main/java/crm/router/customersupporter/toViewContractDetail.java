@@ -1,6 +1,5 @@
-package crm.contract.controller;
+package crm.router.customersupporter;
 
-import crm.common.URLConstants;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.common.model.InventoryItem;
@@ -19,10 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@WebServlet(urlPatterns = URLConstants.CONTRACT_DETAIL, name = "ViewContractDetailServlet")
-public class ViewContractDetailServlet extends HttpServlet {
+@WebServlet(name = "supporterViewContract", value = "/supporter_view_contract/detail")
+public class toViewContractDetail extends HttpServlet {
     private static final String ATTR_ERROR = "error";
-    private static final String VIEW = "/customer/view_contract_detail.jsp";
+    private static final String VIEW = "/customer_supporter/supporter_view_contract_detail.jsp";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

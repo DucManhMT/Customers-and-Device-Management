@@ -1,4 +1,4 @@
-package crm.tech.dao;
+package crm.tech.repository;
 
 import crm.common.model.Staff;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TechEmployeeDAO {
     private static final int TECHEM_ROLE_ID = 6;
     private EntityManager entityManager;
@@ -16,7 +15,6 @@ public class TechEmployeeDAO {
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
 
     public List<Staff> findAllActiveTechEmployees() throws SQLException {
         try {
@@ -40,7 +38,6 @@ public class TechEmployeeDAO {
         }
     }
 
-
     public Staff findTechEmployeeById(int staffId) throws SQLException {
         try {
             String sql = "SELECT s.* FROM Staff s " +
@@ -54,7 +51,7 @@ public class TechEmployeeDAO {
             SqlAndParamsDTO sqlParams = new SqlAndParamsDTO(sql, params);
             List<Staff> staffList = entityManager.executeQuery(sqlParams, Staff.class);
 
-            System.out.println("[DAO] findTechEmployeeById: StaffID=" + staffId + 
+            System.out.println("[DAO] findTechEmployeeById: StaffID=" + staffId +
                     ", Found=" + (staffList != null && !staffList.isEmpty()));
 
             return (staffList != null && !staffList.isEmpty()) ? staffList.get(0) : null;
@@ -63,7 +60,6 @@ public class TechEmployeeDAO {
             throw new SQLException("Failed to retrieve tech employee by ID", e);
         }
     }
-
 
     public int countActiveTechEmployees() throws SQLException {
         try {
@@ -74,7 +70,6 @@ public class TechEmployeeDAO {
             throw new SQLException("Failed to count tech employees", e);
         }
     }
-
 
     public List<String> findAllLocations() throws SQLException {
         try {

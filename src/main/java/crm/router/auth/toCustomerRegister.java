@@ -3,7 +3,6 @@ package crm.router.auth;
 import crm.common.URLConstants;
 import crm.common.model.Province;
 import crm.core.config.DBcontext;
-import crm.core.repository.hibernate.annotation.Entity;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.ServletException;
@@ -11,6 +10,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+
 @WebServlet(name = "toCustomerRegister", value = URLConstants.AUTH_CUSTOMER_REGISTER)
 public class toCustomerRegister extends HttpServlet {
     @Override

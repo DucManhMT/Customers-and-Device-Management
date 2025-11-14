@@ -144,6 +144,9 @@ public class CreateContractServlet extends HttpServlet {
         Set<String> serialsInRequest = new HashSet<>();
 
         Map<Integer, String> serialInputMap = new HashMap<>();
+        if(productIds ==null || productIds.length==0){
+            errorList.add("No products selected.");
+        }
 
         if (productIds == null || productIds.length == 0) {
             errorList.add(MessageConst.MSG86);
