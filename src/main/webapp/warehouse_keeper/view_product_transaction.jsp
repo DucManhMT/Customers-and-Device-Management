@@ -1,372 +1,619 @@
-<%--
-  Created for viewing all product transactions
-  User: Master-Long-3112
-  Date: 2025-10-17
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Transactions</title>
+    <title>Product Transactions - Warehouse Management</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
     <style>
-        .transaction-header {
+        :root {
+            --primary-color: #4a90e2;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin: 20px auto;
+        }
+
+        .page-header {
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-header h1 i {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+        }
+
+        .filter-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             color: white;
+        }
+
+        .filter-card h5 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-card .form-control,
+        .filter-card .form-select {
+            border-radius: 10px;
+            border: none;
+            padding: 10px 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-card label {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stats-card p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
         .table-container {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
-        .status-badge {
-            padding: 0.35rem 0.65rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
+        .table {
+            margin-bottom: 0;
         }
 
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .status-completed {
-            background-color: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .status-cancelled {
-            background-color: #f8d7da;
-            color: #842029;
-        }
-
-        .status-processing {
-            background-color: #cfe2ff;
-            color: #084298;
+        .table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
         .table thead th {
-            background-color: #f8f9fa;
+            border: none;
+            padding: 18px 15px;
             font-weight: 600;
-            border-bottom: 2px solid #dee2e6;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
         }
 
         .table tbody tr:hover {
-            background-color: #f8f9fa;
+            background-color: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .badge {
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-import {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .badge-export {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+            color: white;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .serial-number {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .warehouse-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .btn-filter {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+            border-radius: 10px;
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-filter:hover {
+            background: transparent;
+            color: white;
+            border-color: white;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 10px;
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+
+        .no-data i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .transaction-id {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .note-cell {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-cell:hover {
+            white-space: normal;
+            overflow: visible;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+
+            .table {
+                font-size: 0.85rem;
+            }
+
+            .stats-card h3 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <div class="card transaction-header border-0 shadow-sm">
-                <div class="card-body py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h1 class="h3 mb-1">
-                                <i class="fas fa-exchange-alt me-2"></i>Product Transactions
-                            </h1>
-                            <p class="mb-0 opacity-75">View all product transaction records</p>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/warehouse/dashboard"
-                               class="btn btn-light btn-sm">
-                                <i class="fas fa-home me-1"></i>Dashboard
-                            </a>
-                            <button type="button" class="btn btn-outline-light btn-sm" onclick="window.print()">
-                                <i class="fas fa-print me-1"></i>Print
-                            </button>
-                        </div>
+
+<div class="container-fluid">
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-arrow-left-right"></i>
+                Product Transactions
+            </h1>
+            <p class="text-muted mb-0">Track and manage all warehouse product transactions</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="bi bi-card-list" style="font-size: 2rem;"></i>
+                    <h3>${fn:length(productTransactions)}</h3>
+                    <p>Total Transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <i class="bi bi-box-arrow-in-down" style="font-size: 2rem;"></i>
+                    <h3>
+                        <c:set var="importCount" value="0"/>
+                        <c:forEach items="${productTransactions}" var="transaction">
+                            <c:if test="${transaction.transactionStatus == 'Import'}">
+                                <c:set var="importCount" value="${importCount + 1}"/>
+                            </c:if>
+                        </c:forEach>
+                        ${importCount}
+                    </h3>
+                    <p>Import Transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);">
+                    <i class="bi bi-box-arrow-up" style="font-size: 2rem;"></i>
+                    <h3>
+                        <c:set var="exportCount" value="0"/>
+                        <c:forEach items="${productTransactions}" var="transaction">
+                            <c:if test="${transaction.transactionStatus == 'Export'}">
+                                <c:set var="exportCount" value="${exportCount + 1}"/>
+                            </c:if>
+                        </c:forEach>
+                        ${exportCount}
+                    </h3>
+                    <p>Export Transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                    <h3>
+                        <c:set var="successCount" value="0"/>
+                        <c:forEach items="${productTransactions}" var="exportTrans">
+                            <c:if test="${exportTrans.transactionStatus == 'Export'}">
+                                <c:set var="hasMatch" value="false"/>
+                                <c:forEach items="${productTransactions}" var="importTrans">
+                                    <c:if test="${importTrans.transactionStatus == 'Import'
+                                        && exportTrans.warehouseRequest != null
+                                        && importTrans.warehouseRequest != null
+                                        && exportTrans.warehouseRequest.warehouseRequestID == importTrans.warehouseRequest.warehouseRequestID
+                                        && exportTrans.inventoryItem.itemId == importTrans.inventoryItem.itemId
+                                        && exportTrans.sourceWarehouse.warehouseID == importTrans.destinationWarehouse.warehouseID
+                                        && exportTrans.destinationWarehouse.warehouseID == importTrans.sourceWarehouse.warehouseID}">
+                                        <c:set var="hasMatch" value="true"/>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${hasMatch}">
+                                    <c:set var="successCount" value="${successCount + 1}"/>
+                                </c:if>
+                            </c:if>
+                        </c:forEach>
+                        ${successCount}
+                    </h3>
+                    <p>Completed Exports</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-card">
+            <h5><i class="bi bi-funnel-fill"></i> Filter Transactions</h5>
+            <form id="filterForm" method="get">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="filterType">Transaction Type</label>
+                        <select class="form-select" id="filterType" name="type">
+                            <option value="">All Types</option>
+                            <option value="Import">Import</option>
+                            <option value="Export">Export</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="filterProduct">Product Name</label>
+                        <input type="text" class="form-control" id="filterProduct" name="product"
+                               placeholder="Search product...">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="filterWarehouse">Warehouse</label>
+                        <input type="text" class="form-control" id="filterWarehouse" name="warehouse"
+                               placeholder="Search warehouse...">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="filterDate">Transaction Date</label>
+                        <input type="date" class="form-control" id="filterDate" name="date">
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-list-alt text-primary fs-2 mb-2"></i>
-                    <h4 class="mb-0">${not empty transactions ? transactions.size() : 0}</h4>
-                    <small class="text-muted">Total Transactions</small>
+                <div class="text-end">
+                    <button type="button" class="btn btn-reset" onclick="resetFilters()">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </button>
+                    <button type="button" class="btn btn-filter" onclick="applyFilters()">
+                        <i class="bi bi-search"></i> Apply Filters
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-check-circle text-success fs-2 mb-2"></i>
-                    <h4 class="mb-0" id="completedCount">0</h4>
-                    <small class="text-muted">Completed</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-clock text-warning fs-2 mb-2"></i>
-                    <h4 class="mb-0" id="pendingCount">0</h4>
-                    <small class="text-muted">Pending</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <i class="fas fa-sync text-info fs-2 mb-2"></i>
-                    <h4 class="mb-0" id="processingCount">0</h4>
-                    <small class="text-muted">Processing</small>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Success/Error Messages -->
-    <c:if test="${not empty successMessage}">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>${successMessage}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    </c:if>
-
-    <c:if test="${not empty errorMessage}">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>${errorMessage}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    </c:if>
-
-    <!-- Transactions Table -->
-    <div class="table-container">
-        <div class="card border-0">
-            <div class="card-header bg-white py-3">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <h5 class="mb-0">
-                            <i class="fas fa-table me-2"></i>Transaction Records
-                        </h5>
+        <!-- Transactions Table -->
+        <div class="table-container">
+            <c:choose>
+                <c:when test="${empty productTransactions}">
+                    <div class="no-data">
+                        <i class="bi bi-inbox"></i>
+                        <h4>No Transactions Found</h4>
+                        <p>There are no product transactions to display at this time.</p>
                     </div>
-                    <div class="col-auto">
-                        <input type="text" class="form-control form-control-sm" id="searchInput"
-                               placeholder="Search transactions..." onkeyup="filterTable()">
-                    </div>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="transactionTable">
+                </c:when>
+                <c:otherwise>
+                    <table class="table table-hover" id="transactionsTable">
                         <thead>
                         <tr>
-                            <th scope="col" class="text-center" style="width: 10%;">Transaction ID</th>
-                            <th scope="col" style="width: 15%;">Transaction Date</th>
-                            <th scope="col" style="width: 15%;">Source Warehouse</th>
-                            <th scope="col" style="width: 15%;">Destination Warehouse</th>
-                            <th scope="col" class="text-center" style="width: 10%;">Item ID</th>
-                            <th scope="col" class="text-center" style="width: 12%;">Status</th>
-                            <th scope="col" style="width: 18%;">Note</th>
-                            <th scope="col" class="text-center" style="width: 5%;">Actions</th>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Serial Number</th>
+                            <th>Type</th>
+                            <th>Source</th>
+                            <th>Destination</th>
+                            <th>Date</th>
+                            <th>Request ID</th>
+                            <th>Note</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:choose>
-                            <c:when test="${not empty transactions}">
-                                <c:forEach var="transaction" items="${transactions}">
-                                    <tr>
-                                        <td class="text-center">
-                                            <strong>#${transaction.transactionID}</strong>
-                                        </td>
-                                        <td>
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <fmt:formatDate value="${transaction.transactionDate}"
-                                                            pattern="dd/MM/yyyy HH:mm"/>
-                                        </td>
-                                        <td>
-                                            <i class="fas fa-warehouse me-1 text-primary"></i>
-                                            <c:choose>
-                                                <c:when test="${not empty transaction.sourceWarehouseEntity}">
-                                                    ${transaction.sourceWarehouseEntity.warehouseName}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="text-muted">N/A</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>
-                                            <i class="fas fa-warehouse me-1 text-success"></i>
-                                            <c:choose>
-                                                <c:when test="${not empty transaction.destinationWarehouseEntity}">
-                                                    ${transaction.destinationWarehouseEntity.warehouseName}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="text-muted">N/A</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td class="text-center">
-                                            <c:choose>
-                                                <c:when test="${not empty transaction.inventoryItem}">
-                                                    <code>#${transaction.inventoryItem.itemId}</code>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="text-muted">N/A</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td class="text-center">
-                                            <c:choose>
-                                                <c:when test="${transaction.transactionStatus == 'COMPLETED'}">
-                                                        <span class="status-badge status-completed">
-                                                            <i class="fas fa-check me-1"></i>Completed
-                                                        </span>
-                                                </c:when>
-                                                <c:when test="${transaction.transactionStatus == 'PENDING'}">
-                                                        <span class="status-badge status-pending">
-                                                            <i class="fas fa-hourglass-half me-1"></i>Pending
-                                                        </span>
-                                                </c:when>
-                                                <c:when test="${transaction.transactionStatus == 'CANCELLED'}">
-                                                        <span class="status-badge status-cancelled">
-                                                            <i class="fas fa-times me-1"></i>Cancelled
-                                                        </span>
-                                                </c:when>
-                                                <c:when test="${transaction.transactionStatus == 'PROCESSING'}">
-                                                        <span class="status-badge status-processing">
-                                                            <i class="fas fa-spinner me-1"></i>Processing
-                                                        </span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                        <span class="status-badge"
-                                                              style="background-color: #e9ecef; color: #495057;">
-                                                                ${transaction.transactionStatus}
-                                                        </span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${not empty transaction.note}">
-                                                    <small>${transaction.note}</small>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="text-muted">-</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                        type="button" data-bs-toggle="dropdown">
-                                                    <i class="fas fa-ellipsis-v"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item"
-                                                           href="${pageContext.request.contextPath}/transaction/view?id=${transaction.transactionID}">
-                                                            <i class="fas fa-eye me-2"></i>View Details
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item"
-                                                           href="${pageContext.request.contextPath}/transaction/edit?id=${transaction.transactionID}">
-                                                            <i class="fas fa-edit me-2"></i>Edit
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <tr>
-                                    <td colspan="8" class="text-center py-5">
-                                        <div class="text-muted">
-                                            <i class="fas fa-inbox fs-1 mb-3 d-block"></i>
-                                            <h5>No Transactions Found</h5>
-                                            <p>There are no product transactions to display at this time.</p>
+                        <c:forEach items="${productTransactions}" var="transaction">
+                            <tr>
+                                <td class="transaction-id">#${transaction.transactionID}</td>
+                                <td>
+                                    <div class="product-info">
+                                        <c:if test="${not empty transaction.inventoryItem.product.productImage}">
+                                            <img src="${pageContext.request.contextPath}${transaction.inventoryItem.product.productImage}"
+                                                 alt="${transaction.inventoryItem.product.productName}"
+                                                 class="product-image">
+                                        </c:if>
+                                        <div>
+                                            <div class="product-name">${transaction.inventoryItem.product.productName}</div>
+                                            <small class="text-muted">ID: ${transaction.inventoryItem.product.productID}</small>
                                         </div>
-                                    </td>
-                                </tr>
-                            </c:otherwise>
-                        </c:choose>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="serial-number">${transaction.inventoryItem.serialNumber}</span>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${transaction.transactionStatus == 'Import'}">
+                                            <span class="badge badge-import">
+                                                <i class="bi bi-box-arrow-in-down"></i> Import
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge badge-export">
+                                                <i class="bi bi-box-arrow-up"></i> Export
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty transaction.sourceWarehouse}">
+                                            <span class="warehouse-badge">
+                                                <i class="bi bi-building"></i>
+                                                ${transaction.sourceWarehouse.warehouseName}
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-muted">-</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty transaction.destinationWarehouse}">
+                                            <span class="warehouse-badge">
+                                                <i class="bi bi-building"></i>
+                                                ${transaction.destinationWarehouse.warehouseName}
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-muted">-</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <i class="bi bi-calendar3"></i>
+                                        ${transaction.transactionDate}
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty transaction.warehouseRequest}">
+                                            <span class="badge bg-info">
+                                                #${transaction.warehouseRequest.warehouseRequestID}
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-muted">N/A</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${not empty transaction.note}">
+                                            <div class="note-cell" title="${transaction.note}">
+                                                    ${transaction.note}
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="text-muted">-</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
-                </div>
-            </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap 5 JS Bundle -->
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    // Filter table function
-    function filterTable() {
-        const input = document.getElementById('searchInput');
-        const filter = input.value.toUpperCase();
-        const table = document.getElementById('transactionTable');
-        const rows = table.getElementsByTagName('tr');
-
-        for (let i = 1; i < rows.length; i++) {
-            const row = rows[i];
-            const cells = row.getElementsByTagName('td');
-            let found = false;
-
-            for (let j = 0; j < cells.length; j++) {
-                const cell = cells[j];
-                if (cell) {
-                    const textValue = cell.textContent || cell.innerText;
-                    if (textValue.toUpperCase().indexOf(filter) > -1) {
-                        found = true;
-                        break;
-                    }
+    $(document).ready(function() {
+        // Initialize DataTable with advanced features
+        $('#transactionsTable').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, "desc"]],
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Show _MENU_ entries",
+                "info": "Showing _START_ to _END_ of _TOTAL_ transactions",
+                "infoEmpty": "Showing 0 to 0 of 0 transactions",
+                "infoFiltered": "(filtered from _MAX_ total transactions)",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "Next",
+                    "previous": "Previous"
                 }
-            }
+            },
+            "responsive": true,
+            "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip'
+        });
+    });
 
-            row.style.display = found ? '' : 'none';
-        }
+    function applyFilters() {
+        const type = document.getElementById('filterType').value.toLowerCase();
+        const product = document.getElementById('filterProduct').value.toLowerCase();
+        const warehouse = document.getElementById('filterWarehouse').value.toLowerCase();
+        const date = document.getElementById('filterDate').value;
+
+        const table = $('#transactionsTable').DataTable();
+
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                const rowType = data[3].toLowerCase();
+                const rowProduct = data[1].toLowerCase();
+                const rowSource = data[4].toLowerCase();
+                const rowDestination = data[5].toLowerCase();
+                const rowDate = data[6];
+
+                let typeMatch = !type || rowType.includes(type);
+                let productMatch = !product || rowProduct.includes(product);
+                let warehouseMatch = !warehouse || rowSource.includes(warehouse) || rowDestination.includes(warehouse);
+                let dateMatch = !date || rowDate.includes(date);
+
+                return typeMatch && productMatch && warehouseMatch && dateMatch;
+            }
+        );
+
+        table.draw();
+        $.fn.dataTable.ext.search.pop();
     }
 
-    // Calculate status counts
-    document.addEventListener('DOMContentLoaded', function () {
-        const rows = document.querySelectorAll('#transactionTable tbody tr');
-        let completed = 0, pending = 0, processing = 0;
+    function resetFilters() {
+        document.getElementById('filterForm').reset();
+        $('#transactionsTable').DataTable().search('').draw();
+    }
 
-        rows.forEach(row => {
-            const statusCell = row.querySelector('td:nth-child(6)');
-            if (statusCell) {
-                const statusText = statusCell.textContent.toUpperCase();
-                if (statusText.includes('COMPLETED')) completed++;
-                if (statusText.includes('PENDING')) pending++;
-                if (statusText.includes('PROCESSING')) processing++;
+    // Auto-apply filters on Enter key
+    document.querySelectorAll('#filterForm input').forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyFilters();
             }
         });
-
-        document.getElementById('completedCount').textContent = completed;
-        document.getElementById('pendingCount').textContent = pending;
-        document.getElementById('processingCount').textContent = processing;
     });
 </script>
-
 </body>
 </html>
