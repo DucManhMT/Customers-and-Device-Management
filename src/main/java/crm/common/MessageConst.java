@@ -46,4 +46,13 @@ public class MessageConst {
     public static final String MSG43 = "Role created successfully.";
     public static final String MSG44 = "This account has no customer information.";
 
+    // Customer supporter
+    public static final String MSG81 = "Please select a PDF file to upload.";
+    public static final String MSG82 = "Invalid file. Only PDF allowed.";
+    public static final String MSG83 = "Customer not found.";
+    public static final String MSG84 = "Expire date must be after start date.";
+    public static final String MSG85 = "Invalid date format";
+    public static final String MSG86 = "Please select at least one product.";
+    public static final String MSG87 = "Serial already exists in system";
+    public static final String MSG88 = "Create contract successful";
 }

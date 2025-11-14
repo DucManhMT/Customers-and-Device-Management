@@ -1,5 +1,6 @@
 package crm.contract.controller;
 
+import crm.common.MessageConst;
 import crm.common.URLConstants;
 import crm.common.model.*;
 import crm.contract.service.ContractCodeGenerator;
@@ -91,7 +92,7 @@ public class CreateContractServlet extends HttpServlet {
 
         // ===== VALIDATE PDF =====
         if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty()) {
-            session.setAttribute("flash_error", "Please select a PDF file to upload.");
+            session.setAttribute("flash_error", MessageConst.MSG81);
             response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
@@ -99,7 +100,7 @@ public class CreateContractServlet extends HttpServlet {
         String originalFileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
         String mimeType = getServletContext().getMimeType(originalFileName);
         if (mimeType == null || !mimeType.equals("application/pdf") || !originalFileName.toLowerCase().endsWith(".pdf")) {
-            session.setAttribute("flash_error", "Invalid file. Only PDF allowed.");
+            session.setAttribute("flash_error", MessageConst.MSG82);
             response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
@@ -113,7 +114,7 @@ public class CreateContractServlet extends HttpServlet {
             if (found != null && !found.isEmpty()) customer = found.get(0);
         }
         if (customer == null) {
-            session.setAttribute("flash_error", "Customer not found.");
+            session.setAttribute("flash_error", MessageConst.MSG83);
             response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
@@ -125,12 +126,12 @@ public class CreateContractServlet extends HttpServlet {
             startDate = LocalDate.parse(request.getParameter("startDate"));
             expireDate = LocalDate.parse(request.getParameter("expireDate"));
             if (expireDate.isBefore(startDate)) {
-                session.setAttribute("flash_error", "Expire date must be after start date.");
+                session.setAttribute("flash_error", MessageConst.MSG84);
                 response.sendRedirect(buildRedirectWithId(request, customerUsername));
                 return;
             }
         } catch (Exception e) {
-            session.setAttribute("flash_error", "Invalid date format.");
+            session.setAttribute("flash_error", MessageConst.MSG85);
             response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
@@ -148,7 +149,7 @@ public class CreateContractServlet extends HttpServlet {
         }
 
         if (productIds == null || productIds.length == 0) {
-            errorList.add("Please select at least one product.");
+            errorList.add(MessageConst.MSG86);
         }
 
         if (productIds != null && serialNumbers != null) {
@@ -190,7 +191,7 @@ public class CreateContractServlet extends HttpServlet {
                 cond.put("serialNumber", generated);
                 List<InventoryItem> exists = em.findWithConditions(InventoryItem.class, cond);
                 if (exists != null && !exists.isEmpty()) {
-                    errorList.add("Serial already exists in system: " + serialInput);
+                    errorList.add(MessageConst.MSG87);
                     continue;
                 }
 
@@ -252,7 +253,7 @@ public class CreateContractServlet extends HttpServlet {
             em.persist(pc, ProductContract.class);
         }
 
-        session.setAttribute("flash_success", "Create contract successful.");
+        session.setAttribute("flash_success", MessageConst.MSG88);
 
         String pdfURL = request.getContextPath() + "/assets/" + URLEncoder.encode(safeFileName, "UTF-8");
         response.sendRedirect(buildRedirectWithId(request, customerUsername)
