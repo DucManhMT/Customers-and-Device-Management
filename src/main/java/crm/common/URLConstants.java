@@ -55,7 +55,6 @@ public class URLConstants {
     public static final String CUSTOMER_EDIT_PROFILE = "/customer/profile/edit";
 
     // CUSTOMER SUPPORTER
-    public static final String CUSTOMER_SUPPORTER_ACTION_CENTER = "/customer_supporter/customersupporter_actioncenter";
     public static final String CUSTOMER_SUPPORTER_CREATE_CONTRACT = "/customer_supporter/create_contract";
     public static final String CUSTOMER_SUPPORTER_FEEDBACK_MANAGEMENT = "/customer_supporter/feedback/management";
     public static final String CUSTOMER_SUPPORTER_REQUEST_DASHBOARD = "/customer_supporter/requests/dashboard";
@@ -67,6 +66,7 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_VIEW_CUSTOMER_CONTRACT = "/customer_supporter/customers_list/contracts";
     public static final String CUSTOMER_SUPPORTER_FINISH_REQUEST = "/customer_supporter/request/finish";
     public static final String CUSTOMER_SUPPORTER_NOT_FINISH_REQUEST = "/customer_supporter/request/not_finish";
+    public static final String CUSTOMER_SUPPORTER_VIEW_CONTRACT_DETAIL = "/customer_supporter/contract/detail";
 
     // TECHNICAL LEADER
     public static final String TECHLEAD_ACTION_CENTER = "/technician_leader/techlead_actioncenter";

@@ -927,12 +927,14 @@
                     </select>
                 </form>
             </div>
+            <c:if test="${currentTask.status != 'Finished' && currentTask.status != 'Cancelled'}">
             <form action="${pageContext.request.contextPath}/technician_employee/createProductRequests" method="Get">
                 <input type="hidden" name="taskID" value="${currentTask.taskID}">
                 <button class="btn-create" type="submit">
                     <i class="fas fa-plus"></i>Create Request
                 </button>
             </form>
+            </c:if>
         </div>
 
         <!-- Timeline -->

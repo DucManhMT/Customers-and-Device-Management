@@ -1,0 +1,102 @@
+package crm.router.customersupporter;
+
+import crm.common.model.Contract;
+import crm.common.model.Customer;
+import crm.common.model.InventoryItem;
+import crm.common.model.ProductContract;
+import crm.core.config.DBcontext;
+import crm.core.repository.hibernate.entitymanager.EntityManager;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@WebServlet(name = "supporterViewContract", value = "/supporter_view_contract/detail")
+public class toViewContractDetail extends HttpServlet {
+    private static final String ATTR_ERROR = "error";
+    private static final String VIEW = "/customer_supporter/supporter_view_contract_detail.jsp";
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String contractIdParam = req.getParameter("contractId");
+        if (contractIdParam == null || contractIdParam.isBlank()) {
+            req.setAttribute(ATTR_ERROR, "contractId is required");
+            forward(req, resp);
+            return;
+        }
+        int contractId;
+        try {
+            contractId = Integer.parseInt(contractIdParam.trim());
+        } catch (NumberFormatException e) {
+            req.setAttribute(ATTR_ERROR, "Invalid contractId");
+            forward(req, resp);
+            return;
+        }
+
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+        Contract contract = em.find(Contract.class, contractId);
+        if (contract == null) {
+            req.setAttribute(ATTR_ERROR, "Contract not found");
+            forward(req, resp);
+            return;
+        }
+        Customer customer = null;
+        try {
+            customer = contract.getCustomer();
+        } catch (Exception ignored) {
+            // allow null
+        }
+        // Load all inventory items linked to this contract via ProductContract
+        List<InventoryItem> contractItems = new ArrayList<>();
+        try {
+            List<ProductContract> pcs = em.findAll(ProductContract.class);
+            if (pcs != null) {
+                Set<Integer> seenItemIds = new HashSet<>();
+                for (ProductContract pc : pcs) {
+                    try {
+                        Contract c = pc.getContract();
+                        if (c != null && c.getContractID() != null && c.getContractID() == contractId) {
+                            InventoryItem item = pc.getInventoryItem();
+                            if (item != null && item.getItemId() != null && seenItemIds.add(item.getItemId())) {
+                                contractItems.add(item);
+                            }
+                        }
+                    } catch (Exception ignored) {
+                        // skip malformed row
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // If loading fails, keep empty list and continue rendering page.
+        }
+        req.setAttribute("contract", contract);
+        req.setAttribute("customer", customer);
+        req.setAttribute("contractItems", contractItems);
+        forward(req, resp);
+    }
+
+    private void forward(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher(VIEW).forward(req, resp);
+        } catch (Exception ignored) {
+            // If forwarding fails, nothing more to do.
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            doGet(req, resp);
+        } catch (ServletException | IOException e) {
+            req.setAttribute(ATTR_ERROR, "Error processing request: " + e.getMessage());
+            forward(req, resp);
+        }
+    }
+}

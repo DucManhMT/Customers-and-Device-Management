@@ -303,7 +303,6 @@
 
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between flex-column align-items-start mb-2">
-                                                <p class="badge bg-secondary product-code">${product.productDescription}</p>
                                                 <p class="badge bg-info">${product.type.typeName}</p>
                                             </div>
 
