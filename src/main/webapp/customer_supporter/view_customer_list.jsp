@@ -211,7 +211,7 @@
                                class="btn action-btn btn-edit me-1">
                                 View Contracts
                             </a>
-                            <a href="${pageContext.request.contextPath}/customer_supporter/customer/products?username=${account.username}"
+                            <a href="${pageContext.request.contextPath}/staff/customer/products?username=${account.username}"
                                class="btn action-btn btn-edit me-1">
                                 View Products
                             </a>

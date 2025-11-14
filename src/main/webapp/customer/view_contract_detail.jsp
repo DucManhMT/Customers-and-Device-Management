@@ -83,7 +83,7 @@
             <div class="card-header"><i class="bi bi-box-seam"></i> Linked Products</div>
             <div class="card-body">
                 <c:choose>
-                    <c:when test='${not empty contractItems}'>
+                    <c:when test='${not empty productContracts}'>
                         <div class="table-responsive">
                             <table class="table table-striped align-middle">
                                 <thead>
@@ -94,25 +94,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="item" items="${contractItems}">
+                                <c:forEach var="pc" items="${productContracts}">
                                     <tr>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test='${not empty item.product and not empty item.product.productID}'>
-                                                    ${item.product.productID}
-                                                </c:when>
-                                                <c:otherwise>N/A</c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test='${not empty item.product and not empty item.product.productName}'>
-                                                    ${item.product.productName}
-                                                </c:when>
-                                                <c:otherwise>N/A</c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>${item.serialNumber}</td>
+                                        <td><c:out value='${pc.inventoryItem.product.productID}' default='N/A'/></td>
+                                        <td><c:out value='${pc.inventoryItem.product.productName}' default='N/A'/></td>
+                                        <td><c:out value='${pc.inventoryItem.serialNumber}' default='N/A'/></td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>

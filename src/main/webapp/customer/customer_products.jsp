@@ -5,7 +5,7 @@ prefix="c" uri="jakarta.tags.core" %>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Customer Products</title>
+    <title>My Products</title>
     <link
       href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -22,7 +22,7 @@ prefix="c" uri="jakarta.tags.core" %>
 
     <div class="container-fluid p-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">All Products of Customer</h2>
+        <h2 class="mb-0">My Products</h2>
         <button
           type="button"
           class="btn btn-outline-secondary"
@@ -38,112 +38,57 @@ prefix="c" uri="jakarta.tags.core" %>
         </div>
       </c:if>
 
-      <div class="row g-3">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header">Customer</div>
-            <form
-              class="card mb-3"
-              method="get"
-              action="${pageContext.request.contextPath}/customer/products"
-            >
-              <div class="card-body">
-                <div class="row g-2 align-items-end">
-                  <input
-                    type="hidden"
-                    name="customerId"
-                    value="${param.customerId}"
-                  />
-                  <div class="col-md-3">
-                    <label class="form-label" for="username"
-                      >Customer Username</label
-                    >
-                    <input
-                      id="username"
-                      class="form-control"
-                      type="text"
-                      name="username"
-                      placeholder="e.g. john.doe"
-                      value="${param.username}"
-                    />
-                  </div>
-                  <div class="col-md-3">
-                    <label class="form-label" for="productName"
-                      >Product Name</label
-                    >
-                    <input
-                      id="productName"
-                      class="form-control"
-                      type="text"
-                      name="productName"
-                      placeholder="e.g. Router"
-                      value="${param.productName}"
-                    />
-                  </div>
-                  <div class="col-md-3">
-                    <label class="form-label" for="serial">Item Serial</label>
-                    <input
-                      id="serial"
-                      class="form-control"
-                      type="text"
-                      name="serial"
-                      placeholder="e.g. SN-12345"
-                      value="${param.serial}"
-                    />
-                  </div>
-                  <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                      <i class="bi bi-search"></i> Search
-                    </button>
-                    <a
-                      class="btn btn-outline-secondary"
-                      href="${pageContext.request.contextPath}/customer/products?customerId=${param.customerId}"
-                    >
-                      <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </form>
-            <div class="card-body">
-              <div class="mb-2">
-                <strong>Customer ID:</strong>
-                <span
-                  ><c:choose
-                    ><c:when
-                      test="${not empty customer and not empty customer.customerID}"
-                      >#${customer.customerID}</c:when
-                    ><c:otherwise>N/A</c:otherwise></c:choose
-                  ></span
-                >
-              </div>
-              <div class="mb-2">
-                <strong>Customer Name:</strong>
-                <span
-                  ><c:choose
-                    ><c:when
-                      test="${not empty customer and not empty customer.customerName}"
-                      >${customer.customerName}</c:when
-                    ><c:otherwise>N/A</c:otherwise></c:choose
-                  ></span
-                >
-              </div>
-              <div class="mb-2">
-                <strong>Total Products:</strong>
-                <span>${totalProducts}</span>
-              </div>
+      <form
+        class="card mb-3"
+        method="get"
+        action="${pageContext.request.contextPath}/customer/products"
+      >
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label" for="productName">Product Name</label>
+              <input
+                id="productName"
+                class="form-control"
+                type="text"
+                name="productName"
+                placeholder="e.g. Router"
+                value="${param.productName}"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="serial">Item Serial</label>
+              <input
+                id="serial"
+                class="form-control"
+                type="text"
+                name="serial"
+                placeholder="e.g. SN-12345"
+                value="${param.serial}"
+              />
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+              </button>
+              <a
+                class="btn btn-outline-secondary"
+                href="${pageContext.request.contextPath}/customer/products"
+              >
+                <i class="bi bi-x-circle"></i> Clear
+              </a>
             </div>
           </div>
         </div>
-      </div>
+      </form>
 
-      <div class="card mt-4">
+      <div class="card">
         <div class="card-header">
-          <i class="bi bi-box-seam"></i> Products Across Contracts
+          <i class="bi bi-box-seam"></i> Products Across My Contracts
         </div>
         <div class="card-body">
           <c:choose>
-            <c:when test="${not empty products}">
+            <c:when test="${not empty productContracts}">
               <div class="table-responsive">
                 <table class="table table-striped align-middle">
                   <thead>
@@ -156,18 +101,34 @@ prefix="c" uri="jakarta.tags.core" %>
                     </tr>
                   </thead>
                   <tbody>
-                    <c:forEach var="row" items="${products}">
+                    <c:forEach var="pc" items="${productContracts}">
                       <tr>
-                        <td>${row.contractId}</td>
+                        <td>${pc.contract.contractID}</td>
                         <td>
-                            <a
-                            href="${pageContext.request.contextPath}/contract/detail?contractId=${row.contractCode}"
-                            class="text-decoration-none text-primary fw-semibold"
+                          <a
+                            href="${pageContext.request.contextPath}/contract/detail?contractId=${pc.contract.contractID}"
+                            class="text-decoration-none"
+                            >${pc.contract.contractCode}</a
                           >
-                            ${row.contractCode}</td>
-                        <td>${row.productId}</td>
-                        <td>${row.productName}</td>
-                        <td>${row.itemSerial}</td>
+                        </td>
+                        <td>
+                          <c:out
+                            value="${pc.inventoryItem.product.productID}"
+                            default="N/A"
+                          />
+                        </td>
+                        <td>
+                          <c:out
+                            value="${pc.inventoryItem.product.productName}"
+                            default="N/A"
+                          />
+                        </td>
+                        <td>
+                          <c:out
+                            value="${pc.inventoryItem.serialNumber}"
+                            default="N/A"
+                          />
+                        </td>
                       </tr>
                     </c:forEach>
                   </tbody>
@@ -176,8 +137,7 @@ prefix="c" uri="jakarta.tags.core" %>
             </c:when>
             <c:otherwise>
               <div class="alert alert-info mb-0">
-                <i class="bi bi-info-circle"></i> No products found for this
-                customer.
+                <i class="bi bi-info-circle"></i> No products found.
               </div>
             </c:otherwise>
           </c:choose>

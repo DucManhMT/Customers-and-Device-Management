@@ -329,4 +329,8 @@ public class RequestService {
         }
     }
 
+    public List<Request> getRequestsByContractId(int contractId) {
+        return requestRepository.findWithCondition(ClauseBuilder.builder().equal("ContractID", contractId));
+    }
+
 }

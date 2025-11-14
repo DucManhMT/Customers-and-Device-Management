@@ -1,4 +1,4 @@
-package crm.customer;
+package crm.customer.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.Customer;
@@ -18,7 +18,8 @@ import java.util.Map;
 @WebServlet(name = "EditProfileServlet", value = URLConstants.CUSTOMER_EDIT_PROFILE)
 public class EditProfileServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String username = request.getParameter("id");
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
@@ -31,13 +32,13 @@ public class EditProfileServlet extends HttpServlet {
         request.setAttribute("accountPhone", customer.getPhone());
         request.setAttribute("accountAddress", customer.getAddress());
 
-
         request.setAttribute("username", username);
         request.getRequestDispatcher("/customer/edit_profile.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         String username = request.getParameter("id");
 
@@ -62,7 +63,7 @@ public class EditProfileServlet extends HttpServlet {
         // Tìm customer hiện tại
         Customer currentCustomer = em.findWithConditions(Customer.class, Map.of("account", username)).get(0);
 
-// Tìm tất cả có cùng số điện thoại, trừ chính mình
+        // Tìm tất cả có cùng số điện thoại, trừ chính mình
         List<Customer> existingPhones = em.findWithConditions(Customer.class, Map.of("phone", accountPhone))
                 .stream()
                 .filter(c -> !c.getCustomerID().equals(currentCustomer.getCustomerID()))
@@ -74,7 +75,6 @@ public class EditProfileServlet extends HttpServlet {
             return;
         }
 
-
         String accountAddress = request.getParameter("accountAddress");
         Map<String, Object> cond = new HashMap<>();
         cond.put("account", username);
@@ -84,7 +84,6 @@ public class EditProfileServlet extends HttpServlet {
         customer.setPhone(accountPhone);
         customer.setAddress(accountAddress);
         em.merge(customer, Customer.class);
-
 
         request.getSession().setAttribute("success", "Account updated successfully.");
         response.sendRedirect(request.getContextPath() + "/customer/profile/edit?id=" + username);

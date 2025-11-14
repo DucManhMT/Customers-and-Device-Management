@@ -1,4 +1,4 @@
-package crm.customer;
+package crm.customer.controller;
 
 import crm.common.URLConstants;
 import crm.common.model.Account;
@@ -17,8 +17,10 @@ import java.util.Map;
 @WebServlet(name = "ViewProfileServlet", value = URLConstants.CUSTOMER_VIEW_PROFILE)
 public class ViewProfileServlet extends HttpServlet {
     private static final String FLASH_ERROR_KEY = "flashErrorMessage";
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null) {
             response.sendRedirect(request.getContextPath() + "/auth/customer_login");
@@ -34,7 +36,7 @@ public class ViewProfileServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         String username = request.getParameter("id");
         Account account = em.find(Account.class, username);
-        Map<String,Object> cond = new HashMap();
+        Map<String, Object> cond = new HashMap();
         cond.put("account", username);
         List<Customer> customers = em.findWithConditions(Customer.class, cond);
 
@@ -71,6 +73,7 @@ public class ViewProfileServlet extends HttpServlet {
 
         request.getRequestDispatcher("/customer/view_profile.jsp").forward(request, response);
     }
+
     private String getActionCenterPath(Account account) {
         if (account == null || account.getRole() == null || account.getRole().getRoleName() == null) {
             return "/"; // fallback generic
@@ -98,7 +101,8 @@ public class ViewProfileServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
     }
 }
