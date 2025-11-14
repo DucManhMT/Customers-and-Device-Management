@@ -14,15 +14,21 @@
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #3b82f6;
-            --neutral-50: #f9fafb;
-            --neutral-100: #f3f4f6;
-            --neutral-200: #e5e7eb;
-            --neutral-600: #6b7280;
-            --neutral-800: #1f2937;
+            --neutral-50: #fafafa;
+            --neutral-100: #f5f5f5;
+            --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4;
+            --neutral-400: #a3a3a3;
+            --neutral-500: #737373;
+            --neutral-600: #525252;
+            --neutral-700: #404040;
+            --neutral-800: #262626;
+            --neutral-900: #171717;
         }
 
         * {
@@ -30,88 +36,120 @@
         }
 
         body {
-            background: var(--neutral-50);
+            background: white;
+            color: var(--neutral-800);
         }
 
         .main-content {
-            margin: 15px;
+            margin: 20px;
         }
 
         .page-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 40px;
             margin-bottom: 32px;
             color: white;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.25);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
         .page-header h1 {
             font-weight: 700;
-            font-size: 1.875rem;
+            font-size: 2rem;
             margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
         }
 
         .page-header-subtitle {
             opacity: 0.95;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .request-info-card {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
             border: 1px solid var(--neutral-200);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .request-info-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
             border-bottom: 2px solid var(--neutral-100);
         }
 
         .request-info-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--neutral-800);
+            color: var(--neutral-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .request-status-badge {
-            padding: 8px 16px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 0.875rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .request-meta {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         .request-meta-item {
             display: flex;
             align-items: start;
-            gap: 12px;
+            gap: 16px;
+            padding: 16px;
+            background: var(--neutral-50);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .request-meta-item:hover {
+            background: var(--neutral-100);
+            transform: translateY(-2px);
         }
 
         .request-meta-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #e0e7ff, #ddd6fe);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-size: 1.1rem;
+            color: white;
+            font-size: 1.25rem;
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
         }
 
         .request-meta-content {
@@ -119,74 +157,92 @@
         }
 
         .request-meta-label {
-            color: var(--neutral-600);
+            color: var(--neutral-500);
             font-size: 0.813rem;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            font-weight: 500;
         }
 
         .request-meta-value {
             font-weight: 600;
-            color: var(--neutral-800);
-            font-size: 0.95rem;
+            color: var(--neutral-900);
+            font-size: 1rem;
+            line-height: 1.4;
         }
 
         .controls-bar {
             background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
+            border-radius: 16px;
+            padding: 20px 28px;
+            margin-bottom: 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid var(--neutral-200);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .btn-create {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         .btn-create:hover {
-            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .form-select-sm {
+            border: 1px solid var(--neutral-300);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-weight: 500;
+            color: var(--neutral-700);
+            transition: all 0.3s ease;
+        }
+
+        .form-select-sm:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .timeline-container {
             position: relative;
-            padding-left: 40px;
+            padding-left: 50px;
         }
 
         .timeline-line {
             position: absolute;
-            left: 19px;
+            left: 23px;
             top: 60px;
             bottom: 60px;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--primary) 0%, var(--neutral-200) 100%);
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary) 0%, var(--neutral-300) 100%);
+            border-radius: 10px;
         }
 
         .timeline-item {
             position: relative;
-            margin-bottom: 32px;
-            animation: slideIn 0.5s ease-out;
+            margin-bottom: 40px;
+            animation: slideIn 0.6s ease-out;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateX(-20px);
+                transform: translateX(-30px);
             }
             to {
                 opacity: 1;
@@ -196,44 +252,45 @@
 
         .timeline-marker {
             position: absolute;
-            left: -27px;
-            top: 12px;
-            width: 16px;
-            height: 16px;
+            left: -32px;
+            top: 16px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: white;
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.15);
             z-index: 2;
         }
 
         .timeline-date {
             position: absolute;
-            left: -27px;
-            top: 40px;
+            left: -32px;
+            top: 50px;
             background: var(--neutral-100);
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 0.75rem;
             font-weight: 600;
-            color: var(--neutral-600);
+            color: var(--neutral-700);
             white-space: nowrap;
             transform: translateX(-50%);
-            margin-left: 8px;
+            margin-left: 9px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .request-card {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 28px;
             border: 1px solid var(--neutral-200);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
         }
 
         .request-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
             border-color: var(--primary);
         }
 
@@ -241,27 +298,29 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--neutral-100);
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--neutral-100);
         }
 
         .request-id {
             background: linear-gradient(135deg, #e0e7ff, #ddd6fe);
             color: var(--primary);
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
         }
 
         .status-badge {
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.813rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .status-pending {
@@ -274,7 +333,7 @@
             color: #065f46;
         }
 
-        .status-processing {
+        .status-processing, .status-transporting {
             background: #dbeafe;
             color: #1e40af;
         }
@@ -292,24 +351,26 @@
         .creator-info {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            padding: 12px;
-            background: var(--neutral-50);
-            border-radius: 10px;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, #fafafa, #f5f5f5);
+            border-radius: 12px;
+            border: 1px solid var(--neutral-200);
         }
 
         .creator-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 1.125rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .creator-details {
@@ -318,35 +379,41 @@
 
         .creator-label {
             font-size: 0.75rem;
-            color: var(--neutral-600);
+            color: var(--neutral-500);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+            font-weight: 500;
         }
 
         .creator-name {
             font-weight: 600;
-            color: var(--neutral-800);
-            font-size: 0.9rem;
+            color: var(--neutral-900);
+            font-size: 1rem;
         }
 
         .product-info {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: var(--neutral-50);
+            border-radius: 12px;
+            border: 1px solid var(--neutral-200);
         }
 
         .product-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #e0e7ff, #ddd6fe);
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-size: 1.25rem;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
         }
 
         .product-details {
@@ -355,152 +422,181 @@
 
         .product-name {
             font-weight: 700;
-            color: var(--neutral-800);
-            font-size: 1.05rem;
-            margin-bottom: 4px;
+            color: var(--neutral-900);
+            font-size: 1.125rem;
+            margin-bottom: 6px;
         }
 
         .product-type {
             color: var(--neutral-600);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .quantity-badge {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
-            padding: 8px 16px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
         }
 
         .quantity-label {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #92400e;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .quantity-value {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #78350f;
         }
 
         .request-description {
             background: var(--neutral-50);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            color: var(--neutral-600);
-            font-size: 0.875rem;
-            line-height: 1.6;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            color: var(--neutral-700);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            border: 1px solid var(--neutral-200);
         }
 
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 12px;
         }
 
         .btn-action {
             flex: 1;
             border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .btn-finish {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--success), #059669);
             color: white;
         }
 
         .btn-finish:hover {
-            background: #059669;
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
         .btn-reject {
-            background: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: white;
         }
 
         .btn-reject:hover {
-            background: #dc2626;
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
 
         .empty-state {
             text-align: center;
-            padding: 64px 24px;
+            padding: 80px 32px;
             background: white;
-            border-radius: 16px;
-            border: 2px dashed var(--neutral-200);
+            border-radius: 20px;
+            border: 2px dashed var(--neutral-300);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .empty-state i {
-            font-size: 4rem;
-            color: var(--neutral-200);
-            margin-bottom: 16px;
+            font-size: 5rem;
+            color: var(--neutral-300);
+            margin-bottom: 24px;
         }
 
         .empty-state p {
             color: var(--neutral-600);
-            font-size: 1.1rem;
+            font-size: 1.125rem;
             margin: 0;
+            font-weight: 500;
         }
 
         .pagination-container {
             background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-top: 24px;
+            border-radius: 16px;
+            padding: 20px 28px;
+            margin-top: 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid var(--neutral-200);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .pagination .page-link {
-            border-radius: 8px;
+            border-radius: 10px;
             margin: 0 4px;
-            border: 1px solid var(--neutral-200);
-            color: var(--neutral-600);
+            border: 1px solid var(--neutral-300);
+            color: var(--neutral-700);
             font-weight: 500;
+            padding: 10px 16px;
+            transition: all 0.3s ease;
         }
 
         .pagination .page-link:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .pagination .page-item.active .page-link {
             background: var(--primary);
             border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         @media (max-width: 768px) {
+            .main-content {
+                margin: 15px;
+            }
+
+            .page-header {
+                padding: 28px 24px;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .request-info-card, .request-card {
+                padding: 20px;
+            }
+
             .timeline-container {
-                padding-left: 20px;
+                padding-left: 30px;
             }
 
             .timeline-line {
-                left: 9px;
+                left: 13px;
             }
 
             .timeline-marker {
-                left: -17px;
+                left: -22px;
             }
 
             .timeline-date {
                 position: static;
                 transform: none;
-                margin: 8px 0;
+                margin: 12px 0;
                 display: inline-block;
             }
 
@@ -510,6 +606,12 @@
 
             .request-meta {
                 grid-template-columns: 1fr;
+            }
+
+            .controls-bar {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
             }
         }
     </style>
@@ -531,7 +633,7 @@
             <div class="request-info-card">
                 <div class="request-info-header">
                     <h2 class="request-info-title">
-                        <i class="fas fa-file-invoice me-2"></i>Request #${currentRequest.requestID}
+                        <i class="fas fa-file-invoice"></i>Request #${currentRequest.requestID}
                     </h2>
                     <span class="request-status-badge status-${currentRequest.requestStatus.toString().toLowerCase().replace('_', '-')}">
                             ${currentRequest.requestStatus}
@@ -590,8 +692,7 @@
                             </div>
                             <div class="request-meta-content">
                                 <div class="request-meta-label">Current Task</div>
-                                <div class="request-meta-value">#${currentTask.taskID}
-                                    - ${currentTask.description}</div>
+                                <div class="request-meta-value">#${currentTask.taskID} - ${currentTask.description}</div>
                             </div>
                         </div>
                     </c:if>
@@ -601,14 +702,12 @@
 
         <!-- Controls Bar -->
         <div class="controls-bar">
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-3">
                 <span class="text-muted fw-medium">Items per page:</span>
-                <form action="${pageContext.request.contextPath}/technician_employee/view_product_requests" method="GET"
-                      class="mb-0">
+                <form action="${pageContext.request.contextPath}/technician_employee/view_product_requests" method="GET" class="mb-0">
                     <input type="hidden" name="taskID" value="${taskID}">
                     <input type="hidden" name="page" value="${currentPage}">
-                    <select name="pageSize" class="form-select form-select-sm" style="width: auto;"
-                            onchange="this.form.submit()">
+                    <select name="pageSize" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
                         <option value="6" ${pageSize == 6 ? 'selected' : ''}>6</option>
                         <option value="9" ${pageSize == 9 ? 'selected' : ''}>9</option>
                         <option value="12" ${pageSize == 12 ? 'selected' : ''}>12</option>
@@ -616,10 +715,9 @@
                     </select>
                 </form>
             </div>
-            <form action="${pageContext.request.contextPath}/technician_employee/create_product_request" method="Get">
+            <form action="${pageContext.request.contextPath}/technician_employee/createProductRequests" method="Get">
                 <input type="hidden" name="taskID" value="${currentTask.taskID}">
-                <button class="btn-create"
-                        type="submit">
+                <button class="btn-create" type="submit">
                     <i class="fas fa-plus"></i>Create Request
                 </button>
             </form>
@@ -645,14 +743,13 @@
                                     </span>
                                 </div>
 
-                                <!-- Creator Info -->
                                 <div class="creator-info">
                                     <div class="creator-avatar">
                                         <c:choose>
                                             <c:when test="${not empty pr.task.assignTo.image}">
                                                 <img src="${pageContext.request.contextPath}${pr.task.assignTo.image}"
                                                      alt="${pr.task.assignTo.staffName}"
-                                                     style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                                                     style="width: 100%; height: 100%; border-radius: 12px; object-fit: cover;">
                                             </c:when>
                                             <c:otherwise>
                                                 ${pr.task.assignTo.staffName.substring(0, 1).toUpperCase()}
@@ -697,18 +794,15 @@
                                               method="post" style="display: contents;">
                                             <input type="hidden" name="productRequestId" value="${pr.productRequestID}">
                                             <input type="hidden" name="taskID" value="${taskID}">
-                                            <button type="submit" name="action" value="finished"
-                                                    class="btn-action btn-finish">
+                                            <button type="submit" name="action" value="finished" class="btn-action btn-finish">
                                                 <i class="fas fa-check"></i>Mark as Finished
                                             </button>
-                                            <button type="submit" name="action" value="reject"
-                                                    class="btn-action btn-reject">
+                                            <button type="submit" name="action" value="reject" class="btn-action btn-reject">
                                                 <i class="fas fa-times"></i>Reject Request
                                             </button>
                                         </form>
                                     </div>
                                 </c:if>
-
                             </div>
                         </div>
                     </c:forEach>
@@ -722,5 +816,34 @@
             </c:otherwise>
         </c:choose>
 
+        <!-- Pagination -->
+        <c:if test="${totalPages > 1}">
+            <div class="pagination-container">
+                <div class="text-muted">
+                    Showing ${(currentPage - 1) * pageSize + 1} to ${currentPage * pageSize > totalRequests ? totalRequests : currentPage * pageSize} of ${totalRequests} requests
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <c:if test="${currentPage > 1}">
+                            <li class="page-item">
+                                <a class="page-link" href="?taskID=${taskID}&page=${currentPage - 1}&pageSize=${pageSize}">Previous</a>
+                            </li>
+                        </c:if>
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                <a class="page-link" href="?taskID=${taskID}&page=${i}&pageSize=${pageSize}">${i}</a>
+                            </li>
+                        </c:forEach>
+                        <c:if test="${currentPage < totalPages}">
+                            <li class="page-item">
+                                <a class="page-link" href="?taskID=${taskID}&page=${currentPage + 1}&pageSize=${pageSize}">Next</a>
+                            </li>
+                        </c:if>
+                    </ul>
+                </nav>
+            </div>
+        </c:if>
+    </div>
+</div>
 </body>
 </html>
