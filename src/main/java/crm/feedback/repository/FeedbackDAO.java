@@ -37,7 +37,7 @@ public class FeedbackDAO {
             }
 
             System.out.println("[DAO] findActiveFeedbacks: Found " + activeFeedbacks.size() + " active feedbacks");
-            return activeFeedbacks;
+            return allFeedbacks;
         } catch (Exception e) {
             e.printStackTrace();
             throw new SQLException("Failed to retrieve active feedbacks", e);

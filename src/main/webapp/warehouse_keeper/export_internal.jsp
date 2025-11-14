@@ -364,10 +364,10 @@
                                 </span>
                                 <c:set var="statusClass" value="bg-secondary"/>
                                 <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass" value="bg-info"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Transporting'}"><c:set var="statusClass" value="bg-info"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Completed'}"><c:set var="statusClass" value="bg-success"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Finished'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
                             </div>
                             <div class="card-body p-4">
