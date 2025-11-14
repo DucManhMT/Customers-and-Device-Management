@@ -126,22 +126,6 @@
             </div>
         </div>
 
-        <!-- Modal (reused pattern from history page) -->
-        <div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="contractModalLabel">Contract Image</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <!-- Duplicate elements removed; using top-level embed/notice/download controls -->
-                        <p class="text-muted">Use the "View Contract" button above to load the file.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </c:if>
 </div>
 <script src="${pageContext.request.contextPath}/js/view-contract-detail.js"></script>

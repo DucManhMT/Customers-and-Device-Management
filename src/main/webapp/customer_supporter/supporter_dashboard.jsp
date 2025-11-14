@@ -186,6 +186,9 @@ uri="jakarta.tags.core" prefix="c" %>
           var(--primary-light)
         );
       }
+      .icon-tech-finish {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      }
       .stat-content {
         display: flex;
         flex-direction: column;
@@ -280,6 +283,15 @@ uri="jakarta.tags.core" prefix="c" %>
               <div class="stat-content">
                 <div class="stat-number">${requestStats.Processing}</div>
                 <div class="stat-label">Processing</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="icon icon-tech-finish">
+                <i class="fas fa-wrench"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number">${requestStats.Tech_Finished}</div>
+                <div class="stat-label">Tech Finished</div>
               </div>
             </div>
             <div class="stat">
