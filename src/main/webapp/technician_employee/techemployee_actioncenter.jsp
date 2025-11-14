@@ -387,6 +387,160 @@
             border: 1px solid #FCA5A5;
         }
 
+        /* Notification Alert */
+        .notification-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            animation: slideInDown 0.5s ease-out, pulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .notification-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            position: relative;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 32px;
+            height: 32px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border: 3px solid white;
+            animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes ping {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            75%, 100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .notification-content p {
+            font-size: 1rem;
+            opacity: 0.95;
+            margin: 0;
+        }
+
+        .notification-action {
+            flex-shrink: 0;
+        }
+
+        .btn-notification {
+            background: white;
+            color: #667eea;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-notification:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            color: #667eea;
+        }
+
+        /* Badge on action button */
+        .action-button {
+            position: relative;
+        }
+
+        .action-button .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 2px solid white;
+            animation: pulse-badge 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -427,15 +581,15 @@
 <jsp:include page="../components/header.jsp"/>
 <jsp:include page="../components/sidebar.jsp"/>
 
-    <div class="container">
-        <!-- Error Message -->
-        <c:if test="${not empty errorMessage}">
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i>
-                <div>${errorMessage}</div>
-            </div>
-            <c:remove var="errorMessage" scope="session"/>
-        </c:if>
+<div class="container">
+    <!-- Error Message -->
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>${errorMessage}</div>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
 
     <!-- Page Header -->
     <div class="page-header">
@@ -447,6 +601,27 @@
             <p>Welcome back! Here's an overview of your tasks and activities</p>
         </div>
     </div>
+
+    <!-- Notification Banner for Pending Tasks -->
+    <c:if test="${pendingTasksCount > 0}">
+        <div class="notification-banner">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">${pendingTasksCount}</span>
+            </div>
+            <div class="notification-content">
+                <h3>New Task Assignments!</h3>
+                <p>You have <strong>${pendingTasksCount}</strong> new task${pendingTasksCount > 1 ? 's' : ''} waiting for your review and acceptance.</p>
+            </div>
+            <div class="notification-action">
+                <a href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
+                   class="btn-notification">
+                    <i class="fas fa-inbox"></i>
+                    Review Tasks
+                </a>
+            </div>
+        </div>
+    </c:if>
 
     <!-- Statistics Cards -->
     <div class="stats-grid">
@@ -518,23 +693,22 @@
             <h2>Quick Actions</h2>
         </div>
         <div class="quick-actions-grid">
-            <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-               class="action-button">
+            <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks" class="action-button">
                 <i class="fas fa-list"></i>
                 <span>View All Tasks</span>
             </a>
-            <a href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
-               class="action-button">
+            <a href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments" class="action-button">
                 <i class="fas fa-inbox"></i>
-                <span>View Assignments</span>
+                <span>View Received Tasks</span>
+                <c:if test="${pendingTasksCount > 0}">
+                    <span class="badge">${pendingTasksCount}</span>
+                </c:if>
             </a>
-            <a href="${pageContext.request.contextPath}/technician_employee/view_product_requests"
-               class="action-button">
+            <a href="${pageContext.request.contextPath}/technician_employee/product-request/list" class="action-button">
                 <i class="fas fa-box"></i>
                 <span>Product Requests</span>
             </a>
-            <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks?statusFilter=processing"
-               class="action-button">
+            <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks?statusFilter=processing" class="action-button">
                 <i class="fas fa-spinner"></i>
                 <span>Active Tasks</span>
             </a>
@@ -549,111 +723,76 @@
         </div>
 
         <c:choose>
-        <c:when test="${empty recentTasks}">
-            <div class="empty-state">
-                <i class="fas fa-clipboard-list"></i>
-                <p>No active tasks at the moment</p>
-                <small>Your processing tasks will appear here</small>
-            </div>
-        </c:when>
-        <c:otherwise>
-        <div class="tasks-list">
-            <c:forEach var="task" items="${recentTasks}">
-            <div class="task-item">
-                <div class="task-info">
-                    <div class="task-title">
-                        Task #${task.taskID} - Request #${task.request.requestID}
-                    </div>
-                    <div class="task-meta">
-                                        <span><i class="fas fa-calendar"></i> 
+            <c:when test="${empty recentTasks}">
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>No active tasks at the moment</p>
+                    <small>Your processing tasks will appear here</small>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="tasks-list">
+                    <c:forEach var="task" items="${recentTasks}">
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-title">
+                                    Task #${task.taskID} - Request #${task.request.requestID}
+                                </div>
+                                <div class="task-meta">
+                                        <span><i class="fas fa-calendar"></i>
                                             ${task.startDate.toLocalDate().format(dateFormatter)}
                                         </span>
-                        <c:if test="${not empty task.deadline}">
-                                            <span><i class="fas fa-flag-checkered"></i> 
+                                    <c:if test="${not empty task.deadline}">
+                                            <span><i class="fas fa-flag-checkered"></i>
                                                 Due: ${task.deadline.toLocalDate().format(dateFormatter)}
                                             </span>
-                        </c:if>
-                    </div>
+                                    </c:if>
+                                </div>
+                            </div>
+
+                            <c:choose>
+                                <c:when test="${not empty task.deadline}">
+                                    <c:set var="now" value="<%= java.time.LocalDateTime.now() %>"/>
+                                    <c:set var="threeDaysLater" value="${now.plusDays(3)}"/>
+
+                                    <c:choose>
+                                        <c:when test="${task.deadline.isBefore(now)}">
+                                            <span class="task-status overdue">Overdue</span>
+                                        </c:when>
+                                        <c:when test="${task.deadline.isAfter(now) && task.deadline.isBefore(threeDaysLater)}">
+                                            <span class="task-status near-due">Near Due</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="task-status processing">Processing</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="task-status processing">Processing</span>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <div class="task-actions">
+                                <a href="${pageContext.request.contextPath}/technician_employee/request/detail?id=${task.taskID}"
+                                   class="btn btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                    View Task
+                                </a>
+                            </div>
+                        </div>
+                    </c:forEach>
                 </div>
 
-                <c:choose>
-                    <c:when test="${not empty task.deadline}">
-                        <c:set var="today" value="<%= java.time.LocalDate.now() %>"/>
-                        <c:set var="deadlineDate" value="${task.deadline.toLocalDate()}"/>
-                        <c:set var="daysDiff"
-                               value="${java.time.temporal.ChronoUnit.DAYS.between(today, deadlineDate)}"/>
-
-                        <c:choose>
-                            <c:when test="${daysDiff < 0}">
-                                <span class="task-status overdue">Overdue</span>
-                            </c:when>
-                            <c:when test="${daysDiff <= 3}">
-                                <span class="task-status near-due">Near Due</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="task-status processing">Processing</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:when>
-                    <c:otherwise>
-                        <span class="task-status processing">Processing</span>
-                    </c:otherwise>
-                </c:choose>
-
-                <div class="task-actions">
-                    <a href="${pageContext.request.contextPath}/technician_employee/request/detail?id=${task.request.requestID}"
-                       class="btn btn-primary">
-                        <i class="fas fa-eye"></i>
-                        View Details
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
+                       class="btn btn-outline">
+                        <i class="fas fa-arrow-right"></i>
+                        View All Tasks
                     </a>
                 </div>
-            </div>
-
-            <c:choose>
-                <c:when test="${not empty task.deadline}">
-                    <jsp:useBean id="now" class="java.util.Date"/>
-                    <c:set var="deadlineDate" value="${task.deadline}"/>
-                    <c:set var="timeDiff" value="${deadlineDate.time - now.time}"/>
-                    <c:set var="daysDiff" value="${timeDiff / (1000 * 60 * 60 * 24)}"/>
-
-                    <c:choose>
-                        <c:when test="${daysDiff < 0}">
-                            <span class="task-status overdue">Overdue</span>
-                        </c:when>
-                        <c:when test="${daysDiff <= 3}">
-                            <span class="task-status near-due">Near Due</span>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="task-status processing">Processing</span>
-                        </c:otherwise>
-                    </c:choose>
-                </c:when>
-                <c:otherwise>
-                    <span class="task-status processing">Processing</span>
-                </c:otherwise>
-            </c:choose>
-
-            <div class="task-actions">
-                <a href="${pageContext.request.contextPath}/technician_employee/task/detail?taskId=${task.taskID}"
-                   class="btn btn-primary">
-                    <i class="fas fa-eye"></i>
-                    View Details
-                </a>
-            </div>
-        </div>
-        </c:forEach>
+            </c:otherwise>
+        </c:choose>
     </div>
-
-    <div style="text-align: center; margin-top: 1.5rem;">
-        <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-           class="btn btn-outline">
-            <i class="fas fa-arrow-right"></i>
-            View All Tasks
-        </a>
-    </div>
-    </c:otherwise>
-    </c:choose>
-</div>
 </div>
 </body>
 </html>

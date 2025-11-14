@@ -1,9 +1,9 @@
 package crm.task.controller;
 
 import crm.common.URLConstants;
-import crm.common.model.Request;
+import crm.common.model.ProductRequest;
 import crm.common.model.Task;
-import crm.common.model.enums.RequestStatus;
+import crm.common.model.enums.ProductRequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
@@ -17,11 +17,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = { URLConstants.TECHEM_UPDATE_TASK_STATUS })
 public class UpdateTaskStatusServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -56,9 +57,20 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
 
             if ("finished".equals(newStatus)) {
-                task.getAssignBy();
-                task.getAssignTo();
-                Request req = task.getRequest();
+                Map<String, Object> conditions = new HashMap<>();
+                conditions.put("task", taskId);
+                List<ProductRequest> productRequests = entityManager.findWithConditions(ProductRequest.class, conditions);
+                
+                boolean hasPendingRequests = productRequests.stream()
+                    .anyMatch(pr -> pr.getStatus() == ProductRequestStatus.Pending 
+                                 || pr.getStatus() == ProductRequestStatus.Processing
+                                 || pr.getStatus() == ProductRequestStatus.Accepted);
+                
+                if (hasPendingRequests) {
+                    request.getSession().setAttribute("errorMessage", "Cannot mark task as finished. There are still pending product requests.");
+                    response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
+                    return;
+                }
 
                 task.setStatus(TaskStatus.Finished);
                 task.setEndDate(LocalDateTime.now());
@@ -91,15 +103,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 }
             }
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Error updating task status: " + e.getMessage());
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.setAutoCommit(true);
-                } catch (Exception ignore) {
-                }
-            }
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
         }
     }
 }

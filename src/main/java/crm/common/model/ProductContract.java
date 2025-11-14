@@ -11,9 +11,6 @@ import java.security.PrivateKey;
 
 @Entity(tableName = "ProductContract")
 public class ProductContract {
-    @Key
-    @Column(name = "ProductContractID", type = "INT")
-    private Integer ProductContractID;
 
 
     @ManyToOne(joinColumn = "ContractID")
@@ -21,6 +18,10 @@ public class ProductContract {
 
     @ManyToOne(joinColumn = "ItemID")
     private LazyReference<InventoryItem> inventoryItem;
+
+
+
+
 
     public Contract getContract() {
         return contract.get();

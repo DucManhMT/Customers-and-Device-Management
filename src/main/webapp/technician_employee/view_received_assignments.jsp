@@ -30,6 +30,51 @@
             --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
 
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            animation: slideInDown 0.4s ease-out;
+        }
+
+        .alert i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1) !important;
+            color: #7f1d1d !important;
+            border: 1px solid rgba(239, 68, 68, 0.3) !important;
+        }
+
+        .alert-danger i {
+            color: #ef4444 !important;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -471,6 +516,7 @@
             .assignment-actions .btn {
                 width: 100%;
             }
+
         }
     </style>
 </head>
@@ -493,25 +539,24 @@
         </div>
     </div>
 
-    <c:choose>
-        <c:when test="${empty pendingTasks}">
-            <!-- Empty State -->
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-inbox"></i>
-                </div>
-                <h3>No Pending Assignments</h3>
-                <p>You have no approved assignments waiting for your decision at the moment.</p>
-                <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
-                   class="btn btn-primary">
-                    <i class="fas fa-tasks"></i>
-                    View My Tasks
-                </a>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <!-- Stats Bar -->
-            <div class="stats-bar">
+    <!-- Alert Messages -->
+    <c:if test="${not empty successMessage}">
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>${successMessage}</span>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+    
+    <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${errorMessage}</span>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
+
+    <div class="stats-bar">
                 <div class="stat-item">
                     <div class="stat-icon">
                         <i class="fas fa-clipboard-list"></i>
@@ -553,6 +598,26 @@
                     </a>
                 </form>
             </div>
+
+    <c:choose>
+        <c:when test="${empty pendingTasks}">
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3>No Pending Assignments</h3>
+                <p>You have no approved assignments waiting for your decision at the moment.</p>
+                <a href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
+                   class="btn btn-primary">
+                    <i class="fas fa-tasks"></i>
+                    View My Tasks
+                </a>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <!-- Stats Bar -->
+            
 
             <!-- Assignments List -->
             <div class="assignments-list">

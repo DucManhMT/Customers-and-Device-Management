@@ -464,11 +464,13 @@
                     </li>
                     <li class="nav-item">
                         <a
-                                class="nav-link ${activePage == 'create-contract' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/customer_supporter/create_contract"
-                        ><span>Create Contract</span></a
+                                class="nav-link ${activePage == 'customer-list' ? 'active' : ''}"
+                                href="${pageContext.request.contextPath}/customer_supporter/customers_list"
+                        ><span>Customer List</span></a
                         >
                     </li>
+
+
                     <li class="nav-item">
                         <a
                                 class="nav-link ${activePage == 'request-dashboard' ? 'active' : ''}"
@@ -596,15 +598,6 @@
                                 href="${pageContext.request.contextPath}/technician_employee/task/viewAssignedTasks"
                         ><span>View Assigned Tasks</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'viewReceivedAssignments' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_employee/task/viewReceivedAssignments"
-                        >
-                            View
-                            <span> Received Assignments</span></a
-                        >
                     </li>
                     <li class="nav-item">
                         <a

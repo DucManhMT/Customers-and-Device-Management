@@ -1,13 +1,11 @@
 package crm.contract.controller;
 
 import crm.common.URLConstants;
-import crm.common.model.Contract;
-import crm.common.model.Customer;
+import crm.common.model.*;
 import crm.contract.service.ContractCodeGenerator;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
-import crm.core.validator.Validator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -17,9 +15,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet(name = "CreateContract", value = URLConstants.CUSTOMER_SUPPORTER_CREATE_CONTRACT)
 @MultipartConfig(
@@ -28,8 +24,42 @@ import java.util.Map;
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class CreateContractServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+
+        String username = request.getParameter("id");
+        Account account = em.find(Account.class, username);
+
+        Map<String, Object> cond = new HashMap<>();
+        cond.put("account", username);
+        List<Customer> customers = em.findWithConditions(Customer.class, cond);
+
+        if (customers != null && !customers.isEmpty()) {
+            request.setAttribute("customerName", customers.get(0).getCustomerName());
+        }
+        request.setAttribute("account", account);
+
+        // Load all inventory items
+        List<InventoryItem> inventoryItems = em.findAll(InventoryItem.class);
+        List<ProductContract> productContracts = em.findAll(ProductContract.class);
+        Set<Integer> usedItemIds = new HashSet<>();
+        if (productContracts != null) {
+            for (ProductContract pc : productContracts) {
+                InventoryItem it = pc.getInventoryItem();
+                if (it != null) {
+                    usedItemIds.add(it.getItemId());
+                }
+            }
+        }
+
+        if (inventoryItems != null && !usedItemIds.isEmpty()) {
+            inventoryItems.removeIf(item -> item != null && usedItemIds.contains(item.getItemId()));
+        }
+
+        request.setAttribute("inventoryItems", inventoryItems);
+
         request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
     }
 
@@ -38,113 +68,99 @@ public class CreateContractServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         Part filePart = request.getPart("contractImage");
 
+        // ===== Validate PDF =====
         if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty()) {
             request.setAttribute("error", "Please select a PDF file to upload.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            doGet(request, response);
             return;
         }
 
         String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
         String mimeType = getServletContext().getMimeType(fileName);
-        if (mimeType == null || !mimeType.equals("application/pdf")) {
-            request.setAttribute("error", "Invalid file type. Only PDF files are allowed.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+        if (mimeType == null || !mimeType.equals("application/pdf") || !fileName.toLowerCase().endsWith(".pdf")) {
+            request.setAttribute("error", "Invalid file. Only PDF allowed.");
+            doGet(request, response);
             return;
         }
 
-        String lowerName = fileName.toLowerCase();
-        if (!lowerName.endsWith(".pdf")) {
-            request.setAttribute("error", "Invalid file extension. Only .pdf is allowed.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
-            return;
-        }
-
+        // Lưu file PDF
         String uploadPath = getServletContext().getRealPath("/assets");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdir();
-
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
-        Contract contract = new Contract();
+        // ===== Tạo contract =====
         String customerUsername = request.getParameter("userName");
-        if(!Validator.isValidUsername(customerUsername)){
-            request.setAttribute("error", "Customer username contains invalid characters.");
-            request.setAttribute("userName", customerUsername);
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
-            return;
-        }
-
         Customer customer = null;
         if (customerUsername != null && !customerUsername.isEmpty()) {
             Map<String, Object> cond = new HashMap<>();
             cond.put("account", customerUsername);
             List<Customer> found = em.findWithConditions(Customer.class, cond);
-            if (found != null && !found.isEmpty()) {
-                customer = found.get(0);
-            }
+            if (found != null && !found.isEmpty()) customer = found.get(0);
         }
+
         if (customer == null) {
-            request.setAttribute("error", "Customer not found for username: " + (customerUsername == null ? "" : customerUsername));
-            request.setAttribute("userName", customerUsername); // giữ lại giá trị đã nhập
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            request.setAttribute("error", "Customer not found for username: " + customerUsername);
+            doGet(request, response);
             return;
         }
 
+        Contract contract = new Contract();
         int contractId = IDGeneratorService.generateID(Contract.class);
         contract.setContractID(contractId);
+        contract.setCustomer(customer);
         contract.setContractImage(fileName);
-        contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR", "contractId"));
+        contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR", String.valueOf(contractId)));
 
-        String startDateStr = request.getParameter("startDate");
-        if (startDateStr == null || startDateStr.isEmpty()) {
-            request.setAttribute("error", "Start date is required.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
-            return;
-        }
-
-        LocalDate startDate;
+        // Ngày bắt đầu + kết thúc
         try {
-            startDate = LocalDate.parse(startDateStr);
-        } catch (Exception e) {
-            request.setAttribute("error", "Invalid start date format.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
-            return;
-        }
-
-        contract.setStartDate(startDate);
-        String expireDateStr = request.getParameter("expireDate");
-
-        if (expireDateStr == null || expireDateStr.isEmpty()) {
-            request.setAttribute("error", "Expire date is required.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
-            return;
-        }
-
-        try {
-            LocalDate expireDate = LocalDate.parse(expireDateStr);
-
+            LocalDate startDate = LocalDate.parse(request.getParameter("startDate"));
+            LocalDate expireDate = LocalDate.parse(request.getParameter("expireDate"));
             if (expireDate.isBefore(startDate)) {
-                request.setAttribute("error", "Expire date must be the same or after start date.");
-                request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+                request.setAttribute("error", "Expire date must be after start date.");
+                doGet(request, response);
                 return;
             }
-
+            contract.setStartDate(startDate);
             contract.setExpiredDate(expireDate);
         } catch (Exception e) {
-            request.setAttribute("error", "Invalid expire date format.");
-            request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
+            request.setAttribute("error", "Invalid date format.");
+            doGet(request, response);
             return;
         }
 
-        contract.setCustomer(customer);
+        // Persist contract
         em.persist(contract, Contract.class);
 
-        // build public URL to the uploaded PDF
-        String pdfURL = request.getContextPath() + "/assets/" + fileName;
+        // ===== Thêm sản phẩm (ProductContract) =====
+        String[] inventoryItemIds = request.getParameterValues("inventoryItemId[]"); // hidden field
+        if (inventoryItemIds != null) {
+            for (String itemIdStr : inventoryItemIds) {
+                if (itemIdStr == null || itemIdStr.isEmpty()) continue;
 
-        // Redirect back to the create page with success flag and pdf URL (URL-encode)
-        String redirectUrl = request.getContextPath() + "/customer_supporter/create_contract?success=1&contractPDF=" + URLEncoder.encode(pdfURL, "UTF-8");
+                int itemId = Integer.parseInt(itemIdStr);
+                InventoryItem item = em.find(InventoryItem.class, itemId);
+                if (item != null) {
+                    ProductContract pc = new ProductContract();
+                    pc.setContract(contract);
+                    System.out.println(contract.getContractID());
+                    pc.setInventoryItem(item);
+                    System.out.println(item.getItemId());
+                    em.persist(pc, ProductContract.class);
+                }
+            }
+        }else{
+            System.out.println("no item selected");
+        }
+
+        // Redirect thành công
+        String pdfURL = request.getContextPath() + "/assets/" + fileName;
+        String redirectUrl = request.getContextPath()
+                + "/customer_supporter/create_contract"
+                + "?id=" + URLEncoder.encode(customerUsername == null ? "" : customerUsername, "UTF-8")
+                + "&success=1"
+                + "&contractPDF=" + URLEncoder.encode(pdfURL, "UTF-8");
         response.sendRedirect(redirectUrl);
     }
 }
