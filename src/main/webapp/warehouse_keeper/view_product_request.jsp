@@ -605,7 +605,7 @@
                                     </div>
                                     <div class="quantity-display">
                                         <div class="quantity-label">Qty</div>
-                                        <div class="quantity-value">${pr.quantity}</div>
+                                        <div class="quantity-value">${pr.totalQuantity}</div>
                                     </div>
                                 </div>
                             </div>
