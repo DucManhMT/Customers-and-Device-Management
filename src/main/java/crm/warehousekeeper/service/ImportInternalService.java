@@ -64,7 +64,7 @@ public class ImportInternalService {
                 }
             }
 
-            warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Completed);
+            warehouseRequest.setWarehouseRequestStatus(WarehouseRequestStatus.Finished);
             em.merge(warehouseRequest, WarehouseRequest.class);
 
             em.commit();

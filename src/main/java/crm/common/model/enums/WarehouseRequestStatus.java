@@ -4,6 +4,6 @@ public enum WarehouseRequestStatus {
     Pending,
     Accepted,
     Rejected,
-    Processing,
-    Completed
+    Transporting,
+    Finished
 }
