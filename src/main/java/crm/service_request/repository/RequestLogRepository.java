@@ -16,20 +16,23 @@ public class RequestLogRepository extends AbstractRepository<RequestLog, Integer
         super(RequestLog.class);
     }
 
+    private static final Object LOCK = new Object();
+
     public Integer getNewId() {
-        String sql = "SELECT MAX(RequestLogID) AS MaxID FROM RequestLog";
-
-        Connection connection = DBcontext.getConnection();
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
-            if (resultSet.next()) {
-                int maxId = resultSet.getInt("MaxID");
-                return maxId + 1;
+        synchronized (LOCK) {
+            String sql = "SELECT MAX(RequestLogID) AS MaxID FROM RequestLog";
+            Connection connection = DBcontext.getConnection();
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                if (resultSet.next()) {
+                    int maxId = resultSet.getInt("MaxID");
+                    return maxId + 1;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return 1;
         }
-
-        return 1;
     }
+
 }
