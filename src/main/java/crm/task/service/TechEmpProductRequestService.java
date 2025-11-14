@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 public class TechEmpProductRequestService {
 
-    public static boolean createProductRequest(Request request, String[] selectedProductIds, String[] quantities, String note) {
+    public static boolean createProductRequest(Task task, String[] selectedProductIds, String[] quantities, String note) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         try{
             em.beginTransaction();
@@ -45,7 +45,7 @@ public class TechEmpProductRequestService {
                 productRequest.setActualQuantity(0);
                 productRequest.setRequestDate(LocalDate.now());
                 productRequest.setDescription(note);
-                productRequest.setRequest(request);
+                productRequest.setTask(task);
                 productRequest.setStatus(ProductRequestStatus.Pending);
 
                 em.persist(productRequest, ProductRequest.class);
