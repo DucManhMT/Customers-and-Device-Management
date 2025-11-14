@@ -303,7 +303,7 @@
     <div class="container-fluid">
 
         <div class="page-header">
-            <h2><i class="fas fa-exchange-alt me-2"></i>Warehouse Transfer Requests</h2>
+            <h2><i class="fas fa-exchange-alt me-2"></i >Warehouse Transfer Requests</h2>
             <span class="stats-badge">
                 <i class="fas fa-truck-moving me-2"></i>${warehouseRequests.size()} Total Transfers
             </span>
@@ -344,6 +344,7 @@
                                 <c:if test="${req.warehouseRequestStatus == 'Transporting'}"><c:set var="statusClass" value="bg-info"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Finished'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
                             </div>
                             <div class="card-body p-4">

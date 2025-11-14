@@ -26,6 +26,20 @@ public class ProductRequestController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String taskIdStr = req.getParameter("taskID");
 
+        try {
+            int taskId = Integer.parseInt(taskIdStr);
+            Task task = em.find(Task.class, taskId);
+
+            if (task.getStatus().name().equalsIgnoreCase("Finished")) {
+                req.getSession().setAttribute("errorMessage", "Cannot create product request for a finished task.");
+                resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
+                return;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         List<Type> types = em.findAll(Type.class);
         List<Product> products = productDAO.findAllIncludeSpec();
 
@@ -39,14 +53,14 @@ public class ProductRequestController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String taskIdStr = req.getParameter("taskIdStr");
 
-        if(taskIdStr != null){
+        if (taskIdStr != null) {
             try {
                 int taskId = Integer.parseInt(taskIdStr);
 
                 Task task = em.find(Task.class, taskId);
-                if(task == null){
+                if (task == null) {
                     req.getSession().setAttribute("errorMessage", "Task not found.");
-                    resp.sendRedirect(req.getContextPath()+"/technician_employee/createProductRequest?taskID=" + taskIdStr);
+                    resp.sendRedirect(req.getContextPath() + "/technician_employee/createProductRequest?taskID=" + taskIdStr);
                     return;
                 }
 
@@ -56,19 +70,19 @@ public class ProductRequestController extends HttpServlet {
 
                 if (allSelectedItemIDs == null || allSelectedItemIDs.length() == 0) {
                     req.getSession().setAttribute("errorMessage", "Please select at least one product to export.");
-                    resp.sendRedirect(req.getContextPath()+URLConstants.TECHEM_CREATE_PRODUCT_REQUEST+"?taskID=" + taskIdStr);
+                    resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_CREATE_PRODUCT_REQUEST + "?taskID=" + taskIdStr);
                     return;
                 }
 
-                if(allSelectedItemQuantities == null || allSelectedItemQuantities.length() == 0) {
+                if (allSelectedItemQuantities == null || allSelectedItemQuantities.length() == 0) {
                     req.getSession().setAttribute("errorMessage", "Please provide quantities for the selected products.");
-                    resp.sendRedirect(req.getContextPath()+URLConstants.TECHEM_CREATE_PRODUCT_REQUEST+"?taskID=" + taskIdStr);
+                    resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_CREATE_PRODUCT_REQUEST + "?taskID=" + taskIdStr);
                     return;
                 }
 
-                if(!Validator.isValidText(note)){
+                if (!Validator.isValidText(note)) {
                     req.getSession().setAttribute("errorMessage", "Please enter a valid note.");
-                    resp.sendRedirect(req.getContextPath()+URLConstants.TECHEM_CREATE_PRODUCT_REQUEST+"?taskID=" + taskIdStr);
+                    resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_CREATE_PRODUCT_REQUEST + "?taskID=" + taskIdStr);
                     return;
                 }
 
@@ -77,19 +91,19 @@ public class ProductRequestController extends HttpServlet {
 
                 boolean isCreated = TechEmpProductRequestService.createProductRequest(task, selectedProductIds, quantities, note);
 
-                if(isCreated){
+                if (isCreated) {
                     req.getSession().setAttribute("successMessage", "Product request created successfully.");
-                    resp.sendRedirect(req.getContextPath()+URLConstants.TECHEM_CREATE_PRODUCT_REQUEST+"?taskID=" + taskIdStr);
+                    resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_CREATE_PRODUCT_REQUEST + "?taskID=" + taskIdStr);
                     return;
                 } else {
                     req.getSession().setAttribute("errorMessage", "Failed to create product request. Please try again.");
-                    resp.sendRedirect(req.getContextPath()+URLConstants.TECHEM_CREATE_PRODUCT_REQUEST+"?taskID=" + taskIdStr);
+                    resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_CREATE_PRODUCT_REQUEST + "?taskID=" + taskIdStr);
                     return;
                 }
 
-            } catch(Exception e){
+            } catch (Exception e) {
                 req.getSession().setAttribute("errorMessage", "Invalid task ID.");
-                resp.sendRedirect(req.getContextPath()+URLConstants.TECHEM_CREATE_PRODUCT_REQUEST+"?taskID=" + taskIdStr);
+                resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_CREATE_PRODUCT_REQUEST + "?taskID=" + taskIdStr);
                 return;
             }
         }

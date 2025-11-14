@@ -110,11 +110,8 @@ public class FeedbackEditServlet extends HttpServlet {
 
                 em.merge(feedback, Feedback.class);
 
-                req.setAttribute("feedback", feedback);
-                req.setAttribute("successMessage", "Feedback updated successfully.");
-                req.setAttribute("currentUsername", username);
-                req.setAttribute("currentRoleId", roleId);
-                req.getRequestDispatcher("/customer/view_feedback.jsp").forward(req, resp);
+                req.getSession().setAttribute("successMessage", "Feedback updated successfully!");
+                resp.sendRedirect(req.getContextPath() + "/customer/feedback/view?requestId=" + feedback.getRequestID().getForeignKeyValue());
                 return;
             } catch (NumberFormatException nfe) {
                 req.getSession().setAttribute("errorMessage", "Invalid feedback id format");

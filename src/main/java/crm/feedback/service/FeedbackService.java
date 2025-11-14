@@ -15,7 +15,7 @@ import crm.common.model.Request;
 import crm.common.model.enums.FeedbackStatus;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 import crm.core.service.IDGeneratorService;
-import crm.feedback.dao.FeedbackDAO;
+import crm.feedback.repository.FeedbackDAO;
 import crm.service_request.repository.persistence.query.common.Page;
 import crm.service_request.repository.persistence.query.common.PageRequest;
 import jakarta.servlet.ServletException;

@@ -3,8 +3,6 @@ package crm.common.model;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import java.util.List;
-
 @Entity(tableName = "Warehouse")
 public class Warehouse {
     @Key
@@ -44,7 +42,6 @@ public class Warehouse {
         this.location = location;
     }
 
-
     public Account getManagerAccount() {
         return managerAccount.get();
     }
@@ -52,6 +49,5 @@ public class Warehouse {
     public void setManagerAccount(Account managerAccount) {
         this.managerAccount = new LazyReference<>(Account.class, managerAccount.getUsername());
     }
-
 
 }

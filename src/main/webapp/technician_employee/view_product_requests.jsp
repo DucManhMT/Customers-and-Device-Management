@@ -912,6 +912,20 @@
             </div>
         </c:if>
 
+        <c:if test="${not empty sessionScope.errorMessage}">
+            <div class="alert alert-danger" role="alert">
+                ${errorMessage}
+            </div>
+            <c:remove var="errorMessage" scope="session"/>
+        </c:if>
+
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success" role="alert">
+                ${successMessage}
+            </div>
+            <c:remove var="successMessage" scope="session"/>
+        </c:if>
+
         <!-- Controls Bar -->
         <div class="controls-bar">
             <div class="d-flex align-items-center gap-3">

@@ -459,6 +459,18 @@
             text-decoration: underline;
         }
 
+        /* Alert Animations */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Responsive */
         @media (max-width: 992px) {
             .feedback-grid {
@@ -502,6 +514,25 @@
 <jsp:include page="../components/customer_sidebar.jsp"/>
 
 <div class="feedback-container">
+    <!-- Success/Error Messages -->
+    <c:if test="${not empty sessionScope.successMessage}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); border: none; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; animation: slideInRight 0.5s ease-out;">
+            <i class="fas fa-check-circle" style="font-size: 1.5rem; color: #065f46;"></i>
+            <span style="color: #065f46; font-weight: 600;">${sessionScope.successMessage}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <c:remove var="successMessage" scope="session"/>
+    </c:if>
+
+    <c:if test="${not empty sessionScope.errorMessage}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border: none; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; animation: slideInRight 0.5s ease-out;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; color: #7f1d1d;"></i>
+            <span style="color: #7f1d1d; font-weight: 600;">${sessionScope.errorMessage}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <c:remove var="errorMessage" scope="session"/>
+    </c:if>
+
     <div class="feedback-header">
         <div class="header-content">
             <div class="header-title">

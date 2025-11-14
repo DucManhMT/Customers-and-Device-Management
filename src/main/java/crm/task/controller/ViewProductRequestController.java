@@ -6,7 +6,6 @@ import crm.common.repository.staff.StaffDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.task.service.TechEmProductRequestService;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -41,7 +40,8 @@ public class ViewProductRequestController extends HttpServlet {
         if (pageParam != null && !pageParam.isEmpty()) {
             try {
                 currentPage = Integer.parseInt(pageParam);
-                if (currentPage < 1) currentPage = 1;
+                if (currentPage < 1)
+                    currentPage = 1;
             } catch (NumberFormatException e) {
 
             }
@@ -55,12 +55,10 @@ public class ViewProductRequestController extends HttpServlet {
         Request currentRequest = null;
         List<ProductRequest> productRequests = em.findAll(ProductRequest.class);
 
-
         try {
             if (taskIdStr != null && !taskIdStr.isEmpty()) {
                 int taskId = Integer.parseInt(taskIdStr);
                 currentTask = em.find(Task.class, taskId);
-
 
                 if (currentTask != null) {
                     currentRequest = currentTask.getRequest();
@@ -119,12 +117,30 @@ public class ViewProductRequestController extends HttpServlet {
                     return;
                 }
 
+                if(action.equals("finished")) {
+                    if(productRequest.getActualQuantity() != productRequest.getTotalQuantity()) {
+                        req.getSession().setAttribute("errorMessage", "Cannot finish the request as actual quantity does not match total quantity.");
+                        resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
+                        return;
+                    }
+                }
+
+                if(action.equals("reject")) {
+                    if(productRequest.getActualQuantity() == productRequest.getTotalQuantity()) {
+                        req.getSession().setAttribute("errorMessage", "Cannot reject the request as you already receive all product.");
+                        resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
+                        return;
+                    }
+                }
+
                 boolean isFinished = TechEmProductRequestService.isFinished(productRequest, action);
 
                 if (isFinished) {
-                    req.getSession().setAttribute("successMessage", "Product request has been " + (action.equals("finished") ? "finished." : "rejected."));
+                    req.getSession().setAttribute("successMessage",
+                            "Product request has been " + (action.equals("finished") ? "finished." : "rejected."));
                 } else {
-                    req.getSession().setAttribute("errorMessage", "Failed to update product request status, please check again.");
+                    req.getSession().setAttribute("errorMessage",
+                            "Failed to update product request status, please check again.");
                 }
                 resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
             } catch (NumberFormatException e) {
