@@ -456,6 +456,210 @@
             color: #78350f;
         }
 
+        /* ========== NEW: Export Details Section ========== */
+        .export-details-section {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .export-details-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #a7f3d0;
+        }
+
+        .export-details-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #065f46;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .export-details-title i {
+            font-size: 1.3rem;
+        }
+
+        .export-badge {
+            background: #065f46;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quantity-comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .quantity-box {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .quantity-box.requested {
+            border-color: #fb923c;
+        }
+
+        .quantity-box.exported {
+            border-color: var(--success);
+        }
+
+        .quantity-box-label {
+            font-size: 0.75rem;
+            color: var(--neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .quantity-box-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .quantity-box.requested .quantity-box-value {
+            color: #ea580c;
+        }
+
+        .quantity-box.exported .quantity-box-value {
+            color: #059669;
+        }
+
+        .quantity-box-unit {
+            font-size: 0.813rem;
+            color: var(--neutral-500);
+            font-weight: 500;
+        }
+
+        .arrow-separator {
+            font-size: 2.5rem;
+            color: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        .quantity-difference-box {
+            background: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quantity-difference-box.positive {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 2px solid var(--success);
+        }
+
+        .quantity-difference-box.negative {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 2px solid var(--danger);
+        }
+
+        .quantity-difference-box.equal {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            border: 2px solid var(--info);
+        }
+
+        .quantity-difference-box i {
+            font-size: 1.3rem;
+        }
+
+        .warehouse-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 10px;
+            margin-top: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .warehouse-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .warehouse-details {
+            flex: 1;
+        }
+
+        .warehouse-label {
+            font-size: 0.7rem;
+            color: var(--neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .warehouse-name {
+            font-weight: 600;
+            color: var(--neutral-900);
+            font-size: 0.95rem;
+        }
+        /* ========== END NEW SECTION ========== */
+
         .request-description {
             background: var(--neutral-50);
             padding: 16px;
@@ -612,6 +816,14 @@
                 flex-direction: column;
                 gap: 16px;
                 align-items: stretch;
+            }
+
+            .quantity-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .arrow-separator {
+                transform: rotate(90deg);
             }
         }
     </style>
@@ -777,10 +989,80 @@
                                         </div>
                                     </div>
                                     <div class="quantity-badge">
-                                        <div class="quantity-label">Quantity</div>
+                                        <div class="quantity-label">Requested</div>
                                         <div class="quantity-value">${pr.totalQuantity}</div>
                                     </div>
                                 </div>
+
+                                <!-- ========== NEW: Export Details Section ========== -->
+                                <c:if test="${pr.status == 'Transporting' || pr.status == 'Finished'}">
+                                    <div class="export-details-section">
+                                        <div class="export-details-header">
+                                            <div class="export-details-title">
+                                                <i class="fas fa-truck-loading"></i>
+                                                <span>Export Summary</span>
+                                            </div>
+                                            <span class="export-badge">
+                                                <i class="fas fa-check-circle"></i> Exported
+                                            </span>
+                                        </div>
+
+                                        <div class="quantity-comparison">
+                                            <div class="quantity-box requested">
+                                                <div class="quantity-box-label">
+                                                    <i class="fas fa-file-invoice"></i>
+                                                    Requested
+                                                </div>
+                                                <div class="quantity-box-value">${pr.totalQuantity}</div>
+                                                <div class="quantity-box-unit">units</div>
+                                            </div>
+
+                                            <div class="arrow-separator">
+                                                <i class="fas fa-arrow-right"></i>
+                                            </div>
+
+                                            <div class="quantity-box exported">
+                                                <div class="quantity-box-label">
+                                                    <i class="fas fa-box-open"></i>
+                                                    Actually Exported
+                                                </div>
+                                                <div class="quantity-box-value">${pr.actualQuantity}</div>
+                                                <div class="quantity-box-unit">units</div>
+                                            </div>
+                                        </div>
+
+                                        <c:set var="difference" value="${pr.actualQuantity - pr.totalQuantity}"/>
+                                        <div class="quantity-difference-box ${difference > 0 ? 'positive' : difference < 0 ? 'negative' : 'equal'}">
+                                            <c:choose>
+                                                <c:when test="${difference > 0}">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    <span>+${difference} units (Over delivered)</span>
+                                                </c:when>
+                                                <c:when test="${difference < 0}">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                    <span>${difference} units (Under delivered)</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <span>Perfect Match - Exact quantity delivered</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+
+                                        <c:if test="${not empty pr.warehouse}">
+                                            <div class="warehouse-info">
+                                                <div class="warehouse-icon">
+                                                    <i class="fas fa-warehouse"></i>
+                                                </div>
+                                                <div class="warehouse-details">
+                                                    <div class="warehouse-label">Exported From</div>
+                                                    <div class="warehouse-name">${pr.warehouse.warehouseName}</div>
+                                                </div>
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                </c:if>
+                                <!-- ========== END NEW SECTION ========== -->
 
                                 <c:if test="${not empty pr.description}">
                                     <div class="request-description">

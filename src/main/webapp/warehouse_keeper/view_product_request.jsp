@@ -173,6 +173,11 @@
             color: #1e40af;
         }
 
+        .status-transporting {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
         .product-section {
             margin-bottom: 16px;
         }
@@ -215,26 +220,140 @@
             gap: 4px;
         }
 
+        /* ========== NEW: Quantity Display Section ========== */
+        .quantity-display-section {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+        }
+
         .quantity-display {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 10px;
             text-align: center;
+            min-width: 80px;
         }
 
         .quantity-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #92400e;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 2px;
+            font-weight: 600;
         }
 
         .quantity-value {
             font-size: 1.5rem;
             font-weight: 700;
             color: #78350f;
+            line-height: 1;
         }
+
+        .quantity-actual {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            padding: 8px 14px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .quantity-actual .quantity-label {
+            color: #065f46;
+        }
+
+        .quantity-actual .quantity-value {
+            color: #047857;
+        }
+
+        .quantity-comparison-mini {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid var(--success-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .quantity-comparison-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: #065f46;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .quantity-comparison-header i {
+            font-size: 1rem;
+        }
+
+        .quantity-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quantity-item {
+            flex: 1;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .quantity-item-label {
+            font-size: 0.65rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .quantity-item-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .quantity-item.requested .quantity-item-value {
+            color: #ea580c;
+        }
+
+        .quantity-item.exported .quantity-item-value {
+            color: #059669;
+        }
+
+        .quantity-diff {
+            margin-top: 8px;
+            padding: 6px 10px;
+            background: white;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .quantity-diff.positive {
+            color: #065f46;
+        }
+
+        .quantity-diff.negative {
+            color: #dc2626;
+        }
+
+        .quantity-diff.equal {
+            color: #1e40af;
+        }
+
+        .quantity-diff i {
+            font-size: 0.85rem;
+        }
+        /* ========== END NEW SECTION ========== */
 
         .staff-section {
             background: #f9fafb;
@@ -506,6 +625,10 @@
             .btn-action {
                 min-width: 100%;
             }
+
+            .quantity-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -603,12 +726,56 @@
                                                 ${pr.product.type.typeName}
                                         </div>
                                     </div>
-                                    <div class="quantity-display">
-                                        <div class="quantity-label">Qty</div>
-                                        <div class="quantity-value">${pr.totalQuantity}</div>
-                                    </div>
                                 </div>
                             </div>
+
+                            <!-- ========== NEW: Quantity Comparison for ALL statuses ========== -->
+                            <div class="quantity-comparison-mini">
+                                <div class="quantity-comparison-header">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Quantity Overview</span>
+                                </div>
+                                <div class="quantity-row">
+                                    <div class="quantity-item requested">
+                                        <div class="quantity-item-label">
+                                            <i class="fas fa-file-invoice"></i> Requested
+                                        </div>
+                                        <div class="quantity-item-value">${pr.totalQuantity}</div>
+                                    </div>
+                                    <div class="quantity-item exported">
+                                        <div class="quantity-item-label">
+                                            <i class="fas fa-box-open"></i> Exported
+                                        </div>
+                                        <div class="quantity-item-value">
+                                            <c:choose>
+                                                <c:when test="${pr.actualQuantity != null && pr.actualQuantity > 0}">
+                                                    ${pr.actualQuantity}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span style="font-size: 1rem; color: #9ca3af;">--</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </div>
+                                </div>
+                                <c:if test="${pr.actualQuantity != null && pr.actualQuantity > 0}">
+                                    <c:set var="difference" value="${pr.actualQuantity - pr.totalQuantity}"/>
+                                    <div class="quantity-diff ${difference > 0 ? 'positive' : difference < 0 ? 'negative' : 'equal'}">
+                                        <c:choose>
+                                            <c:when test="${difference > 0}">
+                                                <i class="fas fa-arrow-up"></i> +${difference} (Over)
+                                            </c:when>
+                                            <c:when test="${difference < 0}">
+                                                <i class="fas fa-arrow-down"></i> ${difference} (Under)
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fas fa-check"></i> Exact Match
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </c:if>
+                            </div>
+                            <!-- ========== END NEW SECTION ========== -->
 
                             <!-- Staff Section -->
                             <div class="staff-section">
@@ -638,17 +805,27 @@
                                         <i class="fas fa-calendar-alt me-1"></i>${pr.requestDate}
                                     </div>
                                 </div>
+                                <c:if test="${not empty pr.warehouse}">
+                                    <div class="info-item">
+                                        <div class="info-label">Warehouse</div>
+                                        <div class="info-value">
+                                            <i class="fas fa-warehouse me-1"></i>${pr.warehouse.warehouseName}
+                                        </div>
+                                    </div>
+                                </c:if>
                             </div>
 
                             <!-- Description -->
-                            <div class="description-section">
-                                <div class="description-label">Description</div>
-                                <div class="description-text">${pr.description}</div>
-                            </div>
+                            <c:if test="${not empty pr.description}">
+                                <div class="description-section">
+                                    <div class="description-label">Description</div>
+                                    <div class="description-text">${pr.description}</div>
+                                </div>
+                            </c:if>
 
                             <!-- Actions -->
                             <div class="action-buttons">
-                                <c:if test="${pr.status == 'Accepted'}">
+                                <c:if test="${pr.status == 'Accepted' || pr.status == 'Transporting'}">
                                     <form action="${pageContext.request.contextPath}/warehouse_keeper/export_product"
                                           method="post" style="flex: 1;">
                                         <input type="hidden" name="productRequestID" value="${pr.productRequestID}">
