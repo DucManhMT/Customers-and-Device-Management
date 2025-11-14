@@ -47,12 +47,12 @@ public class URLConstants {
     public static final String CUSTOMER_REQUEST_DETAIL = "/customer/requests/detail";
     public static final String CUSTOMER_CREATE_REQUEST = "/customer/requests/create";
     public static final String CUSTOMER_REQUEST_TIMELINE = "/customer/requests/timeline";
-    // fix add customer path
     public static final String CUSTOMER_CREATE_FEEDBACK = "/customer/feedback/create";
     public static final String CUSTOMER_VIEW_FEEDBACK = "/customer/feedback/view";
     public static final String CUSTOMER_VIEW_FEEDBACK_LIST = "/customer/feedback/list";
     public static final String CUSTOMER_VIEW_PROFILE = "/customer/profile";
     public static final String CUSTOMER_EDIT_PROFILE = "/customer/profile/edit";
+    public static final String CUSTOMER_VIEW_PRODUCTS = "/customer/products";
 
     // CUSTOMER SUPPORTER
     public static final String CUSTOMER_SUPPORTER_CREATE_CONTRACT = "/customer_supporter/create_contract";
@@ -66,7 +66,7 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_VIEW_CUSTOMER_CONTRACT = "/customer_supporter/customers_list/contracts";
     public static final String CUSTOMER_SUPPORTER_FINISH_REQUEST = "/customer_supporter/request/finish";
     public static final String CUSTOMER_SUPPORTER_NOT_FINISH_REQUEST = "/customer_supporter/request/not_finish";
-    public static final String CUSTOMER_SUPPORTER_VIEW_CONTRACT_DETAIL = "/customer_supporter/contract/detail";
+    public static final String CUSTOMER_SUPPORTER_VIEW_ALL_PRODUCTS = "/staff/customer/products";
 
     // TECHNICAL LEADER
     public static final String TECHLEAD_ACTION_CENTER = "/technician_leader/techlead_actioncenter";

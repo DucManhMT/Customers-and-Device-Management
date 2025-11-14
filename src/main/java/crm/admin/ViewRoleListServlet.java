@@ -7,7 +7,6 @@ import crm.common.model.Account;
 import crm.common.model.enums.RoleStatus;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
-import crm.core.repository.hibernate.querybuilder.enums.SortDirection;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -25,7 +24,6 @@ public class ViewRoleListServlet extends HttpServlet {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         HttpSession session = request.getSession();
 
-
         // ItemsPerPage
         String itemsPerPageParam = request.getParameter("itemsPerPage");
 
@@ -42,7 +40,6 @@ public class ViewRoleListServlet extends HttpServlet {
         } else {
             session.setAttribute("page", pageParam);
         }
-
 
         String error = (String) session.getAttribute("error");
         if (error != null) {
@@ -74,7 +71,8 @@ public class ViewRoleListServlet extends HttpServlet {
         List<Role> filteredRoles = allRoles.stream()
                 .filter(r -> r.getRoleID() != 1)
                 .filter(r -> searchParam == null || searchParam.isEmpty()
-                        || (r.getRoleName() != null && r.getRoleName().toLowerCase().contains(searchParam.toLowerCase())))
+                        || (r.getRoleName() != null
+                                && r.getRoleName().toLowerCase().contains(searchParam.toLowerCase())))
                 .sorted((r1, r2) -> Integer.compare(r1.getRoleID(), r2.getRoleID())) // sort ASC theo ID
                 .toList();
 
@@ -115,12 +113,12 @@ public class ViewRoleListServlet extends HttpServlet {
         request.setAttribute("search", searchParam);
         System.out.println(recordsPerPage);
 
-
         request.getRequestDispatcher("/admin/view_role_list.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String action = request.getParameter("action");
         String roleIdParam = request.getParameter("id");
 

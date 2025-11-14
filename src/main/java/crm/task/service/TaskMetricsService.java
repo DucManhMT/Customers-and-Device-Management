@@ -10,11 +10,6 @@ import crm.common.model.enums.TaskStatus;
 import crm.task.dto.TaskMetrics;
 import crm.task.repository.TaskRepository;
 
-/**
- * Service that loads all tasks and provides aggregated metrics.
- * NOTE: Uses a simple findAll() call then filters in-memory as per request.
- * If dataset grows large, replace with targeted COUNT queries in repository.
- */
 public class TaskMetricsService {
 
     private final TaskRepository taskRepository = new TaskRepository();

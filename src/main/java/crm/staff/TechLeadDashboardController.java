@@ -10,22 +10,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
-/**
- * Tech Lead Dashboard servlet.
- * Provides a consolidated view with mini task & request metrics and navigation
- * links.
- * TODO: Replace placeholder metrics with real queries to repositories/service
- * layers
- * once those are available for technician leader role.
- */
 @WebServlet(name = "TechLeadDashboardServlet", value = URLConstants.TECHLEAD_DASHBOARD)
-public class TechLeadDashboardServlet extends HttpServlet {
+public class TechLeadDashboardController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Placeholder demo metrics (replace with real services)
         // --- Task metrics (in-memory filtering) ---
         TaskMetrics metrics = new TaskMetricsService()
                 .getMetrics();
@@ -38,7 +30,7 @@ public class TechLeadDashboardServlet extends HttpServlet {
 
         // --- Request metrics via RequestService (Approved, Processing, Finished) ---
         RequestService reqService = new RequestService();
-        java.util.Map<String, Integer> reqStats = reqService.statisticRequestsByStatus(null, null);
+        Map<String, Integer> reqStats = reqService.statisticRequestsByStatus(null, null);
         int approved = reqStats.getOrDefault("Approved", 0);
         int processing = reqStats.getOrDefault("Processing", 0);
         int finished = reqStats.getOrDefault("Finished", 0);

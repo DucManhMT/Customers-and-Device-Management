@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @WebServlet(name = "CustomerSupporterDashboardServlet", urlPatterns = URLConstants.CUSTOMER_SUPPORTER_DASHBOARD)

@@ -1,0 +1,148 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
+prefix="c" uri="jakarta.tags.core" %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Products</title>
+    <link
+      href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <script src="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <jsp:include page="../components/header.jsp" />
+    <jsp:include page="../components/customer_sidebar.jsp" />
+
+    <div class="container-fluid p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">My Products</h2>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          onclick="history.back()"
+        >
+          <i class="bi bi-arrow-left"></i> Back
+        </button>
+      </div>
+
+      <c:if test="${not empty error}">
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle"></i> ${error}
+        </div>
+      </c:if>
+
+      <form
+        class="card mb-3"
+        method="get"
+        action="${pageContext.request.contextPath}/customer/products"
+      >
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label" for="productName">Product Name</label>
+              <input
+                id="productName"
+                class="form-control"
+                type="text"
+                name="productName"
+                placeholder="e.g. Router"
+                value="${param.productName}"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="serial">Item Serial</label>
+              <input
+                id="serial"
+                class="form-control"
+                type="text"
+                name="serial"
+                placeholder="e.g. SN-12345"
+                value="${param.serial}"
+              />
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+              </button>
+              <a
+                class="btn btn-outline-secondary"
+                href="${pageContext.request.contextPath}/customer/products"
+              >
+                <i class="bi bi-x-circle"></i> Clear
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-box-seam"></i> Products Across My Contracts
+        </div>
+        <div class="card-body">
+          <c:choose>
+            <c:when test="${not empty productContracts}">
+              <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">Contract ID</th>
+                      <th style="width: 20%">Contract Code</th>
+                      <th style="width: 10%">Product ID</th>
+                      <th style="width: 30%">Product Name</th>
+                      <th style="width: 30%">Item Serial</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <c:forEach var="pc" items="${productContracts}">
+                      <tr>
+                        <td>${pc.contract.contractID}</td>
+                        <td>
+                          <a
+                            href="${pageContext.request.contextPath}/contract/detail?contractId=${pc.contract.contractID}"
+                            class="text-decoration-none"
+                            >${pc.contract.contractCode}</a
+                          >
+                        </td>
+                        <td>
+                          <c:out
+                            value="${pc.inventoryItem.product.productID}"
+                            default="N/A"
+                          />
+                        </td>
+                        <td>
+                          <c:out
+                            value="${pc.inventoryItem.product.productName}"
+                            default="N/A"
+                          />
+                        </td>
+                        <td>
+                          <c:out
+                            value="${pc.inventoryItem.serialNumber}"
+                            default="N/A"
+                          />
+                        </td>
+                      </tr>
+                    </c:forEach>
+                  </tbody>
+                </table>
+              </div>
+            </c:when>
+            <c:otherwise>
+              <div class="alert alert-info mb-0">
+                <i class="bi bi-info-circle"></i> No products found.
+              </div>
+            </c:otherwise>
+          </c:choose>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

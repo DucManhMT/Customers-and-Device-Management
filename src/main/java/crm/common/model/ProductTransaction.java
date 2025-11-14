@@ -4,7 +4,6 @@ import crm.common.model.enums.TransactionStatus;
 import crm.core.repository.hibernate.annotation.*;
 import crm.core.repository.hibernate.entitymanager.LazyReference;
 
-import javax.sql.rowset.Joinable;
 import java.time.LocalDateTime;
 
 @Entity(tableName = "ProductTransaction")

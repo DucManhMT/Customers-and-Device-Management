@@ -2,11 +2,16 @@ package crm.staff;
 
 import crm.common.MessageConst;
 import crm.common.URLConstants;
+import crm.common.model.Account;
 import crm.common.model.Contract;
 import crm.common.model.Customer;
 import crm.common.model.Request;
+import crm.contract.repository.ContractRepository;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
+import crm.service_request.repository.CustomerRepository;
+import crm.service_request.repository.RequestRepository;
+import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,16 +20,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 @WebServlet(urlPatterns = URLConstants.STAFF_VIEW_CUSTOMER_DETAIL, name = "StaffViewCustomerDetailServlet")
-public class StaffViewCustomerDetailServlet extends HttpServlet {
+public class StaffViewCustomerDetailController extends HttpServlet {
     private static final String ATTR_ERROR = "error";
     private static final String VIEW = "/staff/view_customer_detail.jsp";
-    private static final Logger logger = Logger.getLogger(StaffViewCustomerDetailServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        CustomerRepository customerRepo = new CustomerRepository();
+        ContractRepository contractRepo = new ContractRepository();
+
         String customerIdParam = req.getParameter("customerId");
         if (customerIdParam == null || customerIdParam.isBlank()) {
             req.setAttribute(ATTR_ERROR, MessageConst.MSG72);
@@ -40,22 +47,20 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
             return;
         }
 
-        EntityManager em = new EntityManager(DBcontext.getConnection());
-        Customer customer = em.find(Customer.class, customerId);
+        Customer customer = customerRepo.findById(customerId);
+
         if (customer == null) {
             req.setAttribute(ATTR_ERROR, MessageConst.MSG74);
             forward(req, resp);
             return;
         }
 
-        // Load contracts for this customer
-        Map<String, Object> contractCond = new HashMap<>();
-        contractCond.put("customer", customer.getCustomerID());
-        List<Contract> contracts = em.findWithConditions(Contract.class, contractCond);
+        List<Contract> contracts = contractRepo.findWithCondition(ClauseBuilder.builder()
+                .equal("customer.customerID", customerId));
 
         String customerAccountStatus = null;
         try {
-            crm.common.model.Account acc = customer.getAccount();
+            Account acc = customer.getAccount();
             if (acc != null && acc.getAccountStatus() != null) {
                 customerAccountStatus = acc.getAccountStatus().name();
             }
@@ -63,15 +68,13 @@ public class StaffViewCustomerDetailServlet extends HttpServlet {
             // leave as null when lazy relation cannot be loaded safely
         }
 
-        // Map contractID -> list of requests
         Map<Integer, List<Request>> contractRequests = new HashMap<>();
         for (Contract c : contracts) {
             if (c == null || c.getContractID() == null)
                 continue;
             Map<String, Object> requestCond = new HashMap<>();
             requestCond.put("contract", c.getContractID());
-            List<Request> reqs = em.findWithConditions(Request.class, requestCond);
-            contractRequests.put(c.getContractID(), reqs != null ? reqs : List.of());
+            contractRequests.put(c.getContractID(), c.getRequests());
         }
 
         req.setAttribute("customer", customer);

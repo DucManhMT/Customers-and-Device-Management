@@ -63,55 +63,44 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
 
             // Get all Task records where assignTo = current tech and status = Pending
             List<Task> allTasks = em.findAll(Task.class);
-            
-            // Debug logging
-            System.out.println("=== DEBUG ViewReceivedAssignments ===");
-            System.out.println("Total tasks in DB: " + allTasks.size());
-            System.out.println("Current Staff ID: " + currentStaff.getStaffID());
-            System.out.println("Current Staff Name: " + currentStaff.getStaffName());
-            
+
             // Filter out null tasks first (caused by EntityMapper errors)
             allTasks = allTasks.stream()
                     .filter(task -> {
                         if (task == null) {
-                            System.out.println("WARNING: Found null task - skipping");
                             return false;
                         }
                         return true;
                     })
                     .collect(Collectors.toList());
-            
-            System.out.println("Non-null tasks: " + allTasks.size());
-            
+
             List<Task> pendingTasks = allTasks.stream()
                     .filter(task -> {
                         try {
                             if (task.getAssignTo() == null) {
-                                System.out.println("Task #" + task.getTaskID() + " has null AssignTo");
+
                                 return false;
                             }
                             if (!currentStaff.getStaffID().equals(task.getAssignTo().getStaffID())) {
-                                System.out.println("Task #" + task.getTaskID() + " assigned to StaffID=" + task.getAssignTo().getStaffID() + ", not for me");
+
                                 return false;
                             }
                             if (!TaskStatus.Pending.equals(task.getStatus())) {
-                                System.out.println("Task #" + task.getTaskID() + " status=" + task.getStatus() + ", not Pending");
+
                                 return false;
                             }
-                            System.out.println("✓ Task #" + task.getTaskID() + " is valid for current tech");
+
                             return true;
                         } catch (Exception e) {
-                            System.out.println("ERROR processing Task #" + (task != null ? task.getTaskID() : "unknown") + ": " + e.getMessage());
+
                             e.printStackTrace();
                             return false;
                         }
                     })
                     .collect(Collectors.toList());
-            
-            System.out.println("Filtered pending tasks: " + pendingTasks.size());
-            System.out.println("=================================");
 
-            // Apply optional filters from query params: customerFilter (name), phoneFilter, fromDate, toDate, sort by time
+            // Apply optional filters from query params: customerFilter (name), phoneFilter,
+            // fromDate, toDate, sort by time
             String customerFilter = request.getParameter("customerFilter");
             String phoneFilter = request.getParameter("phoneFilter");
             String fromDateStr = request.getParameter("fromDate");
@@ -142,12 +131,14 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
 
             if (hasAnyFilter) {
                 pendingTasks = pendingTasks.stream().filter(task -> {
-                    if (task == null) return false;  // Null check
-                    
+                    if (task == null)
+                        return false; // Null check
+
                     boolean ok = true;
                     Request r = task.getRequest();
-                    if (r == null) return false;
-                    
+                    if (r == null)
+                        return false;
+
                     if (custLow != null && !custLow.isEmpty()) {
                         try {
                             if (r.getContract() != null && r.getContract().getCustomer() != null
@@ -178,8 +169,10 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
                     }
                     if ((fromDateFinal != null || toDateFinal != null) && r.getStartDate() != null) {
                         LocalDateTime sd = r.getStartDate();
-                        if (fromDateFinal != null && sd.isBefore(fromDateFinal)) ok = false;
-                        if (toDateFinal != null && sd.isAfter(toDateFinal)) ok = false;
+                        if (fromDateFinal != null && sd.isBefore(fromDateFinal))
+                            ok = false;
+                        if (toDateFinal != null && sd.isAfter(toDateFinal))
+                            ok = false;
                     }
                     return ok;
                 }).collect(Collectors.toList());
@@ -188,27 +181,39 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
             // sort by startDate of Request
             if ("time_asc".equals(sort)) {
                 pendingTasks.sort((a, b) -> {
-                    if (a == null && b == null) return 0;
-                    if (a == null) return -1;
-                    if (b == null) return 1;
+                    if (a == null && b == null)
+                        return 0;
+                    if (a == null)
+                        return -1;
+                    if (b == null)
+                        return 1;
                     LocalDateTime aDate = a.getRequest() != null ? a.getRequest().getStartDate() : null;
                     LocalDateTime bDate = b.getRequest() != null ? b.getRequest().getStartDate() : null;
-                    if (aDate == null && bDate == null) return 0;
-                    if (aDate == null) return -1;
-                    if (bDate == null) return 1;
+                    if (aDate == null && bDate == null)
+                        return 0;
+                    if (aDate == null)
+                        return -1;
+                    if (bDate == null)
+                        return 1;
                     return aDate.compareTo(bDate);
                 });
             } else {
                 // default newest first
                 pendingTasks.sort((a, b) -> {
-                    if (a == null && b == null) return 0;
-                    if (a == null) return 1;
-                    if (b == null) return -1;
+                    if (a == null && b == null)
+                        return 0;
+                    if (a == null)
+                        return 1;
+                    if (b == null)
+                        return -1;
                     LocalDateTime aDate = a.getRequest() != null ? a.getRequest().getStartDate() : null;
                     LocalDateTime bDate = b.getRequest() != null ? b.getRequest().getStartDate() : null;
-                    if (aDate == null && bDate == null) return 0;
-                    if (aDate == null) return 1;
-                    if (bDate == null) return -1;
+                    if (aDate == null && bDate == null)
+                        return 0;
+                    if (aDate == null)
+                        return 1;
+                    if (bDate == null)
+                        return -1;
                     return bDate.compareTo(aDate);
                 });
             }
@@ -221,11 +226,13 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
             request.setAttribute("sort", sort);
 
             request.setAttribute("pendingTasks", pendingTasks);
-            request.getRequestDispatcher("/technician_employee/view_received_assignments.jsp").forward(request, response);
+            request.getRequestDispatcher("/technician_employee/view_received_assignments.jsp").forward(request,
+                    response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error loading received assignments: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Error loading received assignments: " + e.getMessage());
         }
     }
 }

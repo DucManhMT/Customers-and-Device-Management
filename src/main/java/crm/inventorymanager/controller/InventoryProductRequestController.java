@@ -7,7 +7,6 @@ import crm.common.repository.Warehouse.WarehouseDAO;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.inventorymanager.service.AssignWarehouseService;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -68,7 +67,8 @@ public class InventoryProductRequestController extends HttpServlet {
                     resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_PRODUCT_REQUESTS);
                     return;
                 } else {
-                    req.getSession().setAttribute("successMessage", "Warehouse assigned to product request successfully.");
+                    req.getSession().setAttribute("successMessage",
+                            "Warehouse assigned to product request successfully.");
                     resp.sendRedirect(req.getContextPath() + URLConstants.INVENTORY_VIEW_PRODUCT_REQUESTS);
                     return;
                 }
