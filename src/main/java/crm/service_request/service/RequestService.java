@@ -9,6 +9,7 @@ import java.util.Map;
 
 import crm.common.model.Account;
 import crm.common.model.Contract;
+import crm.common.model.Customer;
 import crm.common.model.Request;
 import crm.common.model.Staff;
 import crm.common.model.Task;
@@ -57,8 +58,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequests(String customerName, String field, String sort, String description,
-                                     String status, int contractId,
-                                     int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -91,8 +92,8 @@ public class RequestService {
     }
 
     public Page<Request> getRequestByUsername(String username, String field, String sort, String description,
-                                              String status, int contractId,
-                                              int page, int recordsPerPage) {
+            String status, int contractId,
+            int page, int recordsPerPage) {
         ClauseBuilder builder = new ClauseBuilder();
         if (field == null || field.isEmpty()) {
             field = "StartDate";
@@ -198,7 +199,7 @@ public class RequestService {
     }
 
     public Page<Request> getRequestWithCondition(String customerName, LocalDateTime from, LocalDateTime to,
-                                                 String phone, List<String> status, int page, int size) {
+            String phone, List<String> status, int page, int size) {
         ClauseBuilder requestClause = new ClauseBuilder();
         ClauseBuilder customerClause = new ClauseBuilder();
         if (from != null) {
@@ -241,7 +242,8 @@ public class RequestService {
             // subject contain customer name and request id
             String customerName = request.getContract().getCustomer().getCustomerName();
             String subject = "Request Reopened: ID " + requestId;
-            String body = "Customer " + customerName + "'s request ID " + requestId + " has been reopened. \n\nNote: " + mailMessage;
+            String body = "Customer " + customerName + "'s request ID " + requestId + " has been reopened. \n\nNote: "
+                    + mailMessage;
             if (latestTechFinishAccount != null) {
                 MailService.sendEmail(latestTechFinishAccount.getEmail(), subject, body);
             }
@@ -268,10 +270,17 @@ public class RequestService {
             // Capture old status for accurate logging before changing it
             OldRequestStatus oldStatus = Request.toOldStatus(request.getRequestStatus());
 
+            Customer customer = request.getContract().getCustomer();
+
             request.setRequestStatus(RequestStatus.Finished);
             request.setFinishedDate(LocalDateTime.now());
             requestRepository.update(request);
             requestLogService.createLog(request, "Request finished.", oldStatus, RequestStatus.Finished, account);
+
+            MailService.sendEmail(customer.getEmail(), "Your service request has been completed",
+                    "Dear " + customer.getCustomerName()
+                            + ",\n\nYour service request with ID " + requestId
+                            + " has been completed successfully.\n\nThank you for choosing our services.");
             TransactionManager.commit();
         } catch (Exception e) {
             try {

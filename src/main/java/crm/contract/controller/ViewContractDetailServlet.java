@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 @WebServlet(urlPatterns = URLConstants.CONTRACT_DETAIL, name = "ViewContractDetailServlet")
 public class ViewContractDetailServlet extends HttpServlet {
     private static final String ATTR_ERROR = "error";
