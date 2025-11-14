@@ -2,6 +2,7 @@ package crm.auth.service;
 
 import crm.common.model.Account;
 import crm.common.model.Customer;
+import crm.common.model.Staff;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.MailService;
@@ -20,21 +21,35 @@ public class NewPasswordService {
             Map<String, Object> conditions = new HashMap<>();
             conditions.put("email", email);
             List<Customer> customers = em.findWithConditions(Customer.class, conditions);
-            if (customers == null || customers.isEmpty()) {
+            List<Staff> staffs = em.findWithConditions(Staff.class, conditions);
+            if (customers.isEmpty() && staffs.isEmpty()) {
                 return false; // Email not found
             }
-            Customer customer = customers.get(0);
-            customer.getAccount().setPasswordHash(newPassword);
-            em.merge(customer.getAccount(), Account.class);
+            if (!staffs.isEmpty()) {
+                Staff staff = staffs.get(0);
+                staff.getAccount().setPasswordHash(newPassword);
+                em.merge(staff.getAccount(), Account.class);
 
-            String subject = "Your New Password";
-            String body = "Here is your new password: " + newPassword;
-            MailService.sendEmail(email, subject, body);
-            return true;
+                String subject = "Your New Password";
+                String body = "Here is your new password: " + newPassword;
+                MailService.sendEmail(email, subject, body);
+                return true;
+            }
+            if (!customers.isEmpty()) {
+                Customer customer = customers.get(0);
+                customer.getAccount().setPasswordHash(newPassword);
+                em.merge(customer.getAccount(), Account.class);
+
+                String subject = "Your New Password";
+                String body = "Here is your new password: " + newPassword;
+                MailService.sendEmail(email, subject, body);
+                return true;
+            }
         } catch (Exception e){
             e.printStackTrace();
             return false;
         }
+        return false;
     }
     private static String generateNewPassword() {
         int passwordLength= 6;

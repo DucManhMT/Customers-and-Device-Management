@@ -44,7 +44,7 @@ public class PermissionService {
         if (role.getRoleName().equals("Admin")) {
             return true; // Admin has access to all features
         }
-        List<Feature> features = roleFeatureMap.get(role);
+        List<Feature> features = roleFeatureMap.get(role.getRoleID());
         if (features != null) {
             for (Feature feature : features) {
                 if (feature.getFeatureURL().equals(uri)) {
