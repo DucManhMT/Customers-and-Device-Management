@@ -735,16 +735,14 @@
                 const taskNote = taskNoteTextarea.value.trim();
                 
                 // Validate: task note is required when declining
-                if (taskNote === '' || taskNote.length < 10) {
+                if (taskNote === '' ) {
                     e.preventDefault();
                     taskNoteTextarea.classList.add('error');
                     errorMessage.classList.add('show');
                     
                     if (taskNote === '') {
                         errorMessage.querySelector('span').textContent = 'You must provide a reason when declining the task';
-                    } else {
-                        errorMessage.querySelector('span').textContent = 'Please provide at least 10 characters for the reason';
-                    }
+                    } 
                     
                     taskNoteTextarea.focus();
                     

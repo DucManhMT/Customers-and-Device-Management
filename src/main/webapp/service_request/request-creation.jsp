@@ -25,7 +25,7 @@
                         <form action="../requests/create" method="post">
                             <!-- Contract List -->
                             <div class="mb-3">
-                                <label class="form-label">Contract List</label>
+                                <label class="form-label">Contract List<span style="color: red"> * </span></label>
                                 <select name="contractId" class="form-select">
                                     <option value="">Select contract</option>
                                     <c:forEach var="contract" items="${contracts}">
@@ -39,7 +39,7 @@
 
                             <!-- Description -->
                             <div class="mb-3">
-                                <label class="form-label">Description</label>
+                                <label class="form-label">Description<span style="color: red"> * </span></label>
                                 <input type="text" name="description"
                                        value="${description}"
                                        class="form-control"

@@ -8,6 +8,7 @@ import crm.core.utils.DateTimeConverter;
 import crm.task.service.TaskService;
 import crm.common.model.Task;
 import crm.common.model.enums.TaskStatus;
+import crm.common.model.enums.RequestStatus;
 import crm.task.repository.StaffRepository;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
@@ -62,6 +63,15 @@ public class AssignTaskController extends HttpServlet {
         req.setAttribute(PARAM_REQUEST_ID, requestId);
         req.setAttribute("assignToId", assignToId);
 
+        // Validate request status for assignment eligibility
+        if (request != null && request.getRequestStatus() != null
+            && request.getRequestStatus() != RequestStatus.Approved
+            && request.getRequestStatus() != RequestStatus.Processing) {
+            List<String> errors = new ArrayList<>();
+            errors.add("Only Approved or Processing requests can be assigned.");
+            req.setAttribute("errors", errors);
+        }
+
         // Load technician's current schedule (existing tasks)
         if (assignToId != null) {
             List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
@@ -105,6 +115,12 @@ public class AssignTaskController extends HttpServlet {
             request = requestRepository.findById(requestId);
             if (request == null) {
                 errors.add("Request do not exsit.");
+            } else {
+                // Enforce assignment only for Approved or Processing
+                RequestStatus status = request.getRequestStatus();
+                if (status != RequestStatus.Approved && status != RequestStatus.Processing) {
+                    errors.add("Only Approved or Processing requests can be assigned.");
+                }
             }
         }
         Staff assignTo = null;
