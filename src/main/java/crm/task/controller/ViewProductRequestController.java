@@ -55,10 +55,12 @@ public class ViewProductRequestController extends HttpServlet {
         Request currentRequest = null;
         List<ProductRequest> productRequests = em.findAll(ProductRequest.class);
 
+
         try {
             if (taskIdStr != null && !taskIdStr.isEmpty()) {
                 int taskId = Integer.parseInt(taskIdStr);
                 currentTask = em.find(Task.class, taskId);
+
 
                 if (currentTask != null) {
                     currentRequest = currentTask.getRequest();
