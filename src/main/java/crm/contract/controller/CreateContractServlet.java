@@ -6,6 +6,7 @@ import crm.contract.service.ContractCodeGenerator;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.core.service.IDGeneratorService;
+import crm.warehousekeeper.service.SerialGenerator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -19,79 +20,91 @@ import java.util.*;
 
 @WebServlet(name = "CreateContract", value = URLConstants.CUSTOMER_SUPPORTER_CREATE_CONTRACT)
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024,  // 1MB
-        maxFileSize = 1024 * 1024 * 10,   // 10MB
-        maxRequestSize = 1024 * 1024 * 50 // 50MB
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50
 )
 public class CreateContractServlet extends HttpServlet {
 
+    private String buildRedirectWithId(HttpServletRequest request, String userName) throws IOException {
+        String id = (userName == null) ? "" : userName;
+        return request.getContextPath()
+                + "/customer_supporter/create_contract?id="
+                + URLEncoder.encode(id, "UTF-8");
+    }
+
+    private static String sanitizeFileName(String name) {
+        if (name == null) return "file";
+        return name.replaceAll("[^a-zA-Z0-9._-]", "_");
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         EntityManager em = new EntityManager(DBcontext.getConnection());
 
         String username = request.getParameter("id");
-        Account account = em.find(Account.class, username);
+        Account account = null;
 
-        Map<String, Object> cond = new HashMap<>();
-        cond.put("account", username);
-        List<Customer> customers = em.findWithConditions(Customer.class, cond);
+        if (username != null && !username.isEmpty()) {
+            account = em.find(Account.class, username);
 
-        if (customers != null && !customers.isEmpty()) {
-            request.setAttribute("customerName", customers.get(0).getCustomerName());
-        }
-        request.setAttribute("account", account);
-
-        // Load all inventory items
-        List<InventoryItem> inventoryItems = em.findAll(InventoryItem.class);
-        List<ProductContract> productContracts = em.findAll(ProductContract.class);
-        Set<Integer> usedItemIds = new HashSet<>();
-        if (productContracts != null) {
-            for (ProductContract pc : productContracts) {
-                InventoryItem it = pc.getInventoryItem();
-                if (it != null) {
-                    usedItemIds.add(it.getItemId());
-                }
+            Map<String, Object> cond = new HashMap<>();
+            cond.put("account", username);
+            List<Customer> customers = em.findWithConditions(Customer.class, cond);
+            if (customers != null && !customers.isEmpty()) {
+                request.setAttribute("customerName", customers.get(0).getCustomerName());
             }
         }
 
-        if (inventoryItems != null && !usedItemIds.isEmpty()) {
-            inventoryItems.removeIf(item -> item != null && usedItemIds.contains(item.getItemId()));
+        request.setAttribute("account", account);
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            String flashErr = (String) session.getAttribute("flash_error");
+            if (flashErr != null) {
+                request.setAttribute("error", flashErr);
+                session.removeAttribute("flash_error");
+            }
+
+            String flashSuccess = (String) session.getAttribute("flash_success");
+            if (flashSuccess != null) {
+                request.setAttribute("success", flashSuccess);
+                session.removeAttribute("flash_success");
+            }
         }
 
-        request.setAttribute("inventoryItems", inventoryItems);
+        List<Product> products = em.findAll(Product.class);
+        request.setAttribute("products", products);
 
         request.getRequestDispatcher("/customer_supporter/create_contract.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         EntityManager em = new EntityManager(DBcontext.getConnection());
+        HttpSession session = request.getSession(true);
+
         Part filePart = request.getPart("contractImage");
-
-        // ===== Validate PDF =====
-        if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty()) {
-            request.setAttribute("error", "Please select a PDF file to upload.");
-            doGet(request, response);
-            return;
-        }
-
-        String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
-        String mimeType = getServletContext().getMimeType(fileName);
-        if (mimeType == null || !mimeType.equals("application/pdf") || !fileName.toLowerCase().endsWith(".pdf")) {
-            request.setAttribute("error", "Invalid file. Only PDF allowed.");
-            doGet(request, response);
-            return;
-        }
-
-        // Lưu file PDF
-        String uploadPath = getServletContext().getRealPath("/assets");
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdir();
-        String filePath = uploadPath + File.separator + fileName;
-        filePart.write(filePath);
-
-        // ===== Tạo contract =====
         String customerUsername = request.getParameter("userName");
+
+        // ===== VALIDATE PDF =====
+        if (filePart == null || filePart.getSubmittedFileName() == null || filePart.getSubmittedFileName().isEmpty()) {
+            session.setAttribute("flash_error", "Please select a PDF file to upload.");
+            response.sendRedirect(buildRedirectWithId(request, customerUsername));
+            return;
+        }
+
+        String originalFileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
+        String mimeType = getServletContext().getMimeType(originalFileName);
+        if (mimeType == null || !mimeType.equals("application/pdf") || !originalFileName.toLowerCase().endsWith(".pdf")) {
+            session.setAttribute("flash_error", "Invalid file. Only PDF allowed.");
+            response.sendRedirect(buildRedirectWithId(request, customerUsername));
+            return;
+        }
+
+        // ===== LOAD CUSTOMER =====
         Customer customer = null;
         if (customerUsername != null && !customerUsername.isEmpty()) {
             Map<String, Object> cond = new HashMap<>();
@@ -99,68 +112,149 @@ public class CreateContractServlet extends HttpServlet {
             List<Customer> found = em.findWithConditions(Customer.class, cond);
             if (found != null && !found.isEmpty()) customer = found.get(0);
         }
-
         if (customer == null) {
-            request.setAttribute("error", "Customer not found for username: " + customerUsername);
-            doGet(request, response);
+            session.setAttribute("flash_error", "Customer not found.");
+            response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
 
-        Contract contract = new Contract();
-        int contractId = IDGeneratorService.generateID(Contract.class);
-        contract.setContractID(contractId);
-        contract.setCustomer(customer);
-        contract.setContractImage(fileName);
-        contract.setContractCode(ContractCodeGenerator.generateContractCode("CTR", String.valueOf(contractId)));
-
-        // Ngày bắt đầu + kết thúc
+        // ===== VALIDATE DATES =====
+        LocalDate startDate;
+        LocalDate expireDate;
         try {
-            LocalDate startDate = LocalDate.parse(request.getParameter("startDate"));
-            LocalDate expireDate = LocalDate.parse(request.getParameter("expireDate"));
+            startDate = LocalDate.parse(request.getParameter("startDate"));
+            expireDate = LocalDate.parse(request.getParameter("expireDate"));
             if (expireDate.isBefore(startDate)) {
-                request.setAttribute("error", "Expire date must be after start date.");
-                doGet(request, response);
+                session.setAttribute("flash_error", "Expire date must be after start date.");
+                response.sendRedirect(buildRedirectWithId(request, customerUsername));
                 return;
             }
-            contract.setStartDate(startDate);
-            contract.setExpiredDate(expireDate);
         } catch (Exception e) {
-            request.setAttribute("error", "Invalid date format.");
-            doGet(request, response);
+            session.setAttribute("flash_error", "Invalid date format.");
+            response.sendRedirect(buildRedirectWithId(request, customerUsername));
             return;
         }
 
-        // Persist contract
-        em.persist(contract, Contract.class);
+        // ===== VALIDATE SERIALS =====
+        String[] productIds = request.getParameterValues("productId[]");
+        String[] serialNumbers = request.getParameterValues("serialNumber[]");
 
-        // ===== Thêm sản phẩm (ProductContract) =====
-        String[] inventoryItemIds = request.getParameterValues("inventoryItemId[]"); // hidden field
-        if (inventoryItemIds != null) {
-            for (String itemIdStr : inventoryItemIds) {
-                if (itemIdStr == null || itemIdStr.isEmpty()) continue;
+        List<String> errorList = new ArrayList<>();
+        Set<String> serialsInRequest = new HashSet<>();
 
-                int itemId = Integer.parseInt(itemIdStr);
-                InventoryItem item = em.find(InventoryItem.class, itemId);
-                if (item != null) {
-                    ProductContract pc = new ProductContract();
-                    pc.setContract(contract);
-                    System.out.println(contract.getContractID());
-                    pc.setInventoryItem(item);
-                    System.out.println(item.getItemId());
-                    em.persist(pc, ProductContract.class);
+        // 🔥 MAP LƯU SERIAL NGƯỜI DÙNG NHẬP (dùng để gọi setter)
+        Map<Integer, String> serialInputMap = new HashMap<>();
+
+        if (productIds != null && serialNumbers != null) {
+            for (int i = 0; i < productIds.length; i++) {
+
+                String pidStr = productIds[i];
+                String serialInput = serialNumbers[i];
+
+                if (pidStr == null || pidStr.trim().isEmpty()) {
+                    errorList.add("Product ID missing at row " + (i + 1));
+                    continue;
                 }
+                if (serialInput == null || serialInput.trim().isEmpty()) {
+                    errorList.add("Serial required at row " + (i + 1));
+                    continue;
+                }
+
+                int productIdInt;
+                try {
+                    productIdInt = Integer.parseInt(pidStr.trim());
+                } catch (NumberFormatException ex) {
+                    errorList.add("Invalid product ID: " + pidStr);
+                    continue;
+                }
+
+                Product p = em.find(Product.class, productIdInt);
+                if (p == null) {
+                    errorList.add("Product not found: " + productIdInt);
+                    continue;
+                }
+
+                // 🔥 HASH CHUẨN ĐỂ CHECK DUPLICATE
+                String generated = SerialGenerator.generateSerial(String.valueOf(productIdInt), serialInput.trim());
+
+                // duplicate in same submission
+                if (!serialsInRequest.add(generated)) {
+                    errorList.add("Duplicate serial in submission: " + serialInput);
+                    continue;
+                }
+
+                // duplicate in DB
+                Map<String, Object> cond = new HashMap<>();
+                cond.put("serialNumber", generated);
+                List<InventoryItem> exists = em.findWithConditions(InventoryItem.class, cond);
+                if (exists != null && !exists.isEmpty()) {
+                    errorList.add("Serial already exists in system: " + serialInput);
+                    continue;
+                }
+
+                // 🔥 Lưu giá trị người dùng để gọi setter (setter sẽ hash)
+                serialInputMap.put(i, serialInput.trim());
             }
-        }else{
-            System.out.println("no item selected");
         }
 
-        // Redirect thành công
-        String pdfURL = request.getContextPath() + "/assets/" + fileName;
-        String redirectUrl = request.getContextPath()
-                + "/customer_supporter/create_contract"
-                + "?id=" + URLEncoder.encode(customerUsername == null ? "" : customerUsername, "UTF-8")
-                + "&success=1"
-                + "&contractPDF=" + URLEncoder.encode(pdfURL, "UTF-8");
-        response.sendRedirect(redirectUrl);
+        if (!errorList.isEmpty()) {
+            session.setAttribute("flash_error", String.join("<br>", errorList));
+            response.sendRedirect(buildRedirectWithId(request, customerUsername));
+            return;
+        }
+
+        // ===== SAVE CONTRACT =====
+        int contractId = IDGeneratorService.generateID(Contract.class);
+        String contractCode = ContractCodeGenerator.generateContractCode("CTR", String.valueOf(contractId));
+
+        String sanitizedBaseName = sanitizeFileName(originalFileName.replaceAll("(?i)\\.pdf$", ""));
+        String safeFileName = sanitizeFileName(contractCode) + "_" + sanitizedBaseName + ".pdf";
+
+        String uploadPath = getServletContext().getRealPath("/assets");
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+
+        File destFile = new File(uploadDir, safeFileName);
+        if (destFile.exists()) {
+            safeFileName = sanitizeFileName(contractCode) + "_" + sanitizedBaseName + "_" + System.currentTimeMillis() + ".pdf";
+            destFile = new File(uploadDir, safeFileName);
+        }
+        filePart.write(destFile.getAbsolutePath());
+
+        Contract contract = new Contract();
+        contract.setContractID(contractId);
+        contract.setCustomer(customer);
+        contract.setContractImage(safeFileName);
+        contract.setContractCode(contractCode);
+        contract.setStartDate(startDate);
+        contract.setExpiredDate(expireDate);
+        em.persist(contract, Contract.class);
+
+        // ===== SAVE INVENTORY ITEMS + PRODUCT CONTRACT =====
+        for (int i = 0; i < productIds.length; i++) {
+            int productId = Integer.parseInt(productIds[i].trim());
+            Product p = em.find(Product.class, productId);
+            if (p == null) continue;
+
+            InventoryItem item = new InventoryItem();
+            item.setItemId(IDGeneratorService.generateID(InventoryItem.class));
+            item.setProduct(p);
+
+            // 🔥 TRUYỀN SERIAL NGƯỜI DÙNG NHẬP, setter sẽ hash
+            item.setSerialNumber(serialInputMap.get(i));
+
+            em.persist(item, InventoryItem.class);
+
+            ProductContract pc = new ProductContract();
+            pc.setContract(contract);
+            pc.setInventoryItem(item);
+            em.persist(pc, ProductContract.class);
+        }
+
+        session.setAttribute("flash_success", "Create contract successful.");
+
+        String pdfURL = request.getContextPath() + "/assets/" + URLEncoder.encode(safeFileName, "UTF-8");
+        response.sendRedirect(buildRedirectWithId(request, customerUsername)
+                + "&success=1&contractPDF=" + pdfURL);
     }
 }

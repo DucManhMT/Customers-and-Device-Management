@@ -130,6 +130,12 @@
             body { margin-left: 0 !important; padding-top: 90px !important; }
             main.container { padding: 16px; }
         }
+
+        /* small inline validation styling for modal serial input */
+        .modal-serial-input.is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback { display:block; color:#dc3545; font-size:0.85rem; margin-top:4px; }
     </style>
 </head>
 <body>
@@ -174,8 +180,6 @@
                             <i class="bi bi-download me-1"></i> Download
                         </a>
                     </c:if>
-
-
                 </div>
             </div>
         </c:if>
@@ -234,27 +238,14 @@
                     </tr>
                     </thead>
                     <tbody id="productTableBody">
-                    <!-- If server provided initial products (search results), render them -->
-                    <c:if test="${not empty products}">
-                        <c:forEach var="p" items="${products}">
-                            <tr data-itemid="${p.itemId}">
-                                <td>
-                                    <!-- hidden input keeps the inventoryItemId[] submission so backend behavior unchanged -->
-                                    <input type="hidden" name="inventoryItemId[]" value="${p.itemId}">
-                                        ${p.productName}
-                                </td>
-                                <td>${p.serialNumber}</td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </c:if>
+                    <!-- Initially empty. JS will add selected products from the modal.
+                         Each added row will include hidden inputs:
+                         <input type="hidden" name="productId[]" value="...">
+                         <input type="hidden" name="serialNumber[]" value="...">
+                    -->
                     </tbody>
                 </table>
-                <div id="noProductPlaceholder" class="text-muted small" style="display: none;">No products selected.</div>
+                <div id="noProductPlaceholder" class="text-muted small">No products selected.</div>
             </div>
 
             <div class="mt-4">
@@ -273,7 +264,7 @@
             </div>
 
             <div class="actions">
-                <a href="${pageContext.request.contextPath}/customer_supporter/create_contract" class="btn btn-outline-secondary">
+                <a href="${pageContext.request.contextPath}/customer_supporter/create_contract?id=${account.username}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-clockwise me-1"></i>Clear
                 </a>
                 <button type="submit" id="submitBtn" class="btn btn-primary">
@@ -294,7 +285,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-2 d-flex gap-2">
-                    <input type="text" id="productSearchInput" class="form-control" placeholder="Search product name or serial...">
+                    <input type="text" id="productSearchInput" class="form-control" placeholder="Search product name...">
                 </div>
 
                 <div class="table-responsive" style="max-height:420px; overflow:auto;">
@@ -302,17 +293,19 @@
                         <thead>
                         <tr>
                             <th>Product Name</th>
-                            <th>Serial</th>
+                            <th style="width:320px;">Serial (enter serial to create inventory item)</th>
                             <th style="width:120px;">Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="it" items="${inventoryItems}">
-                            <tr data-itemid="${it.itemId}"
-                                data-productname="<c:out value='${it.product != null ? it.product.productName : ""}'/>"
-                                data-serial="<c:out value='${it.serialNumber}'/>">
-                                <td class="modal-prod-name"><c:out value="${it.product != null ? it.product.productName : ''}"/></td>
-                                <td class="modal-serial"><c:out value='${it.serialNumber}'/></td>
+                        <c:forEach var="prod" items="${products}">
+                            <tr data-productid="${prod.productID}"
+                                data-productname="<c:out value='${prod.productName}'/>">
+                                <td class="modal-prod-name"><c:out value="${prod.productName}"/></td>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm modal-serial-input"
+                                           placeholder="Enter serial number for this product">
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-primary modal-add-one-btn">Add</button>
                                 </td>
@@ -324,7 +317,7 @@
 
             </div>
             <div class="modal-footer">
-                <div class="me-auto text-muted small">Selected will be added as chosen products in the contract.</div>
+                <div class="me-auto text-muted small">When you Add a product, a new InventoryItem will be created from the Product using the serial number you provided and linked to the contract.</div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -339,7 +332,6 @@
         const pdfPreview = document.getElementById('pdfPreview');
         const pdfPreviewContainer = document.getElementById('pdfPreviewContainer');
         const fileNameEl = document.getElementById('fileName');
-        const downloadBtn = document.getElementById('downloadPdfBtn'); // optional
         const maxSizeBytes = 10 * 1024 * 1024; // 10MB
 
         if (fileInput) {
@@ -368,10 +360,6 @@
                 pdfPreviewContainer.style.display = 'block';
                 fileNameEl.style.display = 'block';
                 fileNameEl.textContent = 'Selected file: ' + file.name;
-                if (downloadBtn) {
-                    downloadBtn.href = fileUrl;
-                    downloadBtn.style.display = 'inline-block';
-                }
             });
         }
 
@@ -389,8 +377,6 @@
         // Product modal interactions
         const modalProductTable = document.getElementById('modalProductTable');
         const productSearchInput = document.getElementById('productSearchInput');
-        const selectAllBtn = document.getElementById('selectAllBtn');
-        const addSelectedBtn = document.getElementById('addSelectedBtn');
         const productTableBody = document.getElementById('productTableBody');
         const noProductPlaceholder = document.getElementById('noProductPlaceholder');
 
@@ -408,81 +394,114 @@
                 const rows = modalProductTable.querySelectorAll('tbody tr');
                 rows.forEach(r => {
                     const name = (r.querySelector('.modal-prod-name')?.textContent || '').toLowerCase();
-                    const serial = (r.querySelector('.modal-serial')?.textContent || '').toLowerCase();
-                    const visible = name.includes(q) || serial.includes(q);
+                    const visible = name.includes(q);
                     r.style.display = visible ? '' : 'none';
                 });
             });
         }
 
+        // Helper: show inline error next to serial input
+        function showInlineModalError(inputEl, msg) {
+            clearInlineModalError(inputEl);
+            inputEl.classList.add('is-invalid');
+            const div = document.createElement('div');
+            div.className = 'invalid-feedback';
+            div.textContent = msg;
+            inputEl.parentElement.appendChild(div);
+            inputEl.focus();
+        }
+        function clearInlineModalError(inputEl) {
+            if (!inputEl) return;
+            inputEl.classList.remove('is-invalid');
+            const prev = inputEl.parentElement.querySelector('.invalid-feedback');
+            if (prev) prev.remove();
+        }
 
-
-        // Add one from modal row (Add button)
+        // Add one from modal row (Add button) -> server-side duplicate check before adding
         modalProductTable.addEventListener('click', (e) => {
             const addBtn = e.target.closest('.modal-add-one-btn');
             if (!addBtn) return;
             const row = addBtn.closest('tr');
-            addModalRowsToProductTable([row]);
+            if (!row) return;
+
+            const productId = row.getAttribute('data-productid');
+            const productName = row.getAttribute('data-productname') || (row.querySelector('.modal-prod-name')?.textContent || '');
+            const serialInput = row.querySelector('.modal-serial-input');
+            const serial = serialInput ? serialInput.value.trim() : '';
+
+            clearInlineModalError(serialInput);
+
+            if (!serial) {
+                showInlineModalError(serialInput, 'Please enter a serial number for the selected product before adding.');
+                return;
+            }
+
+            // Prevent duplicates by productId + serial combination in current UI list
+            const existing = productTableBody.querySelector('tr[data-productid="' + productId + '"][data-serial="' + encodeURIComponent(serial) + '"]');
+            if (existing) {
+                showInlineModalError(serialInput, 'This product with the same serial is already added to the list.');
+                return;
+            }
+
+            // Call server endpoint to check duplicate serial:
+            // endpoint uses SerialGenerator.generateSerial(productId, serial) internally and checks InventoryItem
+            const checkUrl = '${pageContext.request.contextPath}/warehouse_keeper/check_serial_duplicate';
+            const payload = new URLSearchParams();
+            payload.append('productId', productId);
+            payload.append('serial', serial);
+
+            addBtn.disabled = true;
+            fetch(checkUrl, {
+                method: 'POST',
+                body: payload,
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+            }).then(res => {
+                addBtn.disabled = false;
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            }).then(data => {
+                if (data && data.exists) {
+                    showInlineModalError(serialInput, 'Serial already exists in inventory.');
+                    return;
+                }
+                // not exists -> add to table
+                addProductToTable(productId, productName, serial);
+                if (serialInput) serialInput.value = '';
+            }).catch(err => {
+                addBtn.disabled = false;
+                console.error('Error checking serial:', err);
+                // fallback: ask user to confirm adding temporarily (server final check will still run)
+                if (confirm('Could not verify serial on server. Add anyway? The server will still validate on submit.')) {
+                    addProductToTable(productId, productName, serial);
+                    if (serialInput) serialInput.value = '';
+                } else {
+                    // do nothing
+                }
+            });
         });
 
-        // Add selected (bulk)
-        if (addSelectedBtn) {
-            addSelectedBtn.addEventListener('click', () => {
-                const rows = Array.from(modalProductTable.querySelectorAll('tbody tr'));
-                // rows are considered selected if they have the temporary class __ms_selected or some future checkbox logic
-                const selectedRows = rows.filter(r => {
-                    // if user used Select all visible button, class __ms_selected will be present
-                    const cb = r.querySelector('.modal-row-checkbox');
-                    return (cb && cb.checked) || r.classList.contains('__ms_selected');
-                }).filter(r => r.style.display !== 'none');
-                if (selectedRows.length === 0) {
-                    alert('Please select at least one product to add.');
-                    return;
-                }
-                addModalRowsToProductTable(selectedRows);
-                // remove temporary selection markers
-                selectedRows.forEach(r => r.classList.remove('__ms_selected'));
-                // close modal after adding
-                const modalEl = document.getElementById('productModal');
-                const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (modalInstance) modalInstance.hide();
-            });
-        }
+        // Helper: add product to main product table
+        function addProductToTable(productId, productName, serial) {
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-productid', productId);
+            tr.setAttribute('data-serial', encodeURIComponent(serial));
 
-        // Helper: add modal rows to main product table
-        function addModalRowsToProductTable(rows) {
-            rows.forEach(r => {
-                const itemId = r.getAttribute('data-itemid');
-                const productName = r.getAttribute('data-productname') || (r.querySelector('.modal-prod-name')?.textContent || '');
-                const serial = r.getAttribute('data-serial') || (r.querySelector('.modal-serial')?.textContent || '');
+            const tdName = document.createElement('td');
+            tdName.innerHTML = '<input type="hidden" name="productId[]" value="' + escapeAttr(productId) + '">'
+                + '<input type="hidden" name="serialNumber[]" value="' + escapeAttr(serial) + '">'
+                + '<span>' + escapeHtml(productName) + '</span>';
+            tr.appendChild(tdName);
 
-                // Prevent duplicates: check if product already in table
-                if (productTableBody.querySelector('tr[data-itemid="' + itemId + '"]')) {
-                    // already added, skip
-                    return;
-                }
+            const tdSerial = document.createElement('td');
+            tdSerial.textContent = serial;
+            tr.appendChild(tdSerial);
 
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-itemid', itemId);
+            const tdAction = document.createElement('td');
+            tdAction.innerHTML = '<button type="button" class="btn btn-sm btn-outline-danger remove-row-btn"><i class="bi bi-trash"></i></button>';
+            tr.appendChild(tdAction);
 
-                // First cell: show productName and include a hidden input so form still sends inventoryItemId[]
-                const tdName = document.createElement('td');
-                tdName.innerHTML = '<input type="hidden" name="inventoryItemId[]" value="' + itemId + '">'
-                    + '<span>' + escapeHtml(productName) + '</span> '
-                    + '<i class="bi bi-check-lg text-success" title="Selected" style="margin-left:8px;"></i>';
-                tr.appendChild(tdName);
-
-                const tdSerial = document.createElement('td');
-                tdSerial.textContent = serial;
-                tr.appendChild(tdSerial);
-
-                const tdAction = document.createElement('td');
-                tdAction.innerHTML = '<button type="button" class="btn btn-sm btn-outline-danger remove-row-btn"><i class="bi bi-trash"></i></button>';
-                tr.appendChild(tdAction);
-
-                productTableBody.appendChild(tr);
-            });
-
+            productTableBody.appendChild(tr);
             updateNoProductPlaceholder();
         }
 
@@ -497,18 +516,17 @@
 
         // Simple HTML escape for inserted text
         function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>"']/g, function (m) {
+            if (str === undefined || str === null) return '';
+            return String(str).replace(/[&<>"']/g, function (m) {
                 return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
             });
         }
+        function escapeAttr(str) {
+            return escapeHtml(str).replace(/"/g, '&quot;');
+        }
 
-        // If user loads page with no server-side products, show placeholder
+        // If user loads page with no server-side selected products, show placeholder
         updateNoProductPlaceholder();
-
-        // Guard previously existing addProductBtn code (if any)
-        const addProductBtn = document.getElementById('addProductBtn');
-        if (addProductBtn) addProductBtn.style.display = 'none';
 
     })();
 </script>

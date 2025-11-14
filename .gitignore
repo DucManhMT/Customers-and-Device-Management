@@ -40,3 +40,4 @@ build/
 src/main/webapp/assets/Screenshot 2024-10-26 115919.png
 src/main/webapp/assets/CV Nguyễn Trần An.pdf
 src/main/webapp/assets/MAE.pdf
+*.pdf

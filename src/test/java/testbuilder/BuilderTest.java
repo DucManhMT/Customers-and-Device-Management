@@ -65,6 +65,7 @@ import crm.common.model.*;
 import crm.core.config.DBcontext;
 import crm.core.repository.hibernate.entitymanager.EntityManager;
 import crm.filter.service.PermissionService;
+import crm.warehousekeeper.service.SerialGenerator;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -75,14 +76,23 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-       EntityManager em = new EntityManager(DBcontext.getConnection());
-        Contract contract = em.find(Contract.class, 1);
-        InventoryItem item = em.find(InventoryItem.class, 5);
-        if (item != null) {
-            ProductContract pc = new ProductContract();
-            pc.setContract(contract);
-            pc.setInventoryItem(item);
-            em.persist(pc, ProductContract.class);
+        EntityManager em = new EntityManager(DBcontext.getConnection());
+
+        String generated = SerialGenerator.generateSerial("1", "qwe");
+        System.out.println("Generated serial = " + generated);
+
+        Map<String, Object> cond = new HashMap<>();
+        cond.put("serialNumber", "4BFAACA8B280");
+
+        List<InventoryItem> existing = em.findWithConditions(InventoryItem.class, cond);
+
+        if (existing == null || existing.isEmpty()) {
+            System.out.println("❌ Serial DOES NOT exist in DB");
+        } else {
+            System.out.println("✅ Serial EXISTS");
+            for (InventoryItem item : existing) {
+                System.out.println("Found serial = " + item.getSerialNumber());
+            }
         }
     }
 }
