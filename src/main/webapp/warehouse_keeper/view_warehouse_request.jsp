@@ -374,7 +374,7 @@
                                                 <small class="text-muted">Product ID: ${req.product.productID}</small>
                                             </div>
                                             <span class="quantity-badge">
-                                                <i class="fas fa-cubes me-1"></i>${req.quantity}
+                                                <i class="fas fa-cubes me-1"></i>${req.totalQuantity}
                                             </span>
                                         </div>
                                     </div>
