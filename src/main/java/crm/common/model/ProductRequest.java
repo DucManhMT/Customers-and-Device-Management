@@ -11,8 +11,11 @@ public class ProductRequest {
     @Column(name = "ProductRequestID", type = "INT")
     private Integer productRequestID;
 
-    @Column(name = "Quantity", type = "INT", nullable = false)
-    private Integer quantity;
+    @Column(name = "TotalQuantity", type = "INT", nullable = false)
+    private Integer totalQuantity;
+
+    @Column(name = "ActualQuantity", type = "INT", nullable = false)
+    private Integer actualQuantity;
 
     @Column(name = "RequestDate", type = "DATE", nullable = false)
     private LocalDate requestDate;
@@ -24,8 +27,8 @@ public class ProductRequest {
     @Column(name = "Description", length = 255)
     private String description;
 
-    @ManyToOne(joinColumn = "TaskID")
-    private LazyReference<Task> task;
+    @ManyToOne(joinColumn = "RequestID")
+    private LazyReference<Request> request;
 
     @ManyToOne(joinColumn = "ProductID")
     private LazyReference<Product> product;
@@ -41,12 +44,12 @@ public class ProductRequest {
         this.productRequestID = productRequestID;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     public LocalDate getRequestDate() {
@@ -73,12 +76,12 @@ public class ProductRequest {
         this.description = description;
     }
 
-    public Task getTask() {
-        return task.get();
+    public Request getRequest() {
+        return request.get();
     }
 
-    public void setTask(Task task) {
-        this.task = new LazyReference<>(Task.class, task.getTaskID());
+    public void setRequest(Request request) {
+        this.request = new LazyReference<>(Request.class, request.getRequestID());
     }
 
     public Product getProduct() {
@@ -95,5 +98,13 @@ public class ProductRequest {
 
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = new LazyReference<>(Warehouse.class, warehouse.getWarehouseID());
+    }
+
+    public Integer getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(Integer actualQuantity) {
+        this.actualQuantity = actualQuantity;
     }
 }

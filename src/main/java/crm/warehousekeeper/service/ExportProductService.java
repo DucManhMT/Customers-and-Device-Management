@@ -25,12 +25,12 @@ public class ExportProductService {
         try {
             em.beginTransaction();
             em.persist(whl, WarehouseLog.class);
-            if (numberOfItems == productRequest.getQuantity()) {
+            if (numberOfItems == productRequest.getTotalQuantity()) {
                 productRequest.setStatus(ProductRequestStatus.Finished);
-                productRequest.setQuantity(0);
+                productRequest.setTotalQuantity(0);
                 em.merge(productRequest, ProductRequest.class);
-            } else if (productRequest.getQuantity() > numberOfItems) {
-                productRequest.setQuantity(productRequest.getQuantity() - numberOfItems);
+            } else if (productRequest.getTotalQuantity() > numberOfItems) {
+                productRequest.setTotalQuantity(productRequest.getTotalQuantity() - numberOfItems);
                 em.merge(productRequest, ProductRequest.class);
             }
 

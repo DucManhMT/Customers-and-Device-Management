@@ -2,6 +2,7 @@ package crm.task.service;
 
 import crm.common.model.Product;
 import crm.common.model.ProductRequest;
+import crm.common.model.Request;
 import crm.common.model.Task;
 import crm.common.model.enums.ProductRequestStatus;
 import crm.core.config.DBcontext;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 
 public class TechEmpProductRequestService {
 
-    public static boolean createProductRequest(Task task, String[] selectedProductIds, String[] quantities, String note) {
+    public static boolean createProductRequest(Request request, String[] selectedProductIds, String[] quantities, String note) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
         try{
             em.beginTransaction();
@@ -40,10 +41,11 @@ public class TechEmpProductRequestService {
                 ProductRequest productRequest = new ProductRequest();
                 productRequest.setProductRequestID(IDGeneratorService.generateID(ProductRequest.class));
                 productRequest.setProduct(product);
-                productRequest.setQuantity(quantity);
+                productRequest.setTotalQuantity(quantity);
+                productRequest.setActualQuantity(0);
                 productRequest.setRequestDate(LocalDate.now());
                 productRequest.setDescription(note);
-                productRequest.setTask(task);
+                productRequest.setRequest(request);
                 productRequest.setStatus(ProductRequestStatus.Pending);
 
                 em.persist(productRequest, ProductRequest.class);

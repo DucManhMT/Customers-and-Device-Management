@@ -75,17 +75,15 @@ import java.util.Map;
 
 public class BuilderTest {
     public static void main(String[] args) {
-        Connection connection = DBcontext.getConnection();
-        EntityManager em = new EntityManager(connection);
-        try {
-            connection.close();
-            em.findAll(Account.class);
-        } catch (Exception e) {
-
-
+       EntityManager em = new EntityManager(DBcontext.getConnection());
+        Contract contract = em.find(Contract.class, 1);
+        InventoryItem item = em.find(InventoryItem.class, 5);
+        if (item != null) {
+            ProductContract pc = new ProductContract();
+            pc.setContract(contract);
+            pc.setInventoryItem(item);
+            em.persist(pc, ProductContract.class);
         }
-        List<Account> accs = em.findAll(Account.class);
-        System.out.println(accs);
     }
 }
 

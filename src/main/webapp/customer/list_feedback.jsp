@@ -666,7 +666,6 @@
         <div class="feedback-grid">
             <c:forEach var="fb" items="${feedbacks}">
                 <div class="feedback-card">
-                    <!-- Header -->
                     <div class="feedback-header">
                         <div class="feedback-id">
                             <i class="fas fa-hashtag"></i> ${fb.feedbackID}
@@ -677,7 +676,6 @@
                         </div>
                     </div>
 
-                    <!-- Content -->
                     <div class="feedback-section">
                         <div class="section-label">
                             <i class="fas fa-file-alt"></i> Content
@@ -689,7 +687,6 @@
                         </div>
                     </div>
 
-                    <!-- Description -->
                     <div class="feedback-section">
                         <div class="section-label">
                             <i class="fas fa-comment-dots"></i> Description
@@ -701,7 +698,6 @@
                         </div>
                     </div>
 
-                    <!-- Request Information -->
                     <c:catch var="requestError">
                         <c:set var="request" value="${fb.requestID.entity}"/>
                     </c:catch>
@@ -755,7 +751,6 @@
                         </div>
                     </c:if>
 
-                    <!-- Rating & Status -->
                     <div class="feedback-section">
                         <div class="rating-display">
                             <div class="rating-stars">
@@ -787,7 +782,6 @@
                         </div>
                     </div>
 
-                    <!-- Response -->
                     <c:if test="${not empty fb.response}">
                         <div class="response-box">
                             <div class="response-label">
@@ -799,9 +793,8 @@
                         </div>
                     </c:if>
 
-                    <!-- Actions -->
                     <div class="card-actions">
-                        <a href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${fb.requestID}"
+                        <a href="${pageContext.request.contextPath}/customer/feedback/view?requestId=${fb.requestID.foreignKeyValue}"
                            class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-eye"></i> View Details
                         </a>
@@ -816,7 +809,6 @@
             </c:forEach>
         </div>
 
-        <!-- Pagination -->
         <div class="pagination-wrapper">
             <div class="pagination-info">
                 <i class="fas fa-list"></i> Showing ${feedbacks.size()} of ${totalRecords} results
