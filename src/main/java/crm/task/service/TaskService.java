@@ -1,6 +1,7 @@
 package crm.task.service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.core.config.TransactionManager;
+import crm.core.utils.DateTimeConverter;
 import crm.core.utils.KeyGenerator;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
@@ -210,7 +212,32 @@ public class TaskService {
         }
     }
 
-    // Custom exception for task deletion failures to avoid generic runtime
-    // exception
+    public boolean hasTimeConflict(int staffId, LocalDate startDate, LocalDate deadline) {
+        if (staffId <= 0 || startDate == null || deadline == null) {
+            return false;
+        }
+        LocalDateTime newStart = DateTimeConverter.toStartOfDay(startDate);
+        LocalDateTime newEnd = DateTimeConverter.toEndOfDay(deadline);
+        List<Task> existing = getTasksByStaffId(staffId);
+        if (existing == null || existing.isEmpty()) {
+            return false;
+        }
+        for (Task t : existing) {
+            if (t != null) {
+                TaskStatus st = t.getStatus();
+                if (!(st == TaskStatus.DeActived || st == TaskStatus.Finished || st == TaskStatus.Reject)) {
+                    LocalDateTime tStart = t.getStartDate();
+                    LocalDateTime tEnd = t.getDeadline();
+                    if (tStart != null && tEnd != null) {
+                        boolean overlap = !(tEnd.isBefore(newStart) || tStart.isAfter(newEnd));
+                        if (overlap) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 }

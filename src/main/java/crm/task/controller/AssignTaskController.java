@@ -28,9 +28,9 @@ import java.util.List;
 @WebServlet(urlPatterns = URLConstants.TECHLEAD_ASSIGN_TASK, name = "AssignTaskController")
 public class AssignTaskController extends HttpServlet {
 
-    private final transient RequestRepository requestRepository = new RequestRepository();
-    private final transient StaffRepository staffRepository = new StaffRepository();
-    private final transient TaskService taskService = new TaskService();
+    private final RequestRepository requestRepository = new RequestRepository();
+    private final StaffRepository staffRepository = new StaffRepository();
+    private final TaskService taskService = new TaskService();
 
     private static final String PARAM_REQUEST_ID = "requestId";
     private static final String PARAM_ASSIGN_TO = "assignTo";
@@ -55,7 +55,7 @@ public class AssignTaskController extends HttpServlet {
 
         Request request = requestId != null ? requestRepository.findById(requestId) : null;
         Staff assignTo = assignToId != null ? staffRepository.findById(assignToId) : null;
-        Staff assignBy = findStaffByUsername(account.getUsername());
+        Staff assignBy = staffRepository.findByUsername(account.getUsername());
 
         req.setAttribute("requestObj", request);
         req.setAttribute(PARAM_ASSIGN_TO, assignTo);
@@ -65,8 +65,8 @@ public class AssignTaskController extends HttpServlet {
 
         // Validate request status for assignment eligibility
         if (request != null && request.getRequestStatus() != null
-            && request.getRequestStatus() != RequestStatus.Approved
-            && request.getRequestStatus() != RequestStatus.Processing) {
+                && request.getRequestStatus() != RequestStatus.Approved
+                && request.getRequestStatus() != RequestStatus.Processing) {
             List<String> errors = new ArrayList<>();
             errors.add("Only Approved or Processing requests can be assigned.");
             req.setAttribute("errors", errors);
@@ -132,7 +132,8 @@ public class AssignTaskController extends HttpServlet {
                 errors.add("Tech employee do not exsit.");
             }
         }
-        Staff assignBy = findStaffByUsername(account.getUsername());
+
+        Staff assignBy = staffRepository.findByUsername(account.getUsername());
         if (assignBy == null) {
             errors.add("Assign By Unknown.");
         }
@@ -172,32 +173,10 @@ public class AssignTaskController extends HttpServlet {
             errors.add("Deadline can not before startDate.");
         }
 
-        // Business logic: ensure no overlap with existing tasks for the technician
-        if (errors.isEmpty() && assignToId != null && startDate != null && deadline != null) {
-            LocalDateTime newStart = DateTimeConverter.toStartOfDay(startDate);
-            LocalDateTime newEnd = DateTimeConverter.toEndOfDay(deadline);
-            List<Task> existing = taskService.getTasksByStaffId(assignToId);
-            if (existing != null) {
-                for (Task t : existing) {
-                    if (t == null)
-                        continue;
-                    // Consider only active tasks that can block time
-                    if (t.getStatus() == TaskStatus.DeActived ||
-                            t.getStatus() == TaskStatus.Finished ||
-                            t.getStatus() == TaskStatus.Reject) {
-                        continue;
-                    }
-                    LocalDateTime tStart = t.getStartDate();
-                    LocalDateTime tEnd = t.getDeadline();
-                    if (tStart == null || tEnd == null)
-                        continue;
-                    boolean overlap = !(tEnd.isBefore(newStart) || tStart.isAfter(newEnd));
-                    if (overlap) {
-                        errors.add("Selected time conflicts with existing tasks or is invalid.");
-                        break;
-                    }
-                }
-            }
+        // Check time conflict extracted to helper
+        if (errors.isEmpty() && assignToId != null && startDate != null && deadline != null
+                && taskService.hasTimeConflict(assignToId, startDate, deadline)) {
+            errors.add("Selected time conflicts with existing tasks or is invalid.");
         }
 
         if (!errors.isEmpty()) {
@@ -213,12 +192,16 @@ public class AssignTaskController extends HttpServlet {
             req.setAttribute(PARAM_DESCRIPTION, description);
             if (assignToId != null) {
                 List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
-                        .filter((t) -> t.getStatus().equals(TaskStatus.Processing)
+                        .filter(t -> t.getStatus().equals(TaskStatus.Processing)
                                 || t.getStatus().equals(TaskStatus.Pending))
                         .toList();
                 req.setAttribute("assignToTasks", assignToTasks);
             }
-            doGet(req, resp);
+            try {
+                doGet(req, resp);
+            } catch (ServletException | IOException e) {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
             return;
         }
 
@@ -241,12 +224,16 @@ public class AssignTaskController extends HttpServlet {
                 req.setAttribute(PARAM_DESCRIPTION, description);
                 if (assignToId != null) {
                     List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
-                            .filter((t) -> t.getStatus().equals(TaskStatus.Processing)
+                            .filter(t -> t.getStatus().equals(TaskStatus.Processing)
                                     || t.getStatus().equals(TaskStatus.Pending))
                             .toList();
                     req.setAttribute("assignToTasks", assignToTasks);
                 }
-                doGet(req, resp);
+                try {
+                    doGet(req, resp);
+                } catch (ServletException | IOException e) {
+                    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
                 return;
             }
         }
@@ -272,11 +259,4 @@ public class AssignTaskController extends HttpServlet {
         return s == null || s.isBlank();
     }
 
-    private Staff findStaffByUsername(String username) {
-        if (username == null || username.isBlank())
-            return null;
-        ClauseBuilder clause = new ClauseBuilder().equal("Username", username);
-        List<Staff> staffList = staffRepository.findWithCondition(clause);
-        return (staffList != null && !staffList.isEmpty()) ? staffList.get(0) : null;
-    }
 }

@@ -1,4 +1,4 @@
-package crm.feedback.dao;
+package crm.feedback.repository;
 
 import crm.common.model.Feedback;
 import crm.common.model.enums.FeedbackStatus;
@@ -28,14 +28,14 @@ public class FeedbackDAO {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
             List<Feedback> activeFeedbacks = new ArrayList<>();
-            
+
             for (Feedback feedback : allFeedbacks) {
                 if (feedback.getFeedbackStatus() != null && feedback.getFeedbackStatus() == FeedbackStatus.Deleted) {
                     continue;
                 }
                 activeFeedbacks.add(feedback);
             }
-            
+
             System.out.println("[DAO] findActiveFeedbacks: Found " + activeFeedbacks.size() + " active feedbacks");
             return activeFeedbacks;
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class FeedbackDAO {
     public Feedback findFeedbackByRequestId(Integer requestId) throws SQLException {
         try {
             List<Feedback> allFeedbacks = entityManager.findAll(Feedback.class);
-            
+
             for (Feedback fb : allFeedbacks) {
                 if (fb.getFeedbackStatus() != null && fb.getFeedbackStatus() == FeedbackStatus.Deleted) {
                     continue;
@@ -68,7 +68,7 @@ public class FeedbackDAO {
                     return fb;
                 }
             }
-            
+
             System.out.println("[DAO] findFeedbackByRequestId: No feedback found for RequestID=" + requestId);
             return null;
         } catch (Exception e) {
