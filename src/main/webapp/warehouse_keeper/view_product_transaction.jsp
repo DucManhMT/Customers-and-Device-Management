@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
@@ -309,14 +308,14 @@
 
         <!-- Statistics Cards -->
         <div class="row mb-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stats-card">
                     <i class="bi bi-card-list" style="font-size: 2rem;"></i>
                     <h3>${fn:length(productTransactions)}</h3>
                     <p>Total Transactions</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stats-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
                     <i class="bi bi-box-arrow-in-down" style="font-size: 2rem;"></i>
                     <h3>
@@ -331,7 +330,7 @@
                     <p>Import Transactions</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stats-card" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);">
                     <i class="bi bi-box-arrow-up" style="font-size: 2rem;"></i>
                     <h3>
@@ -346,6 +345,35 @@
                     <p>Export Transactions</p>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                    <h3>
+                        <c:set var="successCount" value="0"/>
+                        <c:forEach items="${productTransactions}" var="exportTrans">
+                            <c:if test="${exportTrans.transactionStatus == 'Export'}">
+                                <c:set var="hasMatch" value="false"/>
+                                <c:forEach items="${productTransactions}" var="importTrans">
+                                    <c:if test="${importTrans.transactionStatus == 'Import'
+                                        && exportTrans.warehouseRequest != null
+                                        && importTrans.warehouseRequest != null
+                                        && exportTrans.warehouseRequest.warehouseRequestID == importTrans.warehouseRequest.warehouseRequestID
+                                        && exportTrans.inventoryItem.itemId == importTrans.inventoryItem.itemId
+                                        && exportTrans.sourceWarehouse.warehouseID == importTrans.destinationWarehouse.warehouseID
+                                        && exportTrans.destinationWarehouse.warehouseID == importTrans.sourceWarehouse.warehouseID}">
+                                        <c:set var="hasMatch" value="true"/>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${hasMatch}">
+                                    <c:set var="successCount" value="${successCount + 1}"/>
+                                </c:if>
+                            </c:if>
+                        </c:forEach>
+                        ${successCount}
+                    </h3>
+                    <p>Completed Exports</p>
+                </div>
+            </div>
         </div>
 
         <!-- Filter Section -->
@@ -354,9 +382,9 @@
             <form id="filterForm" method="get">
                 <div class="row">
                     <div class="col-md-3 mb-3">
-                        <label for="filterStatus">Transaction Status</label>
-                        <select class="form-select" id="filterStatus" name="status">
-                            <option value="">All Statuses</option>
+                        <label for="filterType">Transaction Type</label>
+                        <select class="form-select" id="filterType" name="type">
+                            <option value="">All Types</option>
                             <option value="Import">Import</option>
                             <option value="Export">Export</option>
                         </select>
@@ -404,7 +432,7 @@
                             <th>ID</th>
                             <th>Product</th>
                             <th>Serial Number</th>
-                            <th>Status</th>
+                            <th>Type</th>
                             <th>Source</th>
                             <th>Destination</th>
                             <th>Date</th>
@@ -418,19 +446,11 @@
                                 <td class="transaction-id">#${transaction.transactionID}</td>
                                 <td>
                                     <div class="product-info">
-                                        <c:choose>
-                                            <c:when test="${not empty transaction.inventoryItem.product.productImage}">
-                                                <img src="${pageContext.request.contextPath}${transaction.inventoryItem.product.productImage}"
-                                                     alt="${transaction.inventoryItem.product.productName}"
-                                                     class="product-image"
-                                                     onerror="this.src='https://via.placeholder.com/50?text=No+Image'">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <img src="https://via.placeholder.com/50?text=No+Image"
-                                                     alt="No Image"
-                                                     class="product-image">
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <c:if test="${not empty transaction.inventoryItem.product.productImage}">
+                                            <img src="${pageContext.request.contextPath}${transaction.inventoryItem.product.productImage}"
+                                                 alt="${transaction.inventoryItem.product.productName}"
+                                                 class="product-image">
+                                        </c:if>
                                         <div>
                                             <div class="product-name">${transaction.inventoryItem.product.productName}</div>
                                             <small class="text-muted">ID: ${transaction.inventoryItem.product.productID}</small>
@@ -456,10 +476,10 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${not empty transaction.sourceWarehouseEntity}">
+                                        <c:when test="${not empty transaction.sourceWarehouse}">
                                             <span class="warehouse-badge">
                                                 <i class="bi bi-building"></i>
-                                                ${transaction.sourceWarehouseEntity.warehouseName}
+                                                ${transaction.sourceWarehouse.warehouseName}
                                             </span>
                                         </c:when>
                                         <c:otherwise>
@@ -469,10 +489,10 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${not empty transaction.destinationWarehouseEntity}">
+                                        <c:when test="${not empty transaction.destinationWarehouse}">
                                             <span class="warehouse-badge">
                                                 <i class="bi bi-building"></i>
-                                                ${transaction.destinationWarehouseEntity.warehouseName}
+                                                ${transaction.destinationWarehouse.warehouseName}
                                             </span>
                                         </c:when>
                                         <c:otherwise>
@@ -482,12 +502,7 @@
                                 </td>
                                 <td>
                                     <i class="bi bi-calendar3"></i>
-                                    <fmt:formatDate value="${transaction.transactionDate}" pattern="MMM dd, yyyy"/>
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="bi bi-clock"></i>
-                                        <fmt:formatDate value="${transaction.transactionDate}" pattern="HH:mm"/>
-                                    </small>
+                                        ${transaction.transactionDate}
                                 </td>
                                 <td>
                                     <c:choose>
@@ -557,7 +572,7 @@
     });
 
     function applyFilters() {
-        const status = document.getElementById('filterStatus').value.toLowerCase();
+        const type = document.getElementById('filterType').value.toLowerCase();
         const product = document.getElementById('filterProduct').value.toLowerCase();
         const warehouse = document.getElementById('filterWarehouse').value.toLowerCase();
         const date = document.getElementById('filterDate').value;
@@ -566,18 +581,18 @@
 
         $.fn.dataTable.ext.search.push(
             function(settings, data, dataIndex) {
-                const rowStatus = data[3].toLowerCase();
+                const rowType = data[3].toLowerCase();
                 const rowProduct = data[1].toLowerCase();
                 const rowSource = data[4].toLowerCase();
                 const rowDestination = data[5].toLowerCase();
                 const rowDate = data[6];
 
-                let statusMatch = !status || rowStatus.includes(status);
+                let typeMatch = !type || rowType.includes(type);
                 let productMatch = !product || rowProduct.includes(product);
                 let warehouseMatch = !warehouse || rowSource.includes(warehouse) || rowDestination.includes(warehouse);
                 let dateMatch = !date || rowDate.includes(date);
 
-                return statusMatch && productMatch && warehouseMatch && dateMatch;
+                return typeMatch && productMatch && warehouseMatch && dateMatch;
             }
         );
 

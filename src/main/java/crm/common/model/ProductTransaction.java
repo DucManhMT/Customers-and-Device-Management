@@ -34,6 +34,7 @@ public class ProductTransaction {
     @OneToOne(joinColumn = "WarehouseRequestID", mappedBy = "warehouseRequestID")
     private LazyReference<WarehouseRequest> warehouseRequest;
 
+
     public Integer getTransactionID() {
         return transactionID;
     }
@@ -75,19 +76,19 @@ public class ProductTransaction {
         this.inventoryItem = new LazyReference<>(InventoryItem.class, inventoryItem.getItemId());
     }
 
-    public Warehouse getSourceWarehouseEntity() {
+    public Warehouse getSourceWarehouse() {
         return sourceWarehouse.get();
     }
 
-    public void setSourceWarehouseEntity(Warehouse sourceWarehouse) {
+    public void setSourceWarehouse(Warehouse sourceWarehouse) {
         this.sourceWarehouse = new LazyReference<>(Warehouse.class, sourceWarehouse.getWarehouseID());
     }
 
-    public Warehouse getDestinationWarehouseEntity() {
+    public Warehouse getDestinationWarehouse() {
         return destinationWarehouse.get();
     }
 
-    public void setDestinationWarehouseEntity(Warehouse destinationWarehouse) {
+    public void setDestinationWarehouse(Warehouse destinationWarehouse) {
         this.destinationWarehouse = new LazyReference<>(Warehouse.class, destinationWarehouse.getWarehouseID());
     }
 
@@ -98,4 +99,5 @@ public class ProductTransaction {
     public void setWarehouseRequest(WarehouseRequest warehouseRequest) {
         this.warehouseRequest = new LazyReference<>(WarehouseRequest.class, warehouseRequest.getWarehouseRequestID());
     }
+
 }
