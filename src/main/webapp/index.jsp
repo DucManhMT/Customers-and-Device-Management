@@ -763,7 +763,7 @@
                     <p>Your trusted partner for device warranty management and professional repair services.</p>
                     <div class="social-links">
                         <a href="https://hunterskg.itch.io/spending-challenge-ssg"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="https://gifyu.com/image/bxI4U"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-linkedin"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                     </div>
