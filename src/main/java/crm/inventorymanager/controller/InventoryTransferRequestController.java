@@ -1,7 +1,6 @@
 package crm.inventorymanager.controller;
 
 import crm.common.URLConstants;
-import crm.common.model.Account;
 import crm.common.model.Warehouse;
 import crm.common.model.WarehouseRequest;
 import crm.common.model.enums.WarehouseRequestStatus;
@@ -20,13 +19,12 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = URLConstants.INVENTORY_VIEW_TRANSFER_REQUESTS)
 public class InventoryTransferRequestController extends HttpServlet {
+
     EntityManager em = new EntityManager(DBcontext.getConnection());
     WarehouseDAO warehouseDAO = new WarehouseDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        Account account = (Account) req.getSession().getAttribute("account");
 
         List<WarehouseRequest> warehouseRequests = em.findAll(WarehouseRequest.class);
 
@@ -55,6 +53,7 @@ public class InventoryTransferRequestController extends HttpServlet {
                 if (requestToUpdate != null && sourceWarehouse != null) {
                     requestToUpdate.setSourceWarehouse(sourceWarehouse);
                     requestToUpdate.setWarehouseRequestStatus(WarehouseRequestStatus.Accepted);
+
                     em.merge(requestToUpdate, WarehouseRequest.class);
                 }
             } catch (NumberFormatException e) {
