@@ -119,6 +119,22 @@ public class ViewProductRequestController extends HttpServlet {
                     return;
                 }
 
+                if(action.equals("finished")) {
+                    if(productRequest.getActualQuantity() != productRequest.getTotalQuantity()) {
+                        req.getSession().setAttribute("errorMessage", "Cannot finish the request as actual quantity does not match total quantity.");
+                        resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
+                        return;
+                    }
+                }
+
+                if(action.equals("reject")) {
+                    if(productRequest.getActualQuantity() == productRequest.getTotalQuantity()) {
+                        req.getSession().setAttribute("errorMessage", "Cannot reject the request as you already receive all product.");
+                        resp.sendRedirect(req.getContextPath() + URLConstants.TECHEM_VIEW_PRODUCT_REQUESTS);
+                        return;
+                    }
+                }
+
                 boolean isFinished = TechEmProductRequestService.isFinished(productRequest, action);
 
                 if (isFinished) {
