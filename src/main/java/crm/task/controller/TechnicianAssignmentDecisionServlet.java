@@ -198,7 +198,8 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
             return;
         }
 
-        try (Connection conn = DBcontext.getConnection()) {
+        try  {
+            Connection conn = DBcontext.getConnection();
             EntityManager em = new EntityManager(conn);
             Task task = em.find(Task.class, taskId);
             if (task == null) {

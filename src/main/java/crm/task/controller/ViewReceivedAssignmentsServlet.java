@@ -46,7 +46,8 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
             return;
         }
 
-        try (Connection conn = DBcontext.getConnection()) {
+        try {
+            Connection conn = DBcontext.getConnection();
             EntityManager em = new EntityManager(conn);
 
             // Find current tech's Staff record to get StaffID
