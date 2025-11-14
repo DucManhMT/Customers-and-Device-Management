@@ -67,6 +67,7 @@ public class URLConstants {
     public static final String CUSTOMER_SUPPORTER_VIEW_CUSTOMER_CONTRACT = "/customer_supporter/customers_list/contracts";
     public static final String CUSTOMER_SUPPORTER_FINISH_REQUEST = "/customer_supporter/request/finish";
     public static final String CUSTOMER_SUPPORTER_NOT_FINISH_REQUEST = "/customer_supporter/request/not_finish";
+    public static final String CUSTOMER_SUPPORTER_VIEW_ALL_PRODUCTS = "/customer_supporter/customer/products";
 
     // TECHNICAL LEADER
     public static final String TECHLEAD_ACTION_CENTER = "/technician_leader/techlead_actioncenter";
