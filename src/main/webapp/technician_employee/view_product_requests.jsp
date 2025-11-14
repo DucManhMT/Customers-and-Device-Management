@@ -927,7 +927,7 @@
                     </select>
                 </form>
             </div>
-            <c:if test="${currentTask.status != 'Finished' && currentTask.status != 'Cancelled'}">
+            <c:if test="${currentTask.status != 'Finished'}">
             <form action="${pageContext.request.contextPath}/technician_employee/createProductRequests" method="Get">
                 <input type="hidden" name="taskID" value="${currentTask.taskID}">
                 <button class="btn-create" type="submit">
