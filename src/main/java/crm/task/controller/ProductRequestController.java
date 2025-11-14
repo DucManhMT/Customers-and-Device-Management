@@ -75,7 +75,7 @@ public class ProductRequestController extends HttpServlet {
                 String[] selectedProductIds = allSelectedItemIDs.split(",");
                 String[] quantities = allSelectedItemQuantities.split(",");
 
-                boolean isCreated = TechEmpProductRequestService.createProductRequest(task.getRequest(), selectedProductIds, quantities, note);
+                boolean isCreated = TechEmpProductRequestService.createProductRequest(task, selectedProductIds, quantities, note);
 
                 if(isCreated){
                     req.getSession().setAttribute("successMessage", "Product request created successfully.");

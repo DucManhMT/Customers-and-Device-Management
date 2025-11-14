@@ -756,11 +756,11 @@
                             <c:choose>
                                 <c:when test="${req.requestStatus == 'Processing'}">
                                     <form method="GET"
-                                          action="${pageContext.request.contextPath}/technician_employee/createProductRequests"
+                                          action="${pageContext.request.contextPath}/technician_employee/view_product_requests"
                                           style="display: inline; flex: 1;">
                                         <input type="hidden" name="taskID" value="${task.taskID}">
                                         <button type="submit" class="btn btn-outline">
-                                            <i class="fas fa-plus"></i> Create Request
+                                            <i class="fas fa-plus"></i> View Product Request
                                         </button>
                                     </form>
                                 </c:when>
