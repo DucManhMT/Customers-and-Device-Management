@@ -391,11 +391,11 @@
         <div class="filter-card no-print">
             <h5 class="text-white mb-3"><i class="bi bi-funnel me-2"></i>Filters</h5>
             <div class="row g-3" id="filterForm">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">From Date</label>
                     <input type="date" class="form-control" id="filterFromDate">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">To Date</label>
                     <input type="date" class="form-control" id="filterToDate">
                 </div>
@@ -419,13 +419,6 @@
                                     ${pe.productWarehouse.inventoryItem.product.productName}
                             </option>
                         </c:forEach>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Status</label>
-                    <select class="form-select" id="filterStatus">
-                        <option value="">All</option>
-                        <option value="Exported">Exported</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -737,14 +730,12 @@
         var toDate = $('#filterToDate').val();
         var warehouse = $('#filterWarehouse').val();
         var product = $('#filterProduct').val();
-        var status = $('#filterStatus').val();
 
         $.fn.dataTable.ext.search.push(
             function(settings, data, dataIndex) {
                 // Column indices: 0=No, 1=Product, 2=Serial, 3=Status, 4=TaskID, 5=RequestID, 6=Date, 7=Actions
                 var dateStr = data[6];
                 var productStr = data[1];
-                var statusStr = data[3];
 
                 // Filter by date - LocalDate format: YYYY-MM-DD
                 if (dateStr && (fromDate || toDate)) {
@@ -770,11 +761,6 @@
                     return false;
                 }
 
-                // Filter by status
-                if (status && !statusStr.includes(status)) {
-                    return false;
-                }
-
                 // Note: Warehouse filter needs to check against hidden data or modify table structure
                 // For now, we'll skip warehouse filtering in JS since it's not in visible columns
                 // You can add a hidden column with warehouse name if needed
@@ -793,7 +779,6 @@
         $('#filterToDate').val('');
         $('#filterWarehouse').val('');
         $('#filterProduct').val('');
-        $('#filterStatus').val('');
 
         var table = $('#exportedTable').DataTable();
         table.search('').draw();
