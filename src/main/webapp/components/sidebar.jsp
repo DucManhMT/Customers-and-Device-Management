@@ -599,13 +599,6 @@
                         ><span>View Assigned Tasks</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a
-                                class="nav-link ${activePage == 'view_product_requests' ? 'active' : ''}"
-                                href="${pageContext.request.contextPath}/technician_employee/view_product_requests"
-                        ><span>View Product Requests</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
