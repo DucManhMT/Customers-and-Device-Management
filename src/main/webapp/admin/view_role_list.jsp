@@ -259,12 +259,7 @@
                     </a>
                 </div>
 
-                <div class="col-md-3 d-none d-md-block text-end">
-                    <a href="${pageContext.request.contextPath}/admin/role_list/create_role"
-                       class="btn btn-primary w-100">
-                        <i class="bi bi-plus-lg"></i> Add New Role
-                    </a>
-                </div>
+               
             </form>
         </div>
     </div>
