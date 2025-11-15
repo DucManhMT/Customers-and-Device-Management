@@ -228,6 +228,7 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
             request.getRequestDispatcher("/technician_employee/view_received_assignments.jsp").forward(request,
                     response);
 
+
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
