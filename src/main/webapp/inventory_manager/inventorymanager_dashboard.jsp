@@ -186,11 +186,14 @@
 <script>
     // Professional color palette
     const colors = {
-        pending: '#fbbf24',    // Warm amber
-        approved: '#10b981',   // Fresh green
-        rejected: '#ef4444',   // Soft red
-        completed: '#3b82f6',  // Bright blue
-        default: '#6b7280'     // Neutral gray
+        pending: '#fbbf24',      // Warm amber
+        approved: '#10b981',     // Fresh green
+        rejected: '#ef4444',     // Soft red
+        completed: '#3b82f6',    // Bright blue
+        finished: '#8b5cf6',     // Purple
+        transporting: '#f59e0b', // Orange
+        accepted: '#14b8a6',     // Teal
+        default: '#6b7280'       // Neutral gray
     };
 
     const warehouseData = {
@@ -358,27 +361,30 @@
         }
     });
 
-    // Comparison Bar Chart
+    // Comparison Bar Chart - Modified for status-based coloring
     const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+
+    // Get all unique statuses
+    const allStatuses = [...new Set([...Object.keys(warehouseData), ...Object.keys(productData)])];
+
+    // Create datasets for each status
+    const comparisonDatasets = allStatuses.map(status => ({
+        label: status,
+        data: [
+            warehouseData[status] || 0,
+            productData[status] || 0
+        ],
+        backgroundColor: getColorByStatus(status),
+        borderColor: getColorByStatus(status),
+        borderWidth: 0,
+        borderRadius: 6
+    }));
+
     new Chart(comparisonCtx, {
         type: 'bar',
         data: {
-            labels: Object.keys(warehouseData),
-            datasets: [{
-                label: 'Warehouse Requests',
-                data: Object.values(warehouseData),
-                backgroundColor: '#667eea',
-                borderColor: '#667eea',
-                borderWidth: 0,
-                borderRadius: 6
-            }, {
-                label: 'Product Requests',
-                data: Object.values(productData),
-                backgroundColor: '#11998e',
-                borderColor: '#11998e',
-                borderWidth: 0,
-                borderRadius: 6
-            }]
+            labels: ['Warehouse Requests', 'Product Requests'],
+            datasets: comparisonDatasets
         },
         options: {
             responsive: true,
