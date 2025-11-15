@@ -109,6 +109,8 @@ public class URLConstants {
     public static final String WAREHOUSE_EXPORT_INTERNAL = "/warehouse_keeper/export_internal";
     public static final String WAREHOUSE_VIEW_IMPORTED_PRODUCT = "/warehouse_keeper/view_imported_product";
     public static final String WAREHOUSE_VIEW_EXPORTED_PRODUCT = "/warehouse_keeper/view_exported_product";
+    public static final String PRODUCT_VIEW_PRODUCT_TRANSACTION = "/product/view_product_transaction";
+
 
     // INVENTORY MANAGER
     public static final String INVENTORY_DASHBOARD = "/inventory_manager/inventorymanager_dashboard";

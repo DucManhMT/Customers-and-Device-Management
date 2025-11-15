@@ -229,7 +229,7 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
             request.setAttribute("pendingTasks", pendingTasks);
             request.getRequestDispatcher("/technician_employee/view_received_assignments.jsp").forward(request,
                     response);
-            
+
 
         } catch (Exception e) {
             e.printStackTrace();
