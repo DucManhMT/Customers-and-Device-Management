@@ -758,20 +758,23 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <form method="GET" 
+                                            
+                                            <c:if test="${f.feedbackStatus.name() != 'Deleted'}">
+                                                <form method="GET" 
                                                   action="${pageContext.request.contextPath}${URLConstants.CUSTOMER_VIEW_FEEDBACK}">
                                                 <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
                                                 <button type="submit" class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i> View
                                                 </button>
                                             </form>
-                                            <form method="GET" 
-                                                  action="${pageContext.request.contextPath}/feedback/respond">
-                                                <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-reply"></i> Respond
-                                                </button>
-                                            </form>
+                                                <form method="GET" 
+                                                      action="${pageContext.request.contextPath}/feedback/respond">
+                                                    <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-reply"></i> Respond
+                                                    </button>
+                                                </form>
+                                            </c:if>
                                         </div>
                                     </td>
                                 </tr>
@@ -859,25 +862,21 @@
                 const form = document.getElementById('filterForm');
                 if (!form) return;
 
-                // Clear all input fields
                 form.querySelectorAll('input[type="text"]').forEach(input => {
                     if (input.name !== 'page') {
                         input.value = '';
                     }
                 });
 
-                // Reset all select fields to first option
                 form.querySelectorAll('select').forEach(select => {
                     select.selectedIndex = 0;
                 });
 
-                // Set pageSize to default
                 const pageSizeSelect = form.querySelector('select[name="pageSize"]');
                 if (pageSizeSelect) {
                     pageSizeSelect.value = '10';
                 }
 
-                // Reset page to 1
                 const pageInput = form.querySelector('input[name="page"]');
                 if (pageInput) {
                     pageInput.value = '1';
