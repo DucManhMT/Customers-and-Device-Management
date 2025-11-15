@@ -130,6 +130,12 @@
             body { margin-left: 0 !important; padding-top: 90px !important; }
             main.container { padding: 16px; }
         }
+
+        /* small inline validation styling for modal serial input */
+        .modal-serial-input.is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback { display:block; color:#dc3545; font-size:0.85rem; margin-top:4px; }
     </style>
 </head>
 <body>
@@ -153,6 +159,7 @@
             </div>
         </div>
 
+
         <!-- Inline success alert shown when redirected with ?success=1&contractPDF=... -->
         <c:if test="${param.success == '1'}">
             <div id="successAlert" class="upload-success" style="background: linear-gradient(90deg,#ecfdf5,#e6fffa); border:1px solid #bbf7d0;">
@@ -173,10 +180,6 @@
                             <i class="bi bi-download me-1"></i> Download
                         </a>
                     </c:if>
-
-                    <a href="${pageContext.request.contextPath}/customer_supporter/create_contract" class="btn btn-sm btn-secondary">
-                        <i class="bi bi-plus-circle me-1"></i> Upload another
-                    </a>
                 </div>
             </div>
         </c:if>
@@ -189,18 +192,18 @@
               method="post" enctype="multipart/form-data" novalidate>
             <div class="row g-3">
                 <div class="col-md-6">
-                <label for="userName" class="form-label">Customer Username</label>
-                <input type="text" class="form-control" id="userName" name="userName"
-                       placeholder="Enter customer username" value="${account.username}" readonly>
+                    <label for="userName" class="form-label">Customer Username</label>
+                    <input type="text" class="form-control" id="userName" name="userName"
+                           placeholder="Enter customer username" value="${account.username}" readonly>
                 </div>
                 <div class="col-md-6">
-                    <label for="userName" class="form-label">Customer Name</label>
-                    <input type="text" class="form-control" id="userName" name="userName"
-                           placeholder="Enter customer username" value="${customerName}" readonly>
+                    <label for="customerName" class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" name="customerName"
+                           placeholder="Enter customer name" value="${customerName}" readonly>
                 </div>
             </div>
 
-            <div class="row g-3">
+            <div class="row g-3 mt-2">
                 <div class="col-md-6">
                     <label for="startDate" class="form-label">Start Date</label>
                     <input type="date" class="form-control" id="startDate" name="startDate" value="${param.startDate != null ? param.startDate : ''}" required>
@@ -212,6 +215,37 @@
                     <input type="date" class="form-control" id="expireDate" name="expireDate" value="${param.expireDate != null ? param.expireDate : ''}" required>
                     <div class="form-text help-text">Choose contract expiration date.</div>
                 </div>
+            </div>
+
+            <!-- Product List (part of POST form) -->
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                <h5 class="mb-0">Products</h5>
+                <div>
+                    <!-- open modal -->
+                    <button type="button" id="openProductModalBtn" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#productModal">
+                        <i class="bi bi-plus-circle me-1"></i> Add product
+                    </button>
+                </div>
+            </div>
+
+            <div id="productListContainer">
+                <table id="productTable" class="table table-bordered align-middle">
+                    <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Serial</th>
+                        <th style="width:100px;">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                    <!-- Initially empty. JS will add selected products from the modal.
+                         Each added row will include hidden inputs:
+                         <input type="hidden" name="productId[]" value="...">
+                         <input type="hidden" name="serialNumber[]" value="...">
+                    -->
+                    </tbody>
+                </table>
+                <div id="noProductPlaceholder" class="text-muted small">No products selected.</div>
             </div>
 
             <div class="mt-4">
@@ -227,11 +261,10 @@
             <div id="pdfPreviewContainer" class="mt-4" style="display:none;">
                 <h5 class="mb-2"><i class="bi bi-eye me-2"></i>Preview</h5>
                 <iframe id="pdfPreview" width="100%" height="560px" style="display:block;"></iframe>
-
             </div>
 
             <div class="actions">
-                <a href="${pageContext.request.contextPath}/customer_supporter/create_contract" class="btn btn-outline-secondary">
+                <a href="${pageContext.request.contextPath}/customer_supporter/create_contract?id=${account.username}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-clockwise me-1"></i>Clear
                 </a>
                 <button type="submit" id="submitBtn" class="btn btn-primary">
@@ -242,46 +275,95 @@
     </div>
 </main>
 
-<!-- JS: preview and auto-hide success alert -->
+<!-- Product Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Products</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2 d-flex gap-2">
+                    <input type="text" id="productSearchInput" class="form-control" placeholder="Search product name...">
+                </div>
+
+                <div class="table-responsive" style="max-height:420px; overflow:auto;">
+                    <table class="table table-hover table-sm" id="modalProductTable">
+                        <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th style="width:320px;">Serial (enter serial to create inventory item)</th>
+                            <th style="width:120px;">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="prod" items="${products}">
+                            <tr data-productid="${prod.productID}"
+                                data-productname="<c:out value='${prod.productName}'/>">
+                                <td class="modal-prod-name"><c:out value="${prod.productName}"/></td>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm modal-serial-input"
+                                           placeholder="Enter serial number for this product">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary modal-add-one-btn">Add</button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="me-auto text-muted small">When you Add a product, a new InventoryItem will be created from the Product using the serial number you provided and linked to the contract.</div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS: preview, modal product selection and other behaviors -->
 <script>
     (function () {
+        // Preview PDF
         const fileInput = document.getElementById('fileInput');
         const pdfPreview = document.getElementById('pdfPreview');
         const pdfPreviewContainer = document.getElementById('pdfPreviewContainer');
         const fileNameEl = document.getElementById('fileName');
-        const downloadBtn = document.getElementById('downloadContractBtn');
         const maxSizeBytes = 10 * 1024 * 1024; // 10MB
 
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-            if (!file) {
-                pdfPreviewContainer.style.display = 'none';
-                fileNameEl.style.display = 'none';
-                return;
-            }
+        if (fileInput) {
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (!file) {
+                    pdfPreviewContainer.style.display = 'none';
+                    fileNameEl.style.display = 'none';
+                    return;
+                }
 
-            if (file.type !== 'application/pdf') {
-                alert('Please select a PDF file.');
-                fileInput.value = '';
-                return;
-            }
+                if (file.type !== 'application/pdf') {
+                    alert('Please select a PDF file.');
+                    fileInput.value = '';
+                    return;
+                }
 
-            if (file.size > maxSizeBytes) {
-                alert('File is too large. Maximum allowed size is 10MB.');
-                fileInput.value = '';
-                return;
-            }
+                if (file.size > maxSizeBytes) {
+                    alert('File is too large. Maximum allowed size is 10MB.');
+                    fileInput.value = '';
+                    return;
+                }
 
-            const fileUrl = URL.createObjectURL(file);
-            pdfPreview.src = fileUrl;
-            pdfPreviewContainer.style.display = 'block';
-            fileNameEl.style.display = 'block';
-            fileNameEl.textContent = 'Selected file: ' + file.name;
-            downloadBtn.href = fileUrl;
-            downloadBtn.style.display = 'inline-block';
-        });
+                const fileUrl = URL.createObjectURL(file);
+                if (pdfPreview) pdfPreview.src = fileUrl;
+                pdfPreviewContainer.style.display = 'block';
+                fileNameEl.style.display = 'block';
+                fileNameEl.textContent = 'Selected file: ' + file.name;
+            });
+        }
 
-        // Auto-hide the inline success alert after 6 seconds
+        // Auto-hide success alert
         const successAlert = document.getElementById('successAlert');
         if (successAlert) {
             setTimeout(() => {
@@ -289,10 +371,163 @@
                 successAlert.style.opacity = '0';
                 setTimeout(() => successAlert.remove(), 600);
             }, 6000);
-
-            // Scroll to alert so user sees it
             successAlert.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
+
+        // Product modal interactions
+        const modalProductTable = document.getElementById('modalProductTable');
+        const productSearchInput = document.getElementById('productSearchInput');
+        const productTableBody = document.getElementById('productTableBody');
+        const noProductPlaceholder = document.getElementById('noProductPlaceholder');
+
+        function updateNoProductPlaceholder() {
+            const hasRows = productTableBody.querySelectorAll('tr').length > 0;
+            noProductPlaceholder.style.display = hasRows ? 'none' : 'block';
+        }
+
+        updateNoProductPlaceholder();
+
+        // Filter modal list
+        if (productSearchInput) {
+            productSearchInput.addEventListener('input', () => {
+                const q = productSearchInput.value.trim().toLowerCase();
+                const rows = modalProductTable.querySelectorAll('tbody tr');
+                rows.forEach(r => {
+                    const name = (r.querySelector('.modal-prod-name')?.textContent || '').toLowerCase();
+                    const visible = name.includes(q);
+                    r.style.display = visible ? '' : 'none';
+                });
+            });
+        }
+
+        // Helper: show inline error next to serial input
+        function showInlineModalError(inputEl, msg) {
+            clearInlineModalError(inputEl);
+            inputEl.classList.add('is-invalid');
+            const div = document.createElement('div');
+            div.className = 'invalid-feedback';
+            div.textContent = msg;
+            inputEl.parentElement.appendChild(div);
+            inputEl.focus();
+        }
+        function clearInlineModalError(inputEl) {
+            if (!inputEl) return;
+            inputEl.classList.remove('is-invalid');
+            const prev = inputEl.parentElement.querySelector('.invalid-feedback');
+            if (prev) prev.remove();
+        }
+
+        // Add one from modal row (Add button) -> server-side duplicate check before adding
+        modalProductTable.addEventListener('click', (e) => {
+            const addBtn = e.target.closest('.modal-add-one-btn');
+            if (!addBtn) return;
+            const row = addBtn.closest('tr');
+            if (!row) return;
+
+            const productId = row.getAttribute('data-productid');
+            const productName = row.getAttribute('data-productname') || (row.querySelector('.modal-prod-name')?.textContent || '');
+            const serialInput = row.querySelector('.modal-serial-input');
+            const serial = serialInput ? serialInput.value.trim() : '';
+
+            clearInlineModalError(serialInput);
+
+            if (!serial) {
+                showInlineModalError(serialInput, 'Please enter a serial number for the selected product before adding.');
+                return;
+            }
+
+            // Prevent duplicates by productId + serial combination in current UI list
+            const existing = productTableBody.querySelector('tr[data-productid="' + productId + '"][data-serial="' + encodeURIComponent(serial) + '"]');
+            if (existing) {
+                showInlineModalError(serialInput, 'This product with the same serial is already added to the list.');
+                return;
+            }
+
+            // Call server endpoint to check duplicate serial:
+            // endpoint uses SerialGenerator.generateSerial(productId, serial) internally and checks InventoryItem
+            const checkUrl = '${pageContext.request.contextPath}/warehouse_keeper/check_serial_duplicate';
+            const payload = new URLSearchParams();
+            payload.append('productId', productId);
+            payload.append('serial', serial);
+
+            addBtn.disabled = true;
+            fetch(checkUrl, {
+                method: 'POST',
+                body: payload,
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+            }).then(res => {
+                addBtn.disabled = false;
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            }).then(data => {
+                if (data && data.exists) {
+                    showInlineModalError(serialInput, 'Serial already exists in inventory.');
+                    return;
+                }
+                // not exists -> add to table
+                addProductToTable(productId, productName, serial);
+                if (serialInput) serialInput.value = '';
+            }).catch(err => {
+                addBtn.disabled = false;
+                console.error('Error checking serial:', err);
+                // fallback: ask user to confirm adding temporarily (server final check will still run)
+                if (confirm('Could not verify serial on server. Add anyway? The server will still validate on submit.')) {
+                    addProductToTable(productId, productName, serial);
+                    if (serialInput) serialInput.value = '';
+                } else {
+                    // do nothing
+                }
+            });
+        });
+
+        // Helper: add product to main product table
+        function addProductToTable(productId, productName, serial) {
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-productid', productId);
+            tr.setAttribute('data-serial', encodeURIComponent(serial));
+
+            const tdName = document.createElement('td');
+            tdName.innerHTML = '<input type="hidden" name="productId[]" value="' + escapeAttr(productId) + '">'
+                + '<input type="hidden" name="serialNumber[]" value="' + escapeAttr(serial) + '">'
+                + '<span>' + escapeHtml(productName) + '</span>';
+            tr.appendChild(tdName);
+
+            const tdSerial = document.createElement('td');
+            tdSerial.textContent = serial;
+            tr.appendChild(tdSerial);
+
+            const tdAction = document.createElement('td');
+            tdAction.innerHTML = '<button type="button" class="btn btn-sm btn-outline-danger remove-row-btn"><i class="bi bi-trash"></i></button>';
+            tr.appendChild(tdAction);
+
+            productTableBody.appendChild(tr);
+            updateNoProductPlaceholder();
+        }
+
+        // Remove row handler (delegation)
+        productTableBody.addEventListener('click', (e) => {
+            const btn = e.target.closest('.remove-row-btn');
+            if (!btn) return;
+            const tr = btn.closest('tr');
+            if (tr) tr.remove();
+            updateNoProductPlaceholder();
+        });
+
+        // Simple HTML escape for inserted text
+        function escapeHtml(str) {
+            if (str === undefined || str === null) return '';
+            return String(str).replace(/[&<>"']/g, function (m) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+            });
+        }
+        function escapeAttr(str) {
+            return escapeHtml(str).replace(/"/g, '&quot;');
+        }
+
+        // If user loads page with no server-side selected products, show placeholder
+        updateNoProductPlaceholder();
+
     })();
 </script>
 

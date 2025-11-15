@@ -9,13 +9,16 @@ import java.util.Map;
 
 import crm.common.model.Account;
 import crm.common.model.Contract;
+import crm.common.model.Customer;
 import crm.common.model.Request;
+import crm.common.model.Staff;
 import crm.common.model.Task;
 import crm.common.model.enums.OldRequestStatus;
 import crm.common.model.enums.RequestStatus;
 import crm.common.model.enums.TaskStatus;
 import crm.contract.repository.ContractRepository;
 import crm.core.config.TransactionManager;
+import crm.core.service.MailService;
 import crm.service_request.repository.RequestRepository;
 import crm.service_request.repository.persistence.query.common.ClauseBuilder;
 import crm.service_request.repository.persistence.query.common.Order;
@@ -222,16 +225,44 @@ public class RequestService {
 
     }
 
-    public void finishRequest(int requestId, Account account) throws IllegalArgumentException {
+    public void setNotFinishRequest(int requestId, Account account, String mailMessage) {
         Request request = getRequestById(requestId);
         if (request == null) {
             throw new IllegalArgumentException("Request not found");
         }
-        List<Task> tasks = taskRepository.findWithCondition(ClauseBuilder.builder().equal("RequestID", requestId));
-        for (Task task : tasks) {
-            if (task.getStatus() == TaskStatus.Pending || task.getStatus() == TaskStatus.Processing) {
-                throw new IllegalArgumentException("Cannot finish request with incomplete tasks.");
+        try {
+            TransactionManager.beginTransaction();
+            // Capture old status for accurate logging before changing it
+            OldRequestStatus oldStatus = Request.toOldStatus(request.getRequestStatus());
+
+            request.setRequestStatus(RequestStatus.Processing);
+            requestRepository.update(request);
+            requestLogService.createLog(request, "Request Reopened", oldStatus, RequestStatus.Processing, account);
+            Staff latestTechFinishAccount = requestLogService.findLatestTechFinishLogsByRequestId(requestId);
+            // subject contain customer name and request id
+            String customerName = request.getContract().getCustomer().getCustomerName();
+            String subject = "Request Reopened: ID " + requestId;
+            String body = "Customer " + customerName + "'s request ID " + requestId + " has been reopened. \n\nNote: "
+                    + mailMessage;
+            if (latestTechFinishAccount != null) {
+                MailService.sendEmail(latestTechFinishAccount.getEmail(), subject, body);
             }
+            TransactionManager.commit();
+
+        } catch (Exception e) {
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            throw new RuntimeException("Failed to reopen request", e);
+        }
+    }
+
+    public void setFinishRequest(int requestId, Account account) throws IllegalArgumentException {
+        Request request = getRequestById(requestId);
+        if (request == null) {
+            throw new IllegalArgumentException("Request not found");
         }
 
         try {
@@ -239,20 +270,61 @@ public class RequestService {
             // Capture old status for accurate logging before changing it
             OldRequestStatus oldStatus = Request.toOldStatus(request.getRequestStatus());
 
+            Customer customer = request.getContract().getCustomer();
+
             request.setRequestStatus(RequestStatus.Finished);
             request.setFinishedDate(LocalDateTime.now());
             requestRepository.update(request);
             requestLogService.createLog(request, "Request finished.", oldStatus, RequestStatus.Finished, account);
+
+            MailService.sendEmail(customer.getEmail(), "Your service request has been completed",
+                    "Dear " + customer.getCustomerName()
+                            + ",\n\nYour service request with ID " + requestId
+                            + " has been completed successfully.\n\nThank you for choosing our services.");
             TransactionManager.commit();
         } catch (Exception e) {
             try {
                 TransactionManager.rollback();
             } catch (SQLException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            // Propagate the error so the controller can return a failure response instead
-            // of a false success
+            throw new RuntimeException("Failed to finish request", e);
+        }
+    }
+
+    public void setTechFinishRequest(int requestId, Account account) throws IllegalArgumentException {
+        Request request = getRequestById(requestId);
+        if (request == null) {
+            throw new IllegalArgumentException("Request not found");
+        }
+
+        if (request.getRequestStatus() != RequestStatus.Processing) {
+            throw new IllegalArgumentException("Only requests in Processing status can be marked as Tech Finished");
+        }
+
+        List<Task> tasks = taskRepository.findWithCondition(ClauseBuilder.builder().equal("RequestID", requestId).and()
+                .in("Status", List.of(TaskStatus.Pending.toString(), TaskStatus.Processing.toString())));
+        if (!tasks.isEmpty()) {
+            throw new IllegalArgumentException("Cannot finish request with pending or processing tasks");
+        }
+
+        try {
+            TransactionManager.beginTransaction();
+            // Capture old status for accurate logging before changing it
+            OldRequestStatus oldStatus = Request.toOldStatus(request.getRequestStatus());
+
+            request.setRequestStatus(RequestStatus.Tech_Finished);
+            request.setFinishedDate(LocalDateTime.now());
+            requestRepository.update(request);
+            requestLogService.createLog(request, "Technical processing completed successfully.", oldStatus,
+                    RequestStatus.Tech_Finished, account);
+            TransactionManager.commit();
+        } catch (Exception e) {
+            try {
+                TransactionManager.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             throw new RuntimeException("Failed to finish request", e);
         }
     }

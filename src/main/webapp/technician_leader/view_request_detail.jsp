@@ -164,6 +164,11 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         background: #f8d7da;
         color: #721c24;
       }
+
+      .status-Tech_Finished {
+        background: #e2e3ff;
+        color: #383d7c;
+      }
     </style>
   </head>
   <body>
@@ -359,14 +364,21 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           >
             <i class="fas fa-arrow-left"></i> Back to Request List
           </a>
-          <c:if test='${requestObj.requestStatus != "Finished"}'>
+          <c:if
+            test='${requestObj.requestStatus != "Finished" && requestObj.requestStatus != "Tech_Finished"}'
+          >
             <button
               id="finishRequestBtn"
               class="btn btn-success"
               data-request-id="${requestObj.requestID}"
             >
-              <i class="fas fa-check-circle"></i> Finish Request
+              <i class="fas fa-check-circle"></i> Mark Tech Finished
             </button>
+          </c:if>
+          <c:if test='${requestObj.requestStatus == "Tech_Finished"}'>
+            <span class="badge status-Tech_Finished"
+              >Awaiting supporter confirmation</span
+            >
           </c:if>
         </div>
       </c:if>
@@ -381,6 +393,17 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         const modalBody = document.getElementById("modalBody");
         const modalTitle = document.getElementById("modalTitle");
         const errorModal = new bootstrap.Modal(modalEl);
+        let prevFocusedEl = null;
+
+        // Ensure focus is restored outside the hidden modal to avoid aria-hidden warnings
+        modalEl.addEventListener("hidden.bs.modal", () => {
+          if (prevFocusedEl && typeof prevFocusedEl.focus === "function") {
+            try {
+              prevFocusedEl.focus();
+            } catch (_) {}
+          }
+          prevFocusedEl = null;
+        });
 
         async function handleFetch(url, payload, successMessage) {
           try {
@@ -394,12 +417,15 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
               alert(successMessage);
               window.location.reload();
             } else {
+              // Capture currently focused element to restore after modal closes
+              prevFocusedEl = document.activeElement;
               modalTitle.textContent = "Error";
               modalBody.textContent =
                 data.message || data.error || "Operation failed.";
               errorModal.show();
             }
           } catch (err) {
+            prevFocusedEl = document.activeElement;
             modalTitle.textContent = "Error";
             modalBody.textContent = "Server not responding.";
             errorModal.show();
@@ -423,12 +449,12 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         // Finish request
         if (finishBtn) {
           finishBtn.addEventListener("click", function () {
-            if (!confirm("Mark this request as finished?")) return;
+            if (!confirm("Mark this request as technically finished?")) return;
             const requestId = this.dataset.requestId;
             handleFetch(
               "${pageContext.request.contextPath}/technician_leader/request/finish",
               { requestId },
-              "Request marked as finished successfully."
+              "Marked as technically finished."
             );
           });
         }

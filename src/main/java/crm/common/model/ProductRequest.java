@@ -11,8 +11,11 @@ public class ProductRequest {
     @Column(name = "ProductRequestID", type = "INT")
     private Integer productRequestID;
 
-    @Column(name = "Quantity", type = "INT", nullable = false)
-    private Integer quantity;
+    @Column(name = "TotalQuantity", type = "INT", nullable = false)
+    private Integer totalQuantity;
+
+    @Column(name = "ActualQuantity", type = "INT", nullable = false)
+    private Integer actualQuantity;
 
     @Column(name = "RequestDate", type = "DATE", nullable = false)
     private LocalDate requestDate;
@@ -41,12 +44,12 @@ public class ProductRequest {
         this.productRequestID = productRequestID;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     public LocalDate getRequestDate() {
@@ -95,5 +98,13 @@ public class ProductRequest {
 
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = new LazyReference<>(Warehouse.class, warehouse.getWarehouseID());
+    }
+
+    public Integer getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(Integer actualQuantity) {
+        this.actualQuantity = actualQuantity;
     }
 }

@@ -340,10 +340,10 @@
                                 </span>
                                 <c:set var="statusClass" value="bg-secondary"/>
                                 <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass" value="bg-info"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Transporting'}"><c:set var="statusClass" value="bg-info"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Completed'}"><c:set var="statusClass" value="bg-success"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Finished'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
                             </div>
                             <div class="card-body p-4">
@@ -374,7 +374,7 @@
                                                 <small class="text-muted">Product ID: ${req.product.productID}</small>
                                             </div>
                                             <span class="quantity-badge">
-                                                <i class="fas fa-cubes me-1"></i>${req.quantity}
+                                                <i class="fas fa-cubes me-1"></i>${req.totalQuantity}
                                             </span>
                                         </div>
                                     </div>
@@ -389,13 +389,13 @@
 
                                 <div class="mt-4">
                                     <c:choose>
-                                        <c:when test="${req.warehouseRequestStatus == 'Processing'}">
+                                        <c:when test="${req.warehouseRequestStatus == 'Transporting'}">
                                             <button type="button" class="btn btn-process w-100" data-bs-toggle="modal"
                                                     data-bs-target="#processRequestModal-${req.warehouseRequestID}">
                                                 <i class="fas fa-cogs me-2"></i>Process Request
                                             </button>
                                         </c:when>
-                                        <c:when test="${req.warehouseRequestStatus == 'Completed' || req.warehouseRequestStatus == 'Accepted'}">
+                                        <c:when test="${req.warehouseRequestStatus == 'Finished' || req.warehouseRequestStatus == 'Accepted'}">
                                             <button type="button" class="btn btn-processed w-100" disabled>
                                                 <i class="fas fa-check-circle me-2"></i>${req.warehouseRequestStatus}
                                             </button>
@@ -405,7 +405,7 @@
                             </div>
                         </div>
 
-                        <c:if test="${req.warehouseRequestStatus == 'Processing'}">
+                        <c:if test="${req.warehouseRequestStatus == 'Transporting'}">
                             <div class="modal fade" id="processRequestModal-${req.warehouseRequestID}" tabindex="-1"
                                  aria-labelledby="processRequestModalLabel-${req.warehouseRequestID}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">

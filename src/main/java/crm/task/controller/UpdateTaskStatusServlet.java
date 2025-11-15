@@ -63,7 +63,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 
                 boolean hasPendingRequests = productRequests.stream()
                     .anyMatch(pr -> pr.getStatus() == ProductRequestStatus.Pending 
-                                 || pr.getStatus() == ProductRequestStatus.Processing
+                                 || pr.getStatus() == ProductRequestStatus.Transporting
                                  || pr.getStatus() == ProductRequestStatus.Accepted);
                 
                 if (hasPendingRequests) {

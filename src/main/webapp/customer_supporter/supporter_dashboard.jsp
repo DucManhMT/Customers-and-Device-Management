@@ -186,6 +186,9 @@ uri="jakarta.tags.core" prefix="c" %>
           var(--primary-light)
         );
       }
+      .icon-tech-finish {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      }
       .stat-content {
         display: flex;
         flex-direction: column;
@@ -225,10 +228,11 @@ uri="jakarta.tags.core" prefix="c" %>
           </div>
           <div class="quick-actions">
             <a
-              href="${pageContext.request.contextPath}/customer_supporter/create_contract"
+              href="${pageContext.request.contextPath}/customer_supporter/customers_list"
               class="btn btn-outline"
-              ><i class="fas fa-file-signature"></i> Create Contract</a
+              ><i class="fas fa-file-signature"></i> Customer List</a
             >
+
             <a
               href="${pageContext.request.contextPath}/customer_supporter/requests/dashboard"
               class="btn btn-success"
@@ -280,6 +284,15 @@ uri="jakarta.tags.core" prefix="c" %>
               <div class="stat-content">
                 <div class="stat-number">${requestStats.Processing}</div>
                 <div class="stat-label">Processing</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="icon icon-tech-finish">
+                <i class="fas fa-wrench"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number">${requestStats.Tech_Finished}</div>
+                <div class="stat-label">Tech Finished</div>
               </div>
             </div>
             <div class="stat">

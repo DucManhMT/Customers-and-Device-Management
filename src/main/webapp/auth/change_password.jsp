@@ -407,8 +407,8 @@
 
         <!-- Back Link -->
         <div class="back-link">
-            <a href="${pageContext.request.contextPath}/dashboard">
-                <i class="bi bi-arrow-left"></i>Back to Dashboard
+            <a href="${pageContext.request.contextPath}/auth/logout">
+                <i class="bi bi-arrow-left"></i>Back to Home
             </a>
         </div>
     </div>

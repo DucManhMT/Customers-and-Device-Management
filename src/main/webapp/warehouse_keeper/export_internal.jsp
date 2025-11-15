@@ -364,10 +364,10 @@
                                 </span>
                                 <c:set var="statusClass" value="bg-secondary"/>
                                 <c:if test="${req.warehouseRequestStatus == 'Pending'}"><c:set var="statusClass" value="bg-warning text-dark"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Processing'}"><c:set var="statusClass" value="bg-info"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Transporting'}"><c:set var="statusClass" value="bg-info"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Accepted'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <c:if test="${req.warehouseRequestStatus == 'Rejected'}"><c:set var="statusClass" value="bg-danger"/></c:if>
-                                <c:if test="${req.warehouseRequestStatus == 'Completed'}"><c:set var="statusClass" value="bg-success"/></c:if>
+                                <c:if test="${req.warehouseRequestStatus == 'Finished'}"><c:set var="statusClass" value="bg-success"/></c:if>
                                 <span class="badge ${statusClass} status-badge">${req.warehouseRequestStatus}</span>
                             </div>
                             <div class="card-body p-4">
@@ -397,7 +397,7 @@
                                             <small class="text-muted">Product ID: ${req.product.productID}</small>
                                         </div>
                                         <span class="quantity-badge">
-                                            <i class="fas fa-cubes me-1"></i>${req.quantity}
+                                            <i class="fas fa-cubes me-1"></i>${req.totalQuantity}
                                         </span>
                                     </div>
                                 </div>
@@ -444,7 +444,7 @@
                                                 <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
                                                     <p class="mb-0">
                                                         <i class="fas fa-info-circle text-primary me-2"></i>
-                                                        Select exactly <strong>${req.quantity}</strong> item(s) to export
+                                                        Select exactly <strong>${req.totalQuantity}</strong> item(s) to export
                                                     </p>
                                                 </div>
                                                 <c:choose>
@@ -475,7 +475,7 @@
                                                             </table>
                                                         </div>
                                                         <div class="selection-counter">
-                                                            Selected: <span class="count current-selection">0</span> / ${req.quantity}
+                                                            Selected: <span class="count current-selection">0</span> / ${req.totalQuantity}
                                                         </div>
                                                     </c:when>
                                                     <c:otherwise>

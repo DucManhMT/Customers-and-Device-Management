@@ -18,6 +18,7 @@
         <option value="Approved" ${status == 'Approved' ? 'selected' : ''}>Approved</option>
         <option value="Processing" ${status == 'Processing' ? 'selected' : ''}>Processing</option>
         <option value="Rejected" ${status == 'Rejected' ? 'selected' : ''}>Rejected</option>
+        <option value="Tech_Finished" ${status == 'Tech_Finished' ? 'selected' : ''}>Tech Finished</option>
         <option value="Finished" ${status == 'Finished' ? 'selected' : ''}>Finished</option>
     </select>
 </div>

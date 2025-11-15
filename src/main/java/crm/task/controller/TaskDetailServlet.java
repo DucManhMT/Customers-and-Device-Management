@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @WebServlet(name = "RequestDetailServlet", urlPatterns = {URLConstants.REQUSET_DETAIL})
 public class TaskDetailServlet extends HttpServlet {
 
@@ -51,7 +52,8 @@ public class TaskDetailServlet extends HttpServlet {
             return;
         }
 
-        try (Connection connection = DBcontext.getConnection()) {
+        try  {
+            Connection connection = DBcontext.getConnection();
             int taskId = Integer.parseInt(taskIdStr);
             EntityManager entityManager = new EntityManager(connection);
 

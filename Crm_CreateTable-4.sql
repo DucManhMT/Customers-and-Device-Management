@@ -166,8 +166,8 @@ CREATE TABLE AccountRequest(
 CREATE TABLE RequestLog (
                             RequestLogID INT PRIMARY KEY,
                             ActionDate DATE,
-                            OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing'),
-                            NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing'),
+                            OldStatus ENUM('Pending', 'Approved', 'Rejected','Processing', 'Tech_Finished'),
+                            NewStatus ENUM('Pending', 'Approved', 'Rejected', 'Finished','Processing', 'Tech_Finished'),
                             Description NVARCHAR(255),
                             RequestID INT NOT NULL,
                             Username NVARCHAR(100),
@@ -220,10 +220,11 @@ CREATE TABLE Village (
 CREATE TABLE WarehouseRequest(
                                  WarehouseRequestID int NOT NULL PRIMARY KEY ,
                                  Date DATETIME,
-                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Processing'),
+                                 WarehouseRequestStatus ENUM('Pending','Accepted','Rejected', 'Transporting', 'Finished') DEFAULT 'Pending',
                                  Note nvarchar(255),
                                  ProductID INT,
-                                 Quantity INT,
+                                 TotalQuantity INT,
+                                 ActualQuantity INT,
                                  SourceWarehouse INT,
                                  DestinationWarehouse INT,
                                  FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
@@ -281,9 +282,10 @@ CREATE TABLE Task (
 
 CREATE TABLE ProductRequest (
                                 ProductRequestID INT PRIMARY KEY,
-                                Quantity INT NOT NULL,
+                                TotalQuantity INT,
+                                ActualQuantity INT,
                                 RequestDate DATE NOT NULL,
-                                Status ENUM('Pending', 'Accepted', 'Rejected', 'Finished', 'Processing') DEFAULT ('Pending'),
+                                Status ENUM('Pending', 'Accepted', 'Rejected', 'Finished', 'Transporting') DEFAULT ('Pending'),
                                 Description NVARCHAR(255),
                                 TaskID INT NOT NULL,
                                 ProductID INT NOT NULL,

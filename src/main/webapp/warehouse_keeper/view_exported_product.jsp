@@ -295,6 +295,31 @@
             font-size: 14px;
         }
 
+        .quantity-badge {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .staff-info {
+            background-color: #fff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .staff-info .staff-name {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .staff-info .staff-detail {
+            color: #6c757d;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
         @media print {
             .filter-card, .page-header button, .no-print {
                 display: none !important;
@@ -391,11 +416,11 @@
         <div class="filter-card no-print">
             <h5 class="text-white mb-3"><i class="bi bi-funnel me-2"></i>Filters</h5>
             <div class="row g-3" id="filterForm">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">From Date</label>
                     <input type="date" class="form-control" id="filterFromDate">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">To Date</label>
                     <input type="date" class="form-control" id="filterToDate">
                 </div>
@@ -419,13 +444,6 @@
                                     ${pe.productWarehouse.inventoryItem.product.productName}
                             </option>
                         </c:forEach>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Status</label>
-                    <select class="form-select" id="filterStatus">
-                        <option value="">All</option>
-                        <option value="Exported">Exported</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -540,8 +558,6 @@
                                                 <div class="col-md-6 mb-3">
                                                     <div class="info-section">
                                                         <h6><i class="bi bi-box-seam me-2"></i>Product Information</h6>
-                                                        <p><strong>Product Warehouse ID:</strong> ${productWarehouse.productWarehouseID}</p>
-                                                        <p><strong>Product ID:</strong> ${product.productID}</p>
                                                         <p><strong>Product Name:</strong> ${product.productName}</p>
                                                         <p><strong>Description:</strong>
                                                             <c:choose>
@@ -558,7 +574,6 @@
                                                 <div class="col-md-6 mb-3">
                                                     <div class="info-section">
                                                         <h6><i class="bi bi-upc-scan me-2"></i>Inventory Information</h6>
-                                                        <p><strong>Item ID:</strong> ${inventoryItem.itemId}</p>
                                                         <p><strong>Serial Number:</strong>
                                                             <br>
                                                             <span class="serial-code mt-1">
@@ -577,15 +592,48 @@
                                                 <div class="col-md-6 mb-3">
                                                     <div class="info-section">
                                                         <h6><i class="bi bi-building me-2"></i>Warehouse Information</h6>
-                                                        <p><strong>Warehouse ID:</strong> ${warehouse.warehouseID}</p>
                                                         <p><strong>Warehouse Name:</strong> ${warehouse.warehouseName}</p>
                                                         <p><strong>Location:</strong> ${warehouse.location}</p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <div class="info-section">
+                                                        <h6><i class="bi bi-people me-2"></i>Staff Assignment</h6>
+                                                        <div class="staff-info">
+                                                            <div class="d-flex align-items-center">
+                                                                <i class="bi bi-person-badge me-2" style="font-size: 20px; color: #667eea;"></i>
+                                                                <div>
+                                                                    <div class="staff-name">
+                                                                        <i class="bi bi-arrow-down-circle me-1"></i>Assigned By
+                                                                    </div>
+                                                                    <div class="staff-detail">${task.assignBy.staffName}</div>
+                                                                    <div class="staff-detail">
+                                                                        <i class="bi bi-envelope me-1"></i>${task.assignBy.email}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="staff-info">
+                                                            <div class="d-flex align-items-center">
+                                                                <i class="bi bi-person-check me-2" style="font-size: 20px; color: #11998e;"></i>
+                                                                <div>
+                                                                    <div class="staff-name">
+                                                                        <i class="bi bi-arrow-right-circle me-1"></i>Assigned To
+                                                                    </div>
+                                                                    <div class="staff-detail">${task.assignTo.staffName}</div>
+                                                                    <div class="staff-detail">
+                                                                        <i class="bi bi-envelope me-1"></i>${task.assignTo.email}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="info-section">
                                                         <h6><i class="bi bi-clipboard-check me-2"></i>Task Information</h6>
-                                                        <p><strong>Task ID:</strong> #${task.taskID}</p>
                                                         <p><strong>Description:</strong>
                                                             <c:choose>
                                                                 <c:when test="${not empty task.description}">
@@ -606,14 +654,17 @@
                                                         </c:if>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <div class="info-section">
                                                         <h6><i class="bi bi-file-text me-2"></i>Request Information</h6>
-                                                        <p><strong>Request ID:</strong> #${productRequest.productRequestID}</p>
-                                                        <p><strong>Quantity:</strong>
-                                                            <span class="badge bg-dark">${productRequest.quantity}</span>
+                                                        <p><strong>Quantities:</strong>
+                                                            <br>
+                                                            <span class="badge bg-primary quantity-badge">
+                                                                <i class="bi bi-cart-fill me-1"></i>Total: ${productRequest.totalQuantity}
+                                                            </span>
+                                                            <span class="badge bg-success quantity-badge">
+                                                                <i class="bi bi-check-circle-fill me-1"></i>Actual: ${productRequest.actualQuantity}
+                                                            </span>
                                                         </p>
                                                         <p><strong>Request Date:</strong> ${productRequest.requestDate}</p>
                                                         <p><strong>Status:</strong>
@@ -631,10 +682,11 @@
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 mb-3">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
                                                     <div class="info-section">
                                                         <h6><i class="bi bi-journal-text me-2"></i>Log Information</h6>
-                                                        <p><strong>Log ID:</strong> #${warehouseLog.warehouseLogID}</p>
                                                         <p><strong>Log Date:</strong>
                                                             <span class="date-badge">
                                                                 <i class="bi bi-calendar-check me-1"></i>${warehouseLog.logDate}
@@ -737,14 +789,12 @@
         var toDate = $('#filterToDate').val();
         var warehouse = $('#filterWarehouse').val();
         var product = $('#filterProduct').val();
-        var status = $('#filterStatus').val();
 
         $.fn.dataTable.ext.search.push(
             function(settings, data, dataIndex) {
                 // Column indices: 0=No, 1=Product, 2=Serial, 3=Status, 4=TaskID, 5=RequestID, 6=Date, 7=Actions
                 var dateStr = data[6];
                 var productStr = data[1];
-                var statusStr = data[3];
 
                 // Filter by date - LocalDate format: YYYY-MM-DD
                 if (dateStr && (fromDate || toDate)) {
@@ -770,15 +820,6 @@
                     return false;
                 }
 
-                // Filter by status
-                if (status && !statusStr.includes(status)) {
-                    return false;
-                }
-
-                // Note: Warehouse filter needs to check against hidden data or modify table structure
-                // For now, we'll skip warehouse filtering in JS since it's not in visible columns
-                // You can add a hidden column with warehouse name if needed
-
                 return true;
             }
         );
@@ -793,7 +834,6 @@
         $('#filterToDate').val('');
         $('#filterWarehouse').val('');
         $('#filterProduct').val('');
-        $('#filterStatus').val('');
 
         var table = $('#exportedTable').DataTable();
         table.search('').draw();
