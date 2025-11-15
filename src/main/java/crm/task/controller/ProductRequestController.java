@@ -14,7 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = URLConstants.TECHEM_CREATE_PRODUCT_REQUEST)
 public class ProductRequestController extends HttpServlet {
@@ -25,6 +27,7 @@ public class ProductRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String taskIdStr = req.getParameter("taskID");
+
 
         try {
             int taskId = Integer.parseInt(taskIdStr);
@@ -40,12 +43,31 @@ public class ProductRequestController extends HttpServlet {
             throw new RuntimeException(e);
         }
 
+        String productNameFilter = req.getParameter("productName");
+
+        String productTypeFilter = req.getParameter("productType");
+
+
         List<Type> types = em.findAll(Type.class);
         List<Product> products = productDAO.findAllIncludeSpec();
+
+        if (productNameFilter != null && !productNameFilter.isEmpty()) {
+            products = products.stream()
+                    .filter(p -> p.getProductName().toLowerCase().contains(productNameFilter.toLowerCase()))
+                    .collect(Collectors.toCollection(LinkedList::new));
+        }
+
+        if (productTypeFilter != null && !productTypeFilter.isEmpty()) {
+            products = products.stream()
+                    .filter(p -> p.getType().getTypeID() == Integer.parseInt(productTypeFilter))
+                    .collect(Collectors.toCollection(LinkedList::new));
+        }
 
         req.setAttribute("taskIdStr", taskIdStr);
         req.setAttribute("uniqueProductTypes", types);
         req.setAttribute("products", products);
+        req.setAttribute("productName", productNameFilter);
+        req.setAttribute("productType", productTypeFilter);
         req.getRequestDispatcher("/technician_employee/create_product_request.jsp").forward(req, resp);
     }
 
