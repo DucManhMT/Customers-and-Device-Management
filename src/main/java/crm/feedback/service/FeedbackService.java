@@ -273,11 +273,23 @@ public class FeedbackService {
 
     public Page<Feedback> getFeedbackByUsernamePaginated(String username, int page,
             int recordsPerPage) throws SQLException {
+        return getFeedbackByUsernamePaginated(username, page, recordsPerPage, null);
+    }
+
+    public Page<Feedback> getFeedbackByUsernamePaginated(String username, int page,
+            int recordsPerPage, Integer roleId) throws SQLException {
         try {
             List<Feedback> allFeedbacks = feedbackDAO.findActiveFeedbacks();
             List<Feedback> userFeedbacks = new ArrayList<>();
 
             for (Feedback feedback : allFeedbacks) {
+                // Skip deleted feedbacks for customers (roleId = 2), but not for supporters (roleId = 3)
+                if (feedback.getFeedbackStatus() != null 
+                        && feedback.getFeedbackStatus().name().equalsIgnoreCase("Deleted")
+                        && roleId != null && roleId == 2) {
+                    continue;
+                }
+
                 if (username != null && feedback.getCustomerID() != null && feedback.getCustomerID().equals(username)) {
                     userFeedbacks.add(feedback);
                 }
@@ -352,6 +364,13 @@ public class FeedbackService {
 
             for (Feedback feedback : allFeedbacks) {
                 boolean matches = true;
+
+                // Skip deleted feedbacks for customers (roleId = 2), but not for supporters (roleId = 3)
+                if (feedback.getFeedbackStatus() != null 
+                        && feedback.getFeedbackStatus().name().equalsIgnoreCase("Deleted")
+                        && roleId != null && roleId == 2) {
+                    continue;
+                }
 
                 if (usernameNorm != null && !usernameNorm.isEmpty()) {
                     String cust = feedback.getCustomerID();

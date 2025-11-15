@@ -859,25 +859,21 @@
                 const form = document.getElementById('filterForm');
                 if (!form) return;
 
-                // Clear all input fields
                 form.querySelectorAll('input[type="text"]').forEach(input => {
                     if (input.name !== 'page') {
                         input.value = '';
                     }
                 });
 
-                // Reset all select fields to first option
                 form.querySelectorAll('select').forEach(select => {
                     select.selectedIndex = 0;
                 });
 
-                // Set pageSize to default
                 const pageSizeSelect = form.querySelector('select[name="pageSize"]');
                 if (pageSizeSelect) {
                     pageSizeSelect.value = '10';
                 }
 
-                // Reset page to 1
                 const pageInput = form.querySelector('input[name="page"]');
                 if (pageInput) {
                     pageInput.value = '1';
