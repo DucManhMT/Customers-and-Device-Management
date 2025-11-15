@@ -47,7 +47,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         String query = "SELECT count(*) FROM " + tableName;
         Connection connection = DBcontext.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery()) {
+             ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
             }
@@ -105,7 +105,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             if (pageRequest.getOrders() != null && !pageRequest.getOrders().isEmpty()) {
                 builder.orderBy(pageRequest.getOrders());
             } else if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) { // backward
-                                                                                                        // compat
+                // compat
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
             try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
@@ -151,7 +151,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
 
     @Override
     public List<E> findWithCondition(ClauseBuilder clause) {
-        List<E> results = null;
+        List<E> results = new ArrayList<>();
         SelectQueryBuilder builder = SelectQueryBuilder.builder(tableName).columns(columns).where(clause);
         Connection connection = DBcontext.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(builder.build());) {
@@ -182,7 +182,7 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
             if (pageRequest.getOrders() != null && !pageRequest.getOrders().isEmpty()) {
                 builder.orderBy(pageRequest.getOrders());
             } else if (pageRequest.getSort() != null && !pageRequest.getSort().getOrders().isEmpty()) { // backward
-                                                                                                        // compat
+                // compat
                 builder.orderBy(pageRequest.getSort().getOrders());
             }
             try (PreparedStatement statement = connection.prepareStatement(builder.build());) {

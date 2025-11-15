@@ -459,7 +459,8 @@
                                     <textarea id="note" name="note" class="form-control"
                                               placeholder="Add any additional information..."></textarea>
                                 </div>
-                                <button type="submit" id="create-request-btn" class="btn btn-create-request w-100" disabled>
+                                <button type="submit" id="create-request-btn" class="btn btn-create-request w-100"
+                                        disabled>
                                     <i class="fas fa-paper-plane me-2"></i>Create Transfer Request
                                 </button>
                             </div>
@@ -479,6 +480,52 @@
         const emptyCartMsg = document.getElementById('cart-empty-msg');
         const createRequestBtn = document.getElementById('create-request-btn');
         const form = document.getElementById('transfer-request-form');
+        const filterForm = document.querySelector('.filter-section form');
+
+        // Load cart from URL parameters
+        function loadCart() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cartData = urlParams.get('cartData');
+
+            if (cartData) {
+                try {
+                    const items = JSON.parse(decodeURIComponent(cartData));
+                    items.forEach(item => {
+                        cart.set(item.productId, {
+                            name: item.name,
+                            quantity: item.quantity
+                        });
+                    });
+                } catch (e) {
+                    console.error('Error loading cart:', e);
+                }
+            }
+        }
+
+        // Add cart data to filter form
+        function attachCartToFilterForm() {
+            const existingCartInput = filterForm.querySelector('input[name="cartData"]');
+            if (existingCartInput) {
+                existingCartInput.remove();
+            }
+
+            if (cart.size > 0) {
+                const cartData = [];
+                cart.forEach((item, productId) => {
+                    cartData.push({
+                        productId: productId,
+                        name: item.name,
+                        quantity: item.quantity
+                    });
+                });
+
+                const cartInput = document.createElement('input');
+                cartInput.type = 'hidden';
+                cartInput.name = 'cartData';
+                cartInput.value = encodeURIComponent(JSON.stringify(cartData));
+                filterForm.appendChild(cartInput);
+            }
+        }
 
         function renderCart() {
             const items = cartContainer.querySelectorAll('.cart-item');
@@ -527,6 +574,7 @@
                 });
             }
             updateButtonStates();
+            attachCartToFilterForm();
         }
 
         function updateButtonStates() {
@@ -585,6 +633,7 @@
                     }
                     input.value = newQuantity;
                     item.quantity = newQuantity;
+                    attachCartToFilterForm();
                 }
             }
         });
@@ -610,8 +659,11 @@
             form.appendChild(quantitiesInput);
         });
 
+        // Initialize
+        loadCart();
         renderCart();
     });
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
