@@ -203,6 +203,33 @@ public class AssignTaskController extends HttpServlet {
             return;
         }
 
+        if (description.length() > 255) {
+            errors.add("Description cannot exceed 255 characters.");
+            req.setAttribute("errors", errors);
+            req.setAttribute("requestObj", request);
+            req.setAttribute(PARAM_ASSIGN_TO, assignTo);
+            req.setAttribute("assignBy", assignBy);
+            req.setAttribute(PARAM_REQUEST_ID, requestId);
+            req.setAttribute("assignToId", assignToId);
+            req.setAttribute(PARAM_START_DATE, startDateStr);
+            req.setAttribute(PARAM_DEADLINE, deadlineStr);
+            req.setAttribute(PARAM_DESCRIPTION, description);
+            if (assignToId != null) {
+                List<Task> assignToTasks = taskService.getTasksByStaffId(assignToId).stream()
+                        .filter(t -> t.getStatus().equals(TaskStatus.Processing)
+                                || t.getStatus().equals(TaskStatus.Pending))
+                        .toList();
+                req.setAttribute("assignToTasks", assignToTasks);
+            }
+            try {
+                doGet(req, resp);
+            } catch (ServletException | IOException e) {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+            return;
+        }
+
+
         // Create task
         if (assignBy != null && assignTo != null) {
             Task created = taskService.createTask(assignBy.getStaffID(), assignTo.getStaffID(), requestId,

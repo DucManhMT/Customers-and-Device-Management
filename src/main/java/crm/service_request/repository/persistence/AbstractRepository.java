@@ -229,7 +229,6 @@ public abstract class AbstractRepository<E, K> implements CrudRepository<E, K> {
         try (PreparedStatement statement = connection.prepareStatement(insertBuilder.build())) {
             setStatementParameters(statement, insertBuilder.getParameters());
             statement.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
