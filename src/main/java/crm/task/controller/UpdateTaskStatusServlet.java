@@ -15,18 +15,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = { URLConstants.TECHEM_UPDATE_TASK_STATUS })
+@WebServlet(name = "UpdateTaskStatusServlet", urlPatterns = {URLConstants.TECHEM_UPDATE_TASK_STATUS})
 public class UpdateTaskStatusServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        EntityManager entityManager = new EntityManager(DBcontext.getConnection());
 
         String taskIdStr = request.getParameter("taskId");
         String newStatus = request.getParameter("status");
@@ -36,13 +36,10 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             return;
         }
 
-        Connection connection = null;
-
         try {
             int taskId = Integer.parseInt(taskIdStr);
-            connection = DBcontext.getConnection();
-            connection.setAutoCommit(false);
-            EntityManager entityManager = new EntityManager(connection);
+
+            entityManager.beginTransaction();
 
             Task task = entityManager.find(Task.class, taskId);
             if (task == null) {
@@ -60,12 +57,12 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 Map<String, Object> conditions = new HashMap<>();
                 conditions.put("task", taskId);
                 List<ProductRequest> productRequests = entityManager.findWithConditions(ProductRequest.class, conditions);
-                
+
                 boolean hasPendingRequests = productRequests.stream()
-                    .anyMatch(pr -> pr.getStatus() == ProductRequestStatus.Pending 
-                                 || pr.getStatus() == ProductRequestStatus.Transporting
-                                 || pr.getStatus() == ProductRequestStatus.Accepted);
-                
+                        .anyMatch(pr -> pr.getStatus() == ProductRequestStatus.Pending
+                                || pr.getStatus() == ProductRequestStatus.Transporting
+                                || pr.getStatus() == ProductRequestStatus.Accepted);
+
                 if (hasPendingRequests) {
                     request.getSession().setAttribute("errorMessage", "Cannot mark task as finished. There are still pending product requests.");
                     response.sendRedirect(request.getContextPath() + URLConstants.TECHEM_VIEW_ASSIGNED_TASK);
@@ -76,7 +73,7 @@ public class UpdateTaskStatusServlet extends HttpServlet {
                 task.setEndDate(LocalDateTime.now());
                 entityManager.merge(task, Task.class);
 
-                connection.commit();
+                entityManager.commit();
 
                 request.getSession().setAttribute("successMessage",
                         "Task #" + taskId + " has been marked as finished successfully!");
@@ -86,22 +83,22 @@ public class UpdateTaskStatusServlet extends HttpServlet {
             }
 
         } catch (NumberFormatException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+
+            try {
+                entityManager.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         } catch (Exception e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+
+            try {
+                entityManager.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error updating task status: " + e.getMessage());
         }

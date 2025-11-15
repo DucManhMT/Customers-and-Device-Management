@@ -1,7 +1,6 @@
 package crm.task.service;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +29,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class SelectTechnicianService {
     private final int TECHEM_ROLE_ID = 6;
+
+    EntityManager entityManager = new EntityManager(DBcontext.getConnection());
+
 
     public void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -64,8 +66,7 @@ public class SelectTechnicianService {
         } catch (NumberFormatException e) {
         }
 
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager entityManager = new EntityManager(connection);
+        try {
 
             List<Integer> taskIds = Arrays.stream(selectedTaskIds)
                     .map(Integer::parseInt)

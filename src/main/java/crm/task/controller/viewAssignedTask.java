@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -24,6 +23,8 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "viewAssignedTask", urlPatterns = { URLConstants.TECHEM_VIEW_ASSIGNED_TASK })
 public class viewAssignedTask extends HttpServlet {
+
+    EntityManager entityManager = new EntityManager(DBcontext.getConnection());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -82,11 +83,7 @@ public class viewAssignedTask extends HttpServlet {
             request.getSession().removeAttribute("errorMessage");
         }
 
-        Connection connection = null;
         try {
-            connection = DBcontext.getConnection();
-            EntityManager entityManager = new EntityManager(connection);
-
             Account account = (Account) request.getSession().getAttribute("account");
             if (account == null) {
                 response.sendRedirect(request.getContextPath() + URLConstants.AUTH_CUSTOMER_LOGIN);

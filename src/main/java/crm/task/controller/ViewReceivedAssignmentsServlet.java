@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
@@ -25,6 +24,8 @@ import java.time.LocalTime;
 
 @WebServlet(name = "ViewReceivedAssignmentsServlet", urlPatterns = { URLConstants.TASK_VIEW_RECEIVED_ASSIGNMENTS })
 public class ViewReceivedAssignmentsServlet extends HttpServlet {
+
+    EntityManager em = new EntityManager(DBcontext.getConnection());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -47,9 +48,6 @@ public class ViewReceivedAssignmentsServlet extends HttpServlet {
         }
 
         try {
-            Connection conn = DBcontext.getConnection();
-            EntityManager em = new EntityManager(conn);
-
             // Find current tech's Staff record to get StaffID
             List<Staff> allStaff = em.findAll(Staff.class);
             Staff currentStaff = allStaff.stream()

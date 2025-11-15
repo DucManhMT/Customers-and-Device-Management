@@ -294,15 +294,6 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <a href="${pageContext.request.contextPath}/admin/role_list/view_role_detail?id=${role.roleID}"
-                               class="btn action-btn btn-view me-1" title="View">
-                                <i class="bi bi-eye"></i>
-                            </a>
-
-                            <a href="${pageContext.request.contextPath}/admin/role_list/edit_role?id=${role.roleID}"
-                               class="btn action-btn btn-edit me-1" title="Edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
 
                             <form action="${pageContext.request.contextPath}/admin/role_list" method="post" class="d-inline">
                                 <input type="hidden" name="action"

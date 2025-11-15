@@ -386,10 +386,6 @@
                                     <button type="submit" class="btn btn-primary filter-btn flex-grow-1">
                                         <i class="fas fa-filter me-1"></i>Filter
                                     </button>
-                                    <a href="${pageContext.request.contextPath}/warehouse_keeper/create_transfer_request"
-                                       class="btn btn-secondary filter-btn">
-                                        <i class="fas fa-redo me-1"></i>
-                                    </a>
                                 </div>
                             </form>
                         </div>

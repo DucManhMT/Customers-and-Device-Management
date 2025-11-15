@@ -25,6 +25,9 @@ import java.util.List;
 @WebServlet(name = "TechnicianAssignmentDecisionServlet", urlPatterns = { URLConstants.TASK_ASSIGNMENT_DECISION })
 public class TechnicianAssignmentDecisionServlet extends HttpServlet {
 
+    EntityManager em = new EntityManager(DBcontext.getConnection());
+
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -198,9 +201,7 @@ public class TechnicianAssignmentDecisionServlet extends HttpServlet {
             return;
         }
 
-        try  {
-            Connection conn = DBcontext.getConnection();
-            EntityManager em = new EntityManager(conn);
+        try {
             Task task = em.find(Task.class, taskId);
             if (task == null) {
                 request.getSession().setAttribute("errorMessage", "Task not found");
