@@ -205,6 +205,7 @@ public class AssignTaskController extends HttpServlet {
 
         if (description.length() > 255) {
             errors.add("Description cannot exceed 255 characters.");
+            // re-populate attributes and errors
             req.setAttribute("errors", errors);
             req.setAttribute("requestObj", request);
             req.setAttribute(PARAM_ASSIGN_TO, assignTo);
@@ -228,7 +229,6 @@ public class AssignTaskController extends HttpServlet {
             }
             return;
         }
-
 
         // Create task
         if (assignBy != null && assignTo != null) {
