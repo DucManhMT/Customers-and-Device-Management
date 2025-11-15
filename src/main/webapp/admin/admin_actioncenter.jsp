@@ -333,20 +333,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
-    // Build labels and data arrays from server-side collections, avoiding trailing commas.
-    var roleLabels = [
-        <c:forEach var="r" items="${roles}" varStatus="st">
-        "<c:out value='${r.roleName}'/>"<c:if test="${!st.last}">,</c:if>
-        </c:forEach>
-    ];
-
-    var roleData = [
-        <c:forEach var="r" items="${roles}" varStatus="st">
-        <c:out value="${userCountPerRole[r.roleID]}" default="0"/><c:if test="${!st.last}">,</c:if>
-        </c:forEach>
-    ];
-
-    // If you prefer to exclude roleID == 1 (admin), uncomment and use the following approach:
 
     var roleLabels = [];
     var roleData = [];
