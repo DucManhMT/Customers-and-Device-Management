@@ -758,20 +758,23 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <form method="GET" 
+                                            
+                                            <c:if test="${f.feedbackStatus.name() != 'Deleted'}">
+                                                <form method="GET" 
                                                   action="${pageContext.request.contextPath}${URLConstants.CUSTOMER_VIEW_FEEDBACK}">
                                                 <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
                                                 <button type="submit" class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i> View
                                                 </button>
                                             </form>
-                                            <form method="GET" 
-                                                  action="${pageContext.request.contextPath}/feedback/respond">
-                                                <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-reply"></i> Respond
-                                                </button>
-                                            </form>
+                                                <form method="GET" 
+                                                      action="${pageContext.request.contextPath}/feedback/respond">
+                                                    <input type="hidden" name="requestId" value="${f.requestID.foreignKeyValue}"/>
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-reply"></i> Respond
+                                                    </button>
+                                                </form>
+                                            </c:if>
                                         </div>
                                     </td>
                                 </tr>
