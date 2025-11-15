@@ -12,13 +12,7 @@
     <link href="${pageContext.request.contextPath}/css/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* ===============================
-           🌟 Admin Action Center Theme (v2)
-           =============================== */
-        /* ===============================
-   🌟 Admin Action Center Theme (v2)
-   Extracted from JSP inline <style>
-   =============================== */
+
 
         body {
             margin: 0;
