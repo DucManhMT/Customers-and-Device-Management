@@ -82,10 +82,8 @@ public class viewAssignedTask extends HttpServlet {
             request.getSession().removeAttribute("errorMessage");
         }
 
-        Connection connection = null;
         try {
-            connection = DBcontext.getConnection();
-            EntityManager entityManager = new EntityManager(connection);
+            EntityManager entityManager = new EntityManager(DBcontext.getConnection());
 
             Account account = (Account) request.getSession().getAttribute("account");
             if (account == null) {
