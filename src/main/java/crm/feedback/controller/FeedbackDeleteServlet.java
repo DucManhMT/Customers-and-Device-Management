@@ -19,6 +19,9 @@ import java.sql.SQLException;
 @WebServlet(urlPatterns = {"/feedback/delete"})
 public class FeedbackDeleteServlet extends HttpServlet {
 
+    EntityManager em = new EntityManager(DBcontext.getConnection());
+
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String fid = req.getParameter("feedbackId");
@@ -28,34 +31,39 @@ public class FeedbackDeleteServlet extends HttpServlet {
             return;
         }
 
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager em = new EntityManager(connection);
-            try {
-                Integer id = Integer.parseInt(fid.trim());
-                Feedback feedback = em.find(Feedback.class, id);
-                int rqid = (Integer) feedback.getRequestID().getForeignKeyValue();
-                if (feedback == null) {
-                    req.getSession().setAttribute("errorMessage", "Feedback not found");
-                    resp.sendRedirect(req.getContextPath() + "/feedback/list");
-                    return;
-                }
 
-                Account account = (Account) req.getSession().getAttribute("account");
-                String username = account != null ? account.getUsername() : null;
-                Integer roleId = account != null && account.getRole() != null ? account.getRole().getRoleID() : null;
-
-                feedback.setFeedbackStatus(FeedbackStatus.Deleted);
-                em.merge(feedback, Feedback.class);
-
-                req.getSession().setAttribute("successMessage", "Feedback has been deleted successfully!");
-                resp.sendRedirect(req.getContextPath() + "/customer/feedback/list");
-            } catch (NumberFormatException nfe) {
-                req.getSession().setAttribute("errorMessage", "Invalid feedback id format");
+        try {
+            em.beginTransaction();
+            Integer id = Integer.parseInt(fid.trim());
+            Feedback feedback = em.find(Feedback.class, id);
+            int rqid = (Integer) feedback.getRequestID().getForeignKeyValue();
+            if (feedback == null) {
+                req.getSession().setAttribute("errorMessage", "Feedback not found");
                 resp.sendRedirect(req.getContextPath() + "/feedback/list");
                 return;
             }
+
+            Account account = (Account) req.getSession().getAttribute("account");
+            String username = account != null ? account.getUsername() : null;
+            Integer roleId = account != null && account.getRole() != null ? account.getRole().getRoleID() : null;
+
+            feedback.setFeedbackStatus(FeedbackStatus.Deleted);
+            em.merge(feedback, Feedback.class);
+
+            em.commit();
+
+            req.getSession().setAttribute("successMessage", "Feedback has been deleted successfully!");
+            resp.sendRedirect(req.getContextPath() + "/customer/feedback/list");
+        } catch (NumberFormatException nfe) {
+            req.getSession().setAttribute("errorMessage", "Invalid feedback id format");
+            resp.sendRedirect(req.getContextPath() + "/feedback/list");
+            return;
         } catch (SQLException e) {
-            throw new ServletException("Database error", e);
+            em.rollback();
+            req.getSession().setAttribute("errorMessage", e.getMessage());
+            resp.sendRedirect(req.getContextPath() + "/feedback/list");
+            return;
         }
     }
 }
+

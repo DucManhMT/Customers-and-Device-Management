@@ -18,6 +18,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CreateFeedback extends HttpServlet {
     private FeedbackService fedsv = new FeedbackService();
 
+    EntityManager entityManager = new EntityManager(DBcontext.getConnection());
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -32,8 +35,7 @@ public class CreateFeedback extends HttpServlet {
             return;
         }
 
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager entityManager = new EntityManager(connection);
+        try {
             fedsv.setEntityManager(entityManager);
 
             fedsv.showCreateFeedbackForm(req, resp);
@@ -54,8 +56,7 @@ public class CreateFeedback extends HttpServlet {
         }
         String username = account.getUsername();
 
-        try (Connection connection = DBcontext.getConnection()) {
-            EntityManager entityManager = new EntityManager(connection);
+        try{
             fedsv.setEntityManager(entityManager);
 
             fedsv.createFeedback(req, resp, username);
@@ -64,9 +65,8 @@ public class CreateFeedback extends HttpServlet {
             e.printStackTrace();
             req.setAttribute("errorMessage", "Error creating feedback: " + e.getMessage());
             
-            try (Connection connection2 = DBcontext.getConnection()) {
-                EntityManager entityManager2 = new EntityManager(connection2);
-                fedsv.setEntityManager(entityManager2);
+            try{
+                fedsv.setEntityManager(entityManager);
                 fedsv.showCreateFeedbackForm(req, resp);
             } catch (Exception e2) {
                 req.getRequestDispatcher("/Customer/create_feedback.jsp").forward(req, resp);
