@@ -503,7 +503,7 @@
                         >
                     </li>
                     <li class="nav-item"
-                        >
+                        style=${PermissionService.hasAccess(sessionScope.account.role, URLConstants.PRODUCT_VIEW_PRODUCT_TRANSACTION) ? '"display: block"' : '"display:none"'}>
                         <a class="nav-link ${activePage == 'imported-products' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/product/view_product_transaction"
                         ><span>View product transaction</span></a

@@ -60,6 +60,7 @@ package testbuilder;// //package testbuilder;
 // import crm.core.validator.Validator;
 // import org.glassfish.json.JsonUtil;
 
+import crm.auth.service.Hasher;
 import crm.common.URLConstants;
 import crm.common.model.*;
 import crm.core.config.DBcontext;
@@ -68,6 +69,7 @@ import crm.filter.service.PermissionService;
 import crm.warehousekeeper.service.SerialGenerator;
 
 import java.sql.Connection;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -77,23 +79,7 @@ import java.util.Map;
 public class BuilderTest {
     public static void main(String[] args) {
         EntityManager em = new EntityManager(DBcontext.getConnection());
-
-        String generated = SerialGenerator.generateSerial("1", "qwe");
-        System.out.println("Generated serial = " + generated);
-
-        Map<String, Object> cond = new HashMap<>();
-        cond.put("serialNumber", "4BFAACA8B280");
-
-        List<InventoryItem> existing = em.findWithConditions(InventoryItem.class, cond);
-
-        if (existing == null || existing.isEmpty()) {
-            System.out.println("❌ Serial DOES NOT exist in DB");
-        } else {
-            System.out.println("✅ Serial EXISTS");
-            for (InventoryItem item : existing) {
-                System.out.println("Found serial = " + item.getSerialNumber());
-            }
-        }
+        System.out.println(Hasher.hashPassword("12345678"));
     }
 }
 
